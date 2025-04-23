@@ -1,1 +1,1 @@
-{"version":3,"file":"","sourceRoot":"","sources":["file:///Users/josh/repos/OctoGuide/src/configs.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,MAAM,oBAAoB,CAAC;AAChD,OAAO,EAAE,IAAI,EAAE,MAAM,kBAAkB,CAAC;AAExC,eAAO,MAAM,OAAO,EAGf,MAAM,CAAC,UAAU,EAAE,IAAI,EAAE,CAAC,CAAC"}
+{"version":3,"file":"","sourceRoot":"","sources":["file:///Users/josh/repos/OctoGuide/src/configs.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,oBAAoB,CAAC;AACrD,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,kBAAkB,CAAC;AAI7C,eAAO,MAAM,OAAO,EAGf,MAAM,CAAC,UAAU,EAAE,IAAI,EAAE,CAAC,CAAC"}

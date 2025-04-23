@@ -1,6 +1,7 @@
+import type { ConfigName } from "./types/configs.js";
+import type { Rule } from "./types/rules.js";
+
 import { rules } from "./rules/index.js";
-import { ConfigName } from "./types/configs.js";
-import { Rule } from "./types/rules.js";
 
 export const configs = Object.groupBy(
 	rules,
