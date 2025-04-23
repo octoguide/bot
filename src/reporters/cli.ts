@@ -2,6 +2,8 @@ import chalk from "chalk";
 
 import type { RuleReport } from "../types/rules.js";
 
+import { groupBy } from "../action/groupBy.js";
+
 export function cliReporter(reports: RuleReport[]) {
 	if (!reports.length) {
 		console.log(
@@ -11,13 +13,9 @@ export function cliReporter(reports: RuleReport[]) {
 
 	console.log("");
 
-	const byRule = Object.groupBy(reports, (report) => report.about.name);
+	const byRule = groupBy(reports, (report) => report.about.name);
 
 	for (const ruleReports of Object.values(byRule)) {
-		if (!ruleReports) {
-			continue;
-		}
-
 		const { about } = ruleReports[0];
 		console.log(
 			[
