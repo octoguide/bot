@@ -37,7 +37,7 @@ export function cliReporter(reports: RuleReport[]) {
 			);
 			console.log(
 				chalk.gray(
-					`🗒️  Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${report.about.name}.md`,
+					`Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${report.about.name}.md`,
 				),
 			);
 			console.log("");
