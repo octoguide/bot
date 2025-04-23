@@ -23,7 +23,7 @@
 	],
 	"scripts": {
 		"build": "tsc",
-		"build:release": "ncc build src/index.ts -o dist; node postbuild.js",
+		"build:release": "ncc build src/action/index.ts -o dist; node postbuild.js",
 		"format": "prettier .",
 		"lint": "eslint . --max-warnings 0",
 		"lint:knip": "knip",
