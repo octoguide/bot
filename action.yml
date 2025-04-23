@@ -1,0 +1,6 @@
+author: JoshuaKGoldberg
+description: Runs OctoGuide as a GitHub Action. 🗺️
+name: OctoGuide Action
+runs:
+  main: dist/index.js
+  using: node20
