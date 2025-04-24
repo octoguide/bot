@@ -31,13 +31,44 @@ You can think of OctoGuide as a very friendly linter, but for online GitHub acti
 
 ## Usage
 
-For now, pass a link to a comment, issue, or PR to `npx octoguide`:
+OctoGuide can run quickly in GitHub Actions for comment, issue, and pull request events:
+
+```yml
+jobs:
+  octoguide:
+    if: ${{ !endsWith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: JoshuaKGoldberg/octoguide@0.1.1
+        with:
+          github-token: ${{ secrets.ACCESS_TOKEN }}
+
+name: OctoGuide
+
+on:
+  issue_comment:
+    types:
+      - created
+      - edited
+  issues:
+    types:
+      - edited
+      - opened
+  pull_request:
+    types:
+      - edited
+      - opened
+
+permissions:
+  issues: write
+  pull-requests: write
+```
+
+You can also preview what the action would report with its npm CLI:
 
 ```shell
 npx octoguide https://github.com/JoshuaKGoldberg/octoguide-test/pull/2
 ```
-
-Soon there'll be a GitHub Action that runs automatically and posts replies on GitHub.
 
 ### All Rules
 
