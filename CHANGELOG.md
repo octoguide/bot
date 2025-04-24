@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/JoshuaKGoldberg/octoguide/compare/0.1.1...0.1.2) (2025-04-23)
+
+### Bug Fixes
+
+- downgrade markdownlint to 0.33 ([4b86b43](https://github.com/JoshuaKGoldberg/octoguide/commit/4b86b4341f0dca9a820457a6df2f4584401fb645))
+- move markdownlint to full dependency ([2e80748](https://github.com/JoshuaKGoldberg/octoguide/commit/2e80748f37536a9a6ec788b9552cd2e904ef2b58))
+
 ## [0.1.1](https://github.com/JoshuaKGoldberg/octoguide/compare/0.1.0...0.1.1) (2025-04-18)
 
 ### Bug Fixes
