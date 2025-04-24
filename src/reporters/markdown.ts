@@ -19,7 +19,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 			ruleReports
 				.map((report) =>
 					[report.data.primary, ...formatSecondary(report.data.secondary)].join(
-						"",
+						"\n",
 					),
 				)
 				.join("\n\n"),
@@ -32,7 +32,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 	const entityAlias = entity.type.replace("_", " ");
 
 	return [
-		`👋${entity.user ? ` @${entity.user}` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
+		`👋${entity.user ? ` @${entity.user},` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
 		`Could you please take a look? `,
 		`Thanks!`,
 		"\n\n",

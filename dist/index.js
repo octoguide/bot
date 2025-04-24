@@ -95898,7 +95898,7 @@ function markdownReporter(entity, reports) {
             about.description,
             "\n\n",
             ruleReports
-                .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join(""))
+                .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
             "\n\n",
             about.explanation.join(" "),
@@ -95907,7 +95907,7 @@ function markdownReporter(entity, reports) {
     });
     const entityAlias = entity.type.replace("_", " ");
     return [
-        `👋${entity.user ? ` @${entity.user}` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
+        `👋${entity.user ? ` @${entity.user},` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
         `Could you please take a look? `,
         `Thanks!`,
         "\n\n",
@@ -95926,8 +95926,7 @@ function createCommentBody(entity, message) {
     return [
         message,
         "---",
-        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps contributors adhere to best practices for repositories on GitHub._`,
-        "",
+        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps explain best practices for repositories on GitHub._`,
         createCommentIdentifier(entity),
     ].join("\n\n");
 }

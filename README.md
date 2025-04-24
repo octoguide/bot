@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: JoshuaKGoldberg/octoguide@v0.1.2
         with:
-          github-token: ${{ secrets.ACCESS_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
 name: OctoGuide
 
