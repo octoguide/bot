@@ -1,5 +1,6 @@
 import type { Octokit } from "octokit";
 
+import * as core from "@actions/core";
 import { octokitFromAuth } from "octokit-from-auth";
 
 import type { RepositoryLocator } from "./types/data.js";
@@ -34,6 +35,8 @@ export async function runOctoGuide({
 	if (!resolved) {
 		throw new Error("Could not resolve GitHub entity.");
 	}
+
+	core.debug(`Resolved entity at url: ${resolved.entity.data.url}`);
 
 	const { entity, locator } = resolved;
 	const reports: RuleReport[] = [];

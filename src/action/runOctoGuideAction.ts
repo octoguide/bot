@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 
 import { runOctoGuide } from "../index.js";
+import { cliReporter } from "../reporters/cli.js";
 import { getCommentForReports } from "./comments/setCommentForReports.js";
 
 export async function runOctoGuideAction(context: typeof github.context) {
@@ -16,7 +17,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		throw new Error("Target entity's html_url is not a string.");
 	}
 
-	core.debug(`Targeting entity at url: ${target.html_url}`);
+	core.debug(`Targeting entity at html_url: ${target.html_url}`);
 
 	const { entity, locator, octokit, reports } = await runOctoGuide({
 		githubToken: core.getInput("github-token"),
@@ -25,6 +26,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	if (reports.length) {
 		core.error(`Found ${reports.length.toString()} report(s).`);
+		cliReporter(reports);
 	} else {
 		core.info("Found 0 reports. Great! ✅");
 	}

@@ -1,5 +1,7 @@
 import type { Octokit } from "octokit";
 
+import * as core from "@actions/core";
+
 import type { RepositoryLocator } from "../../types/data.js";
 import type { Entity } from "../../types/entities.js";
 import type { RuleReport } from "../../types/rules.js";
@@ -22,14 +24,22 @@ export async function getCommentForReports(
 ): Promise<ReportComment | undefined> {
 	const existingComment = await getExistingComment(entity, locator, octokit);
 
+	core.debug(
+		existingComment
+			? `Found existing comment: ${existingComment.url}`
+			: "No existing comment found.",
+	);
+
 	if (!reports.length) {
 		if (existingComment) {
+			core.debug("Updating existing comment as passed.");
 			await updateExistingCommentAsPassed(existingComment, locator, octokit);
 		}
 		return existingComment && { status: "existing", url: existingComment.url };
 	}
 
 	if (existingComment) {
+		core.debug("Updating existing comment for reports.");
 		await updateExistingCommentForReports(
 			existingComment,
 			locator,
@@ -39,12 +49,14 @@ export async function getCommentForReports(
 		return { status: "existing", url: existingComment.url };
 	}
 
+	core.debug("Creating existing comment for reports.");
 	const newComment = await createNewCommentForReports(
 		entity,
 		locator,
 		octokit,
 		reports,
 	);
+	core.debug(`Created new comment: ${newComment.url}`);
 
 	return {
 		status: "created",

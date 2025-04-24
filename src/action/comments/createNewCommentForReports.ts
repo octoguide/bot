@@ -1,5 +1,7 @@
 import type { Octokit } from "octokit";
 
+import * as core from "@actions/core";
+
 import type { RepositoryLocator } from "../../types/data.js";
 import type { Entity } from "../../types/entities.js";
 import type { RuleReport } from "../../types/rules.js";
@@ -14,6 +16,7 @@ export async function createNewCommentForReports(
 	reports: RuleReport[],
 ) {
 	const target = entity.type === "comment" ? entity.parent : entity.data;
+	core.debug(`Target number for comment creation: ${target.number.toString()}`);
 
 	const response = await octokit.rest.issues.createComment({
 		body: createCommentBody(markdownReporter(reports)),
