@@ -95847,16 +95847,14 @@ function cliReporter(reports) {
 
 
 // TODO :)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function runOctoGuideAction(context) {
+    const { payload } = context;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const entity = (payload.comment ?? payload.issue ?? payload.pull_request);
+    console.log({ entity });
     const reports = await runOctoGuide({
         githubToken: core.getInput("github-token"),
-        // will need to get the locator somehow,
-        // how does the context expose this?
-        // owner: context.repo.owner,
-        // repository: context.repo.repo,
-        // maybe pass in entity directly...?
-        url: "todo",
+        url: entity.html_url,
     });
     cliReporter(reports);
     for (const report of reports) {
