@@ -17,11 +17,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 			about.description,
 			ruleReports.length > 1 ? "\n\n" : " ",
 			ruleReports
-				.map((report) =>
-					[report.data.primary, ...formatSecondary(report.data.secondary)].join(
-						"\n",
-					),
-				)
+				.map((report) => formatSecondary(report.data.secondary).join("\n"))
 				.join("\n\n"),
 			"\n\n",
 			about.explanation.join(" "),
