@@ -15,7 +15,7 @@ export async function updateExistingCommentForReports(
 	reports: RuleReport[],
 ) {
 	await octokit.rest.issues.updateComment({
-		body: createCommentBody(entity, markdownReporter(reports)),
+		body: createCommentBody(entity, markdownReporter(entity, reports)),
 		comment_id: existingComment.id,
 		owner: locator.repository,
 		repo: locator.repository,

@@ -95856,23 +95856,27 @@ function cliReporter(reports) {
 ;// CONCATENATED MODULE: ./src/reporters/markdown.ts
 
 
-function markdownReporter(reports) {
+function markdownReporter(entity, reports) {
     const byRule = groupBy(reports, (report) => report.about.name);
-    return Object.values(byRule)
-        .map((ruleReports) => {
+    const printedReports = Object.values(byRule).map((ruleReports) => {
         const { about } = ruleReports[0];
         return [
             `[${about.name}](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md)`,
             about.description,
             ruleReports
-                .map((report) => [
-                report.data.primary,
-                ...formatSecondary(report.data.secondary),
-            ])
-                .join("\n"),
+                .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
+                .join("\n\n"),
         ].join("\n");
-    })
-        .join("\n\n");
+    });
+    const entityAlias = entity.type.replace("_", " ");
+    return [
+        `👋${entity.user ? ` @${entity.user},` : ""} we ran a few automated checks on your ${entityAlias}.`,
+        `They came up with a few reports.`,
+        `Could you please take a look and edit the ${entityAlias} accordingly?`,
+        `Thanks!`,
+        "",
+        printedReports.join("\n\n"),
+    ].join("\n");
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
@@ -95900,7 +95904,7 @@ async function createNewCommentForReports(entity, locator, octokit, reports) {
     const target = entity.type === "comment" ? entity.parent : entity.data;
     core.info(`Target number for comment creation: ${target.number.toString()}`);
     const response = await octokit.rest.issues.createComment({
-        body: createCommentBody(entity, markdownReporter(reports)),
+        body: createCommentBody(entity, markdownReporter(entity, reports)),
         issue_number: target.number,
         owner: locator.owner,
         repo: locator.repository,
@@ -95940,7 +95944,7 @@ async function updateExistingCommentAsPassed(entity, existingComment, locator, o
 
 async function updateExistingCommentForReports(entity, existingComment, locator, octokit, reports) {
     await octokit.rest.issues.updateComment({
-        body: createCommentBody(entity, markdownReporter(reports)),
+        body: createCommentBody(entity, markdownReporter(entity, reports)),
         comment_id: existingComment.id,
         owner: locator.repository,
         repo: locator.repository,
