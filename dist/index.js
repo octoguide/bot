@@ -95931,7 +95931,7 @@ async function updateExistingCommentAsPassed(entity, existingComment, locator, o
     await octokit.rest.issues.updateComment({
         body: createCommentBody(entity, "All reports are resolved now. Thanks! ✅"),
         comment_id: existingComment.id,
-        owner: locator.repository,
+        owner: locator.owner,
         repo: locator.repository,
     });
     // TODO: file issue for feature request, something like...:
@@ -95946,7 +95946,7 @@ async function updateExistingCommentForReports(entity, existingComment, locator,
     await octokit.rest.issues.updateComment({
         body: createCommentBody(entity, markdownReporter(entity, reports)),
         comment_id: existingComment.id,
-        owner: locator.repository,
+        owner: locator.owner,
         repo: locator.repository,
     });
 }

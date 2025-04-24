@@ -14,7 +14,7 @@ export async function updateExistingCommentAsPassed(
 	await octokit.rest.issues.updateComment({
 		body: createCommentBody(entity, "All reports are resolved now. Thanks! ✅"),
 		comment_id: existingComment.id,
-		owner: locator.repository,
+		owner: locator.owner,
 		repo: locator.repository,
 	});
 
