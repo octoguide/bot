@@ -5,5 +5,9 @@ inputs:
     description: GitHub token (PAT) with repo and workflow permissions.
 name: OctoGuide Action
 runs:
-  main: dist/index.js
-  using: node20
+  steps:
+    - run: node dist/index.js
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  using: "composite"
