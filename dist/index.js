@@ -95898,7 +95898,7 @@ function markdownReporter(entity, reports) {
             about.description,
             "\n\n",
             ruleReports
-                .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
+                .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join(""))
                 .join("\n\n"),
             "\n\n",
             about.explanation.join(" "),
@@ -95907,8 +95907,8 @@ function markdownReporter(entity, reports) {
     });
     const entityAlias = entity.type.replace("_", " ");
     return [
-        `👋${entity.user ? ` @${entity.user},` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
-        `Could you please take a look and edit the ${entityAlias} accordingly? `,
+        `👋${entity.user ? ` @${entity.user}` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
+        `Could you please take a look? `,
         `Thanks!`,
         "\n\n",
         printedReports.join("\n\n"),
