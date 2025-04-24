@@ -85263,7 +85263,7 @@ const commentMeaningless = {
         config: "strict",
         description: "Comments should be meaningful, not just '+1'-style bumps.",
         explanation: [
-            `Posting replies containing just _"+1"_, _any update?"_, or other phrases without new information don't meaningfully contribute to a discussion.`,
+            `Replies containing just _"+1"_, _any update?"_, or other phrases without new information don't help in a discussion.`,
             `If done too much, they can even become disruptive to other contributors.`,
         ],
         name: "comment-meaningless",
@@ -95891,10 +95891,9 @@ function markdownReporter(entity, reports) {
         return [
             `[**${about.name}**](${url})`,
             ": ",
-            about.description,
             ruleReports.length > 1 ? "\n\n" : " ",
             ruleReports
-                .map((report) => formatSecondary(report.data.secondary).join("\n"))
+                .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
             "\n\n",
             about.explanation.join(" "),
