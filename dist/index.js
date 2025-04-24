@@ -86260,7 +86260,7 @@ function checkEntity(context, entity) {
     if (!lintErrors.length) {
         return;
     }
-    const lines = body.split(/\n+/);
+    const lines = body.split(/\n/);
     console.log({ body, lines });
     console.log("------");
     for (const lintError of lintErrors) {
@@ -95907,8 +95907,7 @@ function markdownReporter(entity, reports) {
     });
     const entityAlias = entity.type.replace("_", " ");
     return [
-        `👋${entity.user ? ` @${entity.user},` : ""} we ran a few automated checks on your ${entityAlias}. `,
-        `They came up with a few reports. `,
+        `👋${entity.user ? ` @${entity.user},` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
         `Could you please take a look and edit the ${entityAlias} accordingly? `,
         `Thanks!`,
         "\n\n",

@@ -46,7 +46,7 @@ function checkEntity(context: RuleContext, entity: Entity) {
 		return;
 	}
 
-	const lines = body.split(/\n+/);
+	const lines = body.split(/\n/);
 	console.log({ body, lines });
 	console.log("------");
 
