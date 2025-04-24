@@ -6,9 +6,8 @@ import { groupBy } from "../action/groupBy.js";
 
 export function cliReporter(reports: RuleReport[]) {
 	if (!reports.length) {
-		console.log(
-			`Found ${chalk.green(reports.length)} issue${reports.length > 1 ? "s" : ""}. Great! ✅`,
-		);
+		console.log(`Found ${chalk.green("0")} reports. Great! ✅`);
+		return;
 	}
 
 	console.log("");
