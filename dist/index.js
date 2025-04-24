@@ -95894,7 +95894,8 @@ function markdownReporter(entity, reports) {
             ruleReports
                 .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
-            about.explanation,
+            "\n\n",
+            about.explanation.join(" "),
             ` Read more on [OctoGuide > ${about.name}](${url}).`,
         ].join("");
     });

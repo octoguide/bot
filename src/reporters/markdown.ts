@@ -23,7 +23,8 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 					),
 				)
 				.join("\n\n"),
-			about.explanation,
+			"\n\n",
+			about.explanation.join(" "),
 			` Read more on [OctoGuide > ${about.name}](${url}).`,
 		].join("");
 	});
