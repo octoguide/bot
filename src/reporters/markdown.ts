@@ -22,7 +22,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 					),
 				)
 				.join("\n\n"),
-			"\n\n",
+			"\n",
 			about.explanation.join(" "),
 			` Read more on [OctoGuide > ${about.name}](${url}).`,
 		].join("");
