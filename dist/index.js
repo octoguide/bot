@@ -95905,9 +95905,8 @@ function markdownReporter(entity, reports) {
     return [
         "👋",
         entity.user ? ` @${entity.user} ` : "",
-        "automated checks found",
-        reports.length > 1 ? "issues" : "an issue",
-        `with [${entityAlias}](${entity.data.url})`,
+        "automated checks reported on ",
+        `[${entityAlias}](${entity.data.url})`,
         ". Could you please take a look?\n\n",
         printedReports.join("\n\n"),
     ].join("");
