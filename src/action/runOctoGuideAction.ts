@@ -1,5 +1,6 @@
+import type * as github from "@actions/github";
+
 import * as core from "@actions/core";
-import * as github from "@actions/github";
 
 import { runOctoGuide } from "../index.js";
 import { cliReporter } from "../reporters/cli.js";

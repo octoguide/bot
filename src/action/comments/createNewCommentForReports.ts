@@ -19,7 +19,7 @@ export async function createNewCommentForReports(
 	core.info(`Target number for comment creation: ${target.number.toString()}`);
 
 	const response = await octokit.rest.issues.createComment({
-		body: createCommentBody(markdownReporter(reports)),
+		body: createCommentBody(entity, markdownReporter(reports)),
 		issue_number: target.number,
 		owner: locator.owner,
 		repo: locator.repository,

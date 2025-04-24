@@ -12,6 +12,7 @@ export async function getExistingComment(
 ) {
 	const target = entity.type === "comment" ? entity.parent : entity.data;
 
+	// TODO: file issue to switch to pagination
 	const comments = await octokit.rest.issues.listComments({
 		issue_number: target.number,
 		owner: locator.owner,
@@ -19,6 +20,6 @@ export async function getExistingComment(
 	});
 
 	return comments.data.find((comment) =>
-		comment.body?.endsWith(createCommentIdentifier(target.number)),
+		comment.body?.endsWith(createCommentIdentifier(entity)),
 	);
 }

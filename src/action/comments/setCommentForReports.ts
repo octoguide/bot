@@ -33,7 +33,12 @@ export async function getCommentForReports(
 	if (!reports.length) {
 		if (existingComment) {
 			core.info("Updating existing comment as passed.");
-			await updateExistingCommentAsPassed(existingComment, locator, octokit);
+			await updateExistingCommentAsPassed(
+				entity,
+				existingComment,
+				locator,
+				octokit,
+			);
 		}
 		return existingComment && { status: "existing", url: existingComment.url };
 	}
@@ -41,6 +46,7 @@ export async function getCommentForReports(
 	if (existingComment) {
 		core.info("Updating existing comment for reports.");
 		await updateExistingCommentForReports(
+			entity,
 			existingComment,
 			locator,
 			octokit,

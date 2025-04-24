@@ -1,1 +1,0 @@
-{"version":3,"file":"octoguide.d.ts","sourceRoot":"","sources":["file:///Users/josh/repos/OctoGuide/src/octoguide.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAe,UAAU,EAAE,MAAM,kBAAkB,CAAC;AAMhE,MAAM,WAAW,iBAAiB;IACjC,WAAW,CAAC,EAAE,MAAM,GAAG,SAAS,CAAC;IACjC,GAAG,EAAE,MAAM,CAAC;CACZ;AAED,wBAAsB,YAAY,CAAC,EAAE,WAAW,EAAE,GAAG,EAAE,EAAE,iBAAiB,yBA+BzE"}

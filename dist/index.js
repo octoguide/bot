@@ -95863,12 +95863,20 @@ function markdownReporter(reports) {
         .join("\n\n");
 }
 
+;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
+function createCommentIdentifier(entity) {
+    return `<!-- OctoGuide response for: ${entity.data.url} -->`;
+}
+
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentBody.ts
-function createCommentBody(message) {
+
+function createCommentBody(entity, message) {
     return [
         message,
         "---",
         `🗺️ This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide)`,
+        "",
+        createCommentIdentifier(entity),
     ].join("\n\n");
 }
 
@@ -95880,7 +95888,7 @@ async function createNewCommentForReports(entity, locator, octokit, reports) {
     const target = entity.type === "comment" ? entity.parent : entity.data;
     core.info(`Target number for comment creation: ${target.number.toString()}`);
     const response = await octokit.rest.issues.createComment({
-        body: createCommentBody(markdownReporter(reports)),
+        body: createCommentBody(entity, markdownReporter(reports)),
         issue_number: target.number,
         owner: locator.owner,
         repo: locator.repository,
@@ -95888,40 +95896,39 @@ async function createNewCommentForReports(entity, locator, octokit, reports) {
     return response.data;
 }
 
-;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
-function createCommentIdentifier(target) {
-    return `<!-- OctoGuide response for: ${target} -->`;
-}
-
 ;// CONCATENATED MODULE: ./src/action/comments/getExistingComment.ts
 
 async function getExistingComment(entity, locator, octokit) {
     const target = entity.type === "comment" ? entity.parent : entity.data;
+    // TODO: file issue to switch to pagination
     const comments = await octokit.rest.issues.listComments({
         issue_number: target.number,
         owner: locator.owner,
         repo: locator.repository,
     });
-    return comments.data.find((comment) => comment.body?.endsWith(createCommentIdentifier(target.number)));
+    return comments.data.find((comment) => comment.body?.endsWith(createCommentIdentifier(entity)));
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/updateExistingCommentAsPassed.ts
 
-async function updateExistingCommentAsPassed(existingComment, locator, octokit) {
+async function updateExistingCommentAsPassed(entity, existingComment, locator, octokit) {
     await octokit.rest.issues.updateComment({
-        body: createCommentBody("All reports are resolved now. Thanks! ✅"),
+        body: createCommentBody(entity, "All reports are resolved now. Thanks! ✅"),
         comment_id: existingComment.id,
         owner: locator.repository,
         repo: locator.repository,
     });
+    // TODO: file issue for feature request, something like...:
+    // "react with :+1: to this to delete it"
+    // (would need a separate action for reacting & deleting)
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/updateExistingCommentForReports.ts
 
 
-async function updateExistingCommentForReports(existingComment, locator, octokit, reports) {
+async function updateExistingCommentForReports(entity, existingComment, locator, octokit, reports) {
     await octokit.rest.issues.updateComment({
-        body: createCommentBody(markdownReporter(reports)),
+        body: createCommentBody(entity, markdownReporter(reports)),
         comment_id: existingComment.id,
         owner: locator.repository,
         repo: locator.repository,
@@ -95942,13 +95949,13 @@ async function getCommentForReports(entity, locator, octokit, reports) {
     if (!reports.length) {
         if (existingComment) {
             core.info("Updating existing comment as passed.");
-            await updateExistingCommentAsPassed(existingComment, locator, octokit);
+            await updateExistingCommentAsPassed(entity, existingComment, locator, octokit);
         }
         return existingComment && { status: "existing", url: existingComment.url };
     }
     if (existingComment) {
         core.info("Updating existing comment for reports.");
-        await updateExistingCommentForReports(existingComment, locator, octokit, reports);
+        await updateExistingCommentForReports(entity, existingComment, locator, octokit, reports);
         return { status: "existing", url: existingComment.url };
     }
     core.info("Creating existing comment for reports.");
