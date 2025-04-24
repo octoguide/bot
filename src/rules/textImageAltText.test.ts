@@ -69,11 +69,11 @@ describe(textImageAltText.about.name, () => {
 
 		expect(report).toHaveBeenCalledWith({
 			primary: "The following image is missing alt text:",
-			secondary: ["![](img.jpg)"],
+			secondary: [["> ```md", "> ![](img.jpg)", "> ```"].join("\n")],
 		});
 	});
 
-	it("reports when an image has seemingly default alt text.", async () => {
+	it("reports when an image has seemingly default alt text (extended).", async () => {
 		const report = vi.fn();
 
 		await testRule(
@@ -90,7 +90,13 @@ describe(textImageAltText.about.name, () => {
 		expect(report).toHaveBeenCalledWith({
 			primary:
 				"The following image seems to have default alt text, rather than something informative:",
-			secondary: ["![Screen Shot 2025-06-26 at 7 41 30 PM](img.jpg)"],
+			secondary: [
+				[
+					"> ```md",
+					"> ![Screen Shot 2025-06-26 at 7 41 30 PM](img.jpg)",
+					"> ```",
+				].join("\n"),
+			],
 		});
 	});
 });
