@@ -96032,6 +96032,7 @@ async function runOctoGuideAction(context) {
         throw new Error("Target entity's html_url is not a string.");
     }
     core.info(`Targeting entity at html_url: ${target.html_url}`);
+    console.log("process.env:", process.env);
     const { entity, locator, octokit, reports } = await runOctoGuide({
         githubToken: process.env.GITHUB_TOKEN,
         url: target.html_url,
