@@ -34,8 +34,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 	return [
 		`👋${entity.user ? ` @${entity.user},` : ""} we ran a few automated checks on your ${entityAlias}. `,
 		`They came up with a few reports. `,
-		`Could you please take a look and edit the ${entityAlias} accordingly?`,
-		"\n",
+		`Could you please take a look and edit the ${entityAlias} accordingly? `,
 		`Thanks!`,
 		"\n\n",
 		printedReports.join("\n\n"),

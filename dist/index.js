@@ -95903,8 +95903,7 @@ function markdownReporter(entity, reports) {
     return [
         `👋${entity.user ? ` @${entity.user},` : ""} we ran a few automated checks on your ${entityAlias}. `,
         `They came up with a few reports. `,
-        `Could you please take a look and edit the ${entityAlias} accordingly?`,
-        "\n",
+        `Could you please take a look and edit the ${entityAlias} accordingly? `,
         `Thanks!`,
         "\n\n",
         printedReports.join("\n\n"),
@@ -95922,7 +95921,7 @@ function createCommentBody(entity, message) {
     return [
         message,
         "---",
-        `🗺️ This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide)`,
+        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps contributors adhere to best practices for repositories on GitHub._`,
         "",
         createCommentIdentifier(entity),
     ].join("\n\n");
