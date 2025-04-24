@@ -13,7 +13,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 
 		return [
 			`[**${about.name}**](${url})`,
-			": ",
+			":",
 			ruleReports.length > 1 ? "\n\n" : " ",
 			ruleReports
 				.map((report) =>
@@ -24,7 +24,6 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 				.join("\n\n"),
 			"\n",
 			about.explanation.join(" "),
-			` Read more on [OctoGuide > ${about.name}](${url}).`,
 		].join("");
 	});
 

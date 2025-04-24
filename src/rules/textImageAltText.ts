@@ -16,6 +16,7 @@ export const textImageAltText = {
 		explanation: [
 			`Image alternative text, or "alt text", is a text description attached to an image.`,
 			`It provides a way for non-sighted users and tools to understand the image despite not being able to visually see it.`,
+			`To resolve this report, please add descriptive alt text to the image.`,
 		],
 		name: "text-image-alt-text",
 	},

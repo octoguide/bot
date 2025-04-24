@@ -86230,6 +86230,7 @@ const textImageAltText = {
         explanation: [
             `Image alternative text, or "alt text", is a text description attached to an image.`,
             `It provides a way for non-sighted users and tools to understand the image despite not being able to visually see it.`,
+            `To resolve this report, please add descriptive alt text to the image.`,
         ],
         name: "text-image-alt-text",
     },
@@ -95890,14 +95891,13 @@ function markdownReporter(entity, reports) {
         const url = `https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md`;
         return [
             `[**${about.name}**](${url})`,
-            ": ",
+            ":",
             ruleReports.length > 1 ? "\n\n" : " ",
             ruleReports
                 .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
             "\n",
             about.explanation.join(" "),
-            ` Read more on [OctoGuide > ${about.name}](${url}).`,
         ].join("");
     });
     const entityAlias = `your ${entity.type.replace("_", " ")}`;
