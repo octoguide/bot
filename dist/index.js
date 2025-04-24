@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(4462);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9318);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 4462:
+/***/ 9318:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -85226,10 +85226,13 @@ var core = __nccwpck_require__(9999);
 var array_grouping_v2 = __nccwpck_require__(8729);
 // EXTERNAL MODULE: ./node_modules/.pnpm/lodash@4.17.21/node_modules/lodash/lodash.js
 var lodash = __nccwpck_require__(2594);
+var lodash_default = /*#__PURE__*/__nccwpck_require__.n(lodash);
 ;// CONCATENATED MODULE: ./src/action/groupBy.ts
 // Object.groupBy is not a function
 // https://github.com/actions/runner/issues/3600
 
+
+const { groupBy } = (lodash_default());
 
 
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/is-comment-meaningless@0.1.0/node_modules/is-comment-meaningless/lib/index.js
@@ -86197,6 +86200,7 @@ var markdownlint_default = /*#__PURE__*/__nccwpck_require__.n(markdownlint);
 ;// CONCATENATED MODULE: ./src/rules/textImageAltText.ts
 // Code inspired by accessibility-alt-text-bot:
 // https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
+// TODO: see if we can extract a version that doesn't rely on markdownlint?
 
 
 const textImageAltText = {
@@ -86236,7 +86240,9 @@ function checkEntity(context, entity) {
 function createReportData(lines, lintError) {
     return {
         primary: ruleDescriptions[lintError.ruleNames[1]],
-        secondary: [["> ```md", lines[lintError.lineNumber - 1], "```"].join("\n")],
+        secondary: [
+            ["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
+        ],
     };
 }
 const ruleDescriptions = {
@@ -86266,7 +86272,7 @@ const rules = [
 ;// CONCATENATED MODULE: ./src/configs.ts
 
 
-const configs = (0,lodash.groupBy)(rules, (rule) => rule.about.config);
+const configs = groupBy(rules, (rule) => rule.about.config);
 
 ;// CONCATENATED MODULE: external "node:child_process"
 const external_node_child_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:child_process");
@@ -95812,7 +95818,15 @@ const chalkStderr = createChalk({level: stderrColor ? stderrColor.level : 0});
 
 /* harmony default export */ const source = (chalk);
 
+;// CONCATENATED MODULE: ./src/reporters/formatSecondary.ts
+function formatSecondary(secondary) {
+    return (secondary ?? [])
+        .flatMap((line) => line.split("\n"))
+        .map((line) => `  ${line}`);
+}
+
 ;// CONCATENATED MODULE: ./src/reporters/cli.ts
+
 
 
 function cliReporter(reports) {
@@ -95821,7 +95835,7 @@ function cliReporter(reports) {
         return;
     }
     console.log("");
-    const byRule = (0,lodash.groupBy)(reports, (report) => report.about.name);
+    const byRule = groupBy(reports, (report) => report.about.name);
     for (const ruleReports of Object.values(byRule)) {
         const { about } = ruleReports[0];
         console.log([
@@ -95831,10 +95845,7 @@ function cliReporter(reports) {
             source.yellow(about.description),
         ].join(""));
         for (const report of ruleReports) {
-            console.log([
-                report.data.primary,
-                ...(report.data.secondary?.map((line) => `  ${line}`) ?? []),
-            ].join("\n"));
+            console.log([report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"));
             console.log(source.gray(`Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${report.about.name}.md`));
             console.log("");
         }
@@ -95844,8 +95855,9 @@ function cliReporter(reports) {
 
 ;// CONCATENATED MODULE: ./src/reporters/markdown.ts
 
+
 function markdownReporter(reports) {
-    const byRule = (0,lodash.groupBy)(reports, (report) => report.about.name);
+    const byRule = groupBy(reports, (report) => report.about.name);
     return Object.values(byRule)
         .map((ruleReports) => {
         const { about } = ruleReports[0];
@@ -95855,7 +95867,7 @@ function markdownReporter(reports) {
             ruleReports
                 .map((report) => [
                 report.data.primary,
-                ...(report.data.secondary?.map((line) => `  ${line}`) ?? []),
+                ...formatSecondary(report.data.secondary),
             ])
                 .join("\n"),
         ].join("\n");

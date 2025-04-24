@@ -1,5 +1,6 @@
 // Code inspired by accessibility-alt-text-bot:
 // https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
+// TODO: see if we can extract a version that doesn't rely on markdownlint?
 
 import markdownlintGitHub from "@github/markdownlint-github";
 import markdownlint from "markdownlint";
@@ -50,7 +51,9 @@ function checkEntity(context: RuleContext, entity: Entity) {
 function createReportData(lines: string[], lintError: markdownlint.LintError) {
 	return {
 		primary: ruleDescriptions[lintError.ruleNames[1]],
-		secondary: [["> ```md", lines[lintError.lineNumber - 1], "```"].join("\n")],
+		secondary: [
+			["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
+		],
 	};
 }
 

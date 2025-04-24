@@ -3,6 +3,7 @@ import chalk from "chalk";
 import type { RuleReport } from "../types/rules.js";
 
 import { groupBy } from "../action/groupBy.js";
+import { formatSecondary } from "./formatSecondary.js";
 
 export function cliReporter(reports: RuleReport[]) {
 	if (!reports.length) {
@@ -27,10 +28,9 @@ export function cliReporter(reports: RuleReport[]) {
 
 		for (const report of ruleReports) {
 			console.log(
-				[
-					report.data.primary,
-					...(report.data.secondary?.map((line) => `  ${line}`) ?? []),
-				].join("\n"),
+				[report.data.primary, ...formatSecondary(report.data.secondary)].join(
+					"\n",
+				),
 			);
 			console.log(
 				chalk.gray(

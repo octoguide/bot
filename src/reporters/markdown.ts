@@ -1,6 +1,7 @@
 import type { RuleReport } from "../types/rules.js";
 
 import { groupBy } from "../action/groupBy.js";
+import { formatSecondary } from "./formatSecondary.js";
 
 export function markdownReporter(reports: RuleReport[]) {
 	const byRule = groupBy(reports, (report) => report.about.name);
@@ -14,7 +15,7 @@ export function markdownReporter(reports: RuleReport[]) {
 				ruleReports
 					.map((report) => [
 						report.data.primary,
-						...(report.data.secondary?.map((line) => `  ${line}`) ?? []),
+						...formatSecondary(report.data.secondary),
 					])
 					.join("\n"),
 			].join("\n");
