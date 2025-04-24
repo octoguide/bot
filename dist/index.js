@@ -86236,7 +86236,7 @@ function checkEntity(context, entity) {
 function createReportData(lines, lintError) {
     return {
         primary: ruleDescriptions[lintError.ruleNames[1]],
-        secondary: [lines[lintError.lineNumber - 1]],
+        secondary: [["> ```md", lines[lintError.lineNumber - 1], "```"].join("\n")],
     };
 }
 const ruleDescriptions = {

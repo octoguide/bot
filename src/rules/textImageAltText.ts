@@ -50,7 +50,7 @@ function checkEntity(context: RuleContext, entity: Entity) {
 function createReportData(lines: string[], lintError: markdownlint.LintError) {
 	return {
 		primary: ruleDescriptions[lintError.ruleNames[1]],
-		secondary: [lines[lintError.lineNumber - 1]],
+		secondary: [["> ```md", lines[lintError.lineNumber - 1], "```"].join("\n")],
 	};
 }
 
