@@ -21,7 +21,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	core.info(`Targeting entity at html_url: ${target.html_url}`);
 
 	const { entity, locator, octokit, reports } = await runOctoGuide({
-		githubToken: core.getInput("github-token"),
+		githubToken: process.env.GITHUB_TOKEN,
 		url: target.html_url,
 	});
 

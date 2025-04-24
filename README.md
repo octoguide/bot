@@ -23,11 +23,11 @@
 
 OctoGuide checks that contributor activity on your GitHub repository aligns with common expectations of smoothly-running projects.
 It will automatically post friendly comments when contributors take actions you don't want them to.
-Rules are provided for common issues with comments, issues, and pull requests.
 
 ![Screenshot of a github-actions bot comment: see docs/screenshot-text.txt for text](docs/screenshot.webp)
 
-You can think of OctoGuide as a very friendly linter, but for online GitHub activity rather than source code.
+Rules are provided for common issues with comments, issues, and pull requests.
+You can think of OctoGuide as a very friendly linter, but for online GitHub activity rather than code.
 
 ## Usage
 
@@ -40,8 +40,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: JoshuaKGoldberg/octoguide@v0.1.2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 
 name: OctoGuide
 
