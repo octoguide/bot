@@ -17,8 +17,4 @@ export async function updateExistingCommentAsPassed(
 		owner: locator.owner,
 		repo: locator.repository,
 	});
-
-	// TODO: file issue for feature request, something like...:
-	// "react with :+1: to this to delete it"
-	// (would need a separate action for reacting & deleting)
 }

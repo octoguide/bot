@@ -12,10 +12,12 @@ export async function getExistingComment(
 ) {
 	const target = entity.type === "comment" ? entity.parent : entity.data;
 
-	// TODO: file issue to switch to pagination
+	// TODO: Retrieve all pages, not just the first one
+	// https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
 	const comments = await octokit.rest.issues.listComments({
 		issue_number: target.number,
 		owner: locator.owner,
+		per_page: 100,
 		repo: locator.repository,
 	});
 
