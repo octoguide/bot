@@ -40,6 +40,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: JoshuaKGoldberg/octoguide@v0.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
 name: OctoGuide
 
