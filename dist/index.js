@@ -95896,7 +95896,7 @@ function markdownReporter(entity, reports) {
             `[**${about.name}**](${url})`,
             ": ",
             about.description,
-            "\n\n",
+            ruleReports.length > 1 ? "\n\n" : "",
             ruleReports
                 .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
