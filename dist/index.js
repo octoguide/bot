@@ -85232,6 +85232,8 @@ var lodash_default = /*#__PURE__*/__nccwpck_require__.n(lodash);
 // https://github.com/actions/runner/issues/3600
 
 
+// I promise this works.
+// eslint-disable-next-line @typescript-eslint/unbound-method
 const { groupBy } = (lodash_default());
 
 
@@ -86222,6 +86224,7 @@ var markdownlint_default = /*#__PURE__*/__nccwpck_require__.n(markdownlint);
 // Code inspired by accessibility-alt-text-bot:
 // https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
 // TODO: see if we can extract a version that doesn't rely on markdownlint?
+// https://github.com/JoshuaKGoldberg/OctoGuide/issues/33
 
 
 const textImageAltText = {
@@ -86239,8 +86242,8 @@ const textImageAltText = {
     pullRequest: checkEntity,
 };
 function checkEntity(context, entity) {
-    const content = entity.data.body?.trim();
-    if (!content) {
+    const body = entity.data.body?.trim();
+    if (!body) {
         return undefined;
     }
     const { content: lintErrors } = markdownlint_default().sync({
@@ -86252,17 +86255,20 @@ function checkEntity(context, entity) {
         },
         customRules: markdownlint_github,
         handleRuleFailures: true,
-        strings: { content },
+        strings: { content: body },
     });
     if (!lintErrors.length) {
         return;
     }
-    const lines = content.split(/\n+/);
+    const lines = body.split(/\n/);
+    console.log({ body, lines });
+    console.log("------");
     for (const lintError of lintErrors) {
         context.report(createReportData(lines, lintError));
     }
 }
 function createReportData(lines, lintError) {
+    console.log("createReportData", { lines, lintError });
     return {
         primary: ruleDescriptions[lintError.ruleNames[1]],
         secondary: [
@@ -95890,7 +95896,7 @@ function markdownReporter(entity, reports) {
             `[**${about.name}**](${url})`,
             ": ",
             about.description,
-            "\n\n",
+            ruleReports.length > 1 ? "\n\n" : " ",
             ruleReports
                 .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
@@ -95901,9 +95907,8 @@ function markdownReporter(entity, reports) {
     });
     const entityAlias = entity.type.replace("_", " ");
     return [
-        `👋${entity.user ? ` @${entity.user},` : ""} we ran a few automated checks on your ${entityAlias}. `,
-        `They came up with a few reports. `,
-        `Could you please take a look and edit the ${entityAlias} accordingly? `,
+        `👋${entity.user ? ` @${entity.user},` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
+        `Could you please take a look? `,
         `Thanks!`,
         "\n\n",
         printedReports.join("\n\n"),
@@ -95921,8 +95926,7 @@ function createCommentBody(entity, message) {
     return [
         message,
         "---",
-        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps contributors adhere to best practices for repositories on GitHub._`,
-        "",
+        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps with best practices for repositories on GitHub._`,
         createCommentIdentifier(entity),
     ].join("\n\n");
 }
@@ -95947,10 +95951,12 @@ async function createNewCommentForReports(entity, locator, octokit, reports) {
 
 async function getExistingComment(entity, locator, octokit) {
     const target = entity.type === "comment" ? entity.parent : entity.data;
-    // TODO: file issue to switch to pagination
+    // TODO: Retrieve all pages, not just the first one
+    // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
     const comments = await octokit.rest.issues.listComments({
         issue_number: target.number,
         owner: locator.owner,
+        per_page: 100,
         repo: locator.repository,
     });
     return comments.data.find((comment) => comment.body?.endsWith(createCommentIdentifier(entity)));
@@ -95965,9 +95971,6 @@ async function updateExistingCommentAsPassed(entity, existingComment, locator, o
         owner: locator.owner,
         repo: locator.repository,
     });
-    // TODO: file issue for feature request, something like...:
-    // "react with :+1: to this to delete it"
-    // (would need a separate action for reacting & deleting)
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/updateExistingCommentForReports.ts
