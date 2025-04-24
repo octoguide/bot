@@ -25,8 +25,8 @@ export const textImageAltText = {
 } satisfies Rule;
 
 function checkEntity(context: RuleContext, entity: Entity) {
-	const content = entity.data.body?.trim();
-	if (!content) {
+	const body = entity.data.body?.trim();
+	if (!body) {
 		return undefined;
 	}
 
@@ -39,14 +39,16 @@ function checkEntity(context: RuleContext, entity: Entity) {
 		},
 		customRules: markdownlintGitHub,
 		handleRuleFailures: true,
-		strings: { content },
+		strings: { content: body },
 	});
 
 	if (!lintErrors.length) {
 		return;
 	}
 
-	const lines = content.split(/\n+/);
+	const lines = body.split(/\n+/);
+	console.log({ body, lines });
+	console.log("------");
 
 	for (const lintError of lintErrors) {
 		context.report(createReportData(lines, lintError));
@@ -54,6 +56,7 @@ function checkEntity(context: RuleContext, entity: Entity) {
 }
 
 function createReportData(lines: string[], lintError: markdownlint.LintError) {
+	console.log("createReportData", { lines, lintError });
 	return {
 		primary: ruleDescriptions[lintError.ruleNames[1]],
 		secondary: [
