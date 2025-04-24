@@ -22,10 +22,6 @@ export const commentMeaningless = {
 		// https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
 		context.report({
 			primary: `Saying just '${text}' is unnecessary: it doesn't add any new information to the discussion.`,
-			secondary: [
-				"Although your enthusiasm is appreciated, posting a new comment gives everyone subscribed to the thread.",
-				`It's generally better to give a GitHub emoji reaction instead.`,
-			],
 		});
 	},
 } satisfies Rule;
