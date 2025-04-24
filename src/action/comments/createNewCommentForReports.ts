@@ -16,12 +16,12 @@ export async function createNewCommentForReports(
 	reports: RuleReport[],
 ) {
 	const target = entity.type === "comment" ? entity.parent : entity.data;
-	core.debug(`Target number for comment creation: ${target.number.toString()}`);
+	core.info(`Target number for comment creation: ${target.number.toString()}`);
 
 	const response = await octokit.rest.issues.createComment({
 		body: createCommentBody(markdownReporter(reports)),
 		issue_number: target.number,
-		owner: locator.repository,
+		owner: locator.owner,
 		repo: locator.repository,
 	});
 

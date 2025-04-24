@@ -17,7 +17,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		throw new Error("Target entity's html_url is not a string.");
 	}
 
-	core.debug(`Targeting entity at html_url: ${target.html_url}`);
+	core.info(`Targeting entity at html_url: ${target.html_url}`);
 
 	const { entity, locator, octokit, reports } = await runOctoGuide({
 		githubToken: core.getInput("github-token"),
@@ -33,7 +33,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	const comment = await getCommentForReports(entity, locator, octokit, reports);
 
-	core.debug(
+	core.info(
 		comment
 			? `Reports comment: ${comment.url} (${comment.status})`
 			: "No comment created.",

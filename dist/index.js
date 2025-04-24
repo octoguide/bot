@@ -95128,7 +95128,7 @@ async function runOctoGuide({ githubToken, url, }) {
     if (!resolved) {
         throw new Error("Could not resolve GitHub entity.");
     }
-    core.debug(`Resolved entity at url: ${resolved.entity.data.url}`);
+    core.info(`Resolved entity at url: ${resolved.entity.data.url}`);
     const { entity, locator } = resolved;
     const reports = [];
     await Promise.all(Object.values(rules).map(async (rule) => {
@@ -95878,11 +95878,11 @@ function createCommentBody(message) {
 
 async function createNewCommentForReports(entity, locator, octokit, reports) {
     const target = entity.type === "comment" ? entity.parent : entity.data;
-    core.debug(`Target number for comment creation: ${target.number.toString()}`);
+    core.info(`Target number for comment creation: ${target.number.toString()}`);
     const response = await octokit.rest.issues.createComment({
         body: createCommentBody(markdownReporter(reports)),
         issue_number: target.number,
-        owner: locator.repository,
+        owner: locator.owner,
         repo: locator.repository,
     });
     return response.data;
@@ -95936,24 +95936,24 @@ async function updateExistingCommentForReports(existingComment, locator, octokit
 
 async function getCommentForReports(entity, locator, octokit, reports) {
     const existingComment = await getExistingComment(entity, locator, octokit);
-    core.debug(existingComment
+    core.info(existingComment
         ? `Found existing comment: ${existingComment.url}`
         : "No existing comment found.");
     if (!reports.length) {
         if (existingComment) {
-            core.debug("Updating existing comment as passed.");
+            core.info("Updating existing comment as passed.");
             await updateExistingCommentAsPassed(existingComment, locator, octokit);
         }
         return existingComment && { status: "existing", url: existingComment.url };
     }
     if (existingComment) {
-        core.debug("Updating existing comment for reports.");
+        core.info("Updating existing comment for reports.");
         await updateExistingCommentForReports(existingComment, locator, octokit, reports);
         return { status: "existing", url: existingComment.url };
     }
-    core.debug("Creating existing comment for reports.");
+    core.info("Creating existing comment for reports.");
     const newComment = await createNewCommentForReports(entity, locator, octokit, reports);
-    core.debug(`Created new comment: ${newComment.url}`);
+    core.info(`Created new comment: ${newComment.url}`);
     return {
         status: "created",
         url: newComment.url,
@@ -95974,7 +95974,7 @@ async function runOctoGuideAction(context) {
     if (typeof target.html_url !== "string") {
         throw new Error("Target entity's html_url is not a string.");
     }
-    core.debug(`Targeting entity at html_url: ${target.html_url}`);
+    core.info(`Targeting entity at html_url: ${target.html_url}`);
     const { entity, locator, octokit, reports } = await runOctoGuide({
         githubToken: core.getInput("github-token"),
         url: target.html_url,
@@ -95987,7 +95987,7 @@ async function runOctoGuideAction(context) {
         core.info("Found 0 reports. Great! ✅");
     }
     const comment = await getCommentForReports(entity, locator, octokit, reports);
-    core.debug(comment
+    core.info(comment
         ? `Reports comment: ${comment.url} (${comment.status})`
         : "No comment created.");
 }

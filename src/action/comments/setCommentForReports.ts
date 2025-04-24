@@ -24,7 +24,7 @@ export async function getCommentForReports(
 ): Promise<ReportComment | undefined> {
 	const existingComment = await getExistingComment(entity, locator, octokit);
 
-	core.debug(
+	core.info(
 		existingComment
 			? `Found existing comment: ${existingComment.url}`
 			: "No existing comment found.",
@@ -32,14 +32,14 @@ export async function getCommentForReports(
 
 	if (!reports.length) {
 		if (existingComment) {
-			core.debug("Updating existing comment as passed.");
+			core.info("Updating existing comment as passed.");
 			await updateExistingCommentAsPassed(existingComment, locator, octokit);
 		}
 		return existingComment && { status: "existing", url: existingComment.url };
 	}
 
 	if (existingComment) {
-		core.debug("Updating existing comment for reports.");
+		core.info("Updating existing comment for reports.");
 		await updateExistingCommentForReports(
 			existingComment,
 			locator,
@@ -49,14 +49,14 @@ export async function getCommentForReports(
 		return { status: "existing", url: existingComment.url };
 	}
 
-	core.debug("Creating existing comment for reports.");
+	core.info("Creating existing comment for reports.");
 	const newComment = await createNewCommentForReports(
 		entity,
 		locator,
 		octokit,
 		reports,
 	);
-	core.debug(`Created new comment: ${newComment.url}`);
+	core.info(`Created new comment: ${newComment.url}`);
 
 	return {
 		status: "created",
