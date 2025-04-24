@@ -85205,7 +85205,8 @@ __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 
 
 console.log("Running src/action/index");
-console.log(process.env);
+console.log("env:", process.env);
+console.log("context:", _actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
 
 __webpack_async_result__();
