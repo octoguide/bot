@@ -10,8 +10,10 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 	const printedReports = Object.values(byRule).map((ruleReports) => {
 		const { about } = ruleReports[0];
 		return [
-			`[${about.name}](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md)`,
+			`[**${about.name}**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md)`,
+			": ",
 			about.description,
+			"\n\n",
 			ruleReports
 				.map((report) =>
 					[report.data.primary, ...formatSecondary(report.data.secondary)].join(
@@ -19,14 +21,14 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 					),
 				)
 				.join("\n\n"),
-		].join("\n");
+		].join("");
 	});
 
 	const entityAlias = entity.type.replace("_", " ");
 
 	return [
-		`👋${entity.user ? ` @${entity.user},` : ""} we ran a few automated checks on your ${entityAlias}.`,
-		`They came up with a few reports.`,
+		`👋${entity.user ? ` @${entity.user},` : ""} we ran a few automated checks on your ${entityAlias}. `,
+		`They came up with a few reports. `,
 		`Could you please take a look and edit the ${entityAlias} accordingly?`,
 		"\n",
 		`Thanks!`,
