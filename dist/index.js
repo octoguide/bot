@@ -95896,7 +95896,7 @@ function markdownReporter(entity, reports) {
             `[**${about.name}**](${url})`,
             ": ",
             about.description,
-            ruleReports.length > 1 ? "\n\n" : "",
+            ruleReports.length > 1 ? "\n\n" : "!!!",
             ruleReports
                 .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
@@ -95926,7 +95926,7 @@ function createCommentBody(entity, message) {
     return [
         message,
         "---",
-        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps explain best practices for repositories on GitHub._`,
+        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps with best practices for repositories on GitHub._`,
         createCommentIdentifier(entity),
     ].join("\n\n");
 }

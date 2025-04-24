@@ -15,7 +15,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 			`[**${about.name}**](${url})`,
 			": ",
 			about.description,
-			ruleReports.length > 1 ? "\n\n" : "",
+			ruleReports.length > 1 ? "\n\n" : "!!!",
 			ruleReports
 				.map((report) =>
 					[report.data.primary, ...formatSecondary(report.data.secondary)].join(
