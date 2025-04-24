@@ -4,6 +4,9 @@
 
 > Included in configs: ✅ recommended, 🔒 strict
 
+This repository provides a set of tasks that pull request authors are expected to complete.
+Those tasks should be marked as completed with a `[x]` in the pull request description.
+
 Repositories often include a template file for pull requests, commonly `.github/PULL_REQUEST_TEMPLATE.md`.
 Contributors are expected to fill out that template file for their pull request descriptions.
 Template files with `- [ ]` task lists are generally expected to `[x]` fill out every item in the list to confirm they've taken that step.

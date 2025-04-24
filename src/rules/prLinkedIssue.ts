@@ -16,6 +16,10 @@ export const prLinkedIssue = {
 	about: {
 		config: "strict",
 		description: "PRs should be linked as closing an issue.",
+		explanation: [
+			`This repository keeps to GitHub issues for discussing potential changes.`,
+			`Most or all changes should be marked as approved in an issue before a pull request is sent to resolve them.`,
+		],
 		name: "pr-linked-issue",
 	},
 	async pullRequest(context, entity) {

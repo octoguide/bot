@@ -2,22 +2,20 @@ import chalk from "chalk";
 
 import type { RuleReport } from "../types/rules.js";
 
+import { groupBy } from "../action/groupBy.js";
+import { formatSecondary } from "./formatSecondary.js";
+
 export function cliReporter(reports: RuleReport[]) {
 	if (!reports.length) {
-		console.log(
-			`Found ${chalk.green(reports.length)} issue${reports.length > 1 ? "s" : ""}. Great! ✅`,
-		);
+		console.log(`Found ${chalk.green("0")} reports. Great! ✅`);
+		return;
 	}
 
 	console.log("");
 
-	const byRule = Object.groupBy(reports, (report) => report.about.name);
+	const byRule = groupBy(reports, (report) => report.about.name);
 
 	for (const ruleReports of Object.values(byRule)) {
-		if (!ruleReports) {
-			continue;
-		}
-
 		const { about } = ruleReports[0];
 		console.log(
 			[
@@ -30,14 +28,13 @@ export function cliReporter(reports: RuleReport[]) {
 
 		for (const report of ruleReports) {
 			console.log(
-				[
-					report.data.primary,
-					...(report.data.secondary?.map((line) => `  ${line}`) ?? []),
-				].join("\n"),
+				[report.data.primary, ...formatSecondary(report.data.secondary)].join(
+					"\n",
+				),
 			);
 			console.log(
 				chalk.gray(
-					`🗒️  Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${report.about.name}.md`,
+					`Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${report.about.name}.md`,
 				),
 			);
 			console.log("");

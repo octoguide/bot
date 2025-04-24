@@ -1,4 +1,4 @@
-# `pr-title-conventional`
+# `text-image-alt-text`
 
 > Images should have descriptive alt text.
 

@@ -1,0 +1,9 @@
+author: JoshuaKGoldberg
+description: Runs OctoGuide as a GitHub Action. 🗺️
+inputs:
+  github-token:
+    description: GitHub token (PAT) with repo and workflow permissions.
+name: OctoGuide Action
+runs:
+  main: dist/index.js
+  using: node20

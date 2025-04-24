@@ -1,5 +1,6 @@
 // Code inspired by accessibility-alt-text-bot:
 // https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
+// TODO: see if we can extract a version that doesn't rely on markdownlint?
 
 import markdownlintGitHub from "@github/markdownlint-github";
 import markdownlint from "markdownlint";
@@ -11,6 +12,10 @@ export const textImageAltText = {
 	about: {
 		config: "recommended",
 		description: "Images should have descriptive alt text.",
+		explanation: [
+			`Image alternative text, or "alt text", is a text description attached to an image.`,
+			`It provides a way for non-sighted users and tools to understand the image despite not being able to visually see it.`,
+		],
 		name: "text-image-alt-text",
 	},
 	comment: checkEntity,
@@ -50,7 +55,9 @@ function checkEntity(context: RuleContext, entity: Entity) {
 function createReportData(lines: string[], lintError: markdownlint.LintError) {
 	return {
 		primary: ruleDescriptions[lintError.ruleNames[1]],
-		secondary: [lines[lintError.lineNumber - 1]],
+		secondary: [
+			["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
+		],
 	};
 }
 

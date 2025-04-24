@@ -1,17 +1,32 @@
+import type { Octokit } from "octokit";
+
+import * as core from "@actions/core";
 import { octokitFromAuth } from "octokit-from-auth";
 
+import type { RepositoryLocator } from "./types/data.js";
+import type { Entity } from "./types/entities.js";
 import type { RuleContext, RuleReport } from "./types/rules.js";
 
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
 import { resolveLintable } from "./resolvers/resolveEntity.js";
 import { rules } from "./rules/index.js";
 
+export interface OctoGuideResult {
+	entity: Entity;
+	locator: RepositoryLocator;
+	octokit: Octokit;
+	reports: RuleReport[];
+}
+
 export interface OctoGuideSettings {
 	githubToken?: string | undefined;
 	url: string;
 }
 
-export async function runOctoGuide({ githubToken, url }: OctoGuideSettings) {
+export async function runOctoGuide({
+	githubToken,
+	url,
+}: OctoGuideSettings): Promise<OctoGuideResult> {
 	const octokit = await octokitFromAuth({
 		auth: githubToken,
 	});
@@ -20,6 +35,8 @@ export async function runOctoGuide({ githubToken, url }: OctoGuideSettings) {
 	if (!resolved) {
 		throw new Error("Could not resolve GitHub entity.");
 	}
+
+	core.info(`Resolved entity at url: ${resolved.entity.data.url}`);
 
 	const { entity, locator } = resolved;
 	const reports: RuleReport[] = [];
@@ -41,5 +58,5 @@ export async function runOctoGuide({ githubToken, url }: OctoGuideSettings) {
 		}),
 	);
 
-	return reports;
+	return { entity, locator, octokit, reports };
 }
