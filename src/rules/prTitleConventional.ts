@@ -12,6 +12,10 @@ export const prTitleConventional = {
 	about: {
 		config: "strict",
 		description: "PR titles should be in conventional commit format.",
+		explanation: [
+			`This repository enforces that pull request titles follow the [Conventional Commits](https://www.conventionalcommits.org) format.`,
+			`Doing so helps to ensure that the purpose of a pull request is clear and consistent for humans and machines.`,
+		],
 		name: "pr-conventional-title",
 	},
 	pullRequest(context, entity) {

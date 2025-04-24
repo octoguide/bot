@@ -5,7 +5,7 @@
 > Included in config: 🔒 strict
 
 Sending a PR from a repository's default branch, commonly `main`, means that repository will have a hard time pulling in updates from the upstream repository.
-It's generally recommended to instead create a branch
+It's generally recommended to instead create a new branch per pull request.
 
 ## "Base" and "Head"
 

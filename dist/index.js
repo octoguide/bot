@@ -1,5 +1,4 @@
 globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
@@ -85261,6 +85260,10 @@ const commentMeaningless = {
     about: {
         config: "strict",
         description: "Comments should be meaningful, not just '+1'-style bumps.",
+        explanation: [
+            `Posting replies containing just _"+1"_, _any update?"_, or other phrases without new information don't meaningfully contribute to a discussion.`,
+            `If done too much, they can even become disruptive to other contributors.`,
+        ],
         name: "comment-meaningless",
     },
     comment(context, entity) {
@@ -85285,6 +85288,7 @@ const issueRequiredFieldsContent = {
     about: {
         config: "recommended",
         description: "TODO",
+        explanation: [],
         name: "issue-required-fields-content",
     },
     issue( /* context, entity */) {
@@ -85297,6 +85301,10 @@ const prBranchNonDefault = {
     about: {
         config: "strict",
         description: "PRs should not be sent from their head repository's default branch.",
+        explanation: [
+            `Sending a PR from a repository's default branch, commonly \`main\`, means that repository will have a hard time pulling in updates from the upstream repository.`,
+            `It's generally recommended to instead create a new branch per pull request.`,
+        ],
         name: "pr-branch-non-default",
     },
     async pullRequest(context, entity) {
@@ -85321,6 +85329,10 @@ const prLinkedIssue = {
     about: {
         config: "strict",
         description: "PRs should be linked as closing an issue.",
+        explanation: [
+            `This repository keeps to GitHub issues for discussing potential changes.`,
+            `Most or all changes should be marked as approved in an issue before a pull request is sent to resolve them.`,
+        ],
         name: "pr-linked-issue",
     },
     async pullRequest(context, entity) {
@@ -85366,6 +85378,10 @@ const prTaskCompletion = {
     about: {
         config: "recommended",
         description: "Tasks lists from the pull request template should be [x] filled out.",
+        explanation: [
+            `This repository provides a set of tasks that pull request authors are expected to complete.`,
+            `Those tasks should be marked as completed with a \`[x]\` in the pull request description.`,
+        ],
         name: "pr-conventional-title",
     },
     async pullRequest(context, entity) {
@@ -85930,6 +85946,10 @@ const prTitleConventional = {
     about: {
         config: "strict",
         description: "PR titles should be in conventional commit format.",
+        explanation: [
+            `This repository enforces that pull request titles follow the [Conventional Commits](https://www.conventionalcommits.org) format.`,
+            `Doing so helps to ensure that the purpose of a pull request is clear and consistent for humans and machines.`,
+        ],
         name: "pr-conventional-title",
     },
     pullRequest(context, entity) {
@@ -86208,6 +86228,10 @@ const textImageAltText = {
     about: {
         config: "recommended",
         description: "Images should have descriptive alt text.",
+        explanation: [
+            `Image alternative text, or "alt text", is a text description attached to an image.`,
+            `It provides a way for non-sighted users and tools to understand the image despite not being able to visually see it.`,
+        ],
         name: "text-image-alt-text",
     },
     comment: checkEntity,
@@ -95861,14 +95885,17 @@ function markdownReporter(entity, reports) {
     const byRule = groupBy(reports, (report) => report.about.name);
     const printedReports = Object.values(byRule).map((ruleReports) => {
         const { about } = ruleReports[0];
+        const url = `https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md`;
         return [
-            `[**${about.name}**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md)`,
+            `[**${about.name}**](${url})`,
             ": ",
             about.description,
             "\n\n",
             ruleReports
                 .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
+            about.explanation,
+            ` Read more on [OctoGuide > ${about.name}](${url}).`,
         ].join("");
     });
     const entityAlias = entity.type.replace("_", " ");

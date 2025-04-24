@@ -2,6 +2,7 @@ export declare const prTaskCompletion: {
     about: {
         config: "recommended";
         description: string;
+        explanation: string[];
         name: string;
     };
     pullRequest(context: import("../index.js").RuleContext, entity: import("../index.js").PullRequestEntity): Promise<void>;

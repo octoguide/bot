@@ -4,6 +4,7 @@ export declare const textImageAltText: {
     about: {
         config: "recommended";
         description: string;
+        explanation: string[];
         name: string;
     };
     comment: typeof checkEntity;

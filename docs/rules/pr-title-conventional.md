@@ -4,11 +4,13 @@
 
 > Included in config: 🔒 strict
 
-Some repositories require pull request titles to follow the [Conventional Commits](https://www.conventionalcommits.org) format.
-Doing so yields two benefits:
+This repository enforces that pull request titles follow the [Conventional Commits](https://www.conventionalcommits.org) format.
+Doing so helps to ensure that the purpose of a pull request is clear and consistent for humans and machines.
 
-- Human: it becomes easier to categorize and understand pull request purposes quickly
-- Machine: automated tooling can parse those titles into semver-based releases
+Specifically, keeping to the conventional commit format helps:
+
+- Humans: it becomes easier to categorize and understand pull request purposes quickly
+- Machines: automated tooling can parse those titles into semver-based releases
 
 If a repository has this rule enabled, it's likely aiming for either or both of those benefits.
 

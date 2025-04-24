@@ -11,6 +11,7 @@ export interface Rule {
 export interface RuleAbout {
     config: ConfigName;
     description: string;
+    explanation: string[];
     name: string;
 }
 export interface RuleContext {

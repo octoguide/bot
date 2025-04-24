@@ -6,6 +6,10 @@ export const commentMeaningless = {
 	about: {
 		config: "strict",
 		description: "Comments should be meaningful, not just '+1'-style bumps.",
+		explanation: [
+			`Posting replies containing just _"+1"_, _any update?"_, or other phrases without new information don't meaningfully contribute to a discussion.`,
+			`If done too much, they can even become disruptive to other contributors.`,
+		],
 		name: "comment-meaningless",
 	},
 	comment(context, entity) {

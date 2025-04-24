@@ -4,7 +4,10 @@
 
 > Included in config: 🔒 strict
 
-Posting replies containing just _"+1"_, \__any update?"_, or other phrases that don't add any new meaning to the discussion can be mildly disruptive:
+Posting replies containing just _"+1"_, _any update?"_, or other phrases without new information don't meaningfully contribute to a discussion.
+If done too much, they can even become disruptive to other contributors.
+
+The negative impacts of uninformative comments include:
 
 - They send a notification to everybody subscribed to the issue or PR
 - They take up space and crowd out more meaningful comments

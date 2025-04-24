@@ -4,9 +4,8 @@
 
 > Included in config: 🔒 strict
 
-Repositories with this rule enabled are using GitHub issues to discuss potential changes.
+This repository keeps to GitHub issues for discussing potential changes.
 Most or all changes should be marked as approved in an issue before a pull request is sent to resolve them.
-Check the repository's contribution and development docs to see what kind of changes are acceptable
 
 ## Linking an Issue
 
