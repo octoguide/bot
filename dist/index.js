@@ -95901,11 +95901,14 @@ function markdownReporter(entity, reports) {
         ].join("");
     });
     const entityAlias = `your ${entity.type.replace("_", " ")}`;
+    const entityText = entity.type === "comment"
+        ? `[${entityAlias}](${entity.data.url})`
+        : entityAlias;
     return [
         "👋",
         entity.user ? ` @${entity.user} ` : "",
         "automated checks reported on ",
-        `[${entityAlias}](${entity.data.url})`,
+        entityText,
         ". Could you please take a look?\n\n",
         printedReports.join("\n\n"),
     ].join("");
