@@ -12,6 +12,10 @@ export const textImageAltText = {
 	about: {
 		config: "recommended",
 		description: "Images should have descriptive alt text.",
+		explanation: [
+			`Image alternative text, or "alt text", is a text description attached to an image.`,
+			`It provides a way for non-sighted users and tools to understand the image despite not being able to visually see it.`,
+		],
 		name: "text-image-alt-text",
 	},
 	comment: checkEntity,

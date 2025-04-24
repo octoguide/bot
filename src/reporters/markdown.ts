@@ -9,8 +9,10 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 
 	const printedReports = Object.values(byRule).map((ruleReports) => {
 		const { about } = ruleReports[0];
+		const url = `https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md`;
+
 		return [
-			`[**${about.name}**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md)`,
+			`[**${about.name}**](${url})`,
 			": ",
 			about.description,
 			"\n\n",
@@ -21,6 +23,8 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 					),
 				)
 				.join("\n\n"),
+			about.explanation,
+			` Read more on [OctoGuide > ${about.name}](${url}).`,
 		].join("");
 	});
 
