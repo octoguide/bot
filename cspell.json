@@ -10,5 +10,12 @@
 		"node_modules",
 		"pnpm-lock.yaml"
 	],
-	"words": ["issuecomment", "lintable", "octocat", "octoguide", "screenreaders"]
+	"words": [
+		"postbuild",
+		"issuecomment",
+		"lintable",
+		"octocat",
+		"octoguide",
+		"screenreaders"
+	]
 }
