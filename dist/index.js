@@ -95907,10 +95907,13 @@ function markdownReporter(entity, reports) {
     });
     const entityAlias = entity.type.replace("_", " ");
     return [
-        `👋${entity.user ? ` @${entity.user},` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
-        `Could you please take a look? `,
-        `Thanks!`,
-        "\n\n",
+        "👋",
+        entity.user ? ` @${entity.user}` : "",
+        "automated checks found",
+        reports.length > 1 ? "issues" : "an issue",
+        "with your",
+        entityAlias,
+        ". Could you please take a look?\n\n",
         printedReports.join("\n\n"),
     ].join("");
 }
@@ -95926,7 +95929,7 @@ function createCommentBody(entity, message) {
     return [
         message,
         "---",
-        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps with best practices for repositories on GitHub._`,
+        `> 🗺️ _This message was posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide): a bot for GitHub repository best practices._`,
         createCommentIdentifier(entity),
     ].join("\n\n");
 }
