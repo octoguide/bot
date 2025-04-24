@@ -29,15 +29,14 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 		].join("");
 	});
 
-	const entityAlias = entity.type.replace("_", " ");
+	const entityAlias = `your ${entity.type.replace("_", " ")}`;
 
 	return [
 		"👋",
-		entity.user ? ` @${entity.user}` : "",
+		entity.user ? ` @${entity.user} ` : "",
 		"automated checks found",
 		reports.length > 1 ? "issues" : "an issue",
-		"with your",
-		entityAlias,
+		`with [${entityAlias}](${entity.data.url})`,
 		". Could you please take a look?\n\n",
 		printedReports.join("\n\n"),
 	].join("");
