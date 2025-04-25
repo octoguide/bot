@@ -95927,7 +95927,7 @@ function markdownReporter(entity, reports) {
                 .map((report) => [
                 report.data.primary,
                 ...formatSecondary(report.data.secondary),
-                report.data.suggestion,
+                ...report.data.suggestion,
             ].join("\n"))
                 .join("\n\n"),
             "\n",
@@ -95940,7 +95940,7 @@ function markdownReporter(entity, reports) {
         : entityAlias;
     return [
         "👋 Hi",
-        entity.user ? ` @${entity.user} ` : "",
+        entity.user ? ` @${entity.user}` : "",
         ", thanks for the",
         entityText,
         "! An automatic scan reported ",

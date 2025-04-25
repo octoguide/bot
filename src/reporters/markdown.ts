@@ -20,7 +20,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 					[
 						report.data.primary,
 						...formatSecondary(report.data.secondary),
-						report.data.suggestion,
+						...report.data.suggestion,
 					].join("\n"),
 				)
 				.join("\n\n"),
@@ -37,7 +37,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 
 	return [
 		"👋 Hi",
-		entity.user ? ` @${entity.user} ` : "",
+		entity.user ? ` @${entity.user}` : "",
 		", thanks for the",
 		entityText,
 		"! An automatic scan reported ",
