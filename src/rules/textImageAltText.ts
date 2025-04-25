@@ -16,7 +16,6 @@ export const textImageAltText = {
 		explanation: [
 			`Alternative text, or "alt text", is a text description attached to an image.`,
 			`It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
-			`To resolve this report, please add descriptive alt text to the image.`,
 		],
 		name: "text-image-alt-text",
 	},
@@ -62,6 +61,9 @@ function createReportData(lines: string[], lintError: markdownlint.LintError) {
 		primary: ruleDescriptions[lintError.ruleNames[1]],
 		secondary: [
 			["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
+		],
+		suggestion: [
+			`To resolve this report, add descriptive alt text to the image.`,
 		],
 	};
 }

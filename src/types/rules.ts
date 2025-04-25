@@ -42,6 +42,7 @@ export interface RuleReport {
 export interface RuleReportData {
 	primary: string;
 	secondary?: string[];
+	suggestion: string[];
 }
 
 export type RuleReporter = (data: RuleReportData) => void;

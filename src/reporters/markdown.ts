@@ -27,16 +27,16 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 		].join("");
 	});
 
-	const entityAlias = `your ${entity.type.replace("_", " ")}`;
+	const entityAlias = entity.type.replace("_", " ");
 	const entityText =
 		entity.type === "comment"
-			? `[${entityAlias}](${entity.data.url})`
+			? `[${entityAlias}](${entity.data.html_url})`
 			: entityAlias;
 
 	return [
 		"👋 Hi",
 		entity.user ? ` @${entity.user} ` : "",
-		"!, thanks for the ",
+		", thanks for the ",
 		entityText,
 		"! An automatic scan reported ",
 		reports.length > 1 ? "concerns" : "a concern",

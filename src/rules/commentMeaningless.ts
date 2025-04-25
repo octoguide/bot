@@ -22,6 +22,11 @@ export const commentMeaningless = {
 		// https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
 		context.report({
 			primary: `Saying just '${text}' is unnecessary: it doesn't add any new information to the discussion.`,
+			suggestion: [
+				`To resolve this report:`,
+				`* If you have new information that'll help the discussion, edit it into the comment`,
+				`* Otherwise, delete the comment and emoji react to the ${entity.parentType}`,
+			],
 		});
 	},
 } satisfies Rule;

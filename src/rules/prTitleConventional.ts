@@ -24,6 +24,11 @@ export const prTitleConventional = {
 			context.report({
 				primary: `The PR title is missing a conventional commit type, such as 'docs: ' or 'feat: ':`,
 				secondary: [entity.data.title],
+				suggestion: [
+					parsed.subject
+						? `To resolve this, add a conventional commit type in front of the title, like 'feat: ${parsed.subject}'.`
+						: `To resolve this, add a conventional commit type in front of the title.`,
+				],
 			});
 			return;
 		}
@@ -36,7 +41,11 @@ export const prTitleConventional = {
 						.sort()
 						.map((type) => `'${type}'`)
 						.join(", ")}`,
-					`You'll want to replace the PR type with one of those known types.`,
+				],
+				suggestion: [
+					parsed.subject
+						? `To resolve this, replace the current PR type with one of those known types, like 'feat: ${parsed.subject}'.`
+						: `To resolve this, replace the current PR type with one of those known types.`,
 				],
 			});
 			return;
@@ -45,8 +54,8 @@ export const prTitleConventional = {
 		if (!parsed.subject) {
 			context.report({
 				primary: `PR title is missing a subject after its type.`,
-				secondary: [
-					`You'll want to add text after the type, like '${parsed.type}: etc. etc.'`,
+				suggestion: [
+					`To resolve this, add text after the type, like '${parsed.type}: etc.'`,
 				],
 			});
 			return;

@@ -85277,6 +85277,11 @@ const commentMeaningless = {
         // https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
         context.report({
             primary: `Saying just '${text}' is unnecessary: it doesn't add any new information to the discussion.`,
+            suggestion: [
+                `To resolve this report:`,
+                `* If you have new information that'll help the discussion, edit it into the comment`,
+                `* Otherwise, delete the comment and emoji react to the ${entity.parentType}`,
+            ],
         });
     },
 };
@@ -85315,7 +85320,12 @@ const prBranchNonDefault = {
                 primary: "This PR is sent from the head repository's default branch",
                 secondary: [
                     `Sending a PR from a default branch means the head repository can't easily be updated after the PR is merged.`,
-                    `Please create a new branch and send the PR from there.`,
+                ],
+                suggestion: [
+                    "You'll need to:",
+                    "1. Create a new branch on your fork",
+                    "2. Send a new pull request from that branch",
+                    "3. Close this pull request",
                 ],
             });
         }
@@ -85356,6 +85366,11 @@ const prLinkedIssue = {
         }
         context.report({
             primary: "This pull request is not linked as closing any issues.",
+            suggestion: [
+                "To resolve this report:",
+                "* If there is a backing issue, add a 'fixes #...' link to the pull request body",
+                "* Otherwise, file an issue explaining what you'd like to happen",
+            ],
         });
     },
 };
@@ -85401,7 +85416,7 @@ const prTaskCompletion = {
         if (!entity.data.body) {
             context.report({
                 primary: "This PR's body is empty, but there is a template with tasks to be done.",
-                secondary: [
+                suggestion: [
                     "Please fill out the pull request template and make sure all the tasks are [x] checked.",
                 ],
             });
@@ -85419,8 +85434,11 @@ const prTaskCompletion = {
             return;
         }
         context.report({
-            primary: "This PR's body is missing [x] checks on the following the tasks from the PR template.",
+            primary: "This PR's body is missing [x] checks on the following tasks from the PR template.",
             secondary: missingTasks,
+            suggestion: [
+                "Please complete those tasks and mark the checks as [x] completed.",
+            ],
         });
     },
 };
@@ -85956,6 +85974,11 @@ const prTitleConventional = {
             context.report({
                 primary: `The PR title is missing a conventional commit type, such as 'docs: ' or 'feat: ':`,
                 secondary: [entity.data.title],
+                suggestion: [
+                    parsed.subject
+                        ? `To resolve this, add a conventional commit type in front of the title, like 'feat: ${parsed.subject}'.`
+                        : `To resolve this, add a conventional commit type in front of the title.`,
+                ],
             });
             return;
         }
@@ -85967,7 +85990,11 @@ const prTitleConventional = {
                         .sort()
                         .map((type) => `'${type}'`)
                         .join(", ")}`,
-                    `You'll want to replace the PR type with one of those known types.`,
+                ],
+                suggestion: [
+                    parsed.subject
+                        ? `To resolve this, replace the current PR type with one of those known types, like 'feat: ${parsed.subject}'.`
+                        : `To resolve this, replace the current PR type with one of those known types.`,
                 ],
             });
             return;
@@ -85975,8 +86002,8 @@ const prTitleConventional = {
         if (!parsed.subject) {
             context.report({
                 primary: `PR title is missing a subject after its type.`,
-                secondary: [
-                    `You'll want to add text after the type, like '${parsed.type}: etc. etc.'`,
+                suggestion: [
+                    `To resolve this, add text after the type, like '${parsed.type}: etc.'`,
                 ],
             });
             return;
@@ -86230,7 +86257,6 @@ const textImageAltText = {
         explanation: [
             `Alternative text, or "alt text", is a text description attached to an image.`,
             `It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
-            `To resolve this report, please add descriptive alt text to the image.`,
         ],
         name: "text-image-alt-text",
     },
@@ -86270,6 +86296,9 @@ function createReportData(lines, lintError) {
         primary: ruleDescriptions[lintError.ruleNames[1]],
         secondary: [
             ["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
+        ],
+        suggestion: [
+            `To resolve this report, add descriptive alt text to the image.`,
         ],
     };
 }
@@ -95075,6 +95104,7 @@ async function resolveCommentEntity(locator, octokit, issueData, commentId) {
         commentId,
         data,
         parent: issueData,
+        parentType: issueData.pull_request ? "pull_request" : "issue",
         type: "comment",
         user: data.user?.login,
     };
@@ -95900,14 +95930,14 @@ function markdownReporter(entity, reports) {
             about.explanation.join(" "),
         ].join("");
     });
-    const entityAlias = `your ${entity.type.replace("_", " ")}`;
+    const entityAlias = entity.type.replace("_", " ");
     const entityText = entity.type === "comment"
-        ? `[${entityAlias}](${entity.data.url})`
+        ? `[${entityAlias}](${entity.data.html_url})`
         : entityAlias;
     return [
         "👋 Hi",
         entity.user ? ` @${entity.user} ` : "",
-        "!, thanks for the ",
+        ", thanks for the ",
         entityText,
         "! An automatic scan reported ",
         reports.length > 1 ? "concerns" : "a concern",
