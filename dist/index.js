@@ -95952,15 +95952,15 @@ function markdownReporter(entity, reports) {
     });
     const entityAlias = entity.type.replace("_", " ");
     const entityText = entity.type === "comment"
-        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} flagged by OctoGuide")`
+        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
         : entityAlias;
     return [
         "👋 Hi",
         entity.user ? ` @${entity.user}` : "",
         ", thanks for the ",
         entityText,
-        "! An automatic scan flagged ",
-        reports.length > 1 ? "concerns" : "a concern",
+        "! A scan flagged ",
+        reports.length > 1 ? "some concerns" : "a concern",
         " with it. Could you please take a look?\n\n",
         printedReports.join("\n\n"),
     ].join("");
