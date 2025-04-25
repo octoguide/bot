@@ -38,7 +38,7 @@ export const prLinkedIssue = {
 				}
 			`,
 			{
-				id: entity.id,
+				id: entity.number,
 				owner: context.locator.owner,
 				repository: context.locator.repository,
 			},

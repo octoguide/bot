@@ -5,8 +5,6 @@ export type CommentAbleEntity =
 	| IssueEntity
 	| PullRequestEntity;
 
-export type CommentAbleEntityData = CommentAbleEntity["data"];
-
 export type CommentAbleEntityType = CommentAbleEntity["type"];
 
 export type CommentData =
@@ -15,13 +13,14 @@ export type CommentData =
 export interface CommentEntity {
 	commentId: number;
 	data: CommentData;
-	parent: CommentAbleEntityData;
+	parentNumber: number;
 	parentType: CommentAbleEntityType;
 	type: "comment";
-	user?: string;
 }
 
 export type EntityData = Entity["data"];
+
+export type IssueLikeData = IssueLikeEntity["data"];
 
 // https://github.com/github/rest-api-description/issues/4702
 // RestEndpointMethodTypes["discussions"]["get"]["response"]["data"];
@@ -36,9 +35,8 @@ export interface DiscussionData {
 
 export interface DiscussionEntity {
 	data: DiscussionData;
-	id: number;
+	number: number;
 	type: "discussion";
-	user?: string;
 }
 
 export type Entity =
@@ -54,9 +52,8 @@ export type IssueData =
 
 export interface IssueEntity {
 	data: IssueData;
-	id: number;
+	number: number;
 	type: "issue";
-	user?: string;
 }
 
 export type IssueLikeEntity = IssueEntity | PullRequestEntity;
@@ -68,7 +65,6 @@ export type PullRequestData =
 
 export interface PullRequestEntity {
 	data: PullRequestData;
-	id: number;
+	number: number;
 	type: "pull_request";
-	user: string;
 }

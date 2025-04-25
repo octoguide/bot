@@ -1,11 +1,9 @@
-import type { Octokit } from "octokit";
-
 import * as core from "@actions/core";
 
-import type { RepositoryLocator } from "../../types/data.js";
 import type { Entity } from "../../types/entities.js";
 import type { RuleReport } from "../../types/rules.js";
 
+import { EntityActor } from "../../actors/types.js";
 import { createNewCommentForReports } from "./createNewCommentForReports.js";
 import { getExistingComment } from "./getExistingComment.js";
 import { updateExistingCommentAsPassed } from "./updateExistingCommentAsPassed.js";
@@ -17,12 +15,11 @@ export interface ReportComment {
 }
 
 export async function getCommentForReports(
+	actor: EntityActor,
 	entity: Entity,
-	locator: RepositoryLocator,
-	octokit: Octokit,
 	reports: RuleReport[],
 ): Promise<ReportComment | undefined> {
-	const existingComment = await getExistingComment(entity, locator, octokit);
+	const existingComment = await getExistingComment(actor, entity);
 
 	core.info(
 		existingComment
@@ -33,12 +30,7 @@ export async function getCommentForReports(
 	if (!reports.length) {
 		if (existingComment) {
 			core.info("Updating existing comment as passed.");
-			await updateExistingCommentAsPassed(
-				entity,
-				existingComment,
-				locator,
-				octokit,
-			);
+			await updateExistingCommentAsPassed(actor, entity, existingComment);
 		}
 		return existingComment && { status: "existing", url: existingComment.url };
 	}
@@ -46,22 +38,16 @@ export async function getCommentForReports(
 	if (existingComment) {
 		core.info("Updating existing comment for reports.");
 		await updateExistingCommentForReports(
+			actor,
 			entity,
 			existingComment,
-			locator,
-			octokit,
 			reports,
 		);
 		return { status: "existing", url: existingComment.url };
 	}
 
 	core.info("Creating existing comment for reports.");
-	const newComment = await createNewCommentForReports(
-		entity,
-		locator,
-		octokit,
-		reports,
-	);
+	const newComment = await createNewCommentForReports(actor, entity, reports);
 	core.info(`Created new comment: ${newComment.url}`);
 
 	return {

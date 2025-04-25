@@ -1,6 +1,5 @@
-import type { PartialDeep } from "type-fest";
-
 import type { Octokit } from "octokit";
+import type { PartialDeep } from "type-fest";
 
 import type { RepositoryLocator } from "../types/data.js";
 import type { Entity, EntityType } from "../types/entities.js";

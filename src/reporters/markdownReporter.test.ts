@@ -23,9 +23,8 @@ const fakeEntity = {
 		id: 123,
 		url: "fake-url",
 	} as IssueData,
-	id: 123,
+	number: 123,
 	type: "issue",
-	user: "fake-user",
 } satisfies Entity;
 
 describe(markdownReporter, () => {

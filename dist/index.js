@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7664);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(8650);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 7664:
+/***/ 8650:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -93966,6 +93966,221 @@ async function retrieveAuthSafe(provided) {
 
 
 
+;// CONCATENATED MODULE: ./src/actors/EntityActorBase.ts
+class EntityActorBase {
+    entityNumber;
+    locator;
+    octokit;
+    constructor(entityNumber, locator, octokit) {
+        this.entityNumber = entityNumber;
+        this.locator = locator;
+        this.octokit = octokit;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/actors/DiscussionActorBase.ts
+
+class DiscussionActorBase extends EntityActorBase {
+    async createComment(body) {
+        const response = await this.octokit.rest.issues.createComment({
+            body,
+            issue_number: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+        return response.data;
+    }
+    async listComments() {
+        // TODO: Retrieve all comments, not just the first page
+        // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
+        const commentsResponse = await this.octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
+            discussion_number: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+        return commentsResponse.data;
+    }
+    // eslint-disable-next-line @typescript-eslint/require-await
+    async updateComment(id, newBody) {
+        console.log("Blagh, I don't know how to do this:", { id, newBody });
+        throw new Error("Not implemented yet.");
+    }
+}
+
+;// CONCATENATED MODULE: ./src/actors/DiscussionActor.ts
+
+class DiscussionActor extends DiscussionActorBase {
+    metadata;
+    constructor(entityNumber, locator, octokit) {
+        super(entityNumber, locator, octokit);
+        this.metadata = {
+            number: entityNumber,
+            type: "discussion",
+        };
+    }
+    async getData() {
+        const response = await this.octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}", {
+            discussion_number: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+        // https://github.com/github/rest-api-description/issues/4702
+        return response.data;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/actors/DiscussionCommentActor.ts
+
+class DiscussionCommentActor extends DiscussionActorBase {
+    metadata;
+    commentId;
+    constructor(commentId, discussionNumber, locator, octokit) {
+        super(discussionNumber, locator, octokit);
+        this.commentId = commentId;
+        this.metadata = {
+            commentId,
+            parentNumber: discussionNumber,
+            parentType: "discussion",
+            type: "comment",
+        };
+    }
+    async getData() {
+        const comments = await this.listComments();
+        const comment = comments.find((comment) => comment.id === this.commentId);
+        if (!comment) {
+            throw new Error(`Could not find comment with id: ${this.commentId.toString()}`);
+        }
+        return comment;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/actors/IssueLikeActorBase.ts
+class IssueLikeActorBase {
+    entityNumber;
+    locator;
+    octokit;
+    constructor(entityNumber, locator, octokit) {
+        this.entityNumber = entityNumber;
+        this.locator = locator;
+        this.octokit = octokit;
+    }
+    async createComment(body) {
+        const response = await this.octokit.rest.issues.createComment({
+            body,
+            issue_number: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+        return response.data;
+    }
+    async listComments() {
+        // TODO: Retrieve all pages, not just the first one
+        // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
+        const comments = await this.octokit.rest.issues.listComments({
+            issue_number: this.entityNumber,
+            owner: this.locator.owner,
+            per_page: 100,
+            repo: this.locator.repository,
+        });
+        return comments.data;
+    }
+    async updateComment(id, newBody) {
+        await this.octokit.rest.issues.updateComment({
+            body: newBody,
+            comment_id: id,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+    }
+}
+
+;// CONCATENATED MODULE: ./src/actors/IssueLikeActor.ts
+
+class IssueLikeActor extends IssueLikeActorBase {
+    metadata;
+    constructor(entityNumber, entityType, locator, octokit) {
+        super(entityNumber, locator, octokit);
+        this.metadata = {
+            number: entityNumber,
+            type: entityType,
+        };
+    }
+    async getData() {
+        const { data } = await this.octokit.rest.issues.get({
+            issue_number: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+        return data;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/actors/IssueLikeCommentActor.ts
+
+class IssueLikeCommentActor extends IssueLikeActorBase {
+    metadata;
+    constructor(commentId, locator, octokit, parentNumber, parentType) {
+        super(parentNumber, locator, octokit);
+        this.metadata = {
+            commentId,
+            parentNumber,
+            parentType,
+            type: "comment",
+        };
+    }
+    async getData() {
+        const { data } = await this.octokit.rest.issues.getComment({
+            comment_id: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+        return data;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/actors/actorFactory.ts
+
+
+
+
+function actorFactory(locator, octokit, url) {
+    const matches = /(discussions|issues|pull)\/(\d+)/.exec(url);
+    if (!matches) {
+        return undefined;
+    }
+    const [, urlType, parentNumber] = matches;
+    const commentId = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
+    switch (urlType) {
+        case "discussions":
+            return commentId
+                ? new DiscussionCommentActor(+commentId, +parentNumber, locator, octokit)
+                : new DiscussionActor(+parentNumber, locator, octokit);
+        case "issues":
+        case "pull": {
+            const parentType = urlType === "issues" ? "issue" : "pull_request";
+            return commentId
+                ? new IssueLikeCommentActor(+commentId, locator, octokit, +parentNumber, parentType)
+                : new IssueLikeActor(+parentNumber, parentType, locator, octokit);
+        }
+    }
+}
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/parse-github-url@1.0.3/node_modules/parse-github-url/index.js
+var parse_github_url = __nccwpck_require__(8468);
+var parse_github_url_default = /*#__PURE__*/__nccwpck_require__.n(parse_github_url);
+;// CONCATENATED MODULE: ./src/actors/resolveLocator.ts
+
+function resolveLocator(url) {
+    const parsed = parse_github_url_default()(url);
+    if (!parsed?.owner || !parsed.name) {
+        return undefined;
+    }
+    return {
+        owner: parsed.owner,
+        repository: parsed.name,
+    };
+}
+
 ;// CONCATENATED MODULE: ./src/execution/runRuleOnEntity.ts
 async function runRuleOnEntity(context, rule, entity) {
     switch (entity.type) {
@@ -93982,138 +94197,6 @@ async function runRuleOnEntity(context, rule, entity) {
             await rule.pullRequest?.(context, entity);
             break;
     }
-}
-
-// EXTERNAL MODULE: ./node_modules/.pnpm/parse-github-url@1.0.3/node_modules/parse-github-url/index.js
-var parse_github_url = __nccwpck_require__(8468);
-var parse_github_url_default = /*#__PURE__*/__nccwpck_require__.n(parse_github_url);
-;// CONCATENATED MODULE: ./src/resolvers/resolveDiscussionComment.ts
-async function resolveDiscussionComment(commentMatcher, discussionId, locator, octokit) {
-    // TODO: Retrieve all comments, not just the first page
-    // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
-    const commentsResponse = await octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
-        discussion_number: discussionId,
-        owner: locator.owner,
-        repo: locator.repository,
-    });
-    return commentsResponse.data.find(commentMatcher);
-}
-
-;// CONCATENATED MODULE: ./src/resolvers/resolveDiscussionEntity.ts
-
-async function resolveDiscussionLikeEntity(id, locator, octokit, url) {
-    const commentId = /#discussioncomment-(\d+)/.exec(url)?.[1];
-    const response = await octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}", {
-        discussion_number: +id,
-        owner: locator.owner,
-        repo: locator.repository,
-    });
-    // https://github.com/github/rest-api-description/issues/4702
-    const discussionData = response.data;
-    if (commentId) {
-        const commentData = await resolveDiscussionComment((commentData) => commentData.id === +commentId, +id, locator, octokit);
-        if (!commentData) {
-            return undefined;
-        }
-        return {
-            commentId: +commentId,
-            data: commentData,
-            parent: discussionData,
-            parentType: "discussion",
-            type: "comment",
-            user: commentData.user?.login,
-        };
-    }
-    return {
-        data: discussionData,
-        id: +id,
-        type: "discussion",
-        user: discussionData.user.login,
-    };
-}
-
-;// CONCATENATED MODULE: ./src/resolvers/resolveIssueEntity.ts
-async function resolveIssueEntity(locator, octokit, id) {
-    const { data } = await octokit.rest.issues.get({
-        issue_number: id,
-        owner: locator.owner,
-        repo: locator.repository,
-    });
-    return {
-        data,
-        id,
-        type: "issue",
-        user: data.user?.login,
-    };
-}
-
-;// CONCATENATED MODULE: ./src/resolvers/resolvePullRequestEntity.ts
-async function resolvePullRequestEntity(locator, octokit, id) {
-    const { data } = await octokit.rest.pulls.get({
-        owner: locator.owner,
-        pull_number: id,
-        repo: locator.repository,
-    });
-    return {
-        data,
-        id,
-        type: "pull_request",
-        user: data.user.login,
-    };
-}
-
-;// CONCATENATED MODULE: ./src/resolvers/resolveIssueLikeEntity.ts
-
-
-async function resolveIssueLikeEntity(id, locator, octokit, parentType, url) {
-    const commentId = /#issuecomment-(\d+)/.exec(url)?.[1];
-    const { data: issueData } = await octokit.rest.issues.get({
-        issue_number: +id,
-        owner: locator.owner,
-        repo: locator.repository,
-    });
-    if (commentId) {
-        const { data: commentData } = await octokit.rest.issues.getComment({
-            comment_id: +commentId,
-            owner: locator.owner,
-            repo: locator.repository,
-        });
-        return {
-            commentId: +commentId,
-            data: commentData,
-            parent: issueData,
-            parentType,
-            type: "comment",
-            user: commentData.user?.login,
-        };
-    }
-    return await (issueData.pull_request
-        ? resolvePullRequestEntity(locator, octokit, +id)
-        : resolveIssueEntity(locator, octokit, +id));
-}
-
-;// CONCATENATED MODULE: ./src/resolvers/resolveEntity.ts
-
-
-
-async function resolveLintable(octokit, url) {
-    const parsed = parse_github_url_default()(url);
-    if (!parsed?.owner || !parsed.name) {
-        return undefined;
-    }
-    const matches = /(discussions|issues|pull)\/(\d+)/.exec(url);
-    if (!matches) {
-        return undefined;
-    }
-    const [, parentType, id] = matches;
-    const locator = {
-        owner: parsed.owner,
-        repository: parsed.name,
-    };
-    const entity = await (parentType === "discussions"
-        ? resolveDiscussionLikeEntity(id, locator, octokit, url)
-        : resolveIssueLikeEntity(id, locator, octokit, parentType === "issues" ? "issue" : "pull_request", url));
-    return entity && { entity, locator };
 }
 
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/is-comment-meaningless@0.2.0/node_modules/is-comment-meaningless/lib/index.js
@@ -94318,7 +94401,7 @@ const prLinkedIssue = {
 					}
 				}
 			`, {
-            id: entity.id,
+            id: entity.number,
             owner: context.locator.owner,
             repository: context.locator.repository,
         });
@@ -95300,15 +95383,23 @@ function isKnownConfig(config) {
 
 
 
+
 async function runOctoGuide({ config = "recommended", githubToken, url, }) {
     const octokit = await octokitFromAuth({
         auth: githubToken,
     });
-    const resolved = await resolveLintable(octokit, url);
-    if (!resolved) {
-        throw new Error("Could not resolve GitHub entity.");
+    const locator = resolveLocator(url);
+    if (!locator) {
+        throw new Error("Could not resolve GitHub entity locator.");
     }
-    const { entity, locator } = resolved;
+    const actor = actorFactory(locator, octokit, url);
+    if (!actor) {
+        throw new Error("Could not resolve GitHub entity actor.");
+    }
+    const entity = {
+        data: await actor.getData(),
+        ...actor.metadata,
+    };
     const reports = [];
     await Promise.all(Object.values(configs[config]).map(async (rule) => {
         const context = {
@@ -95323,7 +95414,7 @@ async function runOctoGuide({ config = "recommended", githubToken, url, }) {
         };
         await runRuleOnEntity(context, rule, entity);
     }));
-    return { entity, locator, octokit, reports };
+    return { actor, entity, reports };
 }
 
 ;// CONCATENATED MODULE: ./src/index.ts
@@ -96093,7 +96184,7 @@ function markdownReporter(entity, reports) {
         : entityAlias;
     return [
         "👋 Hi",
-        entity.user ? ` @${entity.user}` : "",
+        entity.data.user ? ` @${entity.data.user.login}` : "",
         ", thanks for the ",
         entityText,
         "! A scan flagged ",
@@ -96123,61 +96214,31 @@ function createCommentBody(entity, message) {
 
 
 
-async function createNewCommentForReports(entity, locator, octokit, reports) {
-    const target = entity.type === "comment" ? entity.parent : entity.data;
-    core.info(`Target number for comment creation: ${target.number.toString()}`);
-    const response = await octokit.rest.issues.createComment({
-        body: createCommentBody(entity, markdownReporter(entity, reports)),
-        issue_number: target.number,
-        owner: locator.owner,
-        repo: locator.repository,
-    });
-    return response.data;
+async function createNewCommentForReports(actor, entity, reports) {
+    const targetNumber = entity.type === "comment" ? entity.parentNumber : entity.number;
+    core.info(`Target number for comment creation: ${targetNumber.toString()}`);
+    return await actor.createComment(createCommentBody(entity, markdownReporter(entity, reports)));
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/getExistingComment.ts
 
-
-async function getExistingComment(entity, locator, octokit) {
+async function getExistingComment(actor, entity) {
     const commentIdentifier = createCommentIdentifier(entity);
-    const target = entity.type === "comment" ? entity.parent : entity.data;
-    // Discussions have their own special APIs
-    if (entity.type === "discussion" ||
-        (entity.type === "comment" && entity.parentType === "discussion")) {
-        return await resolveDiscussionComment((commentData) => !!commentData.body?.endsWith(commentIdentifier), target.number, locator, octokit);
-    }
-    // TODO: Retrieve all pages, not just the first one
-    // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
-    const comments = await octokit.rest.issues.listComments({
-        issue_number: target.number,
-        owner: locator.owner,
-        per_page: 100,
-        repo: locator.repository,
-    });
-    return comments.data.find((comment) => comment.body?.endsWith(commentIdentifier));
+    const comments = await actor.listComments();
+    return comments.find((comment) => comment.body?.endsWith(commentIdentifier));
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/updateExistingCommentAsPassed.ts
 
-async function updateExistingCommentAsPassed(entity, existingComment, locator, octokit) {
-    await octokit.rest.issues.updateComment({
-        body: createCommentBody(entity, "All reports are resolved now. Thanks! ✅"),
-        comment_id: existingComment.id,
-        owner: locator.owner,
-        repo: locator.repository,
-    });
+async function updateExistingCommentAsPassed(actor, entity, existingComment) {
+    await actor.updateComment(existingComment.id, createCommentBody(entity, "All reports are resolved now. Thanks! ✅"));
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/updateExistingCommentForReports.ts
 
 
-async function updateExistingCommentForReports(entity, existingComment, locator, octokit, reports) {
-    await octokit.rest.issues.updateComment({
-        body: createCommentBody(entity, markdownReporter(entity, reports)),
-        comment_id: existingComment.id,
-        owner: locator.owner,
-        repo: locator.repository,
-    });
+async function updateExistingCommentForReports(actor, entity, existingComment, reports) {
+    await actor.updateComment(existingComment.id, createCommentBody(entity, markdownReporter(entity, reports)));
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/setCommentForReports.ts
@@ -96186,25 +96247,25 @@ async function updateExistingCommentForReports(entity, existingComment, locator,
 
 
 
-async function getCommentForReports(entity, locator, octokit, reports) {
-    const existingComment = await getExistingComment(entity, locator, octokit);
+async function getCommentForReports(actor, entity, reports) {
+    const existingComment = await getExistingComment(actor, entity);
     core.info(existingComment
         ? `Found existing comment: ${existingComment.url}`
         : "No existing comment found.");
     if (!reports.length) {
         if (existingComment) {
             core.info("Updating existing comment as passed.");
-            await updateExistingCommentAsPassed(entity, existingComment, locator, octokit);
+            await updateExistingCommentAsPassed(actor, entity, existingComment);
         }
         return existingComment && { status: "existing", url: existingComment.url };
     }
     if (existingComment) {
         core.info("Updating existing comment for reports.");
-        await updateExistingCommentForReports(entity, existingComment, locator, octokit, reports);
+        await updateExistingCommentForReports(actor, entity, existingComment, reports);
         return { status: "existing", url: existingComment.url };
     }
     core.info("Creating existing comment for reports.");
-    const newComment = await createNewCommentForReports(entity, locator, octokit, reports);
+    const newComment = await createNewCommentForReports(actor, entity, reports);
     core.info(`Created new comment: ${newComment.url}`);
     return {
         status: "created",
@@ -96220,7 +96281,6 @@ async function getCommentForReports(entity, locator, octokit, reports) {
 
 async function runOctoGuideAction(context) {
     const { payload } = context;
-    console.log("payload:", payload);
     const target = (payload.discussion ??
         payload.comment ??
         payload.issue ??
@@ -96236,7 +96296,7 @@ async function runOctoGuideAction(context) {
     if (!isKnownConfig(config)) {
         throw new Error(`Unknown config provided: ${config}`);
     }
-    const { entity, locator, octokit, reports } = await runOctoGuide({
+    const { actor, entity, reports } = await runOctoGuide({
         config,
         githubToken: core.getInput("github-token"),
         url: target.html_url,
@@ -96248,7 +96308,7 @@ async function runOctoGuideAction(context) {
     else {
         core.info("Found 0 reports. Great! ✅");
     }
-    const comment = await getCommentForReports(entity, locator, octokit, reports);
+    const comment = await getCommentForReports(actor, entity, reports);
     core.info(comment
         ? `Reports comment: ${comment.url} (${comment.status})`
         : "No comment created.");

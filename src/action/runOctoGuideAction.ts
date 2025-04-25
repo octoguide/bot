@@ -10,8 +10,6 @@ import { getCommentForReports } from "./comments/setCommentForReports.js";
 export async function runOctoGuideAction(context: typeof github.context) {
 	const { payload } = context;
 
-	console.log("payload:", payload);
-
 	const target = (payload.discussion ??
 		payload.comment ??
 		payload.issue ??
@@ -31,7 +29,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		throw new Error(`Unknown config provided: ${config}`);
 	}
 
-	const { entity, locator, octokit, reports } = await runOctoGuide({
+	const { actor, entity, reports } = await runOctoGuide({
 		config,
 		githubToken: core.getInput("github-token"),
 		url: target.html_url,
@@ -44,7 +42,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		core.info("Found 0 reports. Great! ✅");
 	}
 
-	const comment = await getCommentForReports(entity, locator, octokit, reports);
+	const comment = await getCommentForReports(actor, entity, reports);
 
 	core.info(
 		comment
