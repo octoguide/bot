@@ -4,6 +4,7 @@ import type { ConfigName } from "./configs.js";
 import type { RepositoryLocator } from "./data.js";
 import type {
 	CommentEntity,
+	DiscussionEntity,
 	Entity,
 	IssueEntity,
 	PullRequestEntity,
@@ -12,6 +13,7 @@ import type {
 export interface Rule {
 	about: RuleAbout;
 	comment?: RuleListener<CommentEntity>;
+	discussion?: RuleListener<DiscussionEntity>;
 	issue?: RuleListener<IssueEntity>;
 	pullRequest?: RuleListener<PullRequestEntity>;
 }

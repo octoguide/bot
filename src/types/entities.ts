@@ -1,20 +1,52 @@
 import { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods";
 
+export type CommentAbleEntity =
+	| DiscussionEntity
+	| IssueEntity
+	| PullRequestEntity;
+
+export type CommentAbleEntityData = CommentAbleEntity["data"];
+
+export type CommentAbleEntityType = CommentAbleEntity["type"];
+
 export type CommentData =
 	RestEndpointMethodTypes["issues"]["getComment"]["response"]["data"];
 
 export interface CommentEntity {
 	commentId: number;
 	data: CommentData;
-	parent: IssueData;
-	parentType: IssueLikeEntityType;
+	parent: CommentAbleEntityData;
+	parentType: CommentAbleEntityType;
 	type: "comment";
 	user?: string;
 }
 
-export type Entity = CommentEntity | IssueLikeEntity;
+// https://github.com/github/rest-api-description/issues/4702
+// RestEndpointMethodTypes["discussions"]["get"]["response"]["data"];
+export interface DiscussionData {
+	body: string;
+	html_url: string;
+	number: number;
+	title: string;
+	url: string;
+	user: { login: string };
+}
+
+export interface DiscussionEntity {
+	data: DiscussionData;
+	id: number;
+	type: "discussion";
+	user?: string;
+}
+
+export type Entity =
+	| CommentEntity
+	| DiscussionEntity
+	| IssueEntity
+	| PullRequestEntity;
 
 export type EntityType = Entity["type"];
+
 export type IssueData =
 	RestEndpointMethodTypes["issues"]["get"]["response"]["data"];
 

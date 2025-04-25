@@ -26,14 +26,14 @@ It will automatically post friendly comments when contributors take actions you 
 
 ![Screenshot of a github-actions bot comment: see docs/screenshot-text.txt for text](docs/screenshot.webp)
 
-Rules are provided for common issues with comments, issues, and pull requests.
+Rules are provided for common issues with comments, discussions, issues, and pull requests.
 You can think of OctoGuide as a very friendly linter, but for online GitHub activity rather than code.
 
 ## Usage
 
 ### GitHub Action
 
-OctoGuide can run quickly in GitHub Actions for comment, issue, and pull request events:
+OctoGuide can run quickly in GitHub Actions for comment, discussion, issue, and pull request events:
 
 ```yml
 jobs:
@@ -48,20 +48,21 @@ jobs:
 name: OctoGuide
 
 on:
+  discussion:
+    types: [created, edited]
+  discussion_comment:
+    types: [created, edited]
   issue_comment:
-    types:
-      - created
-      - edited
+    types: [created, edited]
   issues:
-    types:
-      - edited
-      - opened
+    types: [edited, opened]
   pull_request:
-    types:
-      - edited
-      - opened
+    types: [edited, opened]
+  pull_request_review_comment:
+    types: [created, edited]
 
 permissions:
+  discussions: write
   issues: write
   pull-requests: write
 ```
@@ -107,12 +108,12 @@ Config key:
 
 | Area     | OctoGuide Rule                                                 | Description                                 | Config |
 | -------- | -------------------------------------------------------------- | ------------------------------------------- | ------ |
+| All text | [text-image-alt-text](./docs/rules/text-image-alt-text.md)     | images must have accessible alt text        | ✅     |
 | Comments | [comment-meaningless](./docs/rules/comment-meaningless.md)     | should be meaningful, not just '+1' bumps   | 🔒     |
 | PRs      | [pr-branch-non-default](./docs/rules/pr-branch-non-default.md) | sent from a non-default branch              | 🔒     |
 | PRs      | [pr-linked-issue](./docs/rules/pr-linked-issue.md)             | must be linked to an issue (with a label)   | 🔒     |
 | PRs      | [pr-task-completion](./docs/rules/pr-task-completion.md)       | all required tasks are [x] completed        | ✅     |
 | PRs      | [pr-title-conventional](./docs/rules/pr-title-conventional.md) | title must be in conventional commit format | 🔒     |
-| Texts    | [text-image-alt-text](./docs/rules/text-image-alt-text.md)     | images must have accessible alt text        | ✅     |
 
 <!-- | Issues   | [issue-required-fields-content](./docs/rules/issue-required-fields-content.md) | required fields must have meaningful content | ✅     | -->
 
@@ -145,7 +146,7 @@ It runs as quickly as possible, generally around 10 seconds a run.
 ### Other Ecosystem Approaches
 
 - [Danger](https://danger.systems): is a much larger, more powerful system that has repositories write their rules in imperative configuration files.
-  However, Danger is not made for analyzing GitHub comments or issues, only pull requests.
+  However, Danger is not made for analyzing GitHub comments, discussions, or issues — only pull requests.
 
 ## Development
 

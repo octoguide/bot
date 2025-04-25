@@ -11,6 +11,10 @@ export async function runRuleOnEntity(
 			await rule.comment?.(context, entity);
 			break;
 
+		case "discussion":
+			await rule.discussion?.(context, entity);
+			break;
+
 		case "issue":
 			await rule.issue?.(context, entity);
 			break;

@@ -11,11 +11,12 @@
 		"pnpm-lock.yaml"
 	],
 	"words": [
-		"postbuild",
+		"discussioncomment",
 		"issuecomment",
 		"lintable",
 		"octocat",
 		"octoguide",
+		"postbuild",
 		"screenreaders"
 	]
 }

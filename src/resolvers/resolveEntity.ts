@@ -4,9 +4,8 @@ import parseGitHubUrl from "parse-github-url";
 import type { RepositoryLocator } from "../types/data.js";
 import type { Entity } from "../types/entities.js";
 
-import { resolveCommentEntity } from "./resolveCommentEntity.js";
-import { resolveIssueEntity } from "./resolveIssueEntity.js";
-import { resolvePullRequestEntity } from "./resolvePullRequestEntity.js";
+import { resolveDiscussionLikeEntity } from "./resolveDiscussionEntity.js";
+import { resolveIssueLikeEntity } from "./resolveIssueLikeEntity.js";
 
 export interface ResolvedLintable {
 	entity: Entity;
@@ -22,40 +21,27 @@ export async function resolveLintable(
 		return undefined;
 	}
 
-	const id = /(?:issues|pull)\/(\d+)/.exec(url)?.[1];
-	if (!id) {
+	const matches = /(discussions|issues|pull)\/(\d+)/.exec(url);
+	if (!matches) {
 		return undefined;
 	}
 
-	const commentId = /#issuecomment-(\d+)/.exec(url)?.[1];
+	const [, parentType, id] = matches;
 
 	const locator = {
 		owner: parsed.owner,
 		repository: parsed.name,
 	};
 
-	const { data: issueData } = await octokit.rest.issues.get({
-		issue_number: +id,
-		owner: parsed.owner,
-		repo: parsed.name,
-	});
-
-	if (commentId) {
-		return {
-			entity: await resolveCommentEntity(
+	const entity = await (parentType === "discussions"
+		? resolveDiscussionLikeEntity(id, locator, octokit, url)
+		: resolveIssueLikeEntity(
+				id,
 				locator,
 				octokit,
-				issueData,
-				+commentId,
-			),
-			locator,
-		};
-	}
+				parentType === "issues" ? "issue" : "pull_request",
+				url,
+			));
 
-	return {
-		entity: await (issueData.pull_request
-			? resolvePullRequestEntity(locator, octokit, +id)
-			: resolveIssueEntity(locator, octokit, +id)),
-		locator,
-	};
+	return entity && { entity, locator };
 }

@@ -20,6 +20,7 @@ export const textImageAltText = {
 		name: "text-image-alt-text",
 	},
 	comment: checkEntity,
+	discussion: checkEntity,
 	issue: checkEntity,
 	pullRequest: checkEntity,
 } satisfies Rule;
