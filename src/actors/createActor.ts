@@ -8,7 +8,7 @@ import { DiscussionCommentActor } from "./DiscussionCommentActor.js";
 import { IssueLikeActor } from "./IssueLikeActor.js";
 import { IssueLikeCommentActor } from "./IssueLikeCommentActor.js";
 
-export function actorFactory(
+export function createActor(
 	locator: RepositoryLocator,
 	octokit: Octokit,
 	url: string,

@@ -5,8 +5,8 @@ import type { ConfigName } from "./types/configs.js";
 import type { Entity } from "./types/entities.js";
 import type { RuleContext, RuleReport } from "./types/rules.js";
 
-import { actorFactory } from "./actors/actorFactory.js";
-import { resolveLocator } from "./actors/resolveLocator.js";
+import { createActor } from "./actors/createActor.js";
+import { parseLocator } from "./actors/parseLocator.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
 import { configs } from "./rules/configs.js";
 
@@ -31,12 +31,12 @@ export async function runOctoGuide({
 		auth: githubToken,
 	});
 
-	const locator = resolveLocator(url);
+	const locator = parseLocator(url);
 	if (!locator) {
 		throw new Error("Could not resolve GitHub entity locator.");
 	}
 
-	const actor = actorFactory(locator, octokit, url);
+	const actor = createActor(locator, octokit, url);
 	if (!actor) {
 		throw new Error("Could not resolve GitHub entity actor.");
 	}
