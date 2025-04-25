@@ -12,8 +12,8 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	core.debug(`Full target payload: ${JSON.stringify(payload, null, 2)}`);
 
-	const target = (payload.discussion ??
-		payload.comment ??
+	const target = (payload.comment ??
+		payload.discussion ??
 		payload.issue ??
 		payload.pull_request) as EntityData | undefined;
 	if (!target) {
