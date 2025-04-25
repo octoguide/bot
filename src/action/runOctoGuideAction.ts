@@ -2,9 +2,10 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
-import { EntityData, runOctoGuide } from "../index.js";
+import { runOctoGuide } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
 import { isKnownConfig } from "../rules/configs.js";
+import { EntityData } from "../types/entities.js";
 import { getCommentForReports } from "./comments/setCommentForReports.js";
 
 export async function runOctoGuideAction(context: typeof github.context) {

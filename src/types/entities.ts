@@ -22,8 +22,8 @@ export type EntityData = Entity["data"];
 
 export type IssueLikeData = IssueLikeEntity["data"];
 
+// It would be nice to use a GitHub-provided type, but ...
 // https://github.com/github/rest-api-description/issues/4702
-// RestEndpointMethodTypes["discussions"]["get"]["response"]["data"];
 export interface DiscussionData {
 	body: string;
 	html_url: string;
