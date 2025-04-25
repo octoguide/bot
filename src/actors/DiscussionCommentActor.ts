@@ -42,7 +42,10 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 	}
 
 	async createComment(body: string) {
-		const targetComment = await this.getData();
+		const data = await this.getData();
+		const threadComment = data.parent_id
+			? await this.getCommentWithNumber(data.parent_id)
+			: data;
 
 		const { repository } = await this.octokit.graphql<GetDiscussionResponse>(
 			`
@@ -64,8 +67,9 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 		const discussionId = repository.discussion.id;
 
 		console.log("figuring out replyToId", {
+			data,
 			repository,
-			targetComment,
+			threadComment,
 		});
 
 		const commentResponse = await this.octokit.graphql<CreateCommentResponse>(
@@ -86,7 +90,7 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 			{
 				body,
 				discussionId,
-				replyToId: targetComment.node_id,
+				replyToId: threadComment.node_id,
 			},
 		);
 
@@ -94,14 +98,16 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 	}
 
 	async getData() {
+		return await this.getCommentWithNumber(this.metadata.commentNumber);
+	}
+
+	private async getCommentWithNumber(number: number) {
 		const comments = await this.listComments();
-		const comment = comments.find(
-			(comment) => comment.id === this.metadata.commentNumber,
-		);
+		const comment = comments.find((comment) => comment.id === number);
 
 		if (!comment) {
 			throw new Error(
-				`Could not find comment with id: ${this.metadata.commentNumber.toString()}`,
+				`Could not find comment with number: ${number.toString()}`,
 			);
 		}
 

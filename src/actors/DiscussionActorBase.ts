@@ -2,6 +2,10 @@ import type { CommentData, DiscussionData } from "../types/entities.js";
 
 import { EntityActorBase } from "./EntityActorBase.js";
 
+export interface DiscussionCommentData extends CommentData {
+	parent_id?: string;
+}
+
 export abstract class DiscussionActorBase<
 	Data extends CommentData | DiscussionData,
 > extends EntityActorBase<Data> {
@@ -17,7 +21,7 @@ export abstract class DiscussionActorBase<
 			},
 		);
 
-		return response.data as CommentData[];
+		return response.data as DiscussionCommentData[];
 	}
 
 	async updateComment(number: number, newBody: string) {
