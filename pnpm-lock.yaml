@@ -61,7 +61,7 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       '@types/lodash':
-        specifier: ^4.17.16
+        specifier: 4.17.16
         version: 4.17.16
       '@types/node':
         specifier: 22.14.0
