@@ -1,14 +1,13 @@
-[pr-conventional-title] PR titles must be in conventional commit format.
-The PR title has an unknown type: 'wat'.
-Known types are: 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'
-You'll want to replace the PR type with one of those known types.
-🗒️ Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/pr-conventional-title.md
+👋 Hi @JoshuaKGoldberg, thanks for the issue! A scan flagged a concern with it. Could you please take a look?
 
-[text-image-alt-text] Images must have descriptive alt text.
-The following image is missing alt text:
-![](https://github.com/user-attachments/assets/f405c5f4-a761-40f3-a0c7-d3d94b270b33)
-🗒️ Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/text-image-alt-text.md
+[[**text-image-alt-text**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/text-image-alt-text.md)] The following image is missing alt text:
 
-[pr-linked-issue] PRs must be linked as closing an issue.
-This pull request is not linked as closing any issues.
-🗒️ Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/pr-linked-issue.md
+> ```md
+> ![](https://github.com/user-attachments/assets/a8c44dd9-061a-41cf-a408-6774a872c737)
+> ```
+
+Alternative text, or "alt text", is a description attached to an image. It allows non-sighted users and tools to understand the image despite not being able to visually see it. To resolve this report, add descriptive alt text to the image.
+
+---
+
+> 🗺️ _This message was posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide): a bot for GitHub repository best practices._

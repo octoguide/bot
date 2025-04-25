@@ -19,6 +19,7 @@ export async function resolveCommentEntity(
 		commentId,
 		data,
 		parent: issueData,
+		parentType: issueData.pull_request ? "pull_request" : "issue",
 		type: "comment",
 		user: data.user?.login,
 	};

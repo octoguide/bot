@@ -13,8 +13,8 @@ export const prTitleConventional = {
 		config: "strict",
 		description: "PR titles should be in conventional commit format.",
 		explanation: [
-			`This repository enforces that pull request titles follow the [Conventional Commits](https://www.conventionalcommits.org) format.`,
-			`Doing so helps to ensure that the purpose of a pull request is clear and consistent for humans and machines.`,
+			`This repository asks that pull request titles start with a type in the [Conventional Commits](https://www.conventionalcommits.org) format.`,
+			`Doing so helps make the purpose of each pull request clear for humans and machines.`,
 		],
 		name: "pr-conventional-title",
 	},
@@ -22,8 +22,12 @@ export const prTitleConventional = {
 		const parsed = commitParser.parse(entity.data.title);
 		if (!parsed.type) {
 			context.report({
-				primary: `The PR title is missing a conventional commit type, such as 'docs: ' or 'feat: ':`,
-				secondary: [entity.data.title],
+				primary: `The PR title is missing a conventional commit type, such as _'docs: '_ or _'feat: '_:`,
+				suggestion: [
+					parsed.subject
+						? `To resolve this report, add a conventional commit type in front of the title, like 'feat: ${parsed.subject}'.`
+						: `To resolve this report, add a conventional commit type in front of the title.`,
+				],
 			});
 			return;
 		}
@@ -36,7 +40,11 @@ export const prTitleConventional = {
 						.sort()
 						.map((type) => `'${type}'`)
 						.join(", ")}`,
-					`You'll want to replace the PR type with one of those known types.`,
+				],
+				suggestion: [
+					parsed.subject
+						? `To resolve this report, replace the current PR type with one of those known types, like 'feat: ${parsed.subject}'.`
+						: `To resolve this report, replace the current PR type with one of those known types.`,
 				],
 			});
 			return;
@@ -45,8 +53,8 @@ export const prTitleConventional = {
 		if (!parsed.subject) {
 			context.report({
 				primary: `PR title is missing a subject after its type.`,
-				secondary: [
-					`You'll want to add text after the type, like '${parsed.type}: etc. etc.'`,
+				suggestion: [
+					`To resolve this report, add text after the type, like '${parsed.type}: etc.'`,
 				],
 			});
 			return;

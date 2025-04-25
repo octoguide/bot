@@ -2,44 +2,47 @@ import type { RuleReport } from "../types/rules.js";
 
 import { groupBy } from "../action/groupBy.js";
 import { Entity } from "../types/entities.js";
-import { formatSecondary } from "./formatSecondary.js";
+import { formatReport } from "./formatReport.js";
 
 export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 	const byRule = groupBy(reports, (report) => report.about.name);
 
 	const printedReports = Object.values(byRule).map((ruleReports) => {
 		const { about } = ruleReports[0];
-		const url = `https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md`;
+		const start = `[[**${about.name}**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md)]`;
+
+		if (ruleReports.length > 1) {
+			return [
+				start,
+				" ",
+				about.explanation.join(" "),
+				"\n\n",
+				ruleReports.map((report) => formatReport(report)).join("\n\n"),
+			].join("");
+		}
 
 		return [
-			`[**${about.name}**](${url})`,
-			":",
-			ruleReports.length > 1 ? "\n\n" : " ",
+			start,
+			" ",
 			ruleReports
-				.map((report) =>
-					[report.data.primary, ...formatSecondary(report.data.secondary)].join(
-						"\n",
-					),
-				)
+				.map((report) => formatReport(report, about.explanation))
 				.join("\n\n"),
-			"\n",
-			about.explanation.join(" "),
 		].join("");
 	});
 
-	const entityAlias = `your ${entity.type.replace("_", " ")}`;
+	const entityAlias = entity.type.replace("_", " ");
 	const entityText =
 		entity.type === "comment"
-			? `[${entityAlias}](${entity.data.url})`
+			? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
 			: entityAlias;
 
 	return [
 		"👋 Hi",
-		entity.user ? ` @${entity.user} ` : "",
-		"!, thanks for the ",
+		entity.user ? ` @${entity.user}` : "",
+		", thanks for the ",
 		entityText,
-		"! An automatic scan reported ",
-		reports.length > 1 ? "concerns" : "a concern",
+		"! A scan flagged ",
+		reports.length > 1 ? "some concerns" : "a concern",
 		" with it. Could you please take a look?\n\n",
 		printedReports.join("\n\n"),
 	].join("");

@@ -14,9 +14,8 @@ export const textImageAltText = {
 		config: "recommended",
 		description: "Images should have descriptive alt text.",
 		explanation: [
-			`Alternative text, or "alt text", is a text description attached to an image.`,
+			`Alternative text, or "alt text", is a description attached to an image.`,
 			`It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
-			`To resolve this report, please add descriptive alt text to the image.`,
 		],
 		name: "text-image-alt-text",
 	},
@@ -48,8 +47,6 @@ function checkEntity(context: RuleContext, entity: Entity) {
 	}
 
 	const lines = body.split(/\n/);
-	console.log({ body, lines });
-	console.log("------");
 
 	for (const lintError of lintErrors) {
 		context.report(createReportData(lines, lintError));
@@ -57,11 +54,13 @@ function checkEntity(context: RuleContext, entity: Entity) {
 }
 
 function createReportData(lines: string[], lintError: markdownlint.LintError) {
-	console.log("createReportData", { lines, lintError });
 	return {
 		primary: ruleDescriptions[lintError.ruleNames[1]],
 		secondary: [
 			["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
+		],
+		suggestion: [
+			`To resolve this report, add descriptive alt text to the image.`,
 		],
 	};
 }

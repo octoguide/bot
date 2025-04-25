@@ -4,7 +4,7 @@
 
 > Included in config: ✅ recommended, 🔒 strict
 
-Alternative text, or "alt text", is a text description attached to an image.
+Alternative text, or "alt text", is a description attached to an image.
 It allows non-sighted users and tools to understand the image despite not being able to visually see it.
 
 ## Setting Alt Text

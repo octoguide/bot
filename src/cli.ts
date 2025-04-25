@@ -8,8 +8,6 @@ export async function cli(url: string) {
 		);
 	}
 
-	console.log(`Checking ${url}...`);
-
 	const { reports } = await runOctoGuide({ url });
 
 	cliReporter(reports);

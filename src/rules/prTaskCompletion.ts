@@ -45,7 +45,7 @@ export const prTaskCompletion = {
 			context.report({
 				primary:
 					"This PR's body is empty, but there is a template with tasks to be done.",
-				secondary: [
+				suggestion: [
 					"Please fill out the pull request template and make sure all the tasks are [x] checked.",
 				],
 			});
@@ -73,8 +73,11 @@ export const prTaskCompletion = {
 
 		context.report({
 			primary:
-				"This PR's body is missing [x] checks on the following the tasks from the PR template.",
+				"This PR's body is missing [x] checks on the following tasks from the PR template.",
 			secondary: missingTasks,
+			suggestion: [
+				"Please complete those tasks and mark the checks as [x] completed.",
+			],
 		});
 	},
 } satisfies Rule;

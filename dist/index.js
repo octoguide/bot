@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9318);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(8447);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 9318:
+/***/ 8447:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -85264,7 +85264,7 @@ const commentMeaningless = {
         description: "Comments should be meaningful, not just '+1'-style bumps.",
         explanation: [
             `Replies containing just _"+1"_, _any update?"_, or other phrases without new information aren't helpful.`,
-            `If posted too much, they can even become disruptive to other contributors.`,
+            `They cause unnecessary notifications for other contributors and take up space.`,
         ],
         name: "comment-meaningless",
     },
@@ -85276,7 +85276,12 @@ const commentMeaningless = {
         // TODO: tailor the messaging once we get a reason
         // https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
         context.report({
-            primary: `Saying just '${text}' is unnecessary: it doesn't add any new information to the discussion.`,
+            primary: `Saying just _"${text}"_ doesn't add any new information to the discussion.`,
+            suggestion: [
+                `To resolve this report:`,
+                `* If you have new information that'll help the discussion, edit it into the comment`,
+                `* Otherwise, delete the comment and emoji react to the ${entity.parentType}`,
+            ],
         });
     },
 };
@@ -85315,7 +85320,12 @@ const prBranchNonDefault = {
                 primary: "This PR is sent from the head repository's default branch",
                 secondary: [
                     `Sending a PR from a default branch means the head repository can't easily be updated after the PR is merged.`,
-                    `Please create a new branch and send the PR from there.`,
+                ],
+                suggestion: [
+                    "You'll need to:",
+                    "1. Create a new branch on your fork",
+                    "2. Send a new pull request from that branch",
+                    "3. Close this pull request",
                 ],
             });
         }
@@ -85356,6 +85366,12 @@ const prLinkedIssue = {
         }
         context.report({
             primary: "This pull request is not linked as closing any issues.",
+            suggestion: [
+                "To resolve this report:",
+                "* If this is a tiny documentation change that doesn't need an issue, you can ignore this report",
+                "* If there is a backing issue, add a 'fixes #...' link to the pull request body",
+                "* Otherwise, file an issue explaining what you'd like to happen",
+            ],
         });
     },
 };
@@ -85401,7 +85417,7 @@ const prTaskCompletion = {
         if (!entity.data.body) {
             context.report({
                 primary: "This PR's body is empty, but there is a template with tasks to be done.",
-                secondary: [
+                suggestion: [
                     "Please fill out the pull request template and make sure all the tasks are [x] checked.",
                 ],
             });
@@ -85419,8 +85435,11 @@ const prTaskCompletion = {
             return;
         }
         context.report({
-            primary: "This PR's body is missing [x] checks on the following the tasks from the PR template.",
+            primary: "This PR's body is missing [x] checks on the following tasks from the PR template.",
             secondary: missingTasks,
+            suggestion: [
+                "Please complete those tasks and mark the checks as [x] completed.",
+            ],
         });
     },
 };
@@ -85945,8 +85964,8 @@ const prTitleConventional = {
         config: "strict",
         description: "PR titles should be in conventional commit format.",
         explanation: [
-            `This repository enforces that pull request titles follow the [Conventional Commits](https://www.conventionalcommits.org) format.`,
-            `Doing so helps to ensure that the purpose of a pull request is clear and consistent for humans and machines.`,
+            `This repository asks that pull request titles start with a type in the [Conventional Commits](https://www.conventionalcommits.org) format.`,
+            `Doing so helps make the purpose of each pull request clear for humans and machines.`,
         ],
         name: "pr-conventional-title",
     },
@@ -85954,8 +85973,12 @@ const prTitleConventional = {
         const parsed = commitParser.parse(entity.data.title);
         if (!parsed.type) {
             context.report({
-                primary: `The PR title is missing a conventional commit type, such as 'docs: ' or 'feat: ':`,
-                secondary: [entity.data.title],
+                primary: `The PR title is missing a conventional commit type, such as _'docs: '_ or _'feat: '_:`,
+                suggestion: [
+                    parsed.subject
+                        ? `To resolve this report, add a conventional commit type in front of the title, like 'feat: ${parsed.subject}'.`
+                        : `To resolve this report, add a conventional commit type in front of the title.`,
+                ],
             });
             return;
         }
@@ -85967,7 +85990,11 @@ const prTitleConventional = {
                         .sort()
                         .map((type) => `'${type}'`)
                         .join(", ")}`,
-                    `You'll want to replace the PR type with one of those known types.`,
+                ],
+                suggestion: [
+                    parsed.subject
+                        ? `To resolve this report, replace the current PR type with one of those known types, like 'feat: ${parsed.subject}'.`
+                        : `To resolve this report, replace the current PR type with one of those known types.`,
                 ],
             });
             return;
@@ -85975,8 +86002,8 @@ const prTitleConventional = {
         if (!parsed.subject) {
             context.report({
                 primary: `PR title is missing a subject after its type.`,
-                secondary: [
-                    `You'll want to add text after the type, like '${parsed.type}: etc. etc.'`,
+                suggestion: [
+                    `To resolve this report, add text after the type, like '${parsed.type}: etc.'`,
                 ],
             });
             return;
@@ -86228,9 +86255,8 @@ const textImageAltText = {
         config: "recommended",
         description: "Images should have descriptive alt text.",
         explanation: [
-            `Alternative text, or "alt text", is a text description attached to an image.`,
+            `Alternative text, or "alt text", is a description attached to an image.`,
             `It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
-            `To resolve this report, please add descriptive alt text to the image.`,
         ],
         name: "text-image-alt-text",
     },
@@ -86258,18 +86284,18 @@ function checkEntity(context, entity) {
         return;
     }
     const lines = body.split(/\n/);
-    console.log({ body, lines });
-    console.log("------");
     for (const lintError of lintErrors) {
         context.report(createReportData(lines, lintError));
     }
 }
 function createReportData(lines, lintError) {
-    console.log("createReportData", { lines, lintError });
     return {
         primary: ruleDescriptions[lintError.ruleNames[1]],
         secondary: [
             ["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
+        ],
+        suggestion: [
+            `To resolve this report, add descriptive alt text to the image.`,
         ],
     };
 }
@@ -95075,6 +95101,7 @@ async function resolveCommentEntity(locator, octokit, issueData, commentId) {
         commentId,
         data,
         parent: issueData,
+        parentType: issueData.pull_request ? "pull_request" : "issue",
         type: "comment",
         user: data.user?.login,
     };
@@ -95848,9 +95875,25 @@ const chalkStderr = createChalk({level: stderrColor ? stderrColor.level : 0});
 
 ;// CONCATENATED MODULE: ./src/reporters/formatSecondary.ts
 function formatSecondary(secondary) {
-    return (secondary ?? [])
-        .flatMap((line) => line.split("\n"))
-        .map((line) => `  ${line}`);
+    return (secondary ?? []).flatMap((line) => line.split("\n"));
+}
+
+;// CONCATENATED MODULE: ./src/reporters/formatReport.ts
+
+function formatReport(report, explanation) {
+    const secondaryLines = formatSecondary(report.data.secondary);
+    return [
+        report.data.primary,
+        secondaryLines.length > 0
+            ? /^\w/.test(secondaryLines[0])
+                ? " "
+                : "\n\n"
+            : "",
+        secondaryLines.join("\n"),
+        /^\w/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n\n",
+        explanation ? `${explanation.join(" ")} ` : "",
+        report.data.suggestion.join("\n"),
+    ].join("");
 }
 
 ;// CONCATENATED MODULE: ./src/reporters/cli.ts
@@ -95873,7 +95916,7 @@ function cliReporter(reports) {
             source.yellow(about.description),
         ].join(""));
         for (const report of ruleReports) {
-            console.log([report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"));
+            console.log(formatReport(report, about.explanation));
             console.log(source.gray(`Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${report.about.name}.md`));
             console.log("");
         }
@@ -95888,29 +95931,35 @@ function markdownReporter(entity, reports) {
     const byRule = groupBy(reports, (report) => report.about.name);
     const printedReports = Object.values(byRule).map((ruleReports) => {
         const { about } = ruleReports[0];
-        const url = `https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md`;
+        const start = `[[**${about.name}**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md)]`;
+        if (ruleReports.length > 1) {
+            return [
+                start,
+                " ",
+                about.explanation.join(" "),
+                "\n\n",
+                ruleReports.map((report) => formatReport(report)).join("\n\n"),
+            ].join("");
+        }
         return [
-            `[**${about.name}**](${url})`,
-            ":",
-            ruleReports.length > 1 ? "\n\n" : " ",
+            start,
+            " ",
             ruleReports
-                .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
+                .map((report) => formatReport(report, about.explanation))
                 .join("\n\n"),
-            "\n",
-            about.explanation.join(" "),
         ].join("");
     });
-    const entityAlias = `your ${entity.type.replace("_", " ")}`;
+    const entityAlias = entity.type.replace("_", " ");
     const entityText = entity.type === "comment"
-        ? `[${entityAlias}](${entity.data.url})`
+        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
         : entityAlias;
     return [
         "👋 Hi",
-        entity.user ? ` @${entity.user} ` : "",
-        "!, thanks for the ",
+        entity.user ? ` @${entity.user}` : "",
+        ", thanks for the ",
         entityText,
-        "! An automatic scan reported ",
-        reports.length > 1 ? "concerns" : "a concern",
+        "! A scan flagged ",
+        reports.length > 1 ? "some concerns" : "a concern",
         " with it. Could you please take a look?\n\n",
         printedReports.join("\n\n"),
     ].join("");
@@ -96038,7 +96087,7 @@ async function runOctoGuideAction(context) {
         url: target.html_url,
     });
     if (reports.length) {
-        core.error(`Found ${reports.length.toString()} report(s).`);
+        core.info(`Found ${reports.length.toString()} report(s).`);
         cliReporter(reports);
     }
     else {
