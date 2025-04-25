@@ -85264,7 +85264,7 @@ const commentMeaningless = {
         description: "Comments should be meaningful, not just '+1'-style bumps.",
         explanation: [
             `Replies containing just _"+1"_, _any update?"_, or other phrases without new information aren't helpful.`,
-            `If posted too much, they can even become disruptive to other contributors.`,
+            `They cause unnecessary notifications for other contributors and take up space.`,
         ],
         name: "comment-meaningless",
     },
@@ -85276,7 +85276,7 @@ const commentMeaningless = {
         // TODO: tailor the messaging once we get a reason
         // https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
         context.report({
-            primary: `Saying just '${text}' is unnecessary: it doesn't add any new information to the discussion.`,
+            primary: `Saying just '${text}' is unnecessary; it doesn't add any new information to the discussion.`,
             suggestion: [
                 `To resolve this report:`,
                 `* If you have new information that'll help the discussion, edit it into the comment`,
@@ -95917,7 +95917,7 @@ function formatReport(report) {
     const secondaryLines = formatSecondary(report.data.secondary);
     return [
         report.data.primary,
-        "\n",
+        " ",
         secondaryLines.join("\n"),
         /^\w+/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n",
         report.data.suggestion.join("\n"),

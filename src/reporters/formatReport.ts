@@ -7,7 +7,7 @@ export function formatReport(report: RuleReport) {
 
 	return [
 		report.data.primary,
-		"\n",
+		" ",
 		secondaryLines.join("\n"),
 		/^\w+/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n",
 		report.data.suggestion.join("\n"),
