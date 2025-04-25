@@ -66,7 +66,7 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 		const commentResponse = await this.octokit.graphql<CreateCommentResponse>(
 			`
 				mutation($body: String!, $discussionId: ID!) {
-					addDiscussionReply(input: {
+					addDiscussionComment(input: {
 						discussionId: $discussionId,
 						replyToId: $replyToId,
 						body: $body
