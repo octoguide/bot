@@ -1,6 +1,4 @@
 globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
@@ -85203,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9318);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(8447);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85213,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 9318:
+/***/ 8447:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -95913,6 +95911,19 @@ function cliReporter(reports) {
     console.log(`Found ${source.red(reports.length)} issue${reports.length > 1 ? "s" : ""}.\n`);
 }
 
+;// CONCATENATED MODULE: ./src/reporters/formatReport.ts
+
+function formatReport(report) {
+    const secondaryLines = formatSecondary(report.data.secondary);
+    return [
+        report.data.primary,
+        "\n",
+        secondaryLines.join("\n"),
+        /^\w+/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n",
+        ...report.data.suggestion,
+    ].join("");
+}
+
 ;// CONCATENATED MODULE: ./src/reporters/markdown.ts
 
 
@@ -95925,13 +95936,7 @@ function markdownReporter(entity, reports) {
             `[**${about.name}**](${url})`,
             ":",
             ruleReports.length > 1 ? "\n\n" : " ",
-            ruleReports
-                .map((report) => [
-                report.data.primary,
-                ...formatSecondary(report.data.secondary),
-                ...report.data.suggestion,
-            ].join("\n"))
-                .join("\n\n"),
+            ruleReports.map(formatReport).join("\n\n"),
             "\n",
             about.explanation.join(" "),
         ].join("");
@@ -95943,9 +95948,9 @@ function markdownReporter(entity, reports) {
     return [
         "👋 Hi",
         entity.user ? ` @${entity.user}` : "",
-        ", thanks for the",
+        ", thanks for the ",
         entityText,
-        "! An automatic scan reported ",
+        "! An automatic scan flagged ",
         reports.length > 1 ? "concerns" : "a concern",
         " with it. Could you please take a look?\n\n",
         printedReports.join("\n\n"),

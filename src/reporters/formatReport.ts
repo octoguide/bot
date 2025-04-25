@@ -1,4 +1,6 @@
-import type { RuleReport } from "../types/rules";
+import type { RuleReport } from "../types/rules.js";
+
+import { formatSecondary } from "./formatSecondary.js";
 
 export function formatReport(report: RuleReport) {
 	const secondaryLines = formatSecondary(report.data.secondary);
@@ -10,10 +12,4 @@ export function formatReport(report: RuleReport) {
 		/^\w+/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n",
 		...report.data.suggestion,
 	].join("");
-}
-
-function formatSecondary(secondary: string[] | undefined) {
-	return (secondary ?? [])
-		.flatMap((line) => line.split("\n"))
-		.map((line) => `  ${line}`);
 }
