@@ -94099,7 +94099,7 @@ class DiscussionCommentActor extends DiscussionActorBase {
         });
         const discussionId = repository.discussion.id;
         const commentResponse = await this.octokit.graphql(`
-				mutation($body: String!, $discussionId: ID!) {
+				mutation($body: String!, $discussionId: ID!, $replyToId: ID!) {
 					addDiscussionComment(input: {
 						discussionId: $discussionId,
 						replyToId: $replyToId,
