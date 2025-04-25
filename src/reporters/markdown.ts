@@ -33,7 +33,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 	const entityAlias = entity.type.replace("_", " ");
 	const entityText =
 		entity.type === "comment"
-			? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
+			? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} flagged by OctoGuide")`
 			: entityAlias;
 
 	return [

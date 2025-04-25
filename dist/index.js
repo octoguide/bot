@@ -85368,6 +85368,7 @@ const prLinkedIssue = {
             primary: "This pull request is not linked as closing any issues.",
             suggestion: [
                 "To resolve this report:",
+                "* If this is a tiny documentation change that doesn't need an issue, you can ignore this report",
                 "* If there is a backing issue, add a 'fixes #...' link to the pull request body",
                 "* Otherwise, file an issue explaining what you'd like to happen",
             ],
@@ -85963,8 +85964,8 @@ const prTitleConventional = {
         config: "strict",
         description: "PR titles should be in conventional commit format.",
         explanation: [
-            `This repository enforces that pull request titles follow the [Conventional Commits](https://www.conventionalcommits.org) format.`,
-            `Doing so helps to ensure that the purpose of a pull request is clear and consistent for humans and machines.`,
+            `This repository asks that pull request titles start with a type in the [Conventional Commits](https://www.conventionalcommits.org) format.`,
+            `Doing so helps make the purpose of each pull request clear for humans and machines.`,
         ],
         name: "pr-conventional-title",
     },
@@ -85972,12 +85973,11 @@ const prTitleConventional = {
         const parsed = commitParser.parse(entity.data.title);
         if (!parsed.type) {
             context.report({
-                primary: `The PR title is missing a conventional commit type, such as 'docs: ' or 'feat: ':`,
-                secondary: [entity.data.title],
+                primary: `The PR title is missing a conventional commit type, such as _'docs: '_ or _'feat: '_:`,
                 suggestion: [
                     parsed.subject
-                        ? `To resolve this, add a conventional commit type in front of the title, like 'feat: ${parsed.subject}'.`
-                        : `To resolve this, add a conventional commit type in front of the title.`,
+                        ? `To resolve this report, add a conventional commit type in front of the title, like 'feat: ${parsed.subject}'.`
+                        : `To resolve this report, add a conventional commit type in front of the title.`,
                 ],
             });
             return;
@@ -85993,8 +85993,8 @@ const prTitleConventional = {
                 ],
                 suggestion: [
                     parsed.subject
-                        ? `To resolve this, replace the current PR type with one of those known types, like 'feat: ${parsed.subject}'.`
-                        : `To resolve this, replace the current PR type with one of those known types.`,
+                        ? `To resolve this report, replace the current PR type with one of those known types, like 'feat: ${parsed.subject}'.`
+                        : `To resolve this report, replace the current PR type with one of those known types.`,
                 ],
             });
             return;
@@ -86003,7 +86003,7 @@ const prTitleConventional = {
             context.report({
                 primary: `PR title is missing a subject after its type.`,
                 suggestion: [
-                    `To resolve this, add text after the type, like '${parsed.type}: etc.'`,
+                    `To resolve this report, add text after the type, like '${parsed.type}: etc.'`,
                 ],
             });
             return;
@@ -95952,7 +95952,7 @@ function markdownReporter(entity, reports) {
     });
     const entityAlias = entity.type.replace("_", " ");
     const entityText = entity.type === "comment"
-        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
+        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} flagged by OctoGuide")`
         : entityAlias;
     return [
         "👋 Hi",
@@ -96088,7 +96088,7 @@ async function runOctoGuideAction(context) {
         url: target.html_url,
     });
     if (reports.length) {
-        core.error(`Found ${reports.length.toString()} report(s).`);
+        core.info(`Found ${reports.length.toString()} report(s).`);
         cliReporter(reports);
     }
     else {
