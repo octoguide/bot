@@ -7,5 +7,5 @@ export interface EntityActor<Data extends EntityData = EntityData> {
 	createComment(body: string): Promise<string>;
 	getData(): Promise<Data>;
 	listComments(): Promise<CommentData[]>;
-	updateComment(id: number, newBody: string): Promise<void>;
+	updateComment(number: number, newBody: string): Promise<void>;
 }

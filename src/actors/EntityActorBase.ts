@@ -26,5 +26,5 @@ export abstract class EntityActorBase<Data extends EntityData>
 	abstract createComment(body: string): Promise<string>;
 	abstract getData(): Promise<Data>;
 	abstract listComments(): Promise<CommentData[]>;
-	abstract updateComment(id: number, newBody: string): Promise<void>;
+	abstract updateComment(number: number, newBody: string): Promise<void>;
 }

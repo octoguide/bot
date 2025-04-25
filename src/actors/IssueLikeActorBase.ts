@@ -51,10 +51,10 @@ export abstract class IssueLikeActorBase<
 		return comments.data;
 	}
 
-	async updateComment(id: number, newBody: string) {
+	async updateComment(number: number, newBody: string) {
 		await this.octokit.rest.issues.updateComment({
 			body: newBody,
-			comment_id: id,
+			comment_id: +id,
 			owner: this.locator.owner,
 			repo: this.locator.repository,
 		});

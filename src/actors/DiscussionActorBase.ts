@@ -11,7 +11,7 @@ interface CreateCommentResponse {
 	};
 }
 
-interface DiscussionResponse {
+interface GetDiscussionResponse {
 	repository: {
 		discussion: {
 			id: string;
@@ -23,12 +23,12 @@ export abstract class DiscussionActorBase<
 	Data extends CommentData | DiscussionData,
 > extends EntityActorBase<Data> {
 	async createComment(body: string) {
-		const { repository } = await this.octokit.graphql<DiscussionResponse>(
+		const { repository } = await this.octokit.graphql<GetDiscussionResponse>(
 			`
 				query($owner: String!, $repo: String!, $number: Int!) {
-				repository(owner: $owner, name: $repo) {
+					repository(owner: $owner, name: $repo) {
 						discussion(number: $number) {
-						id
+							id
 						}
 					}
 				}
@@ -77,7 +77,10 @@ export abstract class DiscussionActorBase<
 		return response.data as CommentData[];
 	}
 
-	async updateComment(id: number, newBody: string) {
+	async updateComment(number: number, newBody: string) {
+		const comments = await this.listComments();
+		console.log({ comments });
+
 		await this.octokit.graphql(
 			`
 				mutation($body: String!, $commentId: ID!) {
@@ -95,7 +98,7 @@ export abstract class DiscussionActorBase<
 			`,
 			{
 				body: newBody,
-				commentId: id,
+				commentId: number,
 			},
 		);
 	}
