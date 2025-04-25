@@ -1,5 +1,4 @@
 globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
@@ -94084,7 +94083,10 @@ class DiscussionCommentActor extends DiscussionActorBase {
         };
     }
     async createComment(body) {
-        const targetComment = await this.getData();
+        const data = await this.getData();
+        const threadComment = data.parent_id
+            ? await this.getCommentWithNumber(data.parent_id)
+            : data;
         const { repository } = await this.octokit.graphql(`
 				query($owner: String!, $repo: String!, $number: Int!) {
 					repository(owner: $owner, name: $repo) {
@@ -94100,8 +94102,9 @@ class DiscussionCommentActor extends DiscussionActorBase {
         });
         const discussionId = repository.discussion.id;
         console.log("figuring out replyToId", {
+            data,
             repository,
-            targetComment,
+            threadComment,
         });
         const commentResponse = await this.octokit.graphql(`
 				mutation($body: String!, $discussionId: ID!, $replyToId: ID!) {
@@ -94119,15 +94122,18 @@ class DiscussionCommentActor extends DiscussionActorBase {
 			`, {
             body,
             discussionId,
-            replyToId: targetComment.node_id,
+            replyToId: threadComment.node_id,
         });
         return commentResponse.addDiscussionComment.comment.url;
     }
     async getData() {
+        return await this.getCommentWithNumber(this.metadata.commentNumber);
+    }
+    async getCommentWithNumber(number) {
         const comments = await this.listComments();
-        const comment = comments.find((comment) => comment.id === this.metadata.commentNumber);
+        const comment = comments.find((comment) => comment.id === number);
         if (!comment) {
-            throw new Error(`Could not find comment with id: ${this.metadata.commentNumber.toString()}`);
+            throw new Error(`Could not find comment with number: ${number.toString()}`);
         }
         return comment;
     }

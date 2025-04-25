@@ -3,7 +3,7 @@ import type { CommentData, DiscussionData } from "../types/entities.js";
 import { EntityActorBase } from "./EntityActorBase.js";
 
 export interface DiscussionCommentData extends CommentData {
-	parent_id?: string;
+	parent_id?: number;
 }
 
 export abstract class DiscussionActorBase<
