@@ -94004,12 +94004,12 @@ class DiscussionActorBase extends EntityActorBase {
 					}) {
 						comment {
 							body
-							html_url
+							url
 						}
 					}
 				}
 			`, { body, discussionId });
-        return commentResponse.addDiscussionComment.comment.html_url;
+        return commentResponse.addDiscussionComment.comment.url;
     }
     async listComments() {
         // TODO: Retrieve all comments, not just the first page

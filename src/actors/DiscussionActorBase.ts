@@ -6,7 +6,7 @@ interface CreateCommentResponse {
 	addDiscussionComment: {
 		comment: {
 			body: string;
-			html_url: string;
+			url: string;
 		};
 	};
 }
@@ -51,7 +51,7 @@ export abstract class DiscussionActorBase<
 					}) {
 						comment {
 							body
-							html_url
+							url
 						}
 					}
 				}
@@ -59,7 +59,7 @@ export abstract class DiscussionActorBase<
 			{ body, discussionId },
 		);
 
-		return commentResponse.addDiscussionComment.comment.html_url;
+		return commentResponse.addDiscussionComment.comment.url;
 	}
 
 	async listComments() {
