@@ -95920,7 +95920,7 @@ function formatReport(report) {
         "\n",
         secondaryLines.join("\n"),
         /^\w+/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n",
-        ...report.data.suggestion,
+        report.data.suggestion.join("\n"),
     ].join("");
 }
 
