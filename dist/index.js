@@ -94098,6 +94098,10 @@ class DiscussionCommentActor extends DiscussionActorBase {
             repo: this.locator.repository,
         });
         const discussionId = repository.discussion.id;
+        console.log("figuring out replyToId", {
+            repository,
+            targetComment,
+        });
         const commentResponse = await this.octokit.graphql(`
 				mutation($body: String!, $discussionId: ID!, $replyToId: ID!) {
 					addDiscussionComment(input: {

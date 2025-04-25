@@ -63,6 +63,11 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 
 		const discussionId = repository.discussion.id;
 
+		console.log("figuring out replyToId", {
+			repository,
+			targetComment,
+		});
+
 		const commentResponse = await this.octokit.graphql<CreateCommentResponse>(
 			`
 				mutation($body: String!, $discussionId: ID!, $replyToId: ID!) {
