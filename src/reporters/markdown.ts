@@ -2,7 +2,7 @@ import type { RuleReport } from "../types/rules.js";
 
 import { groupBy } from "../action/groupBy.js";
 import { Entity } from "../types/entities.js";
-import { formatSecondary } from "./formatSecondary.js";
+import { formatReport } from "./formatReport.js";
 
 export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 	const byRule = groupBy(reports, (report) => report.about.name);
@@ -15,15 +15,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 			`[**${about.name}**](${url})`,
 			":",
 			ruleReports.length > 1 ? "\n\n" : " ",
-			ruleReports
-				.map((report) =>
-					[
-						report.data.primary,
-						...formatSecondary(report.data.secondary),
-						...report.data.suggestion,
-					].join("\n"),
-				)
-				.join("\n\n"),
+			ruleReports.map(formatReport).join("\n\n"),
 			"\n",
 			about.explanation.join(" "),
 		].join("");
@@ -38,9 +30,9 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 	return [
 		"👋 Hi",
 		entity.user ? ` @${entity.user}` : "",
-		", thanks for the",
+		", thanks for the ",
 		entityText,
-		"! An automatic scan reported ",
+		"! An automatic scan flagged ",
 		reports.length > 1 ? "concerns" : "a concern",
 		" with it. Could you please take a look?\n\n",
 		printedReports.join("\n\n"),
