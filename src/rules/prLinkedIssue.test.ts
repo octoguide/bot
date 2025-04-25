@@ -15,7 +15,7 @@ describe(prLinkedIssue.about.name, () => {
 						ref: "patch-1",
 					},
 				},
-				id: 2,
+				number: 2,
 				type: "pull_request",
 			},
 			{
@@ -50,7 +50,7 @@ describe(prLinkedIssue.about.name, () => {
 						ref: "main",
 					},
 				},
-				id: 2,
+				number: 2,
 				type: "pull_request",
 			},
 			{

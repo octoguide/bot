@@ -38,7 +38,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 
 	return [
 		"👋 Hi",
-		entity.user ? ` @${entity.user}` : "",
+		entity.data.user ? ` @${entity.data.user.login}` : "",
 		", thanks for the ",
 		entityText,
 		"! A scan flagged ",

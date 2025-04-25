@@ -1,4 +1,4 @@
-import { Octokit } from "octokit";
+import type { Octokit } from "octokit";
 
 import type { ConfigName } from "./configs.js";
 import type { RepositoryLocator } from "./data.js";

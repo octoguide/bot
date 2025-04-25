@@ -1,11 +1,9 @@
-import type { Octokit } from "octokit";
-
 import * as core from "@actions/core";
 
-import type { RepositoryLocator } from "../../types/data.js";
 import type { Entity } from "../../types/entities.js";
 import type { RuleReport } from "../../types/rules.js";
 
+import { EntityActor } from "../../actors/types.js";
 import { createNewCommentForReports } from "./createNewCommentForReports.js";
 import { getExistingComment } from "./getExistingComment.js";
 import { updateExistingCommentAsPassed } from "./updateExistingCommentAsPassed.js";
@@ -17,55 +15,49 @@ export interface ReportComment {
 }
 
 export async function getCommentForReports(
+	actor: EntityActor,
 	entity: Entity,
-	locator: RepositoryLocator,
-	octokit: Octokit,
 	reports: RuleReport[],
 ): Promise<ReportComment | undefined> {
-	const existingComment = await getExistingComment(entity, locator, octokit);
+	const existingComment = await getExistingComment(actor, entity);
 
 	core.info(
 		existingComment
-			? `Found existing comment: ${existingComment.url}`
+			? `Found existing comment: ${existingComment.html_url}`
 			: "No existing comment found.",
 	);
 
 	if (!reports.length) {
 		if (existingComment) {
 			core.info("Updating existing comment as passed.");
-			await updateExistingCommentAsPassed(
-				entity,
-				existingComment,
-				locator,
-				octokit,
-			);
+			await updateExistingCommentAsPassed(actor, entity, existingComment);
 		}
-		return existingComment && { status: "existing", url: existingComment.url };
+		return (
+			existingComment && { status: "existing", url: existingComment.html_url }
+		);
 	}
 
 	if (existingComment) {
 		core.info("Updating existing comment for reports.");
 		await updateExistingCommentForReports(
+			actor,
 			entity,
 			existingComment,
-			locator,
-			octokit,
 			reports,
 		);
-		return { status: "existing", url: existingComment.url };
+		return { status: "existing", url: existingComment.html_url };
 	}
 
 	core.info("Creating existing comment for reports.");
-	const newComment = await createNewCommentForReports(
+	const newCommentUrl = await createNewCommentForReports(
+		actor,
 		entity,
-		locator,
-		octokit,
 		reports,
 	);
-	core.info(`Created new comment: ${newComment.url}`);
+	core.info(`Created new comment: ${newCommentUrl}`);
 
 	return {
 		status: "created",
-		url: newComment.url,
+		url: newCommentUrl,
 	};
 }

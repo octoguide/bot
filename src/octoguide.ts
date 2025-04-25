@@ -1,20 +1,18 @@
-import type { Octokit } from "octokit";
-
 import { octokitFromAuth } from "octokit-from-auth";
 
+import type { EntityActor } from "./actors/types.js";
 import type { ConfigName } from "./types/configs.js";
-import type { RepositoryLocator } from "./types/data.js";
 import type { Entity } from "./types/entities.js";
 import type { RuleContext, RuleReport } from "./types/rules.js";
 
+import { actorFactory } from "./actors/actorFactory.js";
+import { resolveLocator } from "./actors/resolveLocator.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
-import { resolveLintable } from "./resolvers/resolveEntity.js";
 import { configs } from "./rules/configs.js";
 
 export interface OctoGuideResult {
+	actor: EntityActor;
 	entity: Entity;
-	locator: RepositoryLocator;
-	octokit: Octokit;
 	reports: RuleReport[];
 }
 
@@ -33,12 +31,20 @@ export async function runOctoGuide({
 		auth: githubToken,
 	});
 
-	const resolved = await resolveLintable(octokit, url);
-	if (!resolved) {
-		throw new Error("Could not resolve GitHub entity.");
+	const locator = resolveLocator(url);
+	if (!locator) {
+		throw new Error("Could not resolve GitHub entity locator.");
 	}
 
-	const { entity, locator } = resolved;
+	const actor = actorFactory(locator, octokit, url);
+	if (!actor) {
+		throw new Error("Could not resolve GitHub entity actor.");
+	}
+
+	const entity = {
+		data: await actor.getData(),
+		...actor.metadata,
+	} as Entity;
 	const reports: RuleReport[] = [];
 
 	await Promise.all(
@@ -58,5 +64,5 @@ export async function runOctoGuide({
 		}),
 	);
 
-	return { entity, locator, octokit, reports };
+	return { actor, entity, reports };
 }

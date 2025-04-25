@@ -23,9 +23,8 @@ const fakeEntity = {
 		id: 123,
 		url: "fake-url",
 	} as IssueData,
-	id: 123,
+	number: 123,
 	type: "issue",
-	user: "fake-user",
 } satisfies Entity;
 
 describe(markdownReporter, () => {
@@ -38,7 +37,7 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"👋 Hi @fake-user, thanks for the issue! A scan flagged a concern with it. Could you please take a look?
+			"👋 Hi, thanks for the issue! A scan flagged a concern with it. Could you please take a look?
 
 			[[**fake-rule**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/fake-rule.md)] Fake primary. Fake explanation. Fake suggestion."
 		`);
@@ -57,7 +56,7 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"👋 Hi @fake-user, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
+			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
 
 			[[**fake-rule**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/fake-rule.md)] Fake explanation.
 
@@ -86,7 +85,7 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"👋 Hi @fake-user, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
+			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
 
 			[[**first**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/first.md)] Fake primary. Fake explanation. Fake suggestion.
 
@@ -127,7 +126,7 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"👋 Hi @fake-user, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
+			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
 
 			[[**first**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/first.md)] Fake explanation.
 

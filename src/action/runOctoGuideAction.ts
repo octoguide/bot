@@ -2,7 +2,7 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
-import { runOctoGuide } from "../index.js";
+import { EntityData, runOctoGuide } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
 import { isKnownConfig } from "../rules/configs.js";
 import { getCommentForReports } from "./comments/setCommentForReports.js";
@@ -10,7 +10,12 @@ import { getCommentForReports } from "./comments/setCommentForReports.js";
 export async function runOctoGuideAction(context: typeof github.context) {
 	const { payload } = context;
 
-	const target = payload.comment ?? payload.issue ?? payload.pull_request;
+	core.debug(`Full target payload: ${JSON.stringify(payload, null, 2)}`);
+
+	const target = (payload.comment ??
+		payload.discussion ??
+		payload.issue ??
+		payload.pull_request) as EntityData | undefined;
 	if (!target) {
 		throw new Error("Could not determine an entity to run OctoGuide on.");
 	}
@@ -21,16 +26,18 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	core.info(`Targeting entity at html_url: ${target.html_url}`);
 
-	const config = core.getInput("config");
+	const config = core.getInput("config") || "recommended";
 	if (!isKnownConfig(config)) {
 		throw new Error(`Unknown config provided: ${config}`);
 	}
 
-	const { entity, locator, octokit, reports } = await runOctoGuide({
+	const { actor, entity, reports } = await runOctoGuide({
 		config,
 		githubToken: core.getInput("github-token"),
 		url: target.html_url,
 	});
+
+	core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
 
 	if (reports.length) {
 		core.info(`Found ${reports.length.toString()} report(s).`);
@@ -39,7 +46,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		core.info("Found 0 reports. Great! ✅");
 	}
 
-	const comment = await getCommentForReports(entity, locator, octokit, reports);
+	const comment = await getCommentForReports(actor, entity, reports);
 
 	core.info(
 		comment
