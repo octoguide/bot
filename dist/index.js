@@ -93982,9 +93982,9 @@ class EntityActorBase {
 
 class DiscussionActorBase extends EntityActorBase {
     async createComment(body) {
-        const response = await this.octokit.rest.issues.createComment({
+        const response = await this.octokit.request("POST /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
             body,
-            issue_number: this.entityNumber,
+            discussion_number: this.entityNumber,
             owner: this.locator.owner,
             repo: this.locator.repository,
         });
@@ -93993,12 +93993,12 @@ class DiscussionActorBase extends EntityActorBase {
     async listComments() {
         // TODO: Retrieve all comments, not just the first page
         // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
-        const commentsResponse = await this.octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
+        const response = await this.octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
             discussion_number: this.entityNumber,
             owner: this.locator.owner,
             repo: this.locator.repository,
         });
-        return commentsResponse.data;
+        return response.data;
     }
     // eslint-disable-next-line @typescript-eslint/require-await
     async updateComment(id, newBody) {
