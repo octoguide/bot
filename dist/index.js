@@ -94031,7 +94031,7 @@ class DiscussionActorBase extends EntityActorBase {
         });
         const discussionId = repository.discussion.id;
         const commentResponse = await this.octokit.graphql(`
-				mutation($body: String!, $discussionId: ID!, $replyToId: ID!) {
+				mutation($body: String!, $discussionId: ID!, $replyToId: ID) {
 					addDiscussionComment(input: {
 						discussionId: $discussionId,
 						replyToId: $replyToId,
