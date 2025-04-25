@@ -24,7 +24,9 @@ export abstract class EntityActorBase<Data extends EntityData>
 	}
 
 	abstract createComment(body: string): Promise<string>;
-	abstract getData(): Promise<Data>;
 	abstract listComments(): Promise<CommentData[]>;
 	abstract updateComment(number: number, newBody: string): Promise<void>;
+
+	// TODO: It would be cleaner & faster to get this from the action event...
+	abstract getData(): Promise<Data>;
 }

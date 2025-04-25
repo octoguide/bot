@@ -37,6 +37,8 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		url: target.html_url,
 	});
 
+	core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
+
 	if (reports.length) {
 		core.info(`Found ${reports.length.toString()} report(s).`);
 		console.log(cliReporter(reports));

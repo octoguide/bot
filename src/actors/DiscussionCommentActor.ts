@@ -5,6 +5,23 @@ import type { CommentData, CommentEntity } from "../types/entities.js";
 
 import { DiscussionActorBase } from "./DiscussionActorBase.js";
 
+interface CreateCommentResponse {
+	addDiscussionComment: {
+		comment: {
+			body: string;
+			url: string;
+		};
+	};
+}
+
+interface GetDiscussionResponse {
+	repository: {
+		discussion: {
+			id: string;
+		};
+	};
+}
+
 export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 	readonly metadata: Omit<CommentEntity, "data">;
 
@@ -22,6 +39,53 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 			parentType: "discussion",
 			type: "comment",
 		};
+	}
+
+	async createComment(body: string) {
+		const targetComment = await this.getData();
+
+		const { repository } = await this.octokit.graphql<GetDiscussionResponse>(
+			`
+				query($owner: String!, $repo: String!, $number: Int!) {
+					repository(owner: $owner, name: $repo) {
+						discussion(number: $number) {
+							id
+						}
+					}
+				}
+			`,
+			{
+				number: this.entityNumber,
+				owner: this.locator.owner,
+				repo: this.locator.repository,
+			},
+		);
+
+		const discussionId = repository.discussion.id;
+
+		const commentResponse = await this.octokit.graphql<CreateCommentResponse>(
+			`
+				mutation($body: String!, $discussionId: ID!) {
+					addDiscussionReply(input: {
+						discussionId: $discussionId,
+						replyToId: $replyToId,
+						body: $body
+					}) {
+						comment {
+							body
+							url
+						}
+					}
+				}
+			`,
+			{
+				body,
+				discussionId,
+				replyToId: targetComment.node_id,
+			},
+		);
+
+		return commentResponse.addDiscussionComment.comment.url;
 	}
 
 	async getData() {

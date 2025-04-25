@@ -93981,36 +93981,6 @@ class EntityActorBase {
 ;// CONCATENATED MODULE: ./src/actors/DiscussionActorBase.ts
 
 class DiscussionActorBase extends EntityActorBase {
-    async createComment(body) {
-        const { repository } = await this.octokit.graphql(`
-				query($owner: String!, $repo: String!, $number: Int!) {
-					repository(owner: $owner, name: $repo) {
-						discussion(number: $number) {
-							id
-						}
-					}
-				}
-			`, {
-            number: this.entityNumber,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
-        });
-        const discussionId = repository.discussion.id;
-        const commentResponse = await this.octokit.graphql(`
-				mutation($body: String!, $discussionId: ID!) {
-					addDiscussionComment(input: {
-						discussionId: $discussionId,
-						body: $body
-					}) {
-						comment {
-							body
-							url
-						}
-					}
-				}
-			`, { body, discussionId });
-        return commentResponse.addDiscussionComment.comment.url;
-    }
     async listComments() {
         // TODO: Retrieve all comments, not just the first page
         // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
@@ -94058,6 +94028,36 @@ class DiscussionActor extends DiscussionActorBase {
             type: "discussion",
         };
     }
+    async createComment(body) {
+        const { repository } = await this.octokit.graphql(`
+				query($owner: String!, $repo: String!, $number: Int!) {
+					repository(owner: $owner, name: $repo) {
+						discussion(number: $number) {
+							id
+						}
+					}
+				}
+			`, {
+            number: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+        const discussionId = repository.discussion.id;
+        const commentResponse = await this.octokit.graphql(`
+				mutation($body: String!, $discussionId: ID!) {
+					addDiscussionComment(input: {
+						discussionId: $discussionId,
+						body: $body
+					}) {
+						comment {
+							body
+							url
+						}
+					}
+				}
+			`, { body, discussionId });
+        return commentResponse.addDiscussionComment.comment.url;
+    }
     async getData() {
         const response = await this.octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}", {
             discussion_number: this.entityNumber,
@@ -94081,6 +94081,42 @@ class DiscussionCommentActor extends DiscussionActorBase {
             parentType: "discussion",
             type: "comment",
         };
+    }
+    async createComment(body) {
+        const targetComment = await this.getData();
+        const { repository } = await this.octokit.graphql(`
+				query($owner: String!, $repo: String!, $number: Int!) {
+					repository(owner: $owner, name: $repo) {
+						discussion(number: $number) {
+							id
+						}
+					}
+				}
+			`, {
+            number: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
+        });
+        const discussionId = repository.discussion.id;
+        const commentResponse = await this.octokit.graphql(`
+				mutation($body: String!, $discussionId: ID!) {
+					addDiscussionReply(input: {
+						discussionId: $discussionId,
+						replyToId: $replyToId,
+						body: $body
+					}) {
+						comment {
+							body
+							url
+						}
+					}
+				}
+			`, {
+            body,
+            discussionId,
+            replyToId: targetComment.node_id,
+        });
+        return commentResponse.addDiscussionComment.comment.url;
     }
     async getData() {
         const comments = await this.listComments();
@@ -96340,6 +96376,7 @@ async function runOctoGuideAction(context) {
         githubToken: core.getInput("github-token"),
         url: target.html_url,
     });
+    core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
     if (reports.length) {
         core.info(`Found ${reports.length.toString()} report(s).`);
         console.log(cliReporter(reports));
