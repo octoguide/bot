@@ -29,7 +29,6 @@ export interface DiscussionData {
 	html_url: string;
 	number: number;
 	title: string;
-	url: string;
 	user: { login: string };
 }
 
