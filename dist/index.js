@@ -1,5 +1,6 @@
 globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
 globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
+globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
