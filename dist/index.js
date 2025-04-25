@@ -96231,6 +96231,7 @@ function markdownReporter(entity, reports) {
 
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
 function createCommentIdentifier(entity) {
+    console.log("Creating comment identifier for:", entity);
     return `<!-- OctoGuide response for: ${entity.data.url} -->`;
 }
 
