@@ -80,19 +80,19 @@ export abstract class DiscussionActorBase<
 	async updateComment(id: number, newBody: string) {
 		await this.octokit.graphql(
 			`
-			mutation($body: String!, $commentId: ID!) {
-				updateDiscussionComment(input: {
-					body: $body,
-					commentId: $commentId
-				}) {
-					comment {
-						id
-						body
-						updatedAt
+				mutation($body: String!, $commentId: ID!) {
+					updateDiscussionComment(input: {
+						body: $body,
+						commentId: $commentId
+					}) {
+						comment {
+							id
+							body
+							updatedAt
+						}
 					}
-				
-			}
-		`,
+				}
+			`,
 			{
 				body: newBody,
 				commentId: id,

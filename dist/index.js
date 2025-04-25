@@ -94023,19 +94023,19 @@ class DiscussionActorBase extends EntityActorBase {
     }
     async updateComment(id, newBody) {
         await this.octokit.graphql(`
-			mutation($body: String!, $commentId: ID!) {
-				updateDiscussionComment(input: {
-					body: $body,
-					commentId: $commentId
-				}) {
-					comment {
-						id
-						body
-						updatedAt
+				mutation($body: String!, $commentId: ID!) {
+					updateDiscussionComment(input: {
+						body: $body,
+						commentId: $commentId
+					}) {
+						comment {
+							id
+							body
+							updatedAt
+						}
 					}
-				
-			}
-		`, {
+				}
+			`, {
             body: newBody,
             commentId: id,
         });
