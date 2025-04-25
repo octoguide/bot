@@ -10,6 +10,8 @@ import { getCommentForReports } from "./comments/setCommentForReports.js";
 export async function runOctoGuideAction(context: typeof github.context) {
 	const { payload } = context;
 
+	core.debug(`Full target payload: ${JSON.stringify(payload, null, 2)}`);
+
 	const target = (payload.discussion ??
 		payload.comment ??
 		payload.issue ??
