@@ -94033,10 +94033,8 @@ class DiscussionActor extends DiscussionActorBase {
 
 class DiscussionCommentActor extends DiscussionActorBase {
     metadata;
-    commentId;
     constructor(commentId, discussionNumber, locator, octokit) {
         super(discussionNumber, locator, octokit);
-        this.commentId = commentId;
         this.metadata = {
             commentId,
             parentNumber: discussionNumber,
@@ -94046,9 +94044,9 @@ class DiscussionCommentActor extends DiscussionActorBase {
     }
     async getData() {
         const comments = await this.listComments();
-        const comment = comments.find((comment) => comment.id === this.commentId);
+        const comment = comments.find((comment) => comment.id === this.metadata.commentId);
         if (!comment) {
-            throw new Error(`Could not find comment with id: ${this.commentId.toString()}`);
+            throw new Error(`Could not find comment with id: ${this.metadata.commentId.toString()}`);
         }
         return comment;
     }
@@ -94130,7 +94128,7 @@ class IssueLikeCommentActor extends IssueLikeActorBase {
     }
     async getData() {
         const { data } = await this.octokit.rest.issues.getComment({
-            comment_id: this.entityNumber,
+            comment_id: this.metadata.commentId,
             owner: this.locator.owner,
             repo: this.locator.repository,
         });

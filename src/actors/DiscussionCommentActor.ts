@@ -8,8 +8,6 @@ import { DiscussionActorBase } from "./DiscussionActorBase.js";
 export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 	readonly metadata: Omit<CommentEntity, "data">;
 
-	private commentId: number;
-
 	constructor(
 		commentId: number,
 		discussionNumber: number,
@@ -18,7 +16,6 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 	) {
 		super(discussionNumber, locator, octokit);
 
-		this.commentId = commentId;
 		this.metadata = {
 			commentId,
 			parentNumber: discussionNumber,
@@ -29,11 +26,13 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 
 	async getData() {
 		const comments = await this.listComments();
-		const comment = comments.find((comment) => comment.id === this.commentId);
+		const comment = comments.find(
+			(comment) => comment.id === this.metadata.commentId,
+		);
 
 		if (!comment) {
 			throw new Error(
-				`Could not find comment with id: ${this.commentId.toString()}`,
+				`Could not find comment with id: ${this.metadata.commentId.toString()}`,
 			);
 		}
 

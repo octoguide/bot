@@ -31,7 +31,7 @@ export class IssueLikeCommentActor extends IssueLikeActorBase<CommentData> {
 
 	async getData() {
 		const { data } = await this.octokit.rest.issues.getComment({
-			comment_id: this.entityNumber,
+			comment_id: this.metadata.commentId,
 			owner: this.locator.owner,
 			repo: this.locator.repository,
 		});
