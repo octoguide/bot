@@ -95924,7 +95924,11 @@ function markdownReporter(entity, reports) {
             ":",
             ruleReports.length > 1 ? "\n\n" : " ",
             ruleReports
-                .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
+                .map((report) => [
+                report.data.primary,
+                ...formatSecondary(report.data.secondary),
+                report.data.suggestion,
+            ].join("\n"))
                 .join("\n\n"),
             "\n",
             about.explanation.join(" "),
@@ -95937,7 +95941,7 @@ function markdownReporter(entity, reports) {
     return [
         "👋 Hi",
         entity.user ? ` @${entity.user} ` : "",
-        ", thanks for the ",
+        ", thanks for the",
         entityText,
         "! An automatic scan reported ",
         reports.length > 1 ? "concerns" : "a concern",
