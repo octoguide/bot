@@ -23,7 +23,7 @@ export async function getCommentForReports(
 
 	core.info(
 		existingComment
-			? `Found existing comment: ${existingComment.url}`
+			? `Found existing comment: ${existingComment.html_url}`
 			: "No existing comment found.",
 	);
 
@@ -32,7 +32,9 @@ export async function getCommentForReports(
 			core.info("Updating existing comment as passed.");
 			await updateExistingCommentAsPassed(actor, entity, existingComment);
 		}
-		return existingComment && { status: "existing", url: existingComment.url };
+		return (
+			existingComment && { status: "existing", url: existingComment.html_url }
+		);
 	}
 
 	if (existingComment) {
@@ -43,7 +45,7 @@ export async function getCommentForReports(
 			existingComment,
 			reports,
 		);
-		return { status: "existing", url: existingComment.url };
+		return { status: "existing", url: existingComment.html_url };
 	}
 
 	core.info("Creating existing comment for reports.");

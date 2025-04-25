@@ -96234,7 +96234,6 @@ function markdownReporter(entity, reports) {
 
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
 function createCommentIdentifier(entity) {
-    console.log("Creating comment identifier for:", entity);
     return `<!-- OctoGuide response for: ${entity.data.html_url} -->`;
 }
 
@@ -96264,7 +96263,6 @@ async function createNewCommentForReports(actor, entity, reports) {
 async function getExistingComment(actor, entity) {
     const commentIdentifier = createCommentIdentifier(entity);
     const comments = await actor.listComments();
-    console.log("Existing comments:", { comments });
     return comments.find((comment) => comment.body?.endsWith(commentIdentifier));
 }
 
@@ -96290,19 +96288,19 @@ async function updateExistingCommentForReports(actor, entity, existingComment, r
 async function getCommentForReports(actor, entity, reports) {
     const existingComment = await getExistingComment(actor, entity);
     core.info(existingComment
-        ? `Found existing comment: ${existingComment.url}`
+        ? `Found existing comment: ${existingComment.html_url}`
         : "No existing comment found.");
     if (!reports.length) {
         if (existingComment) {
             core.info("Updating existing comment as passed.");
             await updateExistingCommentAsPassed(actor, entity, existingComment);
         }
-        return existingComment && { status: "existing", url: existingComment.url };
+        return (existingComment && { status: "existing", url: existingComment.html_url });
     }
     if (existingComment) {
         core.info("Updating existing comment for reports.");
         await updateExistingCommentForReports(actor, entity, existingComment, reports);
-        return { status: "existing", url: existingComment.url };
+        return { status: "existing", url: existingComment.html_url };
     }
     core.info("Creating existing comment for reports.");
     const newCommentUrl = await createNewCommentForReports(actor, entity, reports);

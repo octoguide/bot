@@ -7,6 +7,5 @@ export async function getExistingComment(actor: EntityActor, entity: Entity) {
 	const commentIdentifier = createCommentIdentifier(entity);
 	const comments = await actor.listComments();
 
-	console.log("Existing comments:", { comments });
 	return comments.find((comment) => comment.body?.endsWith(commentIdentifier));
 }
