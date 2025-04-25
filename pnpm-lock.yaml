@@ -29,9 +29,6 @@ importers:
       conventional-commits-parser:
         specifier: ^6.1.0
         version: 6.1.0
-      core-js:
-        specifier: ^3.41.0
-        version: 3.41.0
       is-comment-meaningless:
         specifier: ^0.1.0
         version: 0.1.0
@@ -1617,9 +1614,6 @@ packages:
     resolution: {integrity: sha512-RK/fUnc2btot0oEVtrj3p2doImDSs7iiz/bftFCDzels0Qs1mxLghp+DFHMaOC0qiCI6sWzlTDyBFSYuot6pRA==}
     engines: {node: '>=18'}
     hasBin: true
-
-  core-js@3.41.0:
-    resolution: {integrity: sha512-SJ4/EHwS36QMJd6h/Rg+GyR4A5xE0FSI3eZ+iBVpfqf1x0eTSg1smWLHrA+2jQThZSh97fmSgFSU8B61nxosxA==}
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -4865,8 +4859,6 @@ snapshots:
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.1.0
       meow: 13.2.0
-
-  core-js@3.41.0: {}
 
   core-util-is@1.0.3: {}
 

@@ -45,7 +45,6 @@
 		"chalk": "^5.4.1",
 		"conventional-commit-types": "^3.0.0",
 		"conventional-commits-parser": "^6.1.0",
-		"core-js": "^3.41.0",
 		"is-comment-meaningless": "^0.1.0",
 		"lodash": "^4.17.21",
 		"markdownlint": "0.33.0",
