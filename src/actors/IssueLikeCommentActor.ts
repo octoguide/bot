@@ -13,7 +13,7 @@ export class IssueLikeCommentActor extends IssueLikeActorBase<CommentData> {
 	readonly metadata: Omit<CommentEntity, "data">;
 
 	constructor(
-		commentId: number,
+		commentNumber: number,
 		locator: RepositoryLocator,
 		octokit: Octokit,
 		parentNumber: number,
@@ -22,7 +22,7 @@ export class IssueLikeCommentActor extends IssueLikeActorBase<CommentData> {
 		super(parentNumber, locator, octokit);
 
 		this.metadata = {
-			commentId,
+			commentNumber,
 			parentNumber,
 			parentType,
 			type: "comment",
@@ -31,7 +31,7 @@ export class IssueLikeCommentActor extends IssueLikeActorBase<CommentData> {
 
 	async getData() {
 		const { data } = await this.octokit.rest.issues.getComment({
-			comment_id: this.metadata.commentId,
+			comment_id: this.metadata.commentNumber,
 			owner: this.locator.owner,
 			repo: this.locator.repository,
 		});

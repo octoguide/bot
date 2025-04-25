@@ -77,9 +77,26 @@ export abstract class DiscussionActorBase<
 		return response.data as CommentData[];
 	}
 
-	// eslint-disable-next-line @typescript-eslint/require-await
 	async updateComment(id: number, newBody: string) {
-		console.log("Blagh, I don't know how to do this:", { id, newBody });
-		throw new Error("Not implemented yet.");
+		await this.octokit.graphql(
+			`
+			mutation($body: String!, $commentId: ID!) {
+				updateDiscussionComment(input: {
+					body: $body,
+					commentId: $commentId
+				}) {
+					comment {
+						id
+						body
+						updatedAt
+					}
+				
+			}
+		`,
+			{
+				body: newBody,
+				commentId: id,
+			},
+		);
 	}
 }

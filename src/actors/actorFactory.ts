@@ -20,13 +20,13 @@ export function actorFactory(
 
 	const [, urlType, parentNumber] = matches;
 
-	const commentId = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
+	const commentNumber = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
 
 	switch (urlType) {
 		case "discussions":
-			return commentId
+			return commentNumber
 				? new DiscussionCommentActor(
-						+commentId,
+						+commentNumber,
 						+parentNumber,
 						locator,
 						octokit,
@@ -36,9 +36,9 @@ export function actorFactory(
 		case "issues":
 		case "pull": {
 			const parentType = urlType === "issues" ? "issue" : "pull_request";
-			return commentId
+			return commentNumber
 				? new IssueLikeCommentActor(
-						+commentId,
+						+commentNumber,
 						locator,
 						octokit,
 						+parentNumber,

@@ -94021,10 +94021,24 @@ class DiscussionActorBase extends EntityActorBase {
         });
         return response.data;
     }
-    // eslint-disable-next-line @typescript-eslint/require-await
     async updateComment(id, newBody) {
-        console.log("Blagh, I don't know how to do this:", { id, newBody });
-        throw new Error("Not implemented yet.");
+        await this.octokit.graphql(`
+			mutation($body: String!, $commentId: ID!) {
+				updateDiscussionComment(input: {
+					body: $body,
+					commentId: $commentId
+				}) {
+					comment {
+						id
+						body
+						updatedAt
+					}
+				
+			}
+		`, {
+            body: newBody,
+            commentId: id,
+        });
     }
 }
 
@@ -94054,10 +94068,10 @@ class DiscussionActor extends DiscussionActorBase {
 
 class DiscussionCommentActor extends DiscussionActorBase {
     metadata;
-    constructor(commentId, discussionNumber, locator, octokit) {
+    constructor(commentNumber, discussionNumber, locator, octokit) {
         super(discussionNumber, locator, octokit);
         this.metadata = {
-            commentId,
+            commentNumber,
             parentNumber: discussionNumber,
             parentType: "discussion",
             type: "comment",
@@ -94065,9 +94079,9 @@ class DiscussionCommentActor extends DiscussionActorBase {
     }
     async getData() {
         const comments = await this.listComments();
-        const comment = comments.find((comment) => comment.id === this.metadata.commentId);
+        const comment = comments.find((comment) => comment.id === this.metadata.commentNumber);
         if (!comment) {
-            throw new Error(`Could not find comment with id: ${this.metadata.commentId.toString()}`);
+            throw new Error(`Could not find comment with id: ${this.metadata.commentNumber.toString()}`);
         }
         return comment;
     }
@@ -94138,10 +94152,10 @@ class IssueLikeActor extends IssueLikeActorBase {
 
 class IssueLikeCommentActor extends IssueLikeActorBase {
     metadata;
-    constructor(commentId, locator, octokit, parentNumber, parentType) {
+    constructor(commentNumber, locator, octokit, parentNumber, parentType) {
         super(parentNumber, locator, octokit);
         this.metadata = {
-            commentId,
+            commentNumber,
             parentNumber,
             parentType,
             type: "comment",
@@ -94149,7 +94163,7 @@ class IssueLikeCommentActor extends IssueLikeActorBase {
     }
     async getData() {
         const { data } = await this.octokit.rest.issues.getComment({
-            comment_id: this.metadata.commentId,
+            comment_id: this.metadata.commentNumber,
             owner: this.locator.owner,
             repo: this.locator.repository,
         });
@@ -94168,17 +94182,17 @@ function actorFactory(locator, octokit, url) {
         return undefined;
     }
     const [, urlType, parentNumber] = matches;
-    const commentId = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
+    const commentNumber = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
     switch (urlType) {
         case "discussions":
-            return commentId
-                ? new DiscussionCommentActor(+commentId, +parentNumber, locator, octokit)
+            return commentNumber
+                ? new DiscussionCommentActor(+commentNumber, +parentNumber, locator, octokit)
                 : new DiscussionActor(+parentNumber, locator, octokit);
         case "issues":
         case "pull": {
             const parentType = urlType === "issues" ? "issue" : "pull_request";
-            return commentId
-                ? new IssueLikeCommentActor(+commentId, locator, octokit, +parentNumber, parentType)
+            return commentNumber
+                ? new IssueLikeCommentActor(+commentNumber, locator, octokit, +parentNumber, parentType)
                 : new IssueLikeActor(+parentNumber, parentType, locator, octokit);
         }
     }
