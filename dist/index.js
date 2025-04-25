@@ -95876,9 +95876,8 @@ const chalkStderr = createChalk({level: stderrColor ? stderrColor.level : 0});
 
 ;// CONCATENATED MODULE: ./src/reporters/formatSecondary.ts
 function formatSecondary(secondary) {
-    return (secondary ?? [])
-        .flatMap((line) => line.split("\n"))
-        .map((line) => `  ${line}`);
+    return (secondary ?? []).flatMap((line) => line.split("\n"));
+    // .map((line) => `  ${line}`);
 }
 
 ;// CONCATENATED MODULE: ./src/reporters/cli.ts
