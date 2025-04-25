@@ -2,7 +2,7 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
-import { runOctoGuide } from "../index.js";
+import { EntityData, runOctoGuide } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
 import { isKnownConfig } from "../rules/configs.js";
 import { getCommentForReports } from "./comments/setCommentForReports.js";
@@ -11,11 +11,11 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	const { payload } = context;
 
 	console.log("payload:", payload);
-	const target =
-		payload.discussion ??
+
+	const target = (payload.discussion ??
 		payload.comment ??
 		payload.issue ??
-		payload.pull_request;
+		payload.pull_request) as EntityData | undefined;
 	if (!target) {
 		throw new Error("Could not determine an entity to run OctoGuide on.");
 	}

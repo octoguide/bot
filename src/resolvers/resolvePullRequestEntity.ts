@@ -1,4 +1,4 @@
-import { Octokit } from "octokit";
+import type { Octokit } from "octokit";
 
 import type { RepositoryLocator } from "../types/data.js";
 import type { PullRequestEntity } from "../types/entities.js";

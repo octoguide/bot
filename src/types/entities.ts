@@ -21,6 +21,8 @@ export interface CommentEntity {
 	user?: string;
 }
 
+export type EntityData = Entity["data"];
+
 // https://github.com/github/rest-api-description/issues/4702
 // RestEndpointMethodTypes["discussions"]["get"]["response"]["data"];
 export interface DiscussionData {

@@ -1,4 +1,4 @@
-import { Octokit } from "octokit";
+import type { Octokit } from "octokit";
 import { describe, expect, it, vi } from "vitest";
 
 import type { Entity, IssueData } from "../../types/entities.js";

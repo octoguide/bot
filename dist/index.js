@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7804);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7664);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 7804:
+/***/ 7664:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -93987,7 +93987,20 @@ async function runRuleOnEntity(context, rule, entity) {
 // EXTERNAL MODULE: ./node_modules/.pnpm/parse-github-url@1.0.3/node_modules/parse-github-url/index.js
 var parse_github_url = __nccwpck_require__(8468);
 var parse_github_url_default = /*#__PURE__*/__nccwpck_require__.n(parse_github_url);
+;// CONCATENATED MODULE: ./src/resolvers/resolveDiscussionComment.ts
+async function resolveDiscussionComment(commentMatcher, discussionId, locator, octokit) {
+    // TODO: Retrieve all comments, not just the first page
+    // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
+    const commentsResponse = await octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
+        discussion_number: discussionId,
+        owner: locator.owner,
+        repo: locator.repository,
+    });
+    return commentsResponse.data.find(commentMatcher);
+}
+
 ;// CONCATENATED MODULE: ./src/resolvers/resolveDiscussionEntity.ts
+
 async function resolveDiscussionLikeEntity(id, locator, octokit, url) {
     const commentId = /#discussioncomment-(\d+)/.exec(url)?.[1];
     const response = await octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}", {
@@ -93998,14 +94011,7 @@ async function resolveDiscussionLikeEntity(id, locator, octokit, url) {
     // https://github.com/github/rest-api-description/issues/4702
     const discussionData = response.data;
     if (commentId) {
-        // TODO: Paginate for larger discussions:
-        // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
-        const commentsResponse = await octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
-            discussion_number: +id,
-            owner: locator.owner,
-            repo: locator.repository,
-        });
-        const commentData = commentsResponse.data.find((commentData) => commentData.id === +commentId);
+        const commentData = await resolveDiscussionComment((commentData) => commentData.id === +commentId, +id, locator, octokit);
         if (!commentData) {
             return undefined;
         }
@@ -96131,8 +96137,15 @@ async function createNewCommentForReports(entity, locator, octokit, reports) {
 
 ;// CONCATENATED MODULE: ./src/action/comments/getExistingComment.ts
 
+
 async function getExistingComment(entity, locator, octokit) {
+    const commentIdentifier = createCommentIdentifier(entity);
     const target = entity.type === "comment" ? entity.parent : entity.data;
+    // Discussions have their own special APIs
+    if (entity.type === "discussion" ||
+        (entity.type === "comment" && entity.parentType === "discussion")) {
+        return await resolveDiscussionComment((commentData) => !!commentData.body?.endsWith(commentIdentifier), target.number, locator, octokit);
+    }
     // TODO: Retrieve all pages, not just the first one
     // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
     const comments = await octokit.rest.issues.listComments({
@@ -96141,7 +96154,7 @@ async function getExistingComment(entity, locator, octokit) {
         per_page: 100,
         repo: locator.repository,
     });
-    return comments.data.find((comment) => comment.body?.endsWith(createCommentIdentifier(entity)));
+    return comments.data.find((comment) => comment.body?.endsWith(commentIdentifier));
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/updateExistingCommentAsPassed.ts
@@ -96208,10 +96221,10 @@ async function getCommentForReports(entity, locator, octokit, reports) {
 async function runOctoGuideAction(context) {
     const { payload } = context;
     console.log("payload:", payload);
-    const target = payload.discussion ??
+    const target = (payload.discussion ??
         payload.comment ??
         payload.issue ??
-        payload.pull_request;
+        payload.pull_request);
     if (!target) {
         throw new Error("Could not determine an entity to run OctoGuide on.");
     }

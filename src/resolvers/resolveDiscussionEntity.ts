@@ -1,4 +1,4 @@
-import { Octokit } from "octokit";
+import type { Octokit } from "octokit";
 
 import type { RepositoryLocator } from "../types/data.js";
 import type {
@@ -7,6 +7,8 @@ import type {
 	DiscussionData,
 	DiscussionEntity,
 } from "../types/entities.js";
+
+import { resolveDiscussionComment } from "./resolveDiscussionComment.js";
 
 export async function resolveDiscussionLikeEntity(
 	id: string,
@@ -29,19 +31,11 @@ export async function resolveDiscussionLikeEntity(
 	const discussionData = response.data as DiscussionData;
 
 	if (commentId) {
-		// TODO: Paginate for larger discussions:
-		// https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
-		const commentsResponse = await octokit.request(
-			"GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments",
-			{
-				discussion_number: +id,
-				owner: locator.owner,
-				repo: locator.repository,
-			},
-		);
-
-		const commentData = (commentsResponse.data as CommentData[]).find(
+		const commentData = await resolveDiscussionComment(
 			(commentData) => commentData.id === +commentId,
+			+id,
+			locator,
+			octokit,
 		);
 		if (!commentData) {
 			return undefined;

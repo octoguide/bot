@@ -1,4 +1,4 @@
-import { Octokit } from "octokit";
+import type { Octokit } from "octokit";
 import parseGitHubUrl from "parse-github-url";
 
 import type { RepositoryLocator } from "../types/data.js";
