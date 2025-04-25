@@ -85204,6 +85204,9 @@ __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __we
 /* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9318);
 
 
+console.log("env:", process.env);
+console.log("process.version:", process.version);
+console.log("process.versions:", process.versions);
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
 
 __webpack_async_result__();
