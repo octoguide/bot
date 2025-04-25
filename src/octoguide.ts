@@ -10,7 +10,6 @@ import type { RuleContext, RuleReport } from "./types/rules.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
 import { resolveLintable } from "./resolvers/resolveEntity.js";
 import { configs } from "./rules/configs.js";
-import { rules } from "./rules/all.js";
 
 export interface OctoGuideResult {
 	entity: Entity;
