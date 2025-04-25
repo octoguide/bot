@@ -95877,7 +95877,6 @@ const chalkStderr = createChalk({level: stderrColor ? stderrColor.level : 0});
 ;// CONCATENATED MODULE: ./src/reporters/formatSecondary.ts
 function formatSecondary(secondary) {
     return (secondary ?? []).flatMap((line) => line.split("\n"));
-    // .map((line) => `  ${line}`);
 }
 
 ;// CONCATENATED MODULE: ./src/reporters/cli.ts
@@ -95914,13 +95913,17 @@ function formatReport(report) {
     const secondaryLines = formatSecondary(report.data.secondary);
     return [
         report.data.primary,
+        "<!--A-->",
         secondaryLines.length > 0
             ? /^\w/.test(secondaryLines[0])
                 ? " "
                 : "\n\n"
             : "",
+        "<!--B-->",
         secondaryLines.join("\n"),
+        "<!--C-->",
         /^\w/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n\n",
+        "<!--D-->",
         report.data.suggestion.join("\n"),
     ].join("");
 }
