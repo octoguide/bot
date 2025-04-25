@@ -85276,7 +85276,7 @@ const commentMeaningless = {
         // TODO: tailor the messaging once we get a reason
         // https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
         context.report({
-            primary: `Saying just '${text}' is unnecessary; it doesn't add any new information to the discussion.`,
+            primary: `Saying just _"${text}"_ is unnecessary; it doesn't add any new information to the discussion.`,
             suggestion: [
                 `To resolve this report:`,
                 `* If you have new information that'll help the discussion, edit it into the comment`,
@@ -95917,7 +95917,11 @@ function formatReport(report) {
     const secondaryLines = formatSecondary(report.data.secondary);
     return [
         report.data.primary,
-        " ",
+        secondaryLines.length > 0
+            ? /^\w+/.test(secondaryLines[0])
+                ? " "
+                : "\n"
+            : "",
         secondaryLines.join("\n"),
         /^\w+/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n",
         report.data.suggestion.join("\n"),
