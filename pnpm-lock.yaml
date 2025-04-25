@@ -30,8 +30,8 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0
       is-comment-meaningless:
-        specifier: ^0.1.0
-        version: 0.1.0
+        specifier: ^0.2.0
+        version: 0.2.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -2222,8 +2222,8 @@ packages:
   is-alphanumerical@2.0.1:
     resolution: {integrity: sha512-hmbYhX/9MUMF5uh7tOXyK/n0ZvWpad5caBA17GsC6vyuCqaWliRG5K1qS9inmUhEMaOBIW7/whAnSwveW/LtZw==}
 
-  is-comment-meaningless@0.1.0:
-    resolution: {integrity: sha512-eESLuyfnBSioMk+jxt9LIQ70DtUxQLj41YvXXMxDB+Q0Gzl1Q857grw9lj224pLBLdYD6cnnrv+j91CHzjFW3Q==}
+  is-comment-meaningless@0.2.0:
+    resolution: {integrity: sha512-jZQGtaA7hy/skaJIcP2TbHTaUHJfWvPbh66wJbV/1G8tbkl4lsKa5/PainyN1J/Gi5vEcYInc3psqHahcqXW9w==}
     engines: {node: '>=18.3.0'}
 
   is-decimal@1.0.4:
@@ -5568,7 +5568,7 @@ snapshots:
       is-alphabetical: 2.0.1
       is-decimal: 2.0.1
 
-  is-comment-meaningless@0.1.0: {}
+  is-comment-meaningless@0.2.0: {}
 
   is-decimal@1.0.4: {}
 
