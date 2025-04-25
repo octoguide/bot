@@ -6,35 +6,59 @@ interface CreateCommentResponse {
 	data: unknown;
 }
 
+interface DiscussionResponse {
+	repository: {
+		discussion: {
+			id: string;
+		};
+	};
+}
+
 export abstract class DiscussionActorBase<
 	Data extends CommentData | DiscussionData,
 > extends EntityActorBase<Data> {
 	async createComment(body: string) {
-		const response = await this.octokit.graphql<CreateCommentResponse>(
+		const { repository } = await this.octokit.graphql<DiscussionResponse>(
 			`
-			mutation($body: String!, $discussionId: ID!) {
-			  addDiscussionComment(input: {
-				discussionId: $discussionId,
-				body: $body
-			  }) {
-				comment {
-				  id
-				  body
-				  author {
-					login
-				  }
+				query($owner: String!, $repo: String!, $number: Int!) {
+				repository(owner: $owner, name: $repo) {
+						discussion(number: $number) {
+						id
+						}
+					}
 				}
-			  }
-			}
-		  `,
+			`,
 			{
-				body,
-				discussionId: this.entityNumber,
+				number: this.entityNumber,
+				owner: this.locator.owner,
+				repo: this.locator.repository,
 			},
 		);
 
-		console.log("response:", response);
-		return response.data as CommentData;
+		const discussionId = repository.discussion.id;
+
+		const commentResponse = await this.octokit.graphql<CreateCommentResponse>(
+			`
+				mutation($body: String!, $discussionId: ID!) {
+					addDiscussionComment(input: {
+						discussionId: $discussionId,
+						body: $body
+					}) {
+						comment {
+							id
+							body
+							author {
+								login
+							}
+						}
+					}
+				}
+			`,
+			{ body, discussionId },
+		);
+
+		console.log("response:", commentResponse);
+		return commentResponse.data as CommentData;
 	}
 
 	async listComments() {

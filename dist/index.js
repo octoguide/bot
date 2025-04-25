@@ -93982,27 +93982,38 @@ class EntityActorBase {
 
 class DiscussionActorBase extends EntityActorBase {
     async createComment(body) {
-        const response = await this.octokit.graphql(`
-			mutation($body: String!, $discussionId: ID!) {
-			  addDiscussionComment(input: {
-				discussionId: $discussionId,
-				body: $body
-			  }) {
-				comment {
-				  id
-				  body
-				  author {
-					login
-				  }
+        const { repository } = await this.octokit.graphql(`
+				query($owner: String!, $repo: String!, $number: Int!) {
+				repository(owner: $owner, name: $repo) {
+						discussion(number: $number) {
+						id
+						}
+					}
 				}
-			  }
-			}
-		  `, {
-            body,
-            discussionId: this.entityNumber,
+			`, {
+            number: this.entityNumber,
+            owner: this.locator.owner,
+            repo: this.locator.repository,
         });
-        console.log("response:", response);
-        return response.data;
+        const discussionId = repository.discussion.id;
+        const commentResponse = await this.octokit.graphql(`
+				mutation($body: String!, $discussionId: ID!) {
+					addDiscussionComment(input: {
+						discussionId: $discussionId,
+						body: $body
+					}) {
+						comment {
+							id
+							body
+							author {
+								login
+							}
+						}
+					}
+				}
+			`, { body, discussionId });
+        console.log("response:", commentResponse);
+        return commentResponse.data;
     }
     async listComments() {
         // TODO: Retrieve all comments, not just the first page
