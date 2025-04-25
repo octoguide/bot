@@ -95908,11 +95908,13 @@ function markdownReporter(entity, reports) {
         ? `[${entityAlias}](${entity.data.url})`
         : entityAlias;
     return [
-        "👋",
+        "👋 Hi",
         entity.user ? ` @${entity.user} ` : "",
-        "automated checks reported on ",
+        "!, thanks for the ",
         entityText,
-        ". Could you please take a look?\n\n",
+        "! An automatic scan reported ",
+        reports.length > 1 ? "concerns" : "a concern",
+        " with it. Could you please take a look?\n\n",
         printedReports.join("\n\n"),
     ].join("");
 }
