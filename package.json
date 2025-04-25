@@ -91,7 +91,7 @@
 	},
 	"packageManager": "pnpm@10.8.0",
 	"engines": {
-		"node": ">=22.14.0"
+		"node": ">=20.19.0"
 	},
 	"publishConfig": {
 		"provenance": true

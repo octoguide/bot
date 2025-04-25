@@ -1,6 +1,5 @@
 import type { Octokit } from "octokit";
 
-import * as core from "@actions/core";
 import { octokitFromAuth } from "octokit-from-auth";
 
 import type { RepositoryLocator } from "./types/data.js";
