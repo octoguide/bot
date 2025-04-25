@@ -47,54 +47,7 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 			? await this.getCommentWithNumber(data.parent_id)
 			: data;
 
-		const { repository } = await this.octokit.graphql<GetDiscussionResponse>(
-			`
-				query($owner: String!, $repo: String!, $number: Int!) {
-					repository(owner: $owner, name: $repo) {
-						discussion(number: $number) {
-							id
-						}
-					}
-				}
-			`,
-			{
-				number: this.entityNumber,
-				owner: this.locator.owner,
-				repo: this.locator.repository,
-			},
-		);
-
-		const discussionId = repository.discussion.id;
-
-		console.log("figuring out replyToId", {
-			data,
-			repository,
-			threadComment,
-		});
-
-		const commentResponse = await this.octokit.graphql<CreateCommentResponse>(
-			`
-				mutation($body: String!, $discussionId: ID!, $replyToId: ID!) {
-					addDiscussionComment(input: {
-						discussionId: $discussionId,
-						replyToId: $replyToId,
-						body: $body
-					}) {
-						comment {
-							body
-							url
-						}
-					}
-				}
-			`,
-			{
-				body,
-				discussionId,
-				replyToId: threadComment.node_id,
-			},
-		);
-
-		return commentResponse.addDiscussionComment.comment.url;
+		return await this.createCommentResponse(body, threadComment.node_id);
 	}
 
 	async getData() {
