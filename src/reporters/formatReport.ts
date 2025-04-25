@@ -9,11 +9,11 @@ export function formatReport(report: RuleReport) {
 		report.data.primary,
 		secondaryLines.length > 0
 			? /^\w+/.test(secondaryLines[0])
-				? " "
-				: "\n"
+				? "\n"
+				: " "
 			: "",
 		secondaryLines.join("\n"),
-		/^\w+/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n",
+		/^\w+/.test(secondaryLines[secondaryLines.length - 1]) ? "\n" : " ",
 		report.data.suggestion.join("\n"),
 	].join("");
 }
