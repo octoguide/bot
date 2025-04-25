@@ -33,7 +33,7 @@ export abstract class IssueLikeActorBase<
 			repo: this.locator.repository,
 		});
 
-		return response.data;
+		return response.data.html_url;
 	}
 
 	abstract getData(): Promise<Data>;

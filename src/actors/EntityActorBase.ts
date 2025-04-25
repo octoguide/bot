@@ -23,7 +23,7 @@ export abstract class EntityActorBase<Data extends EntityData>
 		this.octokit = octokit;
 	}
 
-	abstract createComment(body: string): Promise<CommentData>;
+	abstract createComment(body: string): Promise<string>;
 	abstract getData(): Promise<Data>;
 	abstract listComments(): Promise<CommentData[]>;
 	abstract updateComment(id: number, newBody: string): Promise<void>;

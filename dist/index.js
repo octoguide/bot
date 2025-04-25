@@ -94003,17 +94003,13 @@ class DiscussionActorBase extends EntityActorBase {
 						body: $body
 					}) {
 						comment {
-							id
 							body
-							author {
-								login
-							}
+							html_url
 						}
 					}
 				}
 			`, { body, discussionId });
-        console.log("response:", commentResponse);
-        return commentResponse.data;
+        return commentResponse.addDiscussionComment.comment.html_url;
     }
     async listComments() {
         // TODO: Retrieve all comments, not just the first page
@@ -94094,7 +94090,7 @@ class IssueLikeActorBase {
             owner: this.locator.owner,
             repo: this.locator.repository,
         });
-        return response.data;
+        return response.data.html_url;
     }
     async listComments() {
         // TODO: Retrieve all pages, not just the first one
@@ -96288,11 +96284,11 @@ async function getCommentForReports(actor, entity, reports) {
         return { status: "existing", url: existingComment.url };
     }
     core.info("Creating existing comment for reports.");
-    const newComment = await createNewCommentForReports(actor, entity, reports);
-    core.info(`Created new comment: ${newComment.url}`);
+    const newCommentUrl = await createNewCommentForReports(actor, entity, reports);
+    core.info(`Created new comment: ${newCommentUrl}`);
     return {
         status: "created",
-        url: newComment.url,
+        url: newCommentUrl,
     };
 }
 

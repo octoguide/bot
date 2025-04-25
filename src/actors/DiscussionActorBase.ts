@@ -3,7 +3,12 @@ import type { CommentData, DiscussionData } from "../types/entities.js";
 import { EntityActorBase } from "./EntityActorBase.js";
 
 interface CreateCommentResponse {
-	data: unknown;
+	addDiscussionComment: {
+		comment: {
+			body: string;
+			html_url: string;
+		};
+	};
 }
 
 interface DiscussionResponse {
@@ -45,11 +50,8 @@ export abstract class DiscussionActorBase<
 						body: $body
 					}) {
 						comment {
-							id
 							body
-							author {
-								login
-							}
+							html_url
 						}
 					}
 				}
@@ -57,8 +59,7 @@ export abstract class DiscussionActorBase<
 			{ body, discussionId },
 		);
 
-		console.log("response:", commentResponse);
-		return commentResponse.data as CommentData;
+		return commentResponse.addDiscussionComment.comment.html_url;
 	}
 
 	async listComments() {

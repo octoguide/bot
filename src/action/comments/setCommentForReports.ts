@@ -47,11 +47,15 @@ export async function getCommentForReports(
 	}
 
 	core.info("Creating existing comment for reports.");
-	const newComment = await createNewCommentForReports(actor, entity, reports);
-	core.info(`Created new comment: ${newComment.url}`);
+	const newCommentUrl = await createNewCommentForReports(
+		actor,
+		entity,
+		reports,
+	);
+	core.info(`Created new comment: ${newCommentUrl}`);
 
 	return {
 		status: "created",
-		url: newComment.url,
+		url: newCommentUrl,
 	};
 }
