@@ -36,8 +36,6 @@ export async function runOctoGuide({
 		throw new Error("Could not resolve GitHub entity.");
 	}
 
-	core.info(`Resolved entity at url: ${resolved.entity.data.url}`);
-
 	const { entity, locator } = resolved;
 	const reports: RuleReport[] = [];
 

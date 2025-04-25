@@ -1,5 +1,5 @@
 import { runOctoGuide } from "./index.js";
-import { cliReporter } from "./reporters/cli.js";
+import { cliReporter } from "./reporters/cliReporter.js";
 
 export async function cli(url: string) {
 	if (!url) {
@@ -10,5 +10,5 @@ export async function cli(url: string) {
 
 	const { reports } = await runOctoGuide({ url });
 
-	cliReporter(reports);
+	console.log(cliReporter(reports));
 }

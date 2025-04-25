@@ -7,17 +7,15 @@ import { formatReport } from "./formatReport.js";
 
 export function cliReporter(reports: RuleReport[]) {
 	if (!reports.length) {
-		console.log(`Found ${chalk.green("0")} reports. Great! ✅`);
-		return;
+		return `Found ${chalk.green("0")} reports. Great! ✅`;
 	}
 
-	console.log("");
-
 	const byRule = groupBy(reports, (report) => report.about.name);
+	const lines: string[] = [""];
 
 	for (const ruleReports of Object.values(byRule)) {
 		const { about } = ruleReports[0];
-		console.log(
+		lines.push(
 			[
 				chalk.blue("["),
 				chalk.cyanBright(about.name),
@@ -26,18 +24,30 @@ export function cliReporter(reports: RuleReport[]) {
 			].join(""),
 		);
 
-		for (const report of ruleReports) {
-			console.log(formatReport(report, about.explanation));
-			console.log(
-				chalk.gray(
-					`Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${report.about.name}.md`,
-				),
+		if (ruleReports.length > 1) {
+			lines.push(
+				[
+					about.explanation.join(" "),
+					"\n\n",
+					ruleReports.map((report) => formatReport(report)).join("\n\n"),
+				].join(""),
 			);
-			console.log("");
+		} else {
+			lines.push(
+				[
+					ruleReports
+						.map((report) => formatReport(report, about.explanation))
+						.join("\n\n"),
+				].join(""),
+			);
 		}
+
+		lines.push("");
 	}
 
-	console.log(
+	lines.push(
 		`Found ${chalk.red(reports.length)} issue${reports.length > 1 ? "s" : ""}.\n`,
 	);
+
+	return lines.join("\n");
 }

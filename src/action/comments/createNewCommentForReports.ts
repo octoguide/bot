@@ -6,7 +6,7 @@ import type { RepositoryLocator } from "../../types/data.js";
 import type { Entity } from "../../types/entities.js";
 import type { RuleReport } from "../../types/rules.js";
 
-import { markdownReporter } from "../../reporters/markdown.js";
+import { markdownReporter } from "../../reporters/markdownReporter.js";
 import { createCommentBody } from "./createCommentBody.js";
 
 export async function createNewCommentForReports(

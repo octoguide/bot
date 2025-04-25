@@ -3,7 +3,7 @@ import type * as github from "@actions/github";
 import * as core from "@actions/core";
 
 import { runOctoGuide } from "../index.js";
-import { cliReporter } from "../reporters/cli.js";
+import { cliReporter } from "../reporters/cliReporter.js";
 import { getCommentForReports } from "./comments/setCommentForReports.js";
 
 export async function runOctoGuideAction(context: typeof github.context) {
@@ -27,7 +27,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	if (reports.length) {
 		core.info(`Found ${reports.length.toString()} report(s).`);
-		cliReporter(reports);
+		console.log(cliReporter(reports));
 	} else {
 		core.info("Found 0 reports. Great! ✅");
 	}
