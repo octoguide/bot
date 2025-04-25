@@ -95909,21 +95909,18 @@ function cliReporter(reports) {
 
 ;// CONCATENATED MODULE: ./src/reporters/formatReport.ts
 
-function formatReport(report) {
+function formatReport(report, explanation) {
     const secondaryLines = formatSecondary(report.data.secondary);
     return [
         report.data.primary,
-        "<!--A-->",
         secondaryLines.length > 0
             ? /^\w/.test(secondaryLines[0])
                 ? " "
                 : "\n\n"
             : "",
-        "<!--B-->",
         secondaryLines.join("\n"),
-        "<!--C-->",
         /^\w/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n\n",
-        "<!--D-->",
+        explanation ? explanation.join(" ") : "",
         report.data.suggestion.join("\n"),
     ].join("");
 }
@@ -95935,14 +95932,22 @@ function markdownReporter(entity, reports) {
     const byRule = groupBy(reports, (report) => report.about.name);
     const printedReports = Object.values(byRule).map((ruleReports) => {
         const { about } = ruleReports[0];
-        const url = `https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md`;
+        const start = `[[**${about.name}**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md})]`;
+        if (ruleReports.length > 1) {
+            return [
+                start,
+                "\n\n",
+                ruleReports.map((report) => formatReport(report)).join("\n\n"),
+                "\n",
+                about.explanation.join(" "),
+            ].join("");
+        }
         return [
-            `[**${about.name}**](${url})`,
-            ":",
-            ruleReports.length > 1 ? "\n\n" : " ",
-            ruleReports.map(formatReport).join("\n\n"),
-            "\n",
-            about.explanation.join(" "),
+            start,
+            " ",
+            ruleReports
+                .map((report) => formatReport(report, about.explanation))
+                .join("\n\n"),
         ].join("");
     });
     const entityAlias = entity.type.replace("_", " ");
