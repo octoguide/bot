@@ -14,7 +14,7 @@ export function formatReport(report: RuleReport, explanation?: string[]) {
 			: "",
 		secondaryLines.join("\n"),
 		/^\w/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n\n",
-		explanation ? explanation.join(" ") : "",
+		explanation ? `${explanation.join(" ")} ` : "",
 		report.data.suggestion.join("\n"),
 	].join("");
 }
