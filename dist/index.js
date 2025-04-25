@@ -1,6 +1,4 @@
 globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
@@ -93986,9 +93984,9 @@ class DiscussionActorBase extends EntityActorBase {
     async createComment(body) {
         const { repository } = await this.octokit.graphql(`
 				query($owner: String!, $repo: String!, $number: Int!) {
-				repository(owner: $owner, name: $repo) {
+					repository(owner: $owner, name: $repo) {
 						discussion(number: $number) {
-						id
+							id
 						}
 					}
 				}
@@ -94023,7 +94021,9 @@ class DiscussionActorBase extends EntityActorBase {
         });
         return response.data;
     }
-    async updateComment(id, newBody) {
+    async updateComment(number, newBody) {
+        const comments = await this.listComments();
+        console.log({ comments });
         await this.octokit.graphql(`
 				mutation($body: String!, $commentId: ID!) {
 					updateDiscussionComment(input: {
@@ -94039,7 +94039,7 @@ class DiscussionActorBase extends EntityActorBase {
 				}
 			`, {
             body: newBody,
-            commentId: id,
+            commentId: number,
         });
     }
 }
@@ -94119,10 +94119,10 @@ class IssueLikeActorBase {
         });
         return comments.data;
     }
-    async updateComment(id, newBody) {
+    async updateComment(number, newBody) {
         await this.octokit.rest.issues.updateComment({
             body: newBody,
-            comment_id: id,
+            comment_id: number,
             owner: this.locator.owner,
             repo: this.locator.repository,
         });
@@ -96260,6 +96260,7 @@ async function createNewCommentForReports(actor, entity, reports) {
 async function getExistingComment(actor, entity) {
     const commentIdentifier = createCommentIdentifier(entity);
     const comments = await actor.listComments();
+    console.log("Existing comments:", { comments });
     return comments.find((comment) => comment.body?.endsWith(commentIdentifier));
 }
 

@@ -54,7 +54,7 @@ export abstract class IssueLikeActorBase<
 	async updateComment(number: number, newBody: string) {
 		await this.octokit.rest.issues.updateComment({
 			body: newBody,
-			comment_id: +id,
+			comment_id: number,
 			owner: this.locator.owner,
 			repo: this.locator.repository,
 		});
