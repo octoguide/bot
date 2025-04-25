@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(8447);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7804);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 8447:
+/***/ 7804:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -85222,1112 +85222,6 @@ __nccwpck_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@1.11.1/node_modules/@actions/core/lib/core.js
 var core = __nccwpck_require__(9999);
-// EXTERNAL MODULE: ./node_modules/.pnpm/core-js@3.41.0/node_modules/core-js/proposals/array-grouping-v2.js
-var array_grouping_v2 = __nccwpck_require__(8729);
-// EXTERNAL MODULE: ./node_modules/.pnpm/lodash@4.17.21/node_modules/lodash/lodash.js
-var lodash = __nccwpck_require__(2594);
-var lodash_default = /*#__PURE__*/__nccwpck_require__.n(lodash);
-;// CONCATENATED MODULE: ./src/action/groupBy.ts
-// Object.groupBy is not a function
-// https://github.com/actions/runner/issues/3600
-
-
-// I promise this works.
-// eslint-disable-next-line @typescript-eslint/unbound-method
-const { groupBy } = (lodash_default());
-
-
-;// CONCATENATED MODULE: ./node_modules/.pnpm/is-comment-meaningless@0.1.0/node_modules/is-comment-meaningless/lib/index.js
-const knownMeaninglessPhrases = /* @__PURE__ */ new Set([
-  "",
-  "-1",
-  "+1",
-  "any update",
-  "any update on this",
-  "help",
-  "is this fixed",
-  "minus one",
-  "plus one"
-]);
-function isCommentMeaningless(raw) {
-  return knownMeaninglessPhrases.has(
-    raw.replaceAll(/[^a-z]+/gi, " ").replaceAll(/\s*please\s*/g, "").trim().toLowerCase()
-  );
-}
-
-
-;// CONCATENATED MODULE: ./src/rules/commentMeaningless.ts
-
-const commentMeaningless = {
-    about: {
-        config: "strict",
-        description: "Comments should be meaningful, not just '+1'-style bumps.",
-        explanation: [
-            `Replies containing just _"+1"_, _any update?"_, or other phrases without new information aren't helpful.`,
-            `They cause unnecessary notifications for other contributors and take up space.`,
-        ],
-        name: "comment-meaningless",
-    },
-    comment(context, entity) {
-        const text = entity.data.body;
-        if (!text || !isCommentMeaningless(text)) {
-            return;
-        }
-        // TODO: tailor the messaging once we get a reason
-        // https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
-        context.report({
-            primary: `Saying just _"${text}"_ doesn't add any new information to the discussion.`,
-            suggestion: [
-                `To resolve this report:`,
-                `* If you have new information that'll help the discussion, edit it into the comment`,
-                `* Otherwise, delete the comment and emoji react to the ${entity.parentType}`,
-            ],
-        });
-    },
-};
-
-;// CONCATENATED MODULE: ./src/rules/issueRequiredFieldsContent.ts
-const issueRequiredFieldsContent = {
-    about: {
-        config: "recommended",
-        description: "TODO",
-        explanation: [],
-        name: "issue-required-fields-content",
-    },
-    issue( /* context, entity */) {
-        // TODO...
-    },
-};
-
-;// CONCATENATED MODULE: ./src/rules/prBranchNonDefault.ts
-const prBranchNonDefault = {
-    about: {
-        config: "strict",
-        description: "PRs should not be sent from their head repository's default branch.",
-        explanation: [
-            `Sending a PR from a repository's default branch, commonly \`main\`, means that repository will have a hard time pulling in updates from the upstream repository.`,
-            `It's generally recommended to instead create a new branch per pull request.`,
-        ],
-        name: "pr-branch-non-default",
-    },
-    async pullRequest(context, entity) {
-        const { data } = await context.octokit.rest.repos.get({
-            owner: context.locator.owner,
-            repo: context.locator.repository,
-        });
-        if (entity.data.head.ref === data.default_branch) {
-            context.report({
-                primary: "This PR is sent from the head repository's default branch",
-                secondary: [
-                    `Sending a PR from a default branch means the head repository can't easily be updated after the PR is merged.`,
-                ],
-                suggestion: [
-                    "You'll need to:",
-                    "1. Create a new branch on your fork",
-                    "2. Send a new pull request from that branch",
-                    "3. Close this pull request",
-                ],
-            });
-        }
-    },
-};
-
-;// CONCATENATED MODULE: ./src/rules/prLinkedIssue.ts
-const prLinkedIssue = {
-    about: {
-        config: "strict",
-        description: "PRs should be linked as closing an issue.",
-        explanation: [
-            `This repository keeps to GitHub issues for discussing potential changes.`,
-            `Most or all changes should be marked as approved in an issue before a pull request is sent to resolve them.`,
-        ],
-        name: "pr-linked-issue",
-    },
-    async pullRequest(context, entity) {
-        const response = await context.octokit.graphql(`
-				query closingIssues($id: Int!, $owner: String!, $repository: String!) {
-					repository(owner: $owner, name: $repository) {
-						pullRequest(number: $id) {
-							closingIssuesReferences(first: 1) {
-								nodes {
-									number
-								}
-							}
-						}
-					}
-				}
-			`, {
-            id: entity.id,
-            owner: context.locator.owner,
-            repository: context.locator.repository,
-        });
-        if (response.repository.pullRequest.closingIssuesReferences.nodes.length) {
-            return;
-        }
-        context.report({
-            primary: "This pull request is not linked as closing any issues.",
-            suggestion: [
-                "To resolve this report:",
-                "* If this is a tiny documentation change that doesn't need an issue, you can ignore this report",
-                "* If there is a backing issue, add a 'fixes #...' link to the pull request body",
-                "* Otherwise, file an issue explaining what you'd like to happen",
-            ],
-        });
-    },
-};
-
-;// CONCATENATED MODULE: ./src/types/utils.ts
-async function wrapSafe(task) {
-    try {
-        return await task;
-    }
-    catch {
-        return undefined;
-    }
-}
-
-;// CONCATENATED MODULE: ./src/rules/prTaskCompletion.ts
-
-const prTaskCompletion = {
-    about: {
-        config: "recommended",
-        description: "Tasks lists from the pull request template should be [x] filled out.",
-        explanation: [
-            `This repository provides a set of tasks that pull request authors are expected to complete.`,
-            `Those tasks should be marked as completed with a \`[x]\` in the pull request description.`,
-        ],
-        name: "pr-conventional-title",
-    },
-    async pullRequest(context, entity) {
-        const templateResponse = await wrapSafe(context.octokit.rest.repos.getContent({
-            owner: context.locator.owner,
-            path: ".github/PULL_REQUEST_TEMPLATE.md",
-            repo: context.locator.repository,
-        }));
-        if (!templateResponse ||
-            Array.isArray(templateResponse.data) ||
-            templateResponse.data.type !== "file") {
-            return;
-        }
-        const template = Buffer.from(templateResponse.data.content, "base64").toString("utf-8");
-        const templateTasks = Array.from(template.matchAll(/[-*]\s*\[\s*\]\s*(.+)/g));
-        if (!templateTasks.length) {
-            return;
-        }
-        if (!entity.data.body) {
-            context.report({
-                primary: "This PR's body is empty, but there is a template with tasks to be done.",
-                suggestion: [
-                    "Please fill out the pull request template and make sure all the tasks are [x] checked.",
-                ],
-            });
-            return;
-        }
-        const bodyNormalized = normalizeWhitespace(entity.data.body);
-        const missingTasks = templateTasks
-            .filter((task) => !bodyNormalized.includes(normalizeWhitespace(task[0])
-            // Switch the "- [ ]" to "x"
-            .replace(/[-*]\[\]/, "[x]")
-            // Trim any swap-out text, like ": fixes #000"...
-            .split(/[:#]/)[0]))
-            .map((task) => task[0]);
-        if (!missingTasks.length) {
-            return;
-        }
-        context.report({
-            primary: "This PR's body is missing [x] checks on the following tasks from the PR template.",
-            secondary: missingTasks,
-            suggestion: [
-                "Please complete those tasks and mark the checks as [x] completed.",
-            ],
-        });
-    },
-};
-function normalizeWhitespace(text) {
-    return text.replaceAll(/[ \t]/g, "");
-}
-
-;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commit-types@3.0.0/node_modules/conventional-commit-types/index.json
-const conventional_commit_types_namespaceObject = /*#__PURE__*/JSON.parse('{"g":{"feat":{"description":"A new feature","title":"Features"},"fix":{"description":"A bug fix","title":"Bug Fixes"},"docs":{"description":"Documentation only changes","title":"Documentation"},"style":{"description":"Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)","title":"Styles"},"refactor":{"description":"A code change that neither fixes a bug nor adds a feature","title":"Code Refactoring"},"perf":{"description":"A code change that improves performance","title":"Performance Improvements"},"test":{"description":"Adding missing tests or correcting existing tests","title":"Tests"},"build":{"description":"Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)","title":"Builds"},"ci":{"description":"Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)","title":"Continuous Integrations"},"chore":{"description":"Other changes that don\'t modify src or test files","title":"Chores"},"revert":{"description":"Reverts a previous commit","title":"Reverts"}}}');
-;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/regex.js
-const nomatchRegex = /(?!.*)/;
-function join(parts, joiner) {
-    return parts
-        .map(val => val.trim())
-        .filter(Boolean)
-        .join(joiner);
-}
-function getNotesRegex(noteKeywords, notesPattern) {
-    if (!noteKeywords) {
-        return nomatchRegex;
-    }
-    const noteKeywordsSelection = join(noteKeywords, '|');
-    if (!notesPattern) {
-        return new RegExp(`^[\\s|*]*(${noteKeywordsSelection})[:\\s]+(.*)`, 'i');
-    }
-    return notesPattern(noteKeywordsSelection);
-}
-function getReferencePartsRegex(issuePrefixes, issuePrefixesCaseSensitive) {
-    if (!issuePrefixes) {
-        return nomatchRegex;
-    }
-    const flags = issuePrefixesCaseSensitive ? 'g' : 'gi';
-    return new RegExp(`(?:.*?)??\\s*([\\w-\\.\\/]*?)??(${join(issuePrefixes, '|')})([\\w-]*\\d+)`, flags);
-}
-function getReferencesRegex(referenceActions) {
-    if (!referenceActions) {
-        // matches everything
-        return /()(.+)/gi;
-    }
-    const joinedKeywords = join(referenceActions, '|');
-    return new RegExp(`(${joinedKeywords})(?:\\s+(.*?))(?=(?:${joinedKeywords})|$)`, 'gi');
-}
-/**
- * Make the regexes used to parse a commit.
- * @param options
- * @returns Regexes.
- */
-function getParserRegexes(options = {}) {
-    const notes = getNotesRegex(options.noteKeywords, options.notesPattern);
-    const referenceParts = getReferencePartsRegex(options.issuePrefixes, options.issuePrefixesCaseSensitive);
-    const references = getReferencesRegex(options.referenceActions);
-    return {
-        notes,
-        referenceParts,
-        references,
-        mentions: /@([\w-]+)/g,
-        url: /\b(?:https?):\/\/(?:www\.)?([-a-zA-Z0-9@:%_+.~#?&//=])+\b/
-    };
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVnZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvcmVnZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBS0EsTUFBTSxZQUFZLEdBQUcsUUFBUSxDQUFBO0FBRTdCLFNBQVMsSUFBSSxDQUFDLEtBQWUsRUFBRSxNQUFjO0lBQzNDLE9BQU8sS0FBSztTQUNULEdBQUcsQ0FBQyxHQUFHLENBQUMsRUFBRSxDQUFDLEdBQUcsQ0FBQyxJQUFJLEVBQUUsQ0FBQztTQUN0QixNQUFNLENBQUMsT0FBTyxDQUFDO1NBQ2YsSUFBSSxDQUFDLE1BQU0sQ0FBQyxDQUFBO0FBQ2pCLENBQUM7QUFFRCxTQUFTLGFBQWEsQ0FDcEIsWUFBa0MsRUFDbEMsWUFBb0Q7SUFFcEQsSUFBSSxDQUFDLFlBQVksRUFBRTtRQUNqQixPQUFPLFlBQVksQ0FBQTtLQUNwQjtJQUVELE1BQU0scUJBQXFCLEdBQUcsSUFBSSxDQUFDLFlBQVksRUFBRSxHQUFHLENBQUMsQ0FBQTtJQUVyRCxJQUFJLENBQUMsWUFBWSxFQUFFO1FBQ2pCLE9BQU8sSUFBSSxNQUFNLENBQUMsYUFBYSxxQkFBcUIsY0FBYyxFQUFFLEdBQUcsQ0FBQyxDQUFBO0tBQ3pFO0lBRUQsT0FBTyxZQUFZLENBQUMscUJBQXFCLENBQUMsQ0FBQTtBQUM1QyxDQUFDO0FBRUQsU0FBUyxzQkFBc0IsQ0FDN0IsYUFBbUMsRUFDbkMsMEJBQStDO0lBRS9DLElBQUksQ0FBQyxhQUFhLEVBQUU7UUFDbEIsT0FBTyxZQUFZLENBQUE7S0FDcEI7SUFFRCxNQUFNLEtBQUssR0FBRywwQkFBMEIsQ0FBQyxDQUFDLENBQUMsR0FBRyxDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUE7SUFFckQsT0FBTyxJQUFJLE1BQU0sQ0FBQyxtQ0FBbUMsSUFBSSxDQUFDLGFBQWEsRUFBRSxHQUFHLENBQUMsZ0JBQWdCLEVBQUUsS0FBSyxDQUFDLENBQUE7QUFDdkcsQ0FBQztBQUVELFNBQVMsa0JBQWtCLENBQ3pCLGdCQUFzQztJQUV0QyxJQUFJLENBQUMsZ0JBQWdCLEVBQUU7UUFDckIscUJBQXFCO1FBQ3JCLE9BQU8sVUFBVSxDQUFBO0tBQ2xCO0lBRUQsTUFBTSxjQUFjLEdBQUcsSUFBSSxDQUFDLGdCQUFnQixFQUFFLEdBQUcsQ0FBQyxDQUFBO0lBRWxELE9BQU8sSUFBSSxNQUFNLENBQUMsSUFBSSxjQUFjLHVCQUF1QixjQUFjLE1BQU0sRUFBRSxJQUFJLENBQUMsQ0FBQTtBQUN4RixDQUFDO0FBRUQ7Ozs7R0FJRztBQUNILE1BQU0sVUFBVSxnQkFBZ0IsQ0FDOUIsVUFBc0ksRUFBRTtJQUV4SSxNQUFNLEtBQUssR0FBRyxhQUFhLENBQUMsT0FBTyxDQUFDLFlBQVksRUFBRSxPQUFPLENBQUMsWUFBWSxDQUFDLENBQUE7SUFDdkUsTUFBTSxjQUFjLEdBQUcsc0JBQXNCLENBQUMsT0FBTyxDQUFDLGFBQWEsRUFBRSxPQUFPLENBQUMsMEJBQTBCLENBQUMsQ0FBQTtJQUN4RyxNQUFNLFVBQVUsR0FBRyxrQkFBa0IsQ0FBQyxPQUFPLENBQUMsZ0JBQWdCLENBQUMsQ0FBQTtJQUUvRCxPQUFPO1FBQ0wsS0FBSztRQUNMLGNBQWM7UUFDZCxVQUFVO1FBQ1YsUUFBUSxFQUFFLFlBQVk7UUFDdEIsR0FBRyxFQUFFLDJEQUEyRDtLQUNqRSxDQUFBO0FBQ0gsQ0FBQyJ9
-;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/utils.js
-const SCISSOR = '# ------------------------ >8 ------------------------';
-/**
- * Remove leading and trailing newlines.
- * @param input
- * @returns String without leading and trailing newlines.
- */
-function trimNewLines(input) {
-    // To escape ReDos we should escape String#replace with regex.
-    const matches = input.match(/[^\r\n]/);
-    if (typeof matches?.index !== 'number') {
-        return '';
-    }
-    const firstIndex = matches.index;
-    let lastIndex = input.length - 1;
-    while (input[lastIndex] === '\r' || input[lastIndex] === '\n') {
-        lastIndex--;
-    }
-    return input.substring(firstIndex, lastIndex + 1);
-}
-/**
- * Append a newline to a string.
- * @param src
- * @param line
- * @returns String with appended newline.
- */
-function appendLine(src, line) {
-    return src ? `${src}\n${line || ''}` : line || '';
-}
-/**
- * Creates a function that filters out comments lines.
- * @param char
- * @returns Comment filter function.
- */
-function getCommentFilter(char) {
-    return char
-        ? (line) => !line.startsWith(char)
-        : () => true;
-}
-/**
- * Select lines before the scissor.
- * @param lines
- * @returns Lines before the scissor.
- */
-function truncateToScissor(lines) {
-    const scissorIndex = lines.indexOf(SCISSOR);
-    if (scissorIndex === -1) {
-        return lines;
-    }
-    return lines.slice(0, scissorIndex);
-}
-/**
- * Filter out GPG sign lines.
- * @param line
- * @returns True if the line is not a GPG sign line.
- */
-function gpgFilter(line) {
-    return !line.match(/^\s*gpg:/);
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXRpbHMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvdXRpbHMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsTUFBTSxPQUFPLEdBQUcsd0RBQXdELENBQUE7QUFFeEU7Ozs7R0FJRztBQUNILE1BQU0sVUFBVSxZQUFZLENBQUMsS0FBYTtJQUN4Qyw4REFBOEQ7SUFFOUQsTUFBTSxPQUFPLEdBQUcsS0FBSyxDQUFDLEtBQUssQ0FBQyxTQUFTLENBQUMsQ0FBQTtJQUV0QyxJQUFJLE9BQU8sT0FBTyxFQUFFLEtBQUssS0FBSyxRQUFRLEVBQUU7UUFDdEMsT0FBTyxFQUFFLENBQUE7S0FDVjtJQUVELE1BQU0sVUFBVSxHQUFHLE9BQU8sQ0FBQyxLQUFLLENBQUE7SUFDaEMsSUFBSSxTQUFTLEdBQUcsS0FBSyxDQUFDLE1BQU0sR0FBRyxDQUFDLENBQUE7SUFFaEMsT0FBTyxLQUFLLENBQUMsU0FBUyxDQUFDLEtBQUssSUFBSSxJQUFJLEtBQUssQ0FBQyxTQUFTLENBQUMsS0FBSyxJQUFJLEVBQUU7UUFDN0QsU0FBUyxFQUFFLENBQUE7S0FDWjtJQUVELE9BQU8sS0FBSyxDQUFDLFNBQVMsQ0FBQyxVQUFVLEVBQUUsU0FBUyxHQUFHLENBQUMsQ0FBQyxDQUFBO0FBQ25ELENBQUM7QUFFRDs7Ozs7R0FLRztBQUNILE1BQU0sVUFBVSxVQUFVLENBQUMsR0FBa0IsRUFBRSxJQUF3QjtJQUNyRSxPQUFPLEdBQUcsQ0FBQyxDQUFDLENBQUMsR0FBRyxHQUFHLEtBQUssSUFBSSxJQUFJLEVBQUUsRUFBRSxDQUFDLENBQUMsQ0FBQyxJQUFJLElBQUksRUFBRSxDQUFBO0FBQ25ELENBQUM7QUFFRDs7OztHQUlHO0FBQ0gsTUFBTSxVQUFVLGdCQUFnQixDQUFDLElBQXdCO0lBQ3ZELE9BQU8sSUFBSTtRQUNULENBQUMsQ0FBQyxDQUFDLElBQVksRUFBRSxFQUFFLENBQUMsQ0FBQyxJQUFJLENBQUMsVUFBVSxDQUFDLElBQUksQ0FBQztRQUMxQyxDQUFDLENBQUMsR0FBRyxFQUFFLENBQUMsSUFBSSxDQUFBO0FBQ2hCLENBQUM7QUFFRDs7OztHQUlHO0FBQ0gsTUFBTSxVQUFVLGlCQUFpQixDQUFDLEtBQWU7SUFDL0MsTUFBTSxZQUFZLEdBQUcsS0FBSyxDQUFDLE9BQU8sQ0FBQyxPQUFPLENBQUMsQ0FBQTtJQUUzQyxJQUFJLFlBQVksS0FBSyxDQUFDLENBQUMsRUFBRTtRQUN2QixPQUFPLEtBQUssQ0FBQTtLQUNiO0lBRUQsT0FBTyxLQUFLLENBQUMsS0FBSyxDQUFDLENBQUMsRUFBRSxZQUFZLENBQUMsQ0FBQTtBQUNyQyxDQUFDO0FBRUQ7Ozs7R0FJRztBQUNILE1BQU0sVUFBVSxTQUFTLENBQUMsSUFBWTtJQUNwQyxPQUFPLENBQUMsSUFBSSxDQUFDLEtBQUssQ0FBQyxVQUFVLENBQUMsQ0FBQTtBQUNoQyxDQUFDIn0=
-;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/options.js
-const defaultOptions = {
-    noteKeywords: ['BREAKING CHANGE', 'BREAKING-CHANGE'],
-    issuePrefixes: ['#'],
-    referenceActions: [
-        'close',
-        'closes',
-        'closed',
-        'fix',
-        'fixes',
-        'fixed',
-        'resolve',
-        'resolves',
-        'resolved'
-    ],
-    headerPattern: /^(\w*)(?:\(([\w$@.\-*/ ]*)\))?: (.*)$/,
-    headerCorrespondence: [
-        'type',
-        'scope',
-        'subject'
-    ],
-    revertPattern: /^Revert\s"([\s\S]*)"\s*This reverts commit (\w*)\./,
-    revertCorrespondence: ['header', 'hash'],
-    fieldPattern: /^-(.*?)-$/
-};
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib3B0aW9ucy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9vcHRpb25zLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBLE1BQU0sQ0FBQyxNQUFNLGNBQWMsR0FBa0I7SUFDM0MsWUFBWSxFQUFFLENBQUMsaUJBQWlCLEVBQUUsaUJBQWlCLENBQUM7SUFDcEQsYUFBYSxFQUFFLENBQUMsR0FBRyxDQUFDO0lBQ3BCLGdCQUFnQixFQUFFO1FBQ2hCLE9BQU87UUFDUCxRQUFRO1FBQ1IsUUFBUTtRQUNSLEtBQUs7UUFDTCxPQUFPO1FBQ1AsT0FBTztRQUNQLFNBQVM7UUFDVCxVQUFVO1FBQ1YsVUFBVTtLQUNYO0lBQ0QsYUFBYSxFQUFFLHVDQUF1QztJQUN0RCxvQkFBb0IsRUFBRTtRQUNwQixNQUFNO1FBQ04sT0FBTztRQUNQLFNBQVM7S0FDVjtJQUNELGFBQWEsRUFBRSxvREFBb0Q7SUFDbkUsb0JBQW9CLEVBQUUsQ0FBQyxRQUFRLEVBQUUsTUFBTSxDQUFDO0lBQ3hDLFlBQVksRUFBRSxXQUFXO0NBQzFCLENBQUEifQ==
-;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/CommitParser.js
-
-
-
-/**
- * Helper to create commit object.
- * @param initialData - Initial commit data.
- * @returns Commit object with empty data.
- */
-function createCommitObject(initialData = {}) {
-    // @ts-expect-error: You can read properties from `Commit` without problems, but you can't assign object to this type. So here is helper for that.
-    return {
-        merge: null,
-        revert: null,
-        header: null,
-        body: null,
-        footer: null,
-        notes: [],
-        mentions: [],
-        references: [],
-        ...initialData
-    };
-}
-/**
- * Commit message parser.
- */
-class CommitParser_CommitParser {
-    options;
-    regexes;
-    lines = [];
-    lineIndex = 0;
-    commit = createCommitObject();
-    constructor(options = {}) {
-        this.options = {
-            ...defaultOptions,
-            ...options
-        };
-        this.regexes = getParserRegexes(this.options);
-    }
-    currentLine() {
-        return this.lines[this.lineIndex];
-    }
-    nextLine() {
-        return this.lines[this.lineIndex++];
-    }
-    isLineAvailable() {
-        return this.lineIndex < this.lines.length;
-    }
-    parseReference(input, action) {
-        const { regexes } = this;
-        if (regexes.url.test(input)) {
-            return null;
-        }
-        const matches = regexes.referenceParts.exec(input);
-        if (!matches) {
-            return null;
-        }
-        let [raw, repository = null, prefix, issue] = matches;
-        let owner = null;
-        if (repository) {
-            const slashIndex = repository.indexOf('/');
-            if (slashIndex !== -1) {
-                owner = repository.slice(0, slashIndex);
-                repository = repository.slice(slashIndex + 1);
-            }
-        }
-        return {
-            raw,
-            action,
-            owner,
-            repository,
-            prefix,
-            issue
-        };
-    }
-    parseReferences(input) {
-        const { regexes } = this;
-        const regex = input.match(regexes.references)
-            ? regexes.references
-            : /()(.+)/gi;
-        const references = [];
-        let matches;
-        let action;
-        let sentence;
-        let reference;
-        while (true) {
-            matches = regex.exec(input);
-            if (!matches) {
-                break;
-            }
-            action = matches[1] || null;
-            sentence = matches[2] || '';
-            while (true) {
-                reference = this.parseReference(sentence, action);
-                if (!reference) {
-                    break;
-                }
-                references.push(reference);
-            }
-        }
-        return references;
-    }
-    skipEmptyLines() {
-        let line = this.currentLine();
-        while (line !== undefined && !line.trim()) {
-            this.nextLine();
-            line = this.currentLine();
-        }
-    }
-    parseMerge() {
-        const { commit, options } = this;
-        const correspondence = options.mergeCorrespondence || [];
-        const merge = this.currentLine();
-        const matches = merge && options.mergePattern
-            ? merge.match(options.mergePattern)
-            : null;
-        if (matches) {
-            this.nextLine();
-            commit.merge = matches[0] || null;
-            correspondence.forEach((key, index) => {
-                commit[key] = matches[index + 1] || null;
-            });
-            return true;
-        }
-        return false;
-    }
-    parseHeader(isMergeCommit) {
-        if (isMergeCommit) {
-            this.skipEmptyLines();
-        }
-        const { commit, options } = this;
-        const correspondence = options.headerCorrespondence || [];
-        const header = commit.header ?? this.nextLine();
-        let matches = null;
-        if (header) {
-            if (options.breakingHeaderPattern) {
-                matches = header.match(options.breakingHeaderPattern);
-            }
-            if (!matches && options.headerPattern) {
-                matches = header.match(options.headerPattern);
-            }
-        }
-        if (header) {
-            commit.header = header;
-        }
-        if (matches) {
-            correspondence.forEach((key, index) => {
-                commit[key] = matches[index + 1] || null;
-            });
-        }
-    }
-    parseMeta() {
-        const { options, commit } = this;
-        if (!options.fieldPattern || !this.isLineAvailable()) {
-            return false;
-        }
-        let matches;
-        let field = null;
-        let parsed = false;
-        while (this.isLineAvailable()) {
-            matches = this.currentLine().match(options.fieldPattern);
-            if (matches) {
-                field = matches[1] || null;
-                this.nextLine();
-                continue;
-            }
-            if (field) {
-                parsed = true;
-                commit[field] = appendLine(commit[field], this.currentLine());
-                this.nextLine();
-            }
-            else {
-                break;
-            }
-        }
-        return parsed;
-    }
-    parseNotes() {
-        const { regexes, commit } = this;
-        if (!this.isLineAvailable()) {
-            return false;
-        }
-        const matches = this.currentLine().match(regexes.notes);
-        let references = [];
-        if (matches) {
-            const note = {
-                title: matches[1],
-                text: matches[2]
-            };
-            commit.notes.push(note);
-            commit.footer = appendLine(commit.footer, this.currentLine());
-            this.nextLine();
-            while (this.isLineAvailable()) {
-                if (this.parseMeta()) {
-                    return true;
-                }
-                if (this.parseNotes()) {
-                    return true;
-                }
-                references = this.parseReferences(this.currentLine());
-                if (references.length) {
-                    commit.references.push(...references);
-                }
-                else {
-                    note.text = appendLine(note.text, this.currentLine());
-                }
-                commit.footer = appendLine(commit.footer, this.currentLine());
-                this.nextLine();
-                if (references.length) {
-                    break;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-    parseBodyAndFooter(isBody) {
-        const { commit } = this;
-        if (!this.isLineAvailable()) {
-            return isBody;
-        }
-        const references = this.parseReferences(this.currentLine());
-        const isStillBody = !references.length && isBody;
-        if (isStillBody) {
-            commit.body = appendLine(commit.body, this.currentLine());
-        }
-        else {
-            commit.references.push(...references);
-            commit.footer = appendLine(commit.footer, this.currentLine());
-        }
-        this.nextLine();
-        return isStillBody;
-    }
-    parseBreakingHeader() {
-        const { commit, options } = this;
-        if (!options.breakingHeaderPattern || commit.notes.length || !commit.header) {
-            return;
-        }
-        const matches = commit.header.match(options.breakingHeaderPattern);
-        if (matches) {
-            commit.notes.push({
-                title: 'BREAKING CHANGE',
-                text: matches[3]
-            });
-        }
-    }
-    parseMentions(input) {
-        const { commit, regexes } = this;
-        let matches;
-        for (;;) {
-            matches = regexes.mentions.exec(input);
-            if (!matches) {
-                break;
-            }
-            commit.mentions.push(matches[1]);
-        }
-    }
-    parseRevert(input) {
-        const { commit, options } = this;
-        const correspondence = options.revertCorrespondence || [];
-        const matches = options.revertPattern
-            ? input.match(options.revertPattern)
-            : null;
-        if (matches) {
-            commit.revert = correspondence.reduce((meta, key, index) => {
-                meta[key] = matches[index + 1] || null;
-                return meta;
-            }, {});
-        }
-    }
-    cleanupCommit() {
-        const { commit } = this;
-        if (commit.body) {
-            commit.body = trimNewLines(commit.body);
-        }
-        if (commit.footer) {
-            commit.footer = trimNewLines(commit.footer);
-        }
-        commit.notes.forEach((note) => {
-            note.text = trimNewLines(note.text);
-        });
-    }
-    /**
-     * Parse commit message string into an object.
-     * @param input - Commit message string.
-     * @returns Commit object.
-     */
-    parse(input) {
-        if (!input.trim()) {
-            throw new TypeError('Expected a raw commit');
-        }
-        const commentFilter = getCommentFilter(this.options.commentChar);
-        const rawLines = trimNewLines(input).split(/\r?\n/);
-        const lines = truncateToScissor(rawLines).filter(line => commentFilter(line) && gpgFilter(line));
-        const commit = createCommitObject();
-        this.lines = lines;
-        this.lineIndex = 0;
-        this.commit = commit;
-        const isMergeCommit = this.parseMerge();
-        this.parseHeader(isMergeCommit);
-        if (commit.header) {
-            commit.references = this.parseReferences(commit.header);
-        }
-        let isBody = true;
-        while (this.isLineAvailable()) {
-            this.parseMeta();
-            if (this.parseNotes()) {
-                isBody = false;
-            }
-            if (!this.parseBodyAndFooter(isBody)) {
-                isBody = false;
-            }
-        }
-        this.parseBreakingHeader();
-        this.parseMentions(input);
-        this.parseRevert(input);
-        this.cleanupCommit();
-        return commit;
-    }
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiQ29tbWl0UGFyc2VyLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL0NvbW1pdFBhcnNlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFRQSxPQUFPLEVBQUUsZ0JBQWdCLEVBQUUsTUFBTSxZQUFZLENBQUE7QUFDN0MsT0FBTyxFQUNMLFlBQVksRUFDWixVQUFVLEVBQ1YsZ0JBQWdCLEVBQ2hCLFNBQVMsRUFDVCxpQkFBaUIsRUFDbEIsTUFBTSxZQUFZLENBQUE7QUFDbkIsT0FBTyxFQUFFLGNBQWMsRUFBRSxNQUFNLGNBQWMsQ0FBQTtBQUU3Qzs7OztHQUlHO0FBQ0gsTUFBTSxVQUFVLGtCQUFrQixDQUFDLGNBQStCLEVBQUU7SUFDbEUsa0pBQWtKO0lBQ2xKLE9BQU87UUFDTCxLQUFLLEVBQUUsSUFBSTtRQUNYLE1BQU0sRUFBRSxJQUFJO1FBQ1osTUFBTSxFQUFFLElBQUk7UUFDWixJQUFJLEVBQUUsSUFBSTtRQUNWLE1BQU0sRUFBRSxJQUFJO1FBQ1osS0FBSyxFQUFFLEVBQUU7UUFDVCxRQUFRLEVBQUUsRUFBRTtRQUNaLFVBQVUsRUFBRSxFQUFFO1FBQ2QsR0FBRyxXQUFXO0tBQ2YsQ0FBQTtBQUNILENBQUM7QUFFRDs7R0FFRztBQUNILE1BQU0sT0FBTyxZQUFZO0lBQ04sT0FBTyxDQUFlO0lBQ3RCLE9BQU8sQ0FBZTtJQUMvQixLQUFLLEdBQWEsRUFBRSxDQUFBO0lBQ3BCLFNBQVMsR0FBRyxDQUFDLENBQUE7SUFDYixNQUFNLEdBQUcsa0JBQWtCLEVBQUUsQ0FBQTtJQUVyQyxZQUFZLFVBQXlCLEVBQUU7UUFDckMsSUFBSSxDQUFDLE9BQU8sR0FBRztZQUNiLEdBQUcsY0FBYztZQUNqQixHQUFHLE9BQU87U0FDWCxDQUFBO1FBQ0QsSUFBSSxDQUFDLE9BQU8sR0FBRyxnQkFBZ0IsQ0FBQyxJQUFJLENBQUMsT0FBTyxDQUFDLENBQUE7SUFDL0MsQ0FBQztJQUVPLFdBQVc7UUFDakIsT0FBTyxJQUFJLENBQUMsS0FBSyxD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
-// EXTERNAL MODULE: external "stream"
-var external_stream_ = __nccwpck_require__(2203);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/stream.js
-
-
-/**
- * Create async generator function to parse async iterable of raw commits.
- * @param options - CommitParser options.
- * @returns Async generator function to parse async iterable of raw commits.
- */
-function parseCommits(options = {}) {
-    const warnOption = options.warn;
-    const warn = warnOption === true
-        ? (err) => {
-            throw err;
-        }
-        : warnOption
-            ? (err) => warnOption(err.toString())
-            : () => { };
-    return async function* parse(rawCommits) {
-        const parser = new CommitParser(options);
-        let rawCommit;
-        for await (rawCommit of rawCommits) {
-            try {
-                yield parser.parse(rawCommit.toString());
-            }
-            catch (err) {
-                warn(err);
-            }
-        }
-    };
-}
-/**
- * Create stream to parse commits.
- * @param options - CommitParser options.
- * @returns Stream of parsed commits.
- */
-function parseCommitsStream(options = {}) {
-    return Transform.from(parseCommits(options));
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3RyZWFtLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL3N0cmVhbS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxPQUFPLEVBQUUsU0FBUyxFQUFFLE1BQU0sUUFBUSxDQUFBO0FBRWxDLE9BQU8sRUFBRSxZQUFZLEVBQUUsTUFBTSxtQkFBbUIsQ0FBQTtBQUVoRDs7OztHQUlHO0FBQ0gsTUFBTSxVQUFVLFlBQVksQ0FDMUIsVUFBK0IsRUFBRTtJQUVqQyxNQUFNLFVBQVUsR0FBRyxPQUFPLENBQUMsSUFBSSxDQUFBO0lBQy9CLE1BQU0sSUFBSSxHQUFHLFVBQVUsS0FBSyxJQUFJO1FBQzlCLENBQUMsQ0FBQyxDQUFDLEdBQVUsRUFBRSxFQUFFO1lBQ2YsTUFBTSxHQUFHLENBQUE7UUFDWCxDQUFDO1FBQ0QsQ0FBQyxDQUFDLFVBQVU7WUFDVixDQUFDLENBQUMsQ0FBQyxHQUFVLEVBQUUsRUFBRSxDQUFDLFVBQVUsQ0FBQyxHQUFHLENBQUMsUUFBUSxFQUFFLENBQUM7WUFDNUMsQ0FBQyxDQUFDLEdBQUcsRUFBRSxHQUFjLENBQUMsQ0FBQTtJQUUxQixPQUFPLEtBQUssU0FBUyxDQUFDLENBQUMsS0FBSyxDQUMxQixVQUFzRTtRQUV0RSxNQUFNLE1BQU0sR0FBRyxJQUFJLFlBQVksQ0FBQyxPQUFPLENBQUMsQ0FBQTtRQUN4QyxJQUFJLFNBQTBCLENBQUE7UUFFOUIsSUFBSSxLQUFLLEVBQUUsU0FBUyxJQUFJLFVBQVUsRUFBRTtZQUNsQyxJQUFJO2dCQUNGLE1BQU0sTUFBTSxDQUFDLEtBQUssQ0FBQyxTQUFTLENBQUMsUUFBUSxFQUFFLENBQUMsQ0FBQTthQUN6QztZQUFDLE9BQU8sR0FBRyxFQUFFO2dCQUNaLElBQUksQ0FBQyxHQUFZLENBQUMsQ0FBQTthQUNuQjtTQUNGO0lBQ0gsQ0FBQyxDQUFBO0FBQ0gsQ0FBQztBQUVEOzs7O0dBSUc7QUFDSCxNQUFNLFVBQVUsa0JBQWtCLENBQUMsVUFBK0IsRUFBRTtJQUNsRSxPQUFPLFNBQVMsQ0FBQyxJQUFJLENBQUMsWUFBWSxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQUE7QUFDOUMsQ0FBQyJ9
-;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/index.js
-
-
-
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsY0FBYyxZQUFZLENBQUE7QUFDMUIsY0FBYyxtQkFBbUIsQ0FBQTtBQUNqQyxjQUFjLGFBQWEsQ0FBQSJ9
-;// CONCATENATED MODULE: ./src/rules/prTitleConventional.ts
-// Code inspired by pr-compliance-action:
-// https://github.com/mtfoley/pr-compliance-action/blob/bcb6dbea496e44a980f8d6d77af91b67f1eea68d/src/checks.ts
-
-
-const commitParser = new CommitParser_CommitParser();
-const prTitleConventional = {
-    about: {
-        config: "strict",
-        description: "PR titles should be in conventional commit format.",
-        explanation: [
-            `This repository asks that pull request titles start with a type in the [Conventional Commits](https://www.conventionalcommits.org) format.`,
-            `Doing so helps make the purpose of each pull request clear for humans and machines.`,
-        ],
-        name: "pr-conventional-title",
-    },
-    pullRequest(context, entity) {
-        const parsed = commitParser.parse(entity.data.title);
-        if (!parsed.type) {
-            context.report({
-                primary: `The PR title is missing a conventional commit type, such as _'docs: '_ or _'feat: '_:`,
-                suggestion: [
-                    parsed.subject
-                        ? `To resolve this report, add a conventional commit type in front of the title, like 'feat: ${parsed.subject}'.`
-                        : `To resolve this report, add a conventional commit type in front of the title.`,
-                ],
-            });
-            return;
-        }
-        if (!Object.hasOwn(conventional_commit_types_namespaceObject.g, parsed.type)) {
-            context.report({
-                primary: `The PR title has an unknown type: '${parsed.type}'.`,
-                secondary: [
-                    `Known types are: ${Object.keys(conventional_commit_types_namespaceObject.g)
-                        .sort()
-                        .map((type) => `'${type}'`)
-                        .join(", ")}`,
-                ],
-                suggestion: [
-                    parsed.subject
-                        ? `To resolve this report, replace the current PR type with one of those known types, like 'feat: ${parsed.subject}'.`
-                        : `To resolve this report, replace the current PR type with one of those known types.`,
-                ],
-            });
-            return;
-        }
-        if (!parsed.subject) {
-            context.report({
-                primary: `PR title is missing a subject after its type.`,
-                suggestion: [
-                    `To resolve this report, add text after the type, like '${parsed.type}: etc.'`,
-                ],
-            });
-            return;
-        }
-    },
-};
-
-;// CONCATENATED MODULE: external "fs/promises"
-const promises_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("fs/promises");
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-empty-alt-text.js
-const noEmptyStringAltRule = {
-  names: ["GH003", "no-empty-alt-text"],
-  description: "Please provide an alternative text for the image.",
-  information: new URL(
-    "https://github.com/github/markdownlint-github/blob/main/docs/rules/GH003-no-empty-alt-text.md",
-  ),
-  tags: ["accessibility", "images"],
-  function: function GH003(params, onError) {
-    const htmlTagsWithImages = params.parsers.markdownit.tokens.filter(
-      (token) => {
-        return (
-          (token.type === "html_block" && token.content.includes("<img")) ||
-          (token.type === "inline" &&
-            token.content.includes("<img") &&
-            token.children.some((child) => child.type === "html_inline"))
-        );
-      },
-    );
-
-    const ImageRegex = new RegExp(/<img(.*?)>/, "gid");
-    const htmlEmptyAltRegex = new RegExp(/alt=['"]['"]/, "gid");
-    for (const token of htmlTagsWithImages) {
-      const lineRange = token.map;
-      const lineNumber = token.lineNumber;
-      const lines = params.lines.slice(lineRange[0], lineRange[1]);
-
-      for (const [i, line] of lines.entries()) {
-        const imageTags = line.matchAll(ImageRegex);
-
-        for (const imageTag of imageTags) {
-          const imageTagIndex = imageTag.indices[0][0];
-
-          const emptyAltMatches = [
-            ...imageTag[0].matchAll(htmlEmptyAltRegex),
-          ][0];
-          if (emptyAltMatches) {
-            const matchingContent = emptyAltMatches[0];
-            const startIndex = emptyAltMatches.indices[0][0];
-            onError({
-              lineNumber: lineNumber + i,
-              range: [imageTagIndex + startIndex + 1, matchingContent.length],
-            });
-          }
-        }
-      }
-    }
-  },
-};
-
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/helpers/strip-and-downcase-text.js
-/* Downcase and strip extra whitespaces and punctuation */
-function stripAndDowncaseText(text) {
-  return text
-    .toLowerCase()
-    .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-generic-link-text.js
-
-
-const bannedLinkText = [
-  "read more",
-  "learn more",
-  "more",
-  "here",
-  "click here",
-  "link",
-];
-
-const noGenericLinkTextRule = {
-  names: ["GH002", "no-generic-link-text"],
-  description:
-    "Avoid using generic link text like `Learn more` or `Click here`",
-  information: new URL(
-    "https://github.com/github/markdownlint-github/blob/main/docs/rules/GH002-no-generic-link-text.md",
-  ),
-  tags: ["accessibility", "links"],
-  function: function GH002(params, onError) {
-    // markdown syntax
-    let bannedLinkTexts = bannedLinkText.concat(
-      params.config.additional_banned_texts || [],
-    );
-    const exceptions = params.config.exceptions || [];
-    if (exceptions.length > 0) {
-      bannedLinkTexts = bannedLinkTexts.filter(
-        (text) => !exceptions.includes(text),
-      );
-    }
-    const inlineTokens = params.tokens.filter((t) => t.type === "inline");
-    for (const token of inlineTokens) {
-      const { children } = token;
-      let inLink = false;
-      let linkText = "";
-
-      for (const child of children) {
-        const { content, type } = child;
-        if (type === "link_open") {
-          inLink = true;
-          linkText = "";
-        } else if (type === "link_close") {
-          inLink = false;
-          if (bannedLinkTexts.includes(stripAndDowncaseText(linkText))) {
-            onError({
-              lineNumber: child.lineNumber,
-              detail: `For link: ${linkText}`,
-            });
-          }
-        } else if (inLink) {
-          linkText += content;
-        }
-      }
-    }
-  },
-};
-
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-default-alt-text.js
-/**
- * Examples:
- * * "Screen Shot 2020-10-20 at 2 52 27 PM"
- * * "Screenshot 2020-10-20 at 2 52 27 PM"
- * * "Clean Shot 2020-10-20 @45x"
- * * "Screencast from 23 02 2024 19 15 19]"
- */
-const defaultScreenshotRegex =
-  "(?:screen|clean) ?(?:shot|cast) \\d{4}-\\d{2}-\\d{2}[^'\"\\]]*";
-
-const imageRegex = "image";
-const combinedRegex = `(${[defaultScreenshotRegex, imageRegex].join("|")})`;
-
-const markdownAltRegex = new RegExp(`!\\[${combinedRegex}\\]\\(.*\\)`, "gid");
-const htmlAltRegex = new RegExp(`alt=["']${combinedRegex}["']`, "gid");
-
-const altTextRule = {
-  names: ["GH001", "no-default-alt-text"],
-  description: "Images should have meaningful alternative text (alt text)",
-  information: new URL(
-    "https://github.com/github/markdownlint-github/blob/main/docs/rules/GH001-no-default-alt-text.md",
-  ),
-  tags: ["accessibility", "images"],
-  function: function GH001(params, onError) {
-    const htmlTagsWithImages = params.parsers.markdownit.tokens.filter(
-      (token) => {
-        return (
-          (token.type === "html_block" && token.content.includes("<img")) ||
-          (token.type === "inline" &&
-            token.content.includes("<img") &&
-            token.children.some((child) => child.type === "html_inline"))
-        );
-      },
-    );
-    const inlineImages = params.parsers.markdownit.tokens.filter(
-      (token) =>
-        token.type === "inline" &&
-        token.children.some((child) => child.type === "image"),
-    );
-
-    for (const token of [...htmlTagsWithImages, ...inlineImages]) {
-      const lineRange = token.map;
-      const lineNumber = token.lineNumber;
-      const lines = params.lines.slice(lineRange[0], lineRange[1]);
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        let matches;
-        if (token.type === "inline") {
-          if (token.children.some((child) => child.type === "html_inline")) {
-            matches = line.matchAll(htmlAltRegex);
-          } else {
-            matches = line.matchAll(markdownAltRegex);
-          }
-        } else {
-          matches = line.matchAll(htmlAltRegex);
-        }
-        for (const match of matches) {
-          const altText = match[1];
-          const [startIndex] = match.indices[1];
-          onError({
-            lineNumber: lineNumber + i,
-            range: [startIndex + 1, altText.length],
-            detail: `Flagged alt: ${altText}`,
-          });
-        }
-      }
-    }
-  },
-};
-
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/index.js
-
-
-
-
-const rules_githubMarkdownLint = [
-  altTextRule,
-  noGenericLinkTextRule,
-  noEmptyStringAltRule,
-];
-
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/index.js
-
-
-
-
-const offByDefault = (/* unused pure expression or super */ null && (["no-empty-alt-text"]));
-
-async function init(consumerConfig) {
-  // left overwrites right
-  const accessibilityRules = JSON.parse(
-    await readFile(__nccwpck_require__.ab + "accessibility.json"),
-  );
-
-  const base = JSON.parse(
-    await readFile(__nccwpck_require__.ab + "base.json"),
-  );
-
-  for (const rule of githubMarkdownLint) {
-    const ruleName = rule.names[1];
-    base[ruleName] = offByDefault.includes(ruleName) ? false : true;
-  }
-
-  return _.defaultsDeep(consumerConfig, accessibilityRules, base);
-}
-
-/* harmony default export */ const markdownlint_github = (rules_githubMarkdownLint);
-
-// EXTERNAL MODULE: ./node_modules/.pnpm/markdownlint@0.33.0/node_modules/markdownlint/lib/markdownlint.js
-var markdownlint = __nccwpck_require__(4279);
-var markdownlint_default = /*#__PURE__*/__nccwpck_require__.n(markdownlint);
-;// CONCATENATED MODULE: ./src/rules/textImageAltText.ts
-// Code inspired by accessibility-alt-text-bot:
-// https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
-// TODO: see if we can extract a version that doesn't rely on markdownlint?
-// https://github.com/JoshuaKGoldberg/OctoGuide/issues/33
-
-
-const textImageAltText = {
-    about: {
-        config: "recommended",
-        description: "Images should have descriptive alt text.",
-        explanation: [
-            `Alternative text, or "alt text", is a description attached to an image.`,
-            `It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
-        ],
-        name: "text-image-alt-text",
-    },
-    comment: checkEntity,
-    issue: checkEntity,
-    pullRequest: checkEntity,
-};
-function checkEntity(context, entity) {
-    const body = entity.data.body?.trim();
-    if (!body) {
-        return undefined;
-    }
-    const { content: lintErrors } = markdownlint_default().sync({
-        config: {
-            default: false,
-            "no-alt-text": true,
-            "no-default-alt-text": true,
-            "no-empty-alt-text": true,
-        },
-        customRules: markdownlint_github,
-        handleRuleFailures: true,
-        strings: { content: body },
-    });
-    if (!lintErrors.length) {
-        return;
-    }
-    const lines = body.split(/\n/);
-    for (const lintError of lintErrors) {
-        context.report(createReportData(lines, lintError));
-    }
-}
-function createReportData(lines, lintError) {
-    return {
-        primary: ruleDescriptions[lintError.ruleNames[1]],
-        secondary: [
-            ["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
-        ],
-        suggestion: [
-            `To resolve this report, add descriptive alt text to the image.`,
-        ],
-    };
-}
-const ruleDescriptions = {
-    "no-alt-text": "The following image is missing alt text:",
-    "no-default-alt-text": "The following image seems to have default alt text, rather than something informative:",
-    "no-empty-alt-text": "The following image is missing alt text:",
-};
-
-;// CONCATENATED MODULE: ./src/rules/index.ts
-
-
-
-
-
-
-
-const rules = [
-    commentMeaningless,
-    issueRequiredFieldsContent,
-    prBranchNonDefault,
-    prLinkedIssue,
-    prTaskCompletion,
-    prTitleConventional,
-    textImageAltText,
-];
-
-;// CONCATENATED MODULE: ./src/configs.ts
-
-
-const configs = groupBy(rules, (rule) => rule.about.config);
-
 ;// CONCATENATED MODULE: external "node:child_process"
 const external_node_child_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:child_process");
 // EXTERNAL MODULE: external "node:util"
@@ -95078,6 +93972,9 @@ async function runRuleOnEntity(context, rule, entity) {
         case "comment":
             await rule.comment?.(context, entity);
             break;
+        case "discussion":
+            await rule.discussion?.(context, entity);
+            break;
         case "issue":
             await rule.issue?.(context, entity);
             break;
@@ -95090,20 +93987,42 @@ async function runRuleOnEntity(context, rule, entity) {
 // EXTERNAL MODULE: ./node_modules/.pnpm/parse-github-url@1.0.3/node_modules/parse-github-url/index.js
 var parse_github_url = __nccwpck_require__(8468);
 var parse_github_url_default = /*#__PURE__*/__nccwpck_require__.n(parse_github_url);
-;// CONCATENATED MODULE: ./src/resolvers/resolveCommentEntity.ts
-async function resolveCommentEntity(locator, octokit, issueData, commentId) {
-    const { data } = await octokit.rest.issues.getComment({
-        comment_id: commentId,
+;// CONCATENATED MODULE: ./src/resolvers/resolveDiscussionEntity.ts
+async function resolveDiscussionLikeEntity(id, locator, octokit, url) {
+    const commentId = /#discussioncomment-(\d+)/.exec(url)?.[1];
+    const response = await octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}", {
+        discussion_number: +id,
         owner: locator.owner,
         repo: locator.repository,
     });
+    // https://github.com/github/rest-api-description/issues/4702
+    const discussionData = response.data;
+    if (commentId) {
+        // TODO: Paginate for larger discussions:
+        // https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
+        const commentsResponse = await octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
+            discussion_number: +id,
+            owner: locator.owner,
+            repo: locator.repository,
+        });
+        const commentData = commentsResponse.data.find((commentData) => commentData.id === +commentId);
+        if (!commentData) {
+            return undefined;
+        }
+        return {
+            commentId: +commentId,
+            data: commentData,
+            parent: discussionData,
+            parentType: "discussion",
+            type: "comment",
+            user: commentData.user?.login,
+        };
+    }
     return {
-        commentId,
-        data,
-        parent: issueData,
-        parentType: issueData.pull_request ? "pull_request" : "issue",
-        type: "comment",
-        user: data.user?.login,
+        data: discussionData,
+        id: +id,
+        type: "discussion",
+        user: discussionData.user.login,
     };
 }
 
@@ -95137,8 +94056,37 @@ async function resolvePullRequestEntity(locator, octokit, id) {
     };
 }
 
-;// CONCATENATED MODULE: ./src/resolvers/resolveEntity.ts
+;// CONCATENATED MODULE: ./src/resolvers/resolveIssueLikeEntity.ts
 
+
+async function resolveIssueLikeEntity(id, locator, octokit, parentType, url) {
+    const commentId = /#issuecomment-(\d+)/.exec(url)?.[1];
+    const { data: issueData } = await octokit.rest.issues.get({
+        issue_number: +id,
+        owner: locator.owner,
+        repo: locator.repository,
+    });
+    if (commentId) {
+        const { data: commentData } = await octokit.rest.issues.getComment({
+            comment_id: +commentId,
+            owner: locator.owner,
+            repo: locator.repository,
+        });
+        return {
+            commentId: +commentId,
+            data: commentData,
+            parent: issueData,
+            parentType,
+            type: "comment",
+            user: commentData.user?.login,
+        };
+    }
+    return await (issueData.pull_request
+        ? resolvePullRequestEntity(locator, octokit, +id)
+        : resolveIssueEntity(locator, octokit, +id));
+}
+
+;// CONCATENATED MODULE: ./src/resolvers/resolveEntity.ts
 
 
 
@@ -95147,32 +94095,1198 @@ async function resolveLintable(octokit, url) {
     if (!parsed?.owner || !parsed.name) {
         return undefined;
     }
-    const id = /(?:issues|pull)\/(\d+)/.exec(url)?.[1];
-    if (!id) {
+    const matches = /(discussions|issues|pull)\/(\d+)/.exec(url);
+    if (!matches) {
         return undefined;
     }
-    const commentId = /#issuecomment-(\d+)/.exec(url)?.[1];
+    const [, parentType, id] = matches;
     const locator = {
         owner: parsed.owner,
         repository: parsed.name,
     };
-    const { data: issueData } = await octokit.rest.issues.get({
-        issue_number: +id,
-        owner: parsed.owner,
-        repo: parsed.name,
-    });
-    if (commentId) {
+    const entity = await (parentType === "discussions"
+        ? resolveDiscussionLikeEntity(id, locator, octokit, url)
+        : resolveIssueLikeEntity(id, locator, octokit, parentType === "issues" ? "issue" : "pull_request", url));
+    return entity && { entity, locator };
+}
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/is-comment-meaningless@0.2.0/node_modules/is-comment-meaningless/lib/index.js
+const knownMeaninglessPhrases = {
+  blank: /* @__PURE__ */ new Set(["", "wat", "what", "wut"]),
+  help: /* @__PURE__ */ new Set([
+    "any idea",
+    "did anybody get this to work",
+    "help",
+    "help me",
+    "im stuck",
+    "i m stuck",
+    "need help",
+    "stuck",
+    "what do i do"
+  ]),
+  sentiment: /* @__PURE__ */ new Set([
+    "",
+    "- 1",
+    "-1",
+    "+ 1",
+    "+1",
+    "100%",
+    "+",
+    "+ !",
+    "-",
+    "- !",
+    "\u{1F440}",
+    "\u{1F44D}",
+    "\u{1F44E}",
+    "\u{1F4A9}",
+    "\u{1F4AF}",
+    "\u{1F595}",
+    "\u{1F64F}",
+    "and for me",
+    "and for us",
+    "ditto",
+    "followed",
+    "following",
+    "i am also seeing this",
+    "i m also seeing this",
+    "im also seeing this",
+    "just came here to say this",
+    "me too",
+    "minus one",
+    "plus one",
+    "same",
+    "same here",
+    "same issue",
+    "subscribe",
+    "subscribed",
+    "this",
+    "us too",
+    "yes"
+  ]),
+  update: /* @__PURE__ */ new Set([
+    "any news",
+    "anyone",
+    "anyone else",
+    "any progress",
+    "any update",
+    "any update on the bug",
+    "any update on this",
+    "any update on this bug",
+    "bump",
+    "eta",
+    "is there any news",
+    "is there any progress",
+    "is there any timeline",
+    "is there any timeline for this",
+    "is there any update",
+    "is there a timeline for this",
+    "is this broken",
+    "is this fixed",
+    "is this still broken",
+    "is this still not fixed",
+    "looking forward to it",
+    "looking forward to this",
+    "ping",
+    "up",
+    "update",
+    "wondering if there's any news on this"
+  ])
+};
+function isCommentMeaningless(raw) {
+  const trimmed = raw.trim().replace(/[\u{1F3FB}-\u{1F3FF}]/gu, "");
+  for (const [reason, phrases] of Object.entries(knownMeaninglessPhrases)) {
+    if (phrases.has(trimmed)) {
+      return reason;
+    }
+  }
+  const normalized = raw.replaceAll(/[^a-z1\-+]+/gi, " ").toLowerCase().replaceAll(/\s*(?:please|pls|plz)\s*/g, "").trim();
+  if (normalized !== trimmed) {
+    for (const [reason, phrases] of Object.entries(knownMeaninglessPhrases)) {
+      if (phrases.has(normalized) || phrases.has(trimmed)) {
+        return reason;
+      }
+    }
+  }
+  return false;
+}
+
+
+;// CONCATENATED MODULE: ./src/rules/commentMeaningless.ts
+
+const commentMeaningless = {
+    about: {
+        config: "strict",
+        description: "Comments should be meaningful, not just '+1'-style bumps.",
+        explanation: [
+            `Replies containing just _"+1"_, _any update?"_, or other phrases without new information aren't helpful.`,
+            `They cause unnecessary notifications for other contributors and take up space.`,
+        ],
+        name: "comment-meaningless",
+    },
+    comment(context, entity) {
+        const text = entity.data.body;
+        if (!text || !isCommentMeaningless(text)) {
+            return;
+        }
+        // TODO: tailor the messaging once we get a reason
+        // https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
+        context.report({
+            primary: `Saying just _"${text}"_ doesn't add any new information to the discussion.`,
+            suggestion: [
+                `To resolve this report:`,
+                `* If you have new information that'll help the discussion, edit it into the comment`,
+                `* Otherwise, delete the comment and emoji react to the ${entity.parentType}`,
+            ],
+        });
+    },
+};
+
+;// CONCATENATED MODULE: ./src/rules/issueRequiredFieldsContent.ts
+const issueRequiredFieldsContent = {
+    about: {
+        config: "recommended",
+        description: "TODO",
+        explanation: [],
+        name: "issue-required-fields-content",
+    },
+    issue( /* context, entity */) {
+        // TODO...
+    },
+};
+
+;// CONCATENATED MODULE: ./src/rules/prBranchNonDefault.ts
+const prBranchNonDefault = {
+    about: {
+        config: "strict",
+        description: "PRs should not be sent from their head repository's default branch.",
+        explanation: [
+            `Sending a PR from a repository's default branch, commonly \`main\`, means that repository will have a hard time pulling in updates from the upstream repository.`,
+            `It's generally recommended to instead create a new branch per pull request.`,
+        ],
+        name: "pr-branch-non-default",
+    },
+    async pullRequest(context, entity) {
+        const { data } = await context.octokit.rest.repos.get({
+            owner: context.locator.owner,
+            repo: context.locator.repository,
+        });
+        if (entity.data.head.ref === data.default_branch) {
+            context.report({
+                primary: "This PR is sent from the head repository's default branch",
+                secondary: [
+                    `Sending a PR from a default branch means the head repository can't easily be updated after the PR is merged.`,
+                ],
+                suggestion: [
+                    "You'll need to:",
+                    "1. Create a new branch on your fork",
+                    "2. Send a new pull request from that branch",
+                    "3. Close this pull request",
+                ],
+            });
+        }
+    },
+};
+
+;// CONCATENATED MODULE: ./src/rules/prLinkedIssue.ts
+const prLinkedIssue = {
+    about: {
+        config: "strict",
+        description: "PRs should be linked as closing an issue.",
+        explanation: [
+            `This repository keeps to GitHub issues for discussing potential changes.`,
+            `Most or all changes should be marked as approved in an issue before a pull request is sent to resolve them.`,
+        ],
+        name: "pr-linked-issue",
+    },
+    async pullRequest(context, entity) {
+        const response = await context.octokit.graphql(`
+				query closingIssues($id: Int!, $owner: String!, $repository: String!) {
+					repository(owner: $owner, name: $repository) {
+						pullRequest(number: $id) {
+							closingIssuesReferences(first: 1) {
+								nodes {
+									number
+								}
+							}
+						}
+					}
+				}
+			`, {
+            id: entity.id,
+            owner: context.locator.owner,
+            repository: context.locator.repository,
+        });
+        if (response.repository.pullRequest.closingIssuesReferences.nodes.length) {
+            return;
+        }
+        context.report({
+            primary: "This pull request is not linked as closing any issues.",
+            suggestion: [
+                "To resolve this report:",
+                "* If this is a straightforward documentation change that doesn't need an issue, you can ignore this report",
+                "* If there is a backing issue, add a 'fixes #...' link to the pull request body",
+                "* Otherwise, file an issue explaining what you'd like to happen",
+            ],
+        });
+    },
+};
+
+;// CONCATENATED MODULE: ./src/types/utils.ts
+async function wrapSafe(task) {
+    try {
+        return await task;
+    }
+    catch {
+        return undefined;
+    }
+}
+
+;// CONCATENATED MODULE: ./src/rules/prTaskCompletion.ts
+
+const prTaskCompletion = {
+    about: {
+        config: "recommended",
+        description: "Tasks lists from the pull request template should be [x] filled out.",
+        explanation: [
+            `This repository provides a set of tasks that pull request authors are expected to complete.`,
+            `Those tasks should be marked as completed with a \`[x]\` in the pull request description.`,
+        ],
+        name: "pr-title-completion",
+    },
+    async pullRequest(context, entity) {
+        const templateResponse = await wrapSafe(context.octokit.rest.repos.getContent({
+            owner: context.locator.owner,
+            path: ".github/PULL_REQUEST_TEMPLATE.md",
+            repo: context.locator.repository,
+        }));
+        if (!templateResponse ||
+            Array.isArray(templateResponse.data) ||
+            templateResponse.data.type !== "file") {
+            return;
+        }
+        const template = Buffer.from(templateResponse.data.content, "base64").toString("utf-8");
+        const templateTasks = Array.from(template.matchAll(/[-*]\s*\[\s*\]\s*(.+)/g));
+        if (!templateTasks.length) {
+            return;
+        }
+        if (!entity.data.body) {
+            context.report({
+                primary: "This PR's body is empty, but there is a template with tasks to be done.",
+                suggestion: [
+                    "Please fill out the pull request template and make sure all the tasks are [x] checked.",
+                ],
+            });
+            return;
+        }
+        const bodyNormalized = normalizeWhitespace(entity.data.body);
+        const missingTasks = templateTasks
+            .filter((task) => !bodyNormalized.includes(normalizeWhitespace(task[0])
+            // Switch the "- [ ]" to "x"
+            .replace(/[-*]\[\]/, "[x]")
+            // Trim any swap-out text, like ": fixes #000"...
+            .split(/[:#]/)[0]))
+            .map((task) => task[0]);
+        if (!missingTasks.length) {
+            return;
+        }
+        context.report({
+            primary: "This PR's body is missing [x] checks on the following tasks from the PR template.",
+            secondary: missingTasks,
+            suggestion: [
+                "Please complete those tasks and mark the checks as [x] completed.",
+            ],
+        });
+    },
+};
+function normalizeWhitespace(text) {
+    return text.replaceAll(/[ \t]/g, "");
+}
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commit-types@3.0.0/node_modules/conventional-commit-types/index.json
+const conventional_commit_types_namespaceObject = /*#__PURE__*/JSON.parse('{"g":{"feat":{"description":"A new feature","title":"Features"},"fix":{"description":"A bug fix","title":"Bug Fixes"},"docs":{"description":"Documentation only changes","title":"Documentation"},"style":{"description":"Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)","title":"Styles"},"refactor":{"description":"A code change that neither fixes a bug nor adds a feature","title":"Code Refactoring"},"perf":{"description":"A code change that improves performance","title":"Performance Improvements"},"test":{"description":"Adding missing tests or correcting existing tests","title":"Tests"},"build":{"description":"Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)","title":"Builds"},"ci":{"description":"Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)","title":"Continuous Integrations"},"chore":{"description":"Other changes that don\'t modify src or test files","title":"Chores"},"revert":{"description":"Reverts a previous commit","title":"Reverts"}}}');
+;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/regex.js
+const nomatchRegex = /(?!.*)/;
+function join(parts, joiner) {
+    return parts
+        .map(val => val.trim())
+        .filter(Boolean)
+        .join(joiner);
+}
+function getNotesRegex(noteKeywords, notesPattern) {
+    if (!noteKeywords) {
+        return nomatchRegex;
+    }
+    const noteKeywordsSelection = join(noteKeywords, '|');
+    if (!notesPattern) {
+        return new RegExp(`^[\\s|*]*(${noteKeywordsSelection})[:\\s]+(.*)`, 'i');
+    }
+    return notesPattern(noteKeywordsSelection);
+}
+function getReferencePartsRegex(issuePrefixes, issuePrefixesCaseSensitive) {
+    if (!issuePrefixes) {
+        return nomatchRegex;
+    }
+    const flags = issuePrefixesCaseSensitive ? 'g' : 'gi';
+    return new RegExp(`(?:.*?)??\\s*([\\w-\\.\\/]*?)??(${join(issuePrefixes, '|')})([\\w-]*\\d+)`, flags);
+}
+function getReferencesRegex(referenceActions) {
+    if (!referenceActions) {
+        // matches everything
+        return /()(.+)/gi;
+    }
+    const joinedKeywords = join(referenceActions, '|');
+    return new RegExp(`(${joinedKeywords})(?:\\s+(.*?))(?=(?:${joinedKeywords})|$)`, 'gi');
+}
+/**
+ * Make the regexes used to parse a commit.
+ * @param options
+ * @returns Regexes.
+ */
+function getParserRegexes(options = {}) {
+    const notes = getNotesRegex(options.noteKeywords, options.notesPattern);
+    const referenceParts = getReferencePartsRegex(options.issuePrefixes, options.issuePrefixesCaseSensitive);
+    const references = getReferencesRegex(options.referenceActions);
+    return {
+        notes,
+        referenceParts,
+        references,
+        mentions: /@([\w-]+)/g,
+        url: /\b(?:https?):\/\/(?:www\.)?([-a-zA-Z0-9@:%_+.~#?&//=])+\b/
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVnZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvcmVnZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBS0EsTUFBTSxZQUFZLEdBQUcsUUFBUSxDQUFBO0FBRTdCLFNBQVMsSUFBSSxDQUFDLEtBQWUsRUFBRSxNQUFjO0lBQzNDLE9BQU8sS0FBSztTQUNULEdBQUcsQ0FBQyxHQUFHLENBQUMsRUFBRSxDQUFDLEdBQUcsQ0FBQyxJQUFJLEVBQUUsQ0FBQztTQUN0QixNQUFNLENBQUMsT0FBTyxDQUFDO1NBQ2YsSUFBSSxDQUFDLE1BQU0sQ0FBQyxDQUFBO0FBQ2pCLENBQUM7QUFFRCxTQUFTLGFBQWEsQ0FDcEIsWUFBa0MsRUFDbEMsWUFBb0Q7SUFFcEQsSUFBSSxDQUFDLFlBQVksRUFBRTtRQUNqQixPQUFPLFlBQVksQ0FBQTtLQUNwQjtJQUVELE1BQU0scUJBQXFCLEdBQUcsSUFBSSxDQUFDLFlBQVksRUFBRSxHQUFHLENBQUMsQ0FBQTtJQUVyRCxJQUFJLENBQUMsWUFBWSxFQUFFO1FBQ2pCLE9BQU8sSUFBSSxNQUFNLENBQUMsYUFBYSxxQkFBcUIsY0FBYyxFQUFFLEdBQUcsQ0FBQyxDQUFBO0tBQ3pFO0lBRUQsT0FBTyxZQUFZLENBQUMscUJBQXFCLENBQUMsQ0FBQTtBQUM1QyxDQUFDO0FBRUQsU0FBUyxzQkFBc0IsQ0FDN0IsYUFBbUMsRUFDbkMsMEJBQStDO0lBRS9DLElBQUksQ0FBQyxhQUFhLEVBQUU7UUFDbEIsT0FBTyxZQUFZLENBQUE7S0FDcEI7SUFFRCxNQUFNLEtBQUssR0FBRywwQkFBMEIsQ0FBQyxDQUFDLENBQUMsR0FBRyxDQUFDLENBQUMsQ0FBQyxJQUFJLENBQUE7SUFFckQsT0FBTyxJQUFJLE1BQU0sQ0FBQyxtQ0FBbUMsSUFBSSxDQUFDLGFBQWEsRUFBRSxHQUFHLENBQUMsZ0JBQWdCLEVBQUUsS0FBSyxDQUFDLENBQUE7QUFDdkcsQ0FBQztBQUVELFNBQVMsa0JBQWtCLENBQ3pCLGdCQUFzQztJQUV0QyxJQUFJLENBQUMsZ0JBQWdCLEVBQUU7UUFDckIscUJBQXFCO1FBQ3JCLE9BQU8sVUFBVSxDQUFBO0tBQ2xCO0lBRUQsTUFBTSxjQUFjLEdBQUcsSUFBSSxDQUFDLGdCQUFnQixFQUFFLEdBQUcsQ0FBQyxDQUFBO0lBRWxELE9BQU8sSUFBSSxNQUFNLENBQUMsSUFBSSxjQUFjLHVCQUF1QixjQUFjLE1BQU0sRUFBRSxJQUFJLENBQUMsQ0FBQTtBQUN4RixDQUFDO0FBRUQ7Ozs7R0FJRztBQUNILE1BQU0sVUFBVSxnQkFBZ0IsQ0FDOUIsVUFBc0ksRUFBRTtJQUV4SSxNQUFNLEtBQUssR0FBRyxhQUFhLENBQUMsT0FBTyxDQUFDLFlBQVksRUFBRSxPQUFPLENBQUMsWUFBWSxDQUFDLENBQUE7SUFDdkUsTUFBTSxjQUFjLEdBQUcsc0JBQXNCLENBQUMsT0FBTyxDQUFDLGFBQWEsRUFBRSxPQUFPLENBQUMsMEJBQTBCLENBQUMsQ0FBQTtJQUN4RyxNQUFNLFVBQVUsR0FBRyxrQkFBa0IsQ0FBQyxPQUFPLENBQUMsZ0JBQWdCLENBQUMsQ0FBQTtJQUUvRCxPQUFPO1FBQ0wsS0FBSztRQUNMLGNBQWM7UUFDZCxVQUFVO1FBQ1YsUUFBUSxFQUFFLFlBQVk7UUFDdEIsR0FBRyxFQUFFLDJEQUEyRDtLQUNqRSxDQUFBO0FBQ0gsQ0FBQyJ9
+;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/utils.js
+const SCISSOR = '# ------------------------ >8 ------------------------';
+/**
+ * Remove leading and trailing newlines.
+ * @param input
+ * @returns String without leading and trailing newlines.
+ */
+function trimNewLines(input) {
+    // To escape ReDos we should escape String#replace with regex.
+    const matches = input.match(/[^\r\n]/);
+    if (typeof matches?.index !== 'number') {
+        return '';
+    }
+    const firstIndex = matches.index;
+    let lastIndex = input.length - 1;
+    while (input[lastIndex] === '\r' || input[lastIndex] === '\n') {
+        lastIndex--;
+    }
+    return input.substring(firstIndex, lastIndex + 1);
+}
+/**
+ * Append a newline to a string.
+ * @param src
+ * @param line
+ * @returns String with appended newline.
+ */
+function appendLine(src, line) {
+    return src ? `${src}\n${line || ''}` : line || '';
+}
+/**
+ * Creates a function that filters out comments lines.
+ * @param char
+ * @returns Comment filter function.
+ */
+function getCommentFilter(char) {
+    return char
+        ? (line) => !line.startsWith(char)
+        : () => true;
+}
+/**
+ * Select lines before the scissor.
+ * @param lines
+ * @returns Lines before the scissor.
+ */
+function truncateToScissor(lines) {
+    const scissorIndex = lines.indexOf(SCISSOR);
+    if (scissorIndex === -1) {
+        return lines;
+    }
+    return lines.slice(0, scissorIndex);
+}
+/**
+ * Filter out GPG sign lines.
+ * @param line
+ * @returns True if the line is not a GPG sign line.
+ */
+function gpgFilter(line) {
+    return !line.match(/^\s*gpg:/);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidXRpbHMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvdXRpbHMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsTUFBTSxPQUFPLEdBQUcsd0RBQXdELENBQUE7QUFFeEU7Ozs7R0FJRztBQUNILE1BQU0sVUFBVSxZQUFZLENBQUMsS0FBYTtJQUN4Qyw4REFBOEQ7SUFFOUQsTUFBTSxPQUFPLEdBQUcsS0FBSyxDQUFDLEtBQUssQ0FBQyxTQUFTLENBQUMsQ0FBQTtJQUV0QyxJQUFJLE9BQU8sT0FBTyxFQUFFLEtBQUssS0FBSyxRQUFRLEVBQUU7UUFDdEMsT0FBTyxFQUFFLENBQUE7S0FDVjtJQUVELE1BQU0sVUFBVSxHQUFHLE9BQU8sQ0FBQyxLQUFLLENBQUE7SUFDaEMsSUFBSSxTQUFTLEdBQUcsS0FBSyxDQUFDLE1BQU0sR0FBRyxDQUFDLENBQUE7SUFFaEMsT0FBTyxLQUFLLENBQUMsU0FBUyxDQUFDLEtBQUssSUFBSSxJQUFJLEtBQUssQ0FBQyxTQUFTLENBQUMsS0FBSyxJQUFJLEVBQUU7UUFDN0QsU0FBUyxFQUFFLENBQUE7S0FDWjtJQUVELE9BQU8sS0FBSyxDQUFDLFNBQVMsQ0FBQyxVQUFVLEVBQUUsU0FBUyxHQUFHLENBQUMsQ0FBQyxDQUFBO0FBQ25ELENBQUM7QUFFRDs7Ozs7R0FLRztBQUNILE1BQU0sVUFBVSxVQUFVLENBQUMsR0FBa0IsRUFBRSxJQUF3QjtJQUNyRSxPQUFPLEdBQUcsQ0FBQyxDQUFDLENBQUMsR0FBRyxHQUFHLEtBQUssSUFBSSxJQUFJLEVBQUUsRUFBRSxDQUFDLENBQUMsQ0FBQyxJQUFJLElBQUksRUFBRSxDQUFBO0FBQ25ELENBQUM7QUFFRDs7OztHQUlHO0FBQ0gsTUFBTSxVQUFVLGdCQUFnQixDQUFDLElBQXdCO0lBQ3ZELE9BQU8sSUFBSTtRQUNULENBQUMsQ0FBQyxDQUFDLElBQVksRUFBRSxFQUFFLENBQUMsQ0FBQyxJQUFJLENBQUMsVUFBVSxDQUFDLElBQUksQ0FBQztRQUMxQyxDQUFDLENBQUMsR0FBRyxFQUFFLENBQUMsSUFBSSxDQUFBO0FBQ2hCLENBQUM7QUFFRDs7OztHQUlHO0FBQ0gsTUFBTSxVQUFVLGlCQUFpQixDQUFDLEtBQWU7SUFDL0MsTUFBTSxZQUFZLEdBQUcsS0FBSyxDQUFDLE9BQU8sQ0FBQyxPQUFPLENBQUMsQ0FBQTtJQUUzQyxJQUFJLFlBQVksS0FBSyxDQUFDLENBQUMsRUFBRTtRQUN2QixPQUFPLEtBQUssQ0FBQTtLQUNiO0lBRUQsT0FBTyxLQUFLLENBQUMsS0FBSyxDQUFDLENBQUMsRUFBRSxZQUFZLENBQUMsQ0FBQTtBQUNyQyxDQUFDO0FBRUQ7Ozs7R0FJRztBQUNILE1BQU0sVUFBVSxTQUFTLENBQUMsSUFBWTtJQUNwQyxPQUFPLENBQUMsSUFBSSxDQUFDLEtBQUssQ0FBQyxVQUFVLENBQUMsQ0FBQTtBQUNoQyxDQUFDIn0=
+;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/options.js
+const defaultOptions = {
+    noteKeywords: ['BREAKING CHANGE', 'BREAKING-CHANGE'],
+    issuePrefixes: ['#'],
+    referenceActions: [
+        'close',
+        'closes',
+        'closed',
+        'fix',
+        'fixes',
+        'fixed',
+        'resolve',
+        'resolves',
+        'resolved'
+    ],
+    headerPattern: /^(\w*)(?:\(([\w$@.\-*/ ]*)\))?: (.*)$/,
+    headerCorrespondence: [
+        'type',
+        'scope',
+        'subject'
+    ],
+    revertPattern: /^Revert\s"([\s\S]*)"\s*This reverts commit (\w*)\./,
+    revertCorrespondence: ['header', 'hash'],
+    fieldPattern: /^-(.*?)-$/
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib3B0aW9ucy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9vcHRpb25zLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBLE1BQU0sQ0FBQyxNQUFNLGNBQWMsR0FBa0I7SUFDM0MsWUFBWSxFQUFFLENBQUMsaUJBQWlCLEVBQUUsaUJBQWlCLENBQUM7SUFDcEQsYUFBYSxFQUFFLENBQUMsR0FBRyxDQUFDO0lBQ3BCLGdCQUFnQixFQUFFO1FBQ2hCLE9BQU87UUFDUCxRQUFRO1FBQ1IsUUFBUTtRQUNSLEtBQUs7UUFDTCxPQUFPO1FBQ1AsT0FBTztRQUNQLFNBQVM7UUFDVCxVQUFVO1FBQ1YsVUFBVTtLQUNYO0lBQ0QsYUFBYSxFQUFFLHVDQUF1QztJQUN0RCxvQkFBb0IsRUFBRTtRQUNwQixNQUFNO1FBQ04sT0FBTztRQUNQLFNBQVM7S0FDVjtJQUNELGFBQWEsRUFBRSxvREFBb0Q7SUFDbkUsb0JBQW9CLEVBQUUsQ0FBQyxRQUFRLEVBQUUsTUFBTSxDQUFDO0lBQ3hDLFlBQVksRUFBRSxXQUFXO0NBQzFCLENBQUEifQ==
+;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/CommitParser.js
+
+
+
+/**
+ * Helper to create commit object.
+ * @param initialData - Initial commit data.
+ * @returns Commit object with empty data.
+ */
+function createCommitObject(initialData = {}) {
+    // @ts-expect-error: You can read properties from `Commit` without problems, but you can't assign object to this type. So here is helper for that.
+    return {
+        merge: null,
+        revert: null,
+        header: null,
+        body: null,
+        footer: null,
+        notes: [],
+        mentions: [],
+        references: [],
+        ...initialData
+    };
+}
+/**
+ * Commit message parser.
+ */
+class CommitParser_CommitParser {
+    options;
+    regexes;
+    lines = [];
+    lineIndex = 0;
+    commit = createCommitObject();
+    constructor(options = {}) {
+        this.options = {
+            ...defaultOptions,
+            ...options
+        };
+        this.regexes = getParserRegexes(this.options);
+    }
+    currentLine() {
+        return this.lines[this.lineIndex];
+    }
+    nextLine() {
+        return this.lines[this.lineIndex++];
+    }
+    isLineAvailable() {
+        return this.lineIndex < this.lines.length;
+    }
+    parseReference(input, action) {
+        const { regexes } = this;
+        if (regexes.url.test(input)) {
+            return null;
+        }
+        const matches = regexes.referenceParts.exec(input);
+        if (!matches) {
+            return null;
+        }
+        let [raw, repository = null, prefix, issue] = matches;
+        let owner = null;
+        if (repository) {
+            const slashIndex = repository.indexOf('/');
+            if (slashIndex !== -1) {
+                owner = repository.slice(0, slashIndex);
+                repository = repository.slice(slashIndex + 1);
+            }
+        }
         return {
-            entity: await resolveCommentEntity(locator, octokit, issueData, +commentId),
-            locator,
+            raw,
+            action,
+            owner,
+            repository,
+            prefix,
+            issue
         };
     }
-    return {
-        entity: await (issueData.pull_request
-            ? resolvePullRequestEntity(locator, octokit, +id)
-            : resolveIssueEntity(locator, octokit, +id)),
-        locator,
+    parseReferences(input) {
+        const { regexes } = this;
+        const regex = input.match(regexes.references)
+            ? regexes.references
+            : /()(.+)/gi;
+        const references = [];
+        let matches;
+        let action;
+        let sentence;
+        let reference;
+        while (true) {
+            matches = regex.exec(input);
+            if (!matches) {
+                break;
+            }
+            action = matches[1] || null;
+            sentence = matches[2] || '';
+            while (true) {
+                reference = this.parseReference(sentence, action);
+                if (!reference) {
+                    break;
+                }
+                references.push(reference);
+            }
+        }
+        return references;
+    }
+    skipEmptyLines() {
+        let line = this.currentLine();
+        while (line !== undefined && !line.trim()) {
+            this.nextLine();
+            line = this.currentLine();
+        }
+    }
+    parseMerge() {
+        const { commit, options } = this;
+        const correspondence = options.mergeCorrespondence || [];
+        const merge = this.currentLine();
+        const matches = merge && options.mergePattern
+            ? merge.match(options.mergePattern)
+            : null;
+        if (matches) {
+            this.nextLine();
+            commit.merge = matches[0] || null;
+            correspondence.forEach((key, index) => {
+                commit[key] = matches[index + 1] || null;
+            });
+            return true;
+        }
+        return false;
+    }
+    parseHeader(isMergeCommit) {
+        if (isMergeCommit) {
+            this.skipEmptyLines();
+        }
+        const { commit, options } = this;
+        const correspondence = options.headerCorrespondence || [];
+        const header = commit.header ?? this.nextLine();
+        let matches = null;
+        if (header) {
+            if (options.breakingHeaderPattern) {
+                matches = header.match(options.breakingHeaderPattern);
+            }
+            if (!matches && options.headerPattern) {
+                matches = header.match(options.headerPattern);
+            }
+        }
+        if (header) {
+            commit.header = header;
+        }
+        if (matches) {
+            correspondence.forEach((key, index) => {
+                commit[key] = matches[index + 1] || null;
+            });
+        }
+    }
+    parseMeta() {
+        const { options, commit } = this;
+        if (!options.fieldPattern || !this.isLineAvailable()) {
+            return false;
+        }
+        let matches;
+        let field = null;
+        let parsed = false;
+        while (this.isLineAvailable()) {
+            matches = this.currentLine().match(options.fieldPattern);
+            if (matches) {
+                field = matches[1] || null;
+                this.nextLine();
+                continue;
+            }
+            if (field) {
+                parsed = true;
+                commit[field] = appendLine(commit[field], this.currentLine());
+                this.nextLine();
+            }
+            else {
+                break;
+            }
+        }
+        return parsed;
+    }
+    parseNotes() {
+        const { regexes, commit } = this;
+        if (!this.isLineAvailable()) {
+            return false;
+        }
+        const matches = this.currentLine().match(regexes.notes);
+        let references = [];
+        if (matches) {
+            const note = {
+                title: matches[1],
+                text: matches[2]
+            };
+            commit.notes.push(note);
+            commit.footer = appendLine(commit.footer, this.currentLine());
+            this.nextLine();
+            while (this.isLineAvailable()) {
+                if (this.parseMeta()) {
+                    return true;
+                }
+                if (this.parseNotes()) {
+                    return true;
+                }
+                references = this.parseReferences(this.currentLine());
+                if (references.length) {
+                    commit.references.push(...references);
+                }
+                else {
+                    note.text = appendLine(note.text, this.currentLine());
+                }
+                commit.footer = appendLine(commit.footer, this.currentLine());
+                this.nextLine();
+                if (references.length) {
+                    break;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+    parseBodyAndFooter(isBody) {
+        const { commit } = this;
+        if (!this.isLineAvailable()) {
+            return isBody;
+        }
+        const references = this.parseReferences(this.currentLine());
+        const isStillBody = !references.length && isBody;
+        if (isStillBody) {
+            commit.body = appendLine(commit.body, this.currentLine());
+        }
+        else {
+            commit.references.push(...references);
+            commit.footer = appendLine(commit.footer, this.currentLine());
+        }
+        this.nextLine();
+        return isStillBody;
+    }
+    parseBreakingHeader() {
+        const { commit, options } = this;
+        if (!options.breakingHeaderPattern || commit.notes.length || !commit.header) {
+            return;
+        }
+        const matches = commit.header.match(options.breakingHeaderPattern);
+        if (matches) {
+            commit.notes.push({
+                title: 'BREAKING CHANGE',
+                text: matches[3]
+            });
+        }
+    }
+    parseMentions(input) {
+        const { commit, regexes } = this;
+        let matches;
+        for (;;) {
+            matches = regexes.mentions.exec(input);
+            if (!matches) {
+                break;
+            }
+            commit.mentions.push(matches[1]);
+        }
+    }
+    parseRevert(input) {
+        const { commit, options } = this;
+        const correspondence = options.revertCorrespondence || [];
+        const matches = options.revertPattern
+            ? input.match(options.revertPattern)
+            : null;
+        if (matches) {
+            commit.revert = correspondence.reduce((meta, key, index) => {
+                meta[key] = matches[index + 1] || null;
+                return meta;
+            }, {});
+        }
+    }
+    cleanupCommit() {
+        const { commit } = this;
+        if (commit.body) {
+            commit.body = trimNewLines(commit.body);
+        }
+        if (commit.footer) {
+            commit.footer = trimNewLines(commit.footer);
+        }
+        commit.notes.forEach((note) => {
+            note.text = trimNewLines(note.text);
+        });
+    }
+    /**
+     * Parse commit message string into an object.
+     * @param input - Commit message string.
+     * @returns Commit object.
+     */
+    parse(input) {
+        if (!input.trim()) {
+            throw new TypeError('Expected a raw commit');
+        }
+        const commentFilter = getCommentFilter(this.options.commentChar);
+        const rawLines = trimNewLines(input).split(/\r?\n/);
+        const lines = truncateToScissor(rawLines).filter(line => commentFilter(line) && gpgFilter(line));
+        const commit = createCommitObject();
+        this.lines = lines;
+        this.lineIndex = 0;
+        this.commit = commit;
+        const isMergeCommit = this.parseMerge();
+        this.parseHeader(isMergeCommit);
+        if (commit.header) {
+            commit.references = this.parseReferences(commit.header);
+        }
+        let isBody = true;
+        while (this.isLineAvailable()) {
+            this.parseMeta();
+            if (this.parseNotes()) {
+                isBody = false;
+            }
+            if (!this.parseBodyAndFooter(isBody)) {
+                isBody = false;
+            }
+        }
+        this.parseBreakingHeader();
+        this.parseMentions(input);
+        this.parseRevert(input);
+        this.cleanupCommit();
+        return commit;
+    }
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiQ29tbWl0UGFyc2VyLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL0NvbW1pdFBhcnNlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFRQSxPQUFPLEVBQUUsZ0JBQWdCLEVBQUUsTUFBTSxZQUFZLENBQUE7QUFDN0MsT0FBTyxFQUNMLFlBQVksRUFDWixVQUFVLEVBQ1YsZ0JBQWdCLEVBQ2hCLFNBQVMsRUFDVCxpQkFBaUIsRUFDbEIsTUFBTSxZQUFZLENBQUE7QUFDbkIsT0FBTyxFQUFFLGNBQWMsRUFBRSxNQUFNLGNBQWMsQ0FBQTtBQUU3Qzs7OztHQUlHO0FBQ0gsTUFBTSxVQUFVLGtCQUFrQixDQUFDLGNBQStCLEVBQUU7SUFDbEUsa0pBQWtKO0lBQ2xKLE9BQU87UUFDTCxLQUFLLEVBQUUsSUFBSTtRQUNYLE1BQU0sRUFBRSxJQUFJO1FBQ1osTUFBTSxFQUFFLElBQUk7UUFDWixJQUFJLEVBQUUsSUFBSTtRQUNWLE1BQU0sRUFBRSxJQUFJO1FBQ1osS0FBSyxFQUFFLEVBQUU7UUFDVCxRQUFRLEVBQUUsRUFBRTtRQUNaLFVBQVUsRUFBRSxFQUFFO1FBQ2QsR0FBRyxXQUFXO0tBQ2YsQ0FBQTtBQUNILENBQUM7QUFFRDs7R0FFRztBQUNILE1BQU0sT0FBTyxZQUFZO0lBQ04sT0FBTyxDQUFlO0lBQ3RCLE9BQU8sQ0FBZTtJQUMvQixLQUFLLEdBQWEsRUFBRSxDQUFBO0lBQ3BCLFNBQVMsR0FBRyxDQUFDLENBQUE7SUFDYixNQUFNLEdBQUcsa0JBQWtCLEVBQUUsQ0FBQTtJQUVyQyxZQUFZLFVBQXlCLEVBQUU7UUFDckMsSUFBSSxDQUFDLE9BQU8sR0FBRztZQUNiLEdBQUcsY0FBYztZQUNqQixHQUFHLE9BQU87U0FDWCxDQUFBO1FBQ0QsSUFBSSxDQUFDLE9BQU8sR0FBRyxnQkFBZ0IsQ0FBQyxJQUFJLENBQUMsT0FBTyxDQUFDLENBQUE7SUFDL0MsQ0FBQztJQUVPLFdBQVc7UUFDakIsT0FBTyxJQUFJLENBQUMsS0FBSyxD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
+// EXTERNAL MODULE: external "stream"
+var external_stream_ = __nccwpck_require__(2203);
+;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/stream.js
+
+
+/**
+ * Create async generator function to parse async iterable of raw commits.
+ * @param options - CommitParser options.
+ * @returns Async generator function to parse async iterable of raw commits.
+ */
+function parseCommits(options = {}) {
+    const warnOption = options.warn;
+    const warn = warnOption === true
+        ? (err) => {
+            throw err;
+        }
+        : warnOption
+            ? (err) => warnOption(err.toString())
+            : () => { };
+    return async function* parse(rawCommits) {
+        const parser = new CommitParser(options);
+        let rawCommit;
+        for await (rawCommit of rawCommits) {
+            try {
+                yield parser.parse(rawCommit.toString());
+            }
+            catch (err) {
+                warn(err);
+            }
+        }
     };
+}
+/**
+ * Create stream to parse commits.
+ * @param options - CommitParser options.
+ * @returns Stream of parsed commits.
+ */
+function parseCommitsStream(options = {}) {
+    return Transform.from(parseCommits(options));
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3RyZWFtLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL3N0cmVhbS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxPQUFPLEVBQUUsU0FBUyxFQUFFLE1BQU0sUUFBUSxDQUFBO0FBRWxDLE9BQU8sRUFBRSxZQUFZLEVBQUUsTUFBTSxtQkFBbUIsQ0FBQTtBQUVoRDs7OztHQUlHO0FBQ0gsTUFBTSxVQUFVLFlBQVksQ0FDMUIsVUFBK0IsRUFBRTtJQUVqQyxNQUFNLFVBQVUsR0FBRyxPQUFPLENBQUMsSUFBSSxDQUFBO0lBQy9CLE1BQU0sSUFBSSxHQUFHLFVBQVUsS0FBSyxJQUFJO1FBQzlCLENBQUMsQ0FBQyxDQUFDLEdBQVUsRUFBRSxFQUFFO1lBQ2YsTUFBTSxHQUFHLENBQUE7UUFDWCxDQUFDO1FBQ0QsQ0FBQyxDQUFDLFVBQVU7WUFDVixDQUFDLENBQUMsQ0FBQyxHQUFVLEVBQUUsRUFBRSxDQUFDLFVBQVUsQ0FBQyxHQUFHLENBQUMsUUFBUSxFQUFFLENBQUM7WUFDNUMsQ0FBQyxDQUFDLEdBQUcsRUFBRSxHQUFjLENBQUMsQ0FBQTtJQUUxQixPQUFPLEtBQUssU0FBUyxDQUFDLENBQUMsS0FBSyxDQUMxQixVQUFzRTtRQUV0RSxNQUFNLE1BQU0sR0FBRyxJQUFJLFlBQVksQ0FBQyxPQUFPLENBQUMsQ0FBQTtRQUN4QyxJQUFJLFNBQTBCLENBQUE7UUFFOUIsSUFBSSxLQUFLLEVBQUUsU0FBUyxJQUFJLFVBQVUsRUFBRTtZQUNsQyxJQUFJO2dCQUNGLE1BQU0sTUFBTSxDQUFDLEtBQUssQ0FBQyxTQUFTLENBQUMsUUFBUSxFQUFFLENBQUMsQ0FBQTthQUN6QztZQUFDLE9BQU8sR0FBRyxFQUFFO2dCQUNaLElBQUksQ0FBQyxHQUFZLENBQUMsQ0FBQTthQUNuQjtTQUNGO0lBQ0gsQ0FBQyxDQUFBO0FBQ0gsQ0FBQztBQUVEOzs7O0dBSUc7QUFDSCxNQUFNLFVBQVUsa0JBQWtCLENBQUMsVUFBK0IsRUFBRTtJQUNsRSxPQUFPLFNBQVMsQ0FBQyxJQUFJLENBQUMsWUFBWSxDQUFDLE9BQU8sQ0FBQyxDQUFDLENBQUE7QUFDOUMsQ0FBQyJ9
+;// CONCATENATED MODULE: ./node_modules/.pnpm/conventional-commits-parser@6.1.0/node_modules/conventional-commits-parser/dist/index.js
+
+
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsY0FBYyxZQUFZLENBQUE7QUFDMUIsY0FBYyxtQkFBbUIsQ0FBQTtBQUNqQyxjQUFjLGFBQWEsQ0FBQSJ9
+;// CONCATENATED MODULE: ./src/rules/prTitleConventional.ts
+// Code inspired by pr-compliance-action:
+// https://github.com/mtfoley/pr-compliance-action/blob/bcb6dbea496e44a980f8d6d77af91b67f1eea68d/src/checks.ts
+
+
+const commitParser = new CommitParser_CommitParser();
+const prTitleConventional = {
+    about: {
+        config: "strict",
+        description: "PR titles should be in conventional commit format.",
+        explanation: [
+            `This repository asks that pull request titles start with a type in the [Conventional Commits](https://www.conventionalcommits.org) format.`,
+            `Doing so helps make the purpose of each pull request clear for humans and machines.`,
+        ],
+        name: "pr-title-conventional",
+    },
+    pullRequest(context, entity) {
+        const parsed = commitParser.parse(entity.data.title);
+        if (!parsed.type) {
+            context.report({
+                primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_:`,
+                suggestion: [
+                    parsed.header
+                        ? `To resolve this report, add a conventional commit type in front of the title, like _"feat: ${parsed.header}"_.`
+                        : `To resolve this report, add a conventional commit type in front of the title.`,
+                ],
+            });
+            return;
+        }
+        if (!Object.hasOwn(conventional_commit_types_namespaceObject.g, parsed.type)) {
+            context.report({
+                primary: `The PR title has an unknown type: '${parsed.type}'.`,
+                secondary: [
+                    `Known types are: ${Object.keys(conventional_commit_types_namespaceObject.g)
+                        .sort()
+                        .map((type) => `'${type}'`)
+                        .join(", ")}`,
+                ],
+                suggestion: [
+                    parsed.subject
+                        ? `To resolve this report, replace the current type with one of those known types, like _"feat: ${parsed.subject}"_.`
+                        : `To resolve this report, replace the current type with one of those known types.`,
+                ],
+            });
+            return;
+        }
+        if (!parsed.subject) {
+            context.report({
+                primary: `PR title is missing a subject after its type.`,
+                suggestion: [
+                    `To resolve this report, add text after the type, like _"${parsed.type}: etc."_`,
+                ],
+            });
+            return;
+        }
+    },
+};
+
+;// CONCATENATED MODULE: external "fs/promises"
+const promises_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("fs/promises");
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-empty-alt-text.js
+const noEmptyStringAltRule = {
+  names: ["GH003", "no-empty-alt-text"],
+  description: "Please provide an alternative text for the image.",
+  information: new URL(
+    "https://github.com/github/markdownlint-github/blob/main/docs/rules/GH003-no-empty-alt-text.md",
+  ),
+  tags: ["accessibility", "images"],
+  function: function GH003(params, onError) {
+    const htmlTagsWithImages = params.parsers.markdownit.tokens.filter(
+      (token) => {
+        return (
+          (token.type === "html_block" && token.content.includes("<img")) ||
+          (token.type === "inline" &&
+            token.content.includes("<img") &&
+            token.children.some((child) => child.type === "html_inline"))
+        );
+      },
+    );
+
+    const ImageRegex = new RegExp(/<img(.*?)>/, "gid");
+    const htmlEmptyAltRegex = new RegExp(/alt=['"]['"]/, "gid");
+    for (const token of htmlTagsWithImages) {
+      const lineRange = token.map;
+      const lineNumber = token.lineNumber;
+      const lines = params.lines.slice(lineRange[0], lineRange[1]);
+
+      for (const [i, line] of lines.entries()) {
+        const imageTags = line.matchAll(ImageRegex);
+
+        for (const imageTag of imageTags) {
+          const imageTagIndex = imageTag.indices[0][0];
+
+          const emptyAltMatches = [
+            ...imageTag[0].matchAll(htmlEmptyAltRegex),
+          ][0];
+          if (emptyAltMatches) {
+            const matchingContent = emptyAltMatches[0];
+            const startIndex = emptyAltMatches.indices[0][0];
+            onError({
+              lineNumber: lineNumber + i,
+              range: [imageTagIndex + startIndex + 1, matchingContent.length],
+            });
+          }
+        }
+      }
+    }
+  },
+};
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/helpers/strip-and-downcase-text.js
+/* Downcase and strip extra whitespaces and punctuation */
+function stripAndDowncaseText(text) {
+  return text
+    .toLowerCase()
+    .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-generic-link-text.js
+
+
+const bannedLinkText = [
+  "read more",
+  "learn more",
+  "more",
+  "here",
+  "click here",
+  "link",
+];
+
+const noGenericLinkTextRule = {
+  names: ["GH002", "no-generic-link-text"],
+  description:
+    "Avoid using generic link text like `Learn more` or `Click here`",
+  information: new URL(
+    "https://github.com/github/markdownlint-github/blob/main/docs/rules/GH002-no-generic-link-text.md",
+  ),
+  tags: ["accessibility", "links"],
+  function: function GH002(params, onError) {
+    // markdown syntax
+    let bannedLinkTexts = bannedLinkText.concat(
+      params.config.additional_banned_texts || [],
+    );
+    const exceptions = params.config.exceptions || [];
+    if (exceptions.length > 0) {
+      bannedLinkTexts = bannedLinkTexts.filter(
+        (text) => !exceptions.includes(text),
+      );
+    }
+    const inlineTokens = params.tokens.filter((t) => t.type === "inline");
+    for (const token of inlineTokens) {
+      const { children } = token;
+      let inLink = false;
+      let linkText = "";
+
+      for (const child of children) {
+        const { content, type } = child;
+        if (type === "link_open") {
+          inLink = true;
+          linkText = "";
+        } else if (type === "link_close") {
+          inLink = false;
+          if (bannedLinkTexts.includes(stripAndDowncaseText(linkText))) {
+            onError({
+              lineNumber: child.lineNumber,
+              detail: `For link: ${linkText}`,
+            });
+          }
+        } else if (inLink) {
+          linkText += content;
+        }
+      }
+    }
+  },
+};
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-default-alt-text.js
+/**
+ * Examples:
+ * * "Screen Shot 2020-10-20 at 2 52 27 PM"
+ * * "Screenshot 2020-10-20 at 2 52 27 PM"
+ * * "Clean Shot 2020-10-20 @45x"
+ * * "Screencast from 23 02 2024 19 15 19]"
+ */
+const defaultScreenshotRegex =
+  "(?:screen|clean) ?(?:shot|cast) \\d{4}-\\d{2}-\\d{2}[^'\"\\]]*";
+
+const imageRegex = "image";
+const combinedRegex = `(${[defaultScreenshotRegex, imageRegex].join("|")})`;
+
+const markdownAltRegex = new RegExp(`!\\[${combinedRegex}\\]\\(.*\\)`, "gid");
+const htmlAltRegex = new RegExp(`alt=["']${combinedRegex}["']`, "gid");
+
+const altTextRule = {
+  names: ["GH001", "no-default-alt-text"],
+  description: "Images should have meaningful alternative text (alt text)",
+  information: new URL(
+    "https://github.com/github/markdownlint-github/blob/main/docs/rules/GH001-no-default-alt-text.md",
+  ),
+  tags: ["accessibility", "images"],
+  function: function GH001(params, onError) {
+    const htmlTagsWithImages = params.parsers.markdownit.tokens.filter(
+      (token) => {
+        return (
+          (token.type === "html_block" && token.content.includes("<img")) ||
+          (token.type === "inline" &&
+            token.content.includes("<img") &&
+            token.children.some((child) => child.type === "html_inline"))
+        );
+      },
+    );
+    const inlineImages = params.parsers.markdownit.tokens.filter(
+      (token) =>
+        token.type === "inline" &&
+        token.children.some((child) => child.type === "image"),
+    );
+
+    for (const token of [...htmlTagsWithImages, ...inlineImages]) {
+      const lineRange = token.map;
+      const lineNumber = token.lineNumber;
+      const lines = params.lines.slice(lineRange[0], lineRange[1]);
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        let matches;
+        if (token.type === "inline") {
+          if (token.children.some((child) => child.type === "html_inline")) {
+            matches = line.matchAll(htmlAltRegex);
+          } else {
+            matches = line.matchAll(markdownAltRegex);
+          }
+        } else {
+          matches = line.matchAll(htmlAltRegex);
+        }
+        for (const match of matches) {
+          const altText = match[1];
+          const [startIndex] = match.indices[1];
+          onError({
+            lineNumber: lineNumber + i,
+            range: [startIndex + 1, altText.length],
+            detail: `Flagged alt: ${altText}`,
+          });
+        }
+      }
+    }
+  },
+};
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/index.js
+
+
+
+
+const rules_githubMarkdownLint = [
+  altTextRule,
+  noGenericLinkTextRule,
+  noEmptyStringAltRule,
+];
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/index.js
+
+
+
+
+const offByDefault = (/* unused pure expression or super */ null && (["no-empty-alt-text"]));
+
+async function init(consumerConfig) {
+  // left overwrites right
+  const accessibilityRules = JSON.parse(
+    await readFile(__nccwpck_require__.ab + "accessibility.json"),
+  );
+
+  const base = JSON.parse(
+    await readFile(__nccwpck_require__.ab + "base.json"),
+  );
+
+  for (const rule of githubMarkdownLint) {
+    const ruleName = rule.names[1];
+    base[ruleName] = offByDefault.includes(ruleName) ? false : true;
+  }
+
+  return _.defaultsDeep(consumerConfig, accessibilityRules, base);
+}
+
+/* harmony default export */ const markdownlint_github = (rules_githubMarkdownLint);
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/markdownlint@0.33.0/node_modules/markdownlint/lib/markdownlint.js
+var markdownlint = __nccwpck_require__(4279);
+var markdownlint_default = /*#__PURE__*/__nccwpck_require__.n(markdownlint);
+;// CONCATENATED MODULE: ./src/rules/textImageAltText.ts
+// Code inspired by accessibility-alt-text-bot:
+// https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
+// TODO: see if we can extract a version that doesn't rely on markdownlint?
+// https://github.com/JoshuaKGoldberg/OctoGuide/issues/33
+
+
+const textImageAltText = {
+    about: {
+        config: "recommended",
+        description: "Images should have descriptive alt text.",
+        explanation: [
+            `Alternative text, or "alt text", is a description attached to an image.`,
+            `It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
+        ],
+        name: "text-image-alt-text",
+    },
+    comment: checkEntity,
+    discussion: checkEntity,
+    issue: checkEntity,
+    pullRequest: checkEntity,
+};
+function checkEntity(context, entity) {
+    const body = entity.data.body?.trim();
+    if (!body) {
+        return undefined;
+    }
+    const { content: lintErrors } = markdownlint_default().sync({
+        config: {
+            default: false,
+            "no-alt-text": true,
+            "no-default-alt-text": true,
+            "no-empty-alt-text": true,
+        },
+        customRules: markdownlint_github,
+        handleRuleFailures: true,
+        strings: { content: body },
+    });
+    if (!lintErrors.length) {
+        return;
+    }
+    const lines = body.split(/\n/);
+    for (const lintError of lintErrors) {
+        context.report(createReportData(lines, lintError));
+    }
+}
+function createReportData(lines, lintError) {
+    return {
+        primary: ruleDescriptions[lintError.ruleNames[1]],
+        secondary: [
+            ["> ```md", `> ${lines[lintError.lineNumber - 1]}`, "> ```"].join("\n"),
+        ],
+        suggestion: [
+            `To resolve this report, add descriptive alt text to the image.`,
+        ],
+    };
+}
+const ruleDescriptions = {
+    "no-alt-text": "The following image is missing alt text:",
+    "no-default-alt-text": "The following image seems to have default alt text, rather than something informative:",
+    "no-empty-alt-text": "The following image is missing alt text:",
+};
+
+;// CONCATENATED MODULE: ./src/rules/all.ts
+
+
+
+
+
+
+
+const rules = [
+    commentMeaningless,
+    issueRequiredFieldsContent,
+    prBranchNonDefault,
+    prLinkedIssue,
+    prTaskCompletion,
+    prTitleConventional,
+    textImageAltText,
+];
+
+;// CONCATENATED MODULE: ./src/rules/configs.ts
+
+const configs = {
+    recommended: rules.filter((rule) => rule.about.config === "recommended"),
+    strict: rules.filter((rule) => ["recommended", "strict"].includes(rule.about.config)),
+};
+function isKnownConfig(config) {
+    return Object.hasOwn(configs, config);
 }
 
 ;// CONCATENATED MODULE: ./src/octoguide.ts
@@ -95180,8 +95294,7 @@ async function resolveLintable(octokit, url) {
 
 
 
-
-async function runOctoGuide({ githubToken, url, }) {
+async function runOctoGuide({ config = "recommended", githubToken, url, }) {
     const octokit = await octokitFromAuth({
         auth: githubToken,
     });
@@ -95189,10 +95302,9 @@ async function runOctoGuide({ githubToken, url, }) {
     if (!resolved) {
         throw new Error("Could not resolve GitHub entity.");
     }
-    core.info(`Resolved entity at url: ${resolved.entity.data.url}`);
     const { entity, locator } = resolved;
     const reports = [];
-    await Promise.all(Object.values(rules).map(async (rule) => {
+    await Promise.all(Object.values(configs[config]).map(async (rule) => {
         const context = {
             locator,
             octokit,
@@ -95873,6 +95985,16 @@ const chalkStderr = createChalk({level: stderrColor ? stderrColor.level : 0});
 
 /* harmony default export */ const source = (chalk);
 
+// EXTERNAL MODULE: ./node_modules/.pnpm/lodash@4.17.21/node_modules/lodash/lodash.js
+var lodash = __nccwpck_require__(2594);
+var lodash_default = /*#__PURE__*/__nccwpck_require__.n(lodash);
+;// CONCATENATED MODULE: ./src/action/groupBy.ts
+
+// I promise this works.
+// eslint-disable-next-line @typescript-eslint/unbound-method
+const { groupBy } = (lodash_default());
+
+
 ;// CONCATENATED MODULE: ./src/reporters/formatSecondary.ts
 function formatSecondary(secondary) {
     return (secondary ?? []).flatMap((line) => line.split("\n"));
@@ -95896,35 +96018,45 @@ function formatReport(report, explanation) {
     ].join("");
 }
 
-;// CONCATENATED MODULE: ./src/reporters/cli.ts
+;// CONCATENATED MODULE: ./src/reporters/cliReporter.ts
 
 
 
 function cliReporter(reports) {
     if (!reports.length) {
-        console.log(`Found ${source.green("0")} reports. Great! ✅`);
-        return;
+        return `Found ${source.green("0")} reports. Great! ✅`;
     }
-    console.log("");
     const byRule = groupBy(reports, (report) => report.about.name);
+    const lines = [""];
     for (const ruleReports of Object.values(byRule)) {
         const { about } = ruleReports[0];
-        console.log([
+        lines.push([
             source.blue("["),
             source.cyanBright(about.name),
             source.blue("] "),
             source.yellow(about.description),
         ].join(""));
-        for (const report of ruleReports) {
-            console.log(formatReport(report, about.explanation));
-            console.log(source.gray(`Docs: https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${report.about.name}.md`));
-            console.log("");
+        if (ruleReports.length > 1) {
+            lines.push([
+                about.explanation.join(" "),
+                "\n\n",
+                ruleReports.map((report) => formatReport(report)).join("\n\n"),
+            ].join(""));
         }
+        else {
+            lines.push([
+                ruleReports
+                    .map((report) => formatReport(report, about.explanation))
+                    .join("\n\n"),
+            ].join(""));
+        }
+        lines.push("");
     }
-    console.log(`Found ${source.red(reports.length)} issue${reports.length > 1 ? "s" : ""}.\n`);
+    lines.push(`Found ${source.red(reports.length)} issue${reports.length > 1 ? "s" : ""}.\n`);
+    return lines.join("\n");
 }
 
-;// CONCATENATED MODULE: ./src/reporters/markdown.ts
+;// CONCATENATED MODULE: ./src/reporters/markdownReporter.ts
 
 
 function markdownReporter(entity, reports) {
@@ -96072,6 +96204,7 @@ async function getCommentForReports(entity, locator, octokit, reports) {
 
 
 
+
 async function runOctoGuideAction(context) {
     const { payload } = context;
     const target = payload.comment ?? payload.issue ?? payload.pull_request;
@@ -96082,13 +96215,18 @@ async function runOctoGuideAction(context) {
         throw new Error("Target entity's html_url is not a string.");
     }
     core.info(`Targeting entity at html_url: ${target.html_url}`);
+    const config = core.getInput("config");
+    if (!isKnownConfig(config)) {
+        throw new Error(`Unknown config provided: ${config}`);
+    }
     const { entity, locator, octokit, reports } = await runOctoGuide({
+        config,
         githubToken: core.getInput("github-token"),
         url: target.html_url,
     });
     if (reports.length) {
         core.info(`Found ${reports.length.toString()} report(s).`);
-        cliReporter(reports);
+        console.log(cliReporter(reports));
     }
     else {
         core.info("Found 0 reports. Great! ✅");
@@ -98061,1859 +98199,6 @@ function parseParams (str) {
 }
 
 module.exports = parseParams
-
-
-/***/ }),
-
-/***/ 5236:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var isCallable = __nccwpck_require__(3151);
-var tryToString = __nccwpck_require__(5461);
-
-var $TypeError = TypeError;
-
-// `Assert: IsCallable(argument) is true`
-module.exports = function (argument) {
-  if (isCallable(argument)) return argument;
-  throw new $TypeError(tryToString(argument) + ' is not a function');
-};
-
-
-/***/ }),
-
-/***/ 7305:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var isObject = __nccwpck_require__(3492);
-
-var $String = String;
-var $TypeError = TypeError;
-
-// `Assert: Type(argument) is Object`
-module.exports = function (argument) {
-  if (isObject(argument)) return argument;
-  throw new $TypeError($String(argument) + ' is not an object');
-};
-
-
-/***/ }),
-
-/***/ 4767:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var toIndexedObject = __nccwpck_require__(6523);
-var toAbsoluteIndex = __nccwpck_require__(7964);
-var lengthOfArrayLike = __nccwpck_require__(7476);
-
-// `Array.prototype.{ indexOf, includes }` methods implementation
-var createMethod = function (IS_INCLUDES) {
-  return function ($this, el, fromIndex) {
-    var O = toIndexedObject($this);
-    var length = lengthOfArrayLike(O);
-    if (length === 0) return !IS_INCLUDES && -1;
-    var index = toAbsoluteIndex(fromIndex, length);
-    var value;
-    // Array#includes uses SameValueZero equality algorithm
-    // eslint-disable-next-line no-self-compare -- NaN check
-    if (IS_INCLUDES && el !== el) while (length > index) {
-      value = O[index++];
-      // eslint-disable-next-line no-self-compare -- NaN check
-      if (value !== value) return true;
-    // Array#indexOf ignores holes, Array#includes - not
-    } else for (;length > index; index++) {
-      if ((IS_INCLUDES || index in O) && O[index] === el) return IS_INCLUDES || index || 0;
-    } return !IS_INCLUDES && -1;
-  };
-};
-
-module.exports = {
-  // `Array.prototype.includes` method
-  // https://tc39.es/ecma262/#sec-array.prototype.includes
-  includes: createMethod(true),
-  // `Array.prototype.indexOf` method
-  // https://tc39.es/ecma262/#sec-array.prototype.indexof
-  indexOf: createMethod(false)
-};
-
-
-/***/ }),
-
-/***/ 7490:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-
-var toString = uncurryThis({}.toString);
-var stringSlice = uncurryThis(''.slice);
-
-module.exports = function (it) {
-  return stringSlice(toString(it), 8, -1);
-};
-
-
-/***/ }),
-
-/***/ 5381:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var TO_STRING_TAG_SUPPORT = __nccwpck_require__(902);
-var isCallable = __nccwpck_require__(3151);
-var classofRaw = __nccwpck_require__(7490);
-var wellKnownSymbol = __nccwpck_require__(1877);
-
-var TO_STRING_TAG = wellKnownSymbol('toStringTag');
-var $Object = Object;
-
-// ES3 wrong here
-var CORRECT_ARGUMENTS = classofRaw(function () { return arguments; }()) === 'Arguments';
-
-// fallback for IE11 Script Access Denied error
-var tryGet = function (it, key) {
-  try {
-    return it[key];
-  } catch (error) { /* empty */ }
-};
-
-// getting tag from ES6+ `Object.prototype.toString`
-module.exports = TO_STRING_TAG_SUPPORT ? classofRaw : function (it) {
-  var O, tag, result;
-  return it === undefined ? 'Undefined' : it === null ? 'Null'
-    // @@toStringTag case
-    : typeof (tag = tryGet(O = $Object(it), TO_STRING_TAG)) == 'string' ? tag
-    // builtinTag case
-    : CORRECT_ARGUMENTS ? classofRaw(O)
-    // ES3 arguments fallback
-    : (result = classofRaw(O)) === 'Object' && isCallable(O.callee) ? 'Arguments' : result;
-};
-
-
-/***/ }),
-
-/***/ 2618:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var hasOwn = __nccwpck_require__(911);
-var ownKeys = __nccwpck_require__(9813);
-var getOwnPropertyDescriptorModule = __nccwpck_require__(4725);
-var definePropertyModule = __nccwpck_require__(8391);
-
-module.exports = function (target, source, exceptions) {
-  var keys = ownKeys(source);
-  var defineProperty = definePropertyModule.f;
-  var getOwnPropertyDescriptor = getOwnPropertyDescriptorModule.f;
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
-    if (!hasOwn(target, key) && !(exceptions && hasOwn(exceptions, key))) {
-      defineProperty(target, key, getOwnPropertyDescriptor(source, key));
-    }
-  }
-};
-
-
-/***/ }),
-
-/***/ 8185:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var DESCRIPTORS = __nccwpck_require__(3821);
-var definePropertyModule = __nccwpck_require__(8391);
-var createPropertyDescriptor = __nccwpck_require__(9646);
-
-module.exports = DESCRIPTORS ? function (object, key, value) {
-  return definePropertyModule.f(object, key, createPropertyDescriptor(1, value));
-} : function (object, key, value) {
-  object[key] = value;
-  return object;
-};
-
-
-/***/ }),
-
-/***/ 9646:
-/***/ ((module) => {
-
-
-module.exports = function (bitmap, value) {
-  return {
-    enumerable: !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable: !(bitmap & 4),
-    value: value
-  };
-};
-
-
-/***/ }),
-
-/***/ 1406:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var isCallable = __nccwpck_require__(3151);
-var definePropertyModule = __nccwpck_require__(8391);
-var makeBuiltIn = __nccwpck_require__(405);
-var defineGlobalProperty = __nccwpck_require__(211);
-
-module.exports = function (O, key, value, options) {
-  if (!options) options = {};
-  var simple = options.enumerable;
-  var name = options.name !== undefined ? options.name : key;
-  if (isCallable(value)) makeBuiltIn(value, name, options);
-  if (options.global) {
-    if (simple) O[key] = value;
-    else defineGlobalProperty(key, value);
-  } else {
-    try {
-      if (!options.unsafe) delete O[key];
-      else if (O[key]) simple = true;
-    } catch (error) { /* empty */ }
-    if (simple) O[key] = value;
-    else definePropertyModule.f(O, key, {
-      value: value,
-      enumerable: false,
-      configurable: !options.nonConfigurable,
-      writable: !options.nonWritable
-    });
-  } return O;
-};
-
-
-/***/ }),
-
-/***/ 211:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var globalThis = __nccwpck_require__(7462);
-
-// eslint-disable-next-line es/no-object-defineproperty -- safe
-var defineProperty = Object.defineProperty;
-
-module.exports = function (key, value) {
-  try {
-    defineProperty(globalThis, key, { value: value, configurable: true, writable: true });
-  } catch (error) {
-    globalThis[key] = value;
-  } return value;
-};
-
-
-/***/ }),
-
-/***/ 3821:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var fails = __nccwpck_require__(2533);
-
-// Detect IE8's incomplete defineProperty implementation
-module.exports = !fails(function () {
-  // eslint-disable-next-line es/no-object-defineproperty -- required for testing
-  return Object.defineProperty({}, 1, { get: function () { return 7; } })[1] !== 7;
-});
-
-
-/***/ }),
-
-/***/ 2877:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var globalThis = __nccwpck_require__(7462);
-var isObject = __nccwpck_require__(3492);
-
-var document = globalThis.document;
-// typeof document.createElement is 'object' in old IE
-var EXISTS = isObject(document) && isObject(document.createElement);
-
-module.exports = function (it) {
-  return EXISTS ? document.createElement(it) : {};
-};
-
-
-/***/ }),
-
-/***/ 2441:
-/***/ ((module) => {
-
-
-// IE8- don't enum bug keys
-module.exports = [
-  'constructor',
-  'hasOwnProperty',
-  'isPrototypeOf',
-  'propertyIsEnumerable',
-  'toLocaleString',
-  'toString',
-  'valueOf'
-];
-
-
-/***/ }),
-
-/***/ 2465:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var globalThis = __nccwpck_require__(7462);
-
-var navigator = globalThis.navigator;
-var userAgent = navigator && navigator.userAgent;
-
-module.exports = userAgent ? String(userAgent) : '';
-
-
-/***/ }),
-
-/***/ 4801:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var globalThis = __nccwpck_require__(7462);
-var userAgent = __nccwpck_require__(2465);
-
-var process = globalThis.process;
-var Deno = globalThis.Deno;
-var versions = process && process.versions || Deno && Deno.version;
-var v8 = versions && versions.v8;
-var match, version;
-
-if (v8) {
-  match = v8.split('.');
-  // in old Chrome, versions of V8 isn't V8 = Chrome / 10
-  // but their correct versions are not interesting for us
-  version = match[0] > 0 && match[0] < 4 ? 1 : +(match[0] + match[1]);
-}
-
-// BrowserFS NodeJS `process` polyfill incorrectly set `.v8` to `0.0`
-// so check `userAgent` even if `.v8` exists, but 0
-if (!version && userAgent) {
-  match = userAgent.match(/Edge\/(\d+)/);
-  if (!match || match[1] >= 74) {
-    match = userAgent.match(/Chrome\/(\d+)/);
-    if (match) version = +match[1];
-  }
-}
-
-module.exports = version;
-
-
-/***/ }),
-
-/***/ 6320:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var globalThis = __nccwpck_require__(7462);
-var getOwnPropertyDescriptor = (__nccwpck_require__(4725).f);
-var createNonEnumerableProperty = __nccwpck_require__(8185);
-var defineBuiltIn = __nccwpck_require__(1406);
-var defineGlobalProperty = __nccwpck_require__(211);
-var copyConstructorProperties = __nccwpck_require__(2618);
-var isForced = __nccwpck_require__(9230);
-
-/*
-  options.target         - name of the target object
-  options.global         - target is the global object
-  options.stat           - export as static methods of target
-  options.proto          - export as prototype methods of target
-  options.real           - real prototype method for the `pure` version
-  options.forced         - export even if the native feature is available
-  options.bind           - bind methods to the target, required for the `pure` version
-  options.wrap           - wrap constructors to preventing global pollution, required for the `pure` version
-  options.unsafe         - use the simple assignment of property instead of delete + defineProperty
-  options.sham           - add a flag to not completely full polyfills
-  options.enumerable     - export as enumerable property
-  options.dontCallGetSet - prevent calling a getter on target
-  options.name           - the .name of the function if it does not match the key
-*/
-module.exports = function (options, source) {
-  var TARGET = options.target;
-  var GLOBAL = options.global;
-  var STATIC = options.stat;
-  var FORCED, target, key, targetProperty, sourceProperty, descriptor;
-  if (GLOBAL) {
-    target = globalThis;
-  } else if (STATIC) {
-    target = globalThis[TARGET] || defineGlobalProperty(TARGET, {});
-  } else {
-    target = globalThis[TARGET] && globalThis[TARGET].prototype;
-  }
-  if (target) for (key in source) {
-    sourceProperty = source[key];
-    if (options.dontCallGetSet) {
-      descriptor = getOwnPropertyDescriptor(target, key);
-      targetProperty = descriptor && descriptor.value;
-    } else targetProperty = target[key];
-    FORCED = isForced(GLOBAL ? key : TARGET + (STATIC ? '.' : '#') + key, options.forced);
-    // contained in target
-    if (!FORCED && targetProperty !== undefined) {
-      if (typeof sourceProperty == typeof targetProperty) continue;
-      copyConstructorProperties(sourceProperty, targetProperty);
-    }
-    // add a flag to not completely full polyfills
-    if (options.sham || (targetProperty && targetProperty.sham)) {
-      createNonEnumerableProperty(sourceProperty, 'sham', true);
-    }
-    defineBuiltIn(target, key, sourceProperty, options);
-  }
-};
-
-
-/***/ }),
-
-/***/ 2533:
-/***/ ((module) => {
-
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (error) {
-    return true;
-  }
-};
-
-
-/***/ }),
-
-/***/ 8550:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(7790);
-var aCallable = __nccwpck_require__(5236);
-var NATIVE_BIND = __nccwpck_require__(9078);
-
-var bind = uncurryThis(uncurryThis.bind);
-
-// optional / simple context binding
-module.exports = function (fn, that) {
-  aCallable(fn);
-  return that === undefined ? fn : NATIVE_BIND ? bind(fn, that) : function (/* ...args */) {
-    return fn.apply(that, arguments);
-  };
-};
-
-
-/***/ }),
-
-/***/ 9078:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var fails = __nccwpck_require__(2533);
-
-module.exports = !fails(function () {
-  // eslint-disable-next-line es/no-function-prototype-bind -- safe
-  var test = (function () { /* empty */ }).bind();
-  // eslint-disable-next-line no-prototype-builtins -- safe
-  return typeof test != 'function' || test.hasOwnProperty('prototype');
-});
-
-
-/***/ }),
-
-/***/ 9507:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var NATIVE_BIND = __nccwpck_require__(9078);
-
-var call = Function.prototype.call;
-// eslint-disable-next-line es/no-function-prototype-bind -- safe
-module.exports = NATIVE_BIND ? call.bind(call) : function () {
-  return call.apply(call, arguments);
-};
-
-
-/***/ }),
-
-/***/ 3244:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var DESCRIPTORS = __nccwpck_require__(3821);
-var hasOwn = __nccwpck_require__(911);
-
-var FunctionPrototype = Function.prototype;
-// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
-var getDescriptor = DESCRIPTORS && Object.getOwnPropertyDescriptor;
-
-var EXISTS = hasOwn(FunctionPrototype, 'name');
-// additional protection from minified / mangled / dropped function names
-var PROPER = EXISTS && (function something() { /* empty */ }).name === 'something';
-var CONFIGURABLE = EXISTS && (!DESCRIPTORS || (DESCRIPTORS && getDescriptor(FunctionPrototype, 'name').configurable));
-
-module.exports = {
-  EXISTS: EXISTS,
-  PROPER: PROPER,
-  CONFIGURABLE: CONFIGURABLE
-};
-
-
-/***/ }),
-
-/***/ 7790:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var classofRaw = __nccwpck_require__(7490);
-var uncurryThis = __nccwpck_require__(4310);
-
-module.exports = function (fn) {
-  // Nashorn bug:
-  //   https://github.com/zloirock/core-js/issues/1128
-  //   https://github.com/zloirock/core-js/issues/1130
-  if (classofRaw(fn) === 'Function') return uncurryThis(fn);
-};
-
-
-/***/ }),
-
-/***/ 4310:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var NATIVE_BIND = __nccwpck_require__(9078);
-
-var FunctionPrototype = Function.prototype;
-var call = FunctionPrototype.call;
-// eslint-disable-next-line es/no-function-prototype-bind -- safe
-var uncurryThisWithBind = NATIVE_BIND && FunctionPrototype.bind.bind(call, call);
-
-module.exports = NATIVE_BIND ? uncurryThisWithBind : function (fn) {
-  return function () {
-    return call.apply(fn, arguments);
-  };
-};
-
-
-/***/ }),
-
-/***/ 973:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var globalThis = __nccwpck_require__(7462);
-var isCallable = __nccwpck_require__(3151);
-
-var aFunction = function (argument) {
-  return isCallable(argument) ? argument : undefined;
-};
-
-module.exports = function (namespace, method) {
-  return arguments.length < 2 ? aFunction(globalThis[namespace]) : globalThis[namespace] && globalThis[namespace][method];
-};
-
-
-/***/ }),
-
-/***/ 4258:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var classof = __nccwpck_require__(5381);
-var getMethod = __nccwpck_require__(4240);
-var isNullOrUndefined = __nccwpck_require__(531);
-var Iterators = __nccwpck_require__(5059);
-var wellKnownSymbol = __nccwpck_require__(1877);
-
-var ITERATOR = wellKnownSymbol('iterator');
-
-module.exports = function (it) {
-  if (!isNullOrUndefined(it)) return getMethod(it, ITERATOR)
-    || getMethod(it, '@@iterator')
-    || Iterators[classof(it)];
-};
-
-
-/***/ }),
-
-/***/ 2651:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var call = __nccwpck_require__(9507);
-var aCallable = __nccwpck_require__(5236);
-var anObject = __nccwpck_require__(7305);
-var tryToString = __nccwpck_require__(5461);
-var getIteratorMethod = __nccwpck_require__(4258);
-
-var $TypeError = TypeError;
-
-module.exports = function (argument, usingIterator) {
-  var iteratorMethod = arguments.length < 2 ? getIteratorMethod(argument) : usingIterator;
-  if (aCallable(iteratorMethod)) return anObject(call(iteratorMethod, argument));
-  throw new $TypeError(tryToString(argument) + ' is not iterable');
-};
-
-
-/***/ }),
-
-/***/ 4240:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var aCallable = __nccwpck_require__(5236);
-var isNullOrUndefined = __nccwpck_require__(531);
-
-// `GetMethod` abstract operation
-// https://tc39.es/ecma262/#sec-getmethod
-module.exports = function (V, P) {
-  var func = V[P];
-  return isNullOrUndefined(func) ? undefined : aCallable(func);
-};
-
-
-/***/ }),
-
-/***/ 7462:
-/***/ (function(module) {
-
-
-var check = function (it) {
-  return it && it.Math === Math && it;
-};
-
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-module.exports =
-  // eslint-disable-next-line es/no-global-this -- safe
-  check(typeof globalThis == 'object' && globalThis) ||
-  check(typeof window == 'object' && window) ||
-  // eslint-disable-next-line no-restricted-globals -- safe
-  check(typeof self == 'object' && self) ||
-  check(typeof global == 'object' && global) ||
-  check(typeof this == 'object' && this) ||
-  // eslint-disable-next-line no-new-func -- fallback
-  (function () { return this; })() || Function('return this')();
-
-
-/***/ }),
-
-/***/ 911:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-var toObject = __nccwpck_require__(5623);
-
-var hasOwnProperty = uncurryThis({}.hasOwnProperty);
-
-// `HasOwnProperty` abstract operation
-// https://tc39.es/ecma262/#sec-hasownproperty
-// eslint-disable-next-line es/no-object-hasown -- safe
-module.exports = Object.hasOwn || function hasOwn(it, key) {
-  return hasOwnProperty(toObject(it), key);
-};
-
-
-/***/ }),
-
-/***/ 2639:
-/***/ ((module) => {
-
-
-module.exports = {};
-
-
-/***/ }),
-
-/***/ 2963:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var DESCRIPTORS = __nccwpck_require__(3821);
-var fails = __nccwpck_require__(2533);
-var createElement = __nccwpck_require__(2877);
-
-// Thanks to IE8 for its funny defineProperty
-module.exports = !DESCRIPTORS && !fails(function () {
-  // eslint-disable-next-line es/no-object-defineproperty -- required for testing
-  return Object.defineProperty(createElement('div'), 'a', {
-    get: function () { return 7; }
-  }).a !== 7;
-});
-
-
-/***/ }),
-
-/***/ 6277:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-var fails = __nccwpck_require__(2533);
-var classof = __nccwpck_require__(7490);
-
-var $Object = Object;
-var split = uncurryThis(''.split);
-
-// fallback for non-array-like ES3 and non-enumerable old V8 strings
-module.exports = fails(function () {
-  // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
-  // eslint-disable-next-line no-prototype-builtins -- safe
-  return !$Object('z').propertyIsEnumerable(0);
-}) ? function (it) {
-  return classof(it) === 'String' ? split(it, '') : $Object(it);
-} : $Object;
-
-
-/***/ }),
-
-/***/ 4800:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-var isCallable = __nccwpck_require__(3151);
-var store = __nccwpck_require__(6123);
-
-var functionToString = uncurryThis(Function.toString);
-
-// this helper broken in `core-js@3.4.1-3.4.4`, so we can't use `shared` helper
-if (!isCallable(store.inspectSource)) {
-  store.inspectSource = function (it) {
-    return functionToString(it);
-  };
-}
-
-module.exports = store.inspectSource;
-
-
-/***/ }),
-
-/***/ 2815:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var NATIVE_WEAK_MAP = __nccwpck_require__(4112);
-var globalThis = __nccwpck_require__(7462);
-var isObject = __nccwpck_require__(3492);
-var createNonEnumerableProperty = __nccwpck_require__(8185);
-var hasOwn = __nccwpck_require__(911);
-var shared = __nccwpck_require__(6123);
-var sharedKey = __nccwpck_require__(4949);
-var hiddenKeys = __nccwpck_require__(2639);
-
-var OBJECT_ALREADY_INITIALIZED = 'Object already initialized';
-var TypeError = globalThis.TypeError;
-var WeakMap = globalThis.WeakMap;
-var set, get, has;
-
-var enforce = function (it) {
-  return has(it) ? get(it) : set(it, {});
-};
-
-var getterFor = function (TYPE) {
-  return function (it) {
-    var state;
-    if (!isObject(it) || (state = get(it)).type !== TYPE) {
-      throw new TypeError('Incompatible receiver, ' + TYPE + ' required');
-    } return state;
-  };
-};
-
-if (NATIVE_WEAK_MAP || shared.state) {
-  var store = shared.state || (shared.state = new WeakMap());
-  /* eslint-disable no-self-assign -- prototype methods protection */
-  store.get = store.get;
-  store.has = store.has;
-  store.set = store.set;
-  /* eslint-enable no-self-assign -- prototype methods protection */
-  set = function (it, metadata) {
-    if (store.has(it)) throw new TypeError(OBJECT_ALREADY_INITIALIZED);
-    metadata.facade = it;
-    store.set(it, metadata);
-    return metadata;
-  };
-  get = function (it) {
-    return store.get(it) || {};
-  };
-  has = function (it) {
-    return store.has(it);
-  };
-} else {
-  var STATE = sharedKey('state');
-  hiddenKeys[STATE] = true;
-  set = function (it, metadata) {
-    if (hasOwn(it, STATE)) throw new TypeError(OBJECT_ALREADY_INITIALIZED);
-    metadata.facade = it;
-    createNonEnumerableProperty(it, STATE, metadata);
-    return metadata;
-  };
-  get = function (it) {
-    return hasOwn(it, STATE) ? it[STATE] : {};
-  };
-  has = function (it) {
-    return hasOwn(it, STATE);
-  };
-}
-
-module.exports = {
-  set: set,
-  get: get,
-  has: has,
-  enforce: enforce,
-  getterFor: getterFor
-};
-
-
-/***/ }),
-
-/***/ 9351:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var wellKnownSymbol = __nccwpck_require__(1877);
-var Iterators = __nccwpck_require__(5059);
-
-var ITERATOR = wellKnownSymbol('iterator');
-var ArrayPrototype = Array.prototype;
-
-// check on default Array iterator
-module.exports = function (it) {
-  return it !== undefined && (Iterators.Array === it || ArrayPrototype[ITERATOR] === it);
-};
-
-
-/***/ }),
-
-/***/ 3151:
-/***/ ((module) => {
-
-
-// https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot
-var documentAll = typeof document == 'object' && document.all;
-
-// `IsCallable` abstract operation
-// https://tc39.es/ecma262/#sec-iscallable
-// eslint-disable-next-line unicorn/no-typeof-undefined -- required for testing
-module.exports = typeof documentAll == 'undefined' && documentAll !== undefined ? function (argument) {
-  return typeof argument == 'function' || argument === documentAll;
-} : function (argument) {
-  return typeof argument == 'function';
-};
-
-
-/***/ }),
-
-/***/ 9230:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var fails = __nccwpck_require__(2533);
-var isCallable = __nccwpck_require__(3151);
-
-var replacement = /#|\.prototype\./;
-
-var isForced = function (feature, detection) {
-  var value = data[normalize(feature)];
-  return value === POLYFILL ? true
-    : value === NATIVE ? false
-    : isCallable(detection) ? fails(detection)
-    : !!detection;
-};
-
-var normalize = isForced.normalize = function (string) {
-  return String(string).replace(replacement, '.').toLowerCase();
-};
-
-var data = isForced.data = {};
-var NATIVE = isForced.NATIVE = 'N';
-var POLYFILL = isForced.POLYFILL = 'P';
-
-module.exports = isForced;
-
-
-/***/ }),
-
-/***/ 531:
-/***/ ((module) => {
-
-
-// we can't use just `it == null` since of `document.all` special case
-// https://tc39.es/ecma262/#sec-IsHTMLDDA-internal-slot-aec
-module.exports = function (it) {
-  return it === null || it === undefined;
-};
-
-
-/***/ }),
-
-/***/ 3492:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var isCallable = __nccwpck_require__(3151);
-
-module.exports = function (it) {
-  return typeof it == 'object' ? it !== null : isCallable(it);
-};
-
-
-/***/ }),
-
-/***/ 2985:
-/***/ ((module) => {
-
-
-module.exports = false;
-
-
-/***/ }),
-
-/***/ 6443:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var getBuiltIn = __nccwpck_require__(973);
-var isCallable = __nccwpck_require__(3151);
-var isPrototypeOf = __nccwpck_require__(9515);
-var USE_SYMBOL_AS_UID = __nccwpck_require__(3546);
-
-var $Object = Object;
-
-module.exports = USE_SYMBOL_AS_UID ? function (it) {
-  return typeof it == 'symbol';
-} : function (it) {
-  var $Symbol = getBuiltIn('Symbol');
-  return isCallable($Symbol) && isPrototypeOf($Symbol.prototype, $Object(it));
-};
-
-
-/***/ }),
-
-/***/ 2078:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var bind = __nccwpck_require__(8550);
-var call = __nccwpck_require__(9507);
-var anObject = __nccwpck_require__(7305);
-var tryToString = __nccwpck_require__(5461);
-var isArrayIteratorMethod = __nccwpck_require__(9351);
-var lengthOfArrayLike = __nccwpck_require__(7476);
-var isPrototypeOf = __nccwpck_require__(9515);
-var getIterator = __nccwpck_require__(2651);
-var getIteratorMethod = __nccwpck_require__(4258);
-var iteratorClose = __nccwpck_require__(245);
-
-var $TypeError = TypeError;
-
-var Result = function (stopped, result) {
-  this.stopped = stopped;
-  this.result = result;
-};
-
-var ResultPrototype = Result.prototype;
-
-module.exports = function (iterable, unboundFunction, options) {
-  var that = options && options.that;
-  var AS_ENTRIES = !!(options && options.AS_ENTRIES);
-  var IS_RECORD = !!(options && options.IS_RECORD);
-  var IS_ITERATOR = !!(options && options.IS_ITERATOR);
-  var INTERRUPTED = !!(options && options.INTERRUPTED);
-  var fn = bind(unboundFunction, that);
-  var iterator, iterFn, index, length, result, next, step;
-
-  var stop = function (condition) {
-    if (iterator) iteratorClose(iterator, 'normal', condition);
-    return new Result(true, condition);
-  };
-
-  var callFn = function (value) {
-    if (AS_ENTRIES) {
-      anObject(value);
-      return INTERRUPTED ? fn(value[0], value[1], stop) : fn(value[0], value[1]);
-    } return INTERRUPTED ? fn(value, stop) : fn(value);
-  };
-
-  if (IS_RECORD) {
-    iterator = iterable.iterator;
-  } else if (IS_ITERATOR) {
-    iterator = iterable;
-  } else {
-    iterFn = getIteratorMethod(iterable);
-    if (!iterFn) throw new $TypeError(tryToString(iterable) + ' is not iterable');
-    // optimisation for array iterators
-    if (isArrayIteratorMethod(iterFn)) {
-      for (index = 0, length = lengthOfArrayLike(iterable); length > index; index++) {
-        result = callFn(iterable[index]);
-        if (result && isPrototypeOf(ResultPrototype, result)) return result;
-      } return new Result(false);
-    }
-    iterator = getIterator(iterable, iterFn);
-  }
-
-  next = IS_RECORD ? iterable.next : iterator.next;
-  while (!(step = call(next, iterator)).done) {
-    try {
-      result = callFn(step.value);
-    } catch (error) {
-      iteratorClose(iterator, 'throw', error);
-    }
-    if (typeof result == 'object' && result && isPrototypeOf(ResultPrototype, result)) return result;
-  } return new Result(false);
-};
-
-
-/***/ }),
-
-/***/ 245:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var call = __nccwpck_require__(9507);
-var anObject = __nccwpck_require__(7305);
-var getMethod = __nccwpck_require__(4240);
-
-module.exports = function (iterator, kind, value) {
-  var innerResult, innerError;
-  anObject(iterator);
-  try {
-    innerResult = getMethod(iterator, 'return');
-    if (!innerResult) {
-      if (kind === 'throw') throw value;
-      return value;
-    }
-    innerResult = call(innerResult, iterator);
-  } catch (error) {
-    innerError = true;
-    innerResult = error;
-  }
-  if (kind === 'throw') throw value;
-  if (innerError) throw innerResult;
-  anObject(innerResult);
-  return value;
-};
-
-
-/***/ }),
-
-/***/ 5059:
-/***/ ((module) => {
-
-
-module.exports = {};
-
-
-/***/ }),
-
-/***/ 7476:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var toLength = __nccwpck_require__(1296);
-
-// `LengthOfArrayLike` abstract operation
-// https://tc39.es/ecma262/#sec-lengthofarraylike
-module.exports = function (obj) {
-  return toLength(obj.length);
-};
-
-
-/***/ }),
-
-/***/ 405:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-var fails = __nccwpck_require__(2533);
-var isCallable = __nccwpck_require__(3151);
-var hasOwn = __nccwpck_require__(911);
-var DESCRIPTORS = __nccwpck_require__(3821);
-var CONFIGURABLE_FUNCTION_NAME = (__nccwpck_require__(3244).CONFIGURABLE);
-var inspectSource = __nccwpck_require__(4800);
-var InternalStateModule = __nccwpck_require__(2815);
-
-var enforceInternalState = InternalStateModule.enforce;
-var getInternalState = InternalStateModule.get;
-var $String = String;
-// eslint-disable-next-line es/no-object-defineproperty -- safe
-var defineProperty = Object.defineProperty;
-var stringSlice = uncurryThis(''.slice);
-var replace = uncurryThis(''.replace);
-var join = uncurryThis([].join);
-
-var CONFIGURABLE_LENGTH = DESCRIPTORS && !fails(function () {
-  return defineProperty(function () { /* empty */ }, 'length', { value: 8 }).length !== 8;
-});
-
-var TEMPLATE = String(String).split('String');
-
-var makeBuiltIn = module.exports = function (value, name, options) {
-  if (stringSlice($String(name), 0, 7) === 'Symbol(') {
-    name = '[' + replace($String(name), /^Symbol\(([^)]*)\).*$/, '$1') + ']';
-  }
-  if (options && options.getter) name = 'get ' + name;
-  if (options && options.setter) name = 'set ' + name;
-  if (!hasOwn(value, 'name') || (CONFIGURABLE_FUNCTION_NAME && value.name !== name)) {
-    if (DESCRIPTORS) defineProperty(value, 'name', { value: name, configurable: true });
-    else value.name = name;
-  }
-  if (CONFIGURABLE_LENGTH && options && hasOwn(options, 'arity') && value.length !== options.arity) {
-    defineProperty(value, 'length', { value: options.arity });
-  }
-  try {
-    if (options && hasOwn(options, 'constructor') && options.constructor) {
-      if (DESCRIPTORS) defineProperty(value, 'prototype', { writable: false });
-    // in V8 ~ Chrome 53, prototypes of some methods, like `Array.prototype.values`, are non-writable
-    } else if (value.prototype) value.prototype = undefined;
-  } catch (error) { /* empty */ }
-  var state = enforceInternalState(value);
-  if (!hasOwn(state, 'source')) {
-    state.source = join(TEMPLATE, typeof name == 'string' ? name : '');
-  } return value;
-};
-
-// add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
-// eslint-disable-next-line no-extend-native -- required
-Function.prototype.toString = makeBuiltIn(function toString() {
-  return isCallable(this) && getInternalState(this).source || inspectSource(this);
-}, 'toString');
-
-
-/***/ }),
-
-/***/ 1342:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-
-// eslint-disable-next-line es/no-map -- safe
-var MapPrototype = Map.prototype;
-
-module.exports = {
-  // eslint-disable-next-line es/no-map -- safe
-  Map: Map,
-  set: uncurryThis(MapPrototype.set),
-  get: uncurryThis(MapPrototype.get),
-  has: uncurryThis(MapPrototype.has),
-  remove: uncurryThis(MapPrototype['delete']),
-  proto: MapPrototype
-};
-
-
-/***/ }),
-
-/***/ 2539:
-/***/ ((module) => {
-
-
-var ceil = Math.ceil;
-var floor = Math.floor;
-
-// `Math.trunc` method
-// https://tc39.es/ecma262/#sec-math.trunc
-// eslint-disable-next-line es/no-math-trunc -- safe
-module.exports = Math.trunc || function trunc(x) {
-  var n = +x;
-  return (n > 0 ? floor : ceil)(n);
-};
-
-
-/***/ }),
-
-/***/ 8391:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-
-var DESCRIPTORS = __nccwpck_require__(3821);
-var IE8_DOM_DEFINE = __nccwpck_require__(2963);
-var V8_PROTOTYPE_DEFINE_BUG = __nccwpck_require__(7732);
-var anObject = __nccwpck_require__(7305);
-var toPropertyKey = __nccwpck_require__(5299);
-
-var $TypeError = TypeError;
-// eslint-disable-next-line es/no-object-defineproperty -- safe
-var $defineProperty = Object.defineProperty;
-// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
-var $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-var ENUMERABLE = 'enumerable';
-var CONFIGURABLE = 'configurable';
-var WRITABLE = 'writable';
-
-// `Object.defineProperty` method
-// https://tc39.es/ecma262/#sec-object.defineproperty
-exports.f = DESCRIPTORS ? V8_PROTOTYPE_DEFINE_BUG ? function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPropertyKey(P);
-  anObject(Attributes);
-  if (typeof O === 'function' && P === 'prototype' && 'value' in Attributes && WRITABLE in Attributes && !Attributes[WRITABLE]) {
-    var current = $getOwnPropertyDescriptor(O, P);
-    if (current && current[WRITABLE]) {
-      O[P] = Attributes.value;
-      Attributes = {
-        configurable: CONFIGURABLE in Attributes ? Attributes[CONFIGURABLE] : current[CONFIGURABLE],
-        enumerable: ENUMERABLE in Attributes ? Attributes[ENUMERABLE] : current[ENUMERABLE],
-        writable: false
-      };
-    }
-  } return $defineProperty(O, P, Attributes);
-} : $defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPropertyKey(P);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return $defineProperty(O, P, Attributes);
-  } catch (error) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw new $TypeError('Accessors not supported');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-
-/***/ }),
-
-/***/ 4725:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-
-var DESCRIPTORS = __nccwpck_require__(3821);
-var call = __nccwpck_require__(9507);
-var propertyIsEnumerableModule = __nccwpck_require__(4167);
-var createPropertyDescriptor = __nccwpck_require__(9646);
-var toIndexedObject = __nccwpck_require__(6523);
-var toPropertyKey = __nccwpck_require__(5299);
-var hasOwn = __nccwpck_require__(911);
-var IE8_DOM_DEFINE = __nccwpck_require__(2963);
-
-// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
-var $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-
-// `Object.getOwnPropertyDescriptor` method
-// https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
-exports.f = DESCRIPTORS ? $getOwnPropertyDescriptor : function getOwnPropertyDescriptor(O, P) {
-  O = toIndexedObject(O);
-  P = toPropertyKey(P);
-  if (IE8_DOM_DEFINE) try {
-    return $getOwnPropertyDescriptor(O, P);
-  } catch (error) { /* empty */ }
-  if (hasOwn(O, P)) return createPropertyDescriptor(!call(propertyIsEnumerableModule.f, O, P), O[P]);
-};
-
-
-/***/ }),
-
-/***/ 7834:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-
-var internalObjectKeys = __nccwpck_require__(1090);
-var enumBugKeys = __nccwpck_require__(2441);
-
-var hiddenKeys = enumBugKeys.concat('length', 'prototype');
-
-// `Object.getOwnPropertyNames` method
-// https://tc39.es/ecma262/#sec-object.getownpropertynames
-// eslint-disable-next-line es/no-object-getownpropertynames -- safe
-exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
-  return internalObjectKeys(O, hiddenKeys);
-};
-
-
-/***/ }),
-
-/***/ 3020:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-// eslint-disable-next-line es/no-object-getownpropertysymbols -- safe
-exports.f = Object.getOwnPropertySymbols;
-
-
-/***/ }),
-
-/***/ 9515:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-
-module.exports = uncurryThis({}.isPrototypeOf);
-
-
-/***/ }),
-
-/***/ 1090:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-var hasOwn = __nccwpck_require__(911);
-var toIndexedObject = __nccwpck_require__(6523);
-var indexOf = (__nccwpck_require__(4767).indexOf);
-var hiddenKeys = __nccwpck_require__(2639);
-
-var push = uncurryThis([].push);
-
-module.exports = function (object, names) {
-  var O = toIndexedObject(object);
-  var i = 0;
-  var result = [];
-  var key;
-  for (key in O) !hasOwn(hiddenKeys, key) && hasOwn(O, key) && push(result, key);
-  // Don't enum bug & hidden keys
-  while (names.length > i) if (hasOwn(O, key = names[i++])) {
-    ~indexOf(result, key) || push(result, key);
-  }
-  return result;
-};
-
-
-/***/ }),
-
-/***/ 4167:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-var $propertyIsEnumerable = {}.propertyIsEnumerable;
-// eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
-var getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
-
-// Nashorn ~ JDK8 bug
-var NASHORN_BUG = getOwnPropertyDescriptor && !$propertyIsEnumerable.call({ 1: 2 }, 1);
-
-// `Object.prototype.propertyIsEnumerable` method implementation
-// https://tc39.es/ecma262/#sec-object.prototype.propertyisenumerable
-exports.f = NASHORN_BUG ? function propertyIsEnumerable(V) {
-  var descriptor = getOwnPropertyDescriptor(this, V);
-  return !!descriptor && descriptor.enumerable;
-} : $propertyIsEnumerable;
-
-
-/***/ }),
-
-/***/ 5088:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var call = __nccwpck_require__(9507);
-var isCallable = __nccwpck_require__(3151);
-var isObject = __nccwpck_require__(3492);
-
-var $TypeError = TypeError;
-
-// `OrdinaryToPrimitive` abstract operation
-// https://tc39.es/ecma262/#sec-ordinarytoprimitive
-module.exports = function (input, pref) {
-  var fn, val;
-  if (pref === 'string' && isCallable(fn = input.toString) && !isObject(val = call(fn, input))) return val;
-  if (isCallable(fn = input.valueOf) && !isObject(val = call(fn, input))) return val;
-  if (pref !== 'string' && isCallable(fn = input.toString) && !isObject(val = call(fn, input))) return val;
-  throw new $TypeError("Can't convert object to primitive value");
-};
-
-
-/***/ }),
-
-/***/ 9813:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var getBuiltIn = __nccwpck_require__(973);
-var uncurryThis = __nccwpck_require__(4310);
-var getOwnPropertyNamesModule = __nccwpck_require__(7834);
-var getOwnPropertySymbolsModule = __nccwpck_require__(3020);
-var anObject = __nccwpck_require__(7305);
-
-var concat = uncurryThis([].concat);
-
-// all object keys, includes non-enumerable and symbols
-module.exports = getBuiltIn('Reflect', 'ownKeys') || function ownKeys(it) {
-  var keys = getOwnPropertyNamesModule.f(anObject(it));
-  var getOwnPropertySymbols = getOwnPropertySymbolsModule.f;
-  return getOwnPropertySymbols ? concat(keys, getOwnPropertySymbols(it)) : keys;
-};
-
-
-/***/ }),
-
-/***/ 6868:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var isNullOrUndefined = __nccwpck_require__(531);
-
-var $TypeError = TypeError;
-
-// `RequireObjectCoercible` abstract operation
-// https://tc39.es/ecma262/#sec-requireobjectcoercible
-module.exports = function (it) {
-  if (isNullOrUndefined(it)) throw new $TypeError("Can't call method on " + it);
-  return it;
-};
-
-
-/***/ }),
-
-/***/ 4949:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var shared = __nccwpck_require__(8747);
-var uid = __nccwpck_require__(2054);
-
-var keys = shared('keys');
-
-module.exports = function (key) {
-  return keys[key] || (keys[key] = uid(key));
-};
-
-
-/***/ }),
-
-/***/ 6123:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var IS_PURE = __nccwpck_require__(2985);
-var globalThis = __nccwpck_require__(7462);
-var defineGlobalProperty = __nccwpck_require__(211);
-
-var SHARED = '__core-js_shared__';
-var store = module.exports = globalThis[SHARED] || defineGlobalProperty(SHARED, {});
-
-(store.versions || (store.versions = [])).push({
-  version: '3.41.0',
-  mode: IS_PURE ? 'pure' : 'global',
-  copyright: '© 2014-2025 Denis Pushkarev (zloirock.ru)',
-  license: 'https://github.com/zloirock/core-js/blob/v3.41.0/LICENSE',
-  source: 'https://github.com/zloirock/core-js'
-});
-
-
-/***/ }),
-
-/***/ 8747:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var store = __nccwpck_require__(6123);
-
-module.exports = function (key, value) {
-  return store[key] || (store[key] = value || {});
-};
-
-
-/***/ }),
-
-/***/ 97:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-/* eslint-disable es/no-symbol -- required for testing */
-var V8_VERSION = __nccwpck_require__(4801);
-var fails = __nccwpck_require__(2533);
-var globalThis = __nccwpck_require__(7462);
-
-var $String = globalThis.String;
-
-// eslint-disable-next-line es/no-object-getownpropertysymbols -- required for testing
-module.exports = !!Object.getOwnPropertySymbols && !fails(function () {
-  var symbol = Symbol('symbol detection');
-  // Chrome 38 Symbol has incorrect toString conversion
-  // `get-own-property-symbols` polyfill symbols converted to object are not Symbol instances
-  // nb: Do not call `String` directly to avoid this being optimized out to `symbol+''` which will,
-  // of course, fail.
-  return !$String(symbol) || !(Object(symbol) instanceof Symbol) ||
-    // Chrome 38-40 symbols are not inherited from DOM collections prototypes to instances
-    !Symbol.sham && V8_VERSION && V8_VERSION < 41;
-});
-
-
-/***/ }),
-
-/***/ 7964:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var toIntegerOrInfinity = __nccwpck_require__(6313);
-
-var max = Math.max;
-var min = Math.min;
-
-// Helper for a popular repeating case of the spec:
-// Let integer be ? ToInteger(index).
-// If integer < 0, let result be max((length + integer), 0); else let result be min(integer, length).
-module.exports = function (index, length) {
-  var integer = toIntegerOrInfinity(index);
-  return integer < 0 ? max(integer + length, 0) : min(integer, length);
-};
-
-
-/***/ }),
-
-/***/ 6523:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-// toObject with fallback for non-array-like ES3 strings
-var IndexedObject = __nccwpck_require__(6277);
-var requireObjectCoercible = __nccwpck_require__(6868);
-
-module.exports = function (it) {
-  return IndexedObject(requireObjectCoercible(it));
-};
-
-
-/***/ }),
-
-/***/ 6313:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var trunc = __nccwpck_require__(2539);
-
-// `ToIntegerOrInfinity` abstract operation
-// https://tc39.es/ecma262/#sec-tointegerorinfinity
-module.exports = function (argument) {
-  var number = +argument;
-  // eslint-disable-next-line no-self-compare -- NaN check
-  return number !== number || number === 0 ? 0 : trunc(number);
-};
-
-
-/***/ }),
-
-/***/ 1296:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var toIntegerOrInfinity = __nccwpck_require__(6313);
-
-var min = Math.min;
-
-// `ToLength` abstract operation
-// https://tc39.es/ecma262/#sec-tolength
-module.exports = function (argument) {
-  var len = toIntegerOrInfinity(argument);
-  return len > 0 ? min(len, 0x1FFFFFFFFFFFFF) : 0; // 2 ** 53 - 1 == 9007199254740991
-};
-
-
-/***/ }),
-
-/***/ 5623:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var requireObjectCoercible = __nccwpck_require__(6868);
-
-var $Object = Object;
-
-// `ToObject` abstract operation
-// https://tc39.es/ecma262/#sec-toobject
-module.exports = function (argument) {
-  return $Object(requireObjectCoercible(argument));
-};
-
-
-/***/ }),
-
-/***/ 1967:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var call = __nccwpck_require__(9507);
-var isObject = __nccwpck_require__(3492);
-var isSymbol = __nccwpck_require__(6443);
-var getMethod = __nccwpck_require__(4240);
-var ordinaryToPrimitive = __nccwpck_require__(5088);
-var wellKnownSymbol = __nccwpck_require__(1877);
-
-var $TypeError = TypeError;
-var TO_PRIMITIVE = wellKnownSymbol('toPrimitive');
-
-// `ToPrimitive` abstract operation
-// https://tc39.es/ecma262/#sec-toprimitive
-module.exports = function (input, pref) {
-  if (!isObject(input) || isSymbol(input)) return input;
-  var exoticToPrim = getMethod(input, TO_PRIMITIVE);
-  var result;
-  if (exoticToPrim) {
-    if (pref === undefined) pref = 'default';
-    result = call(exoticToPrim, input, pref);
-    if (!isObject(result) || isSymbol(result)) return result;
-    throw new $TypeError("Can't convert object to primitive value");
-  }
-  if (pref === undefined) pref = 'number';
-  return ordinaryToPrimitive(input, pref);
-};
-
-
-/***/ }),
-
-/***/ 5299:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var toPrimitive = __nccwpck_require__(1967);
-var isSymbol = __nccwpck_require__(6443);
-
-// `ToPropertyKey` abstract operation
-// https://tc39.es/ecma262/#sec-topropertykey
-module.exports = function (argument) {
-  var key = toPrimitive(argument, 'string');
-  return isSymbol(key) ? key : key + '';
-};
-
-
-/***/ }),
-
-/***/ 902:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var wellKnownSymbol = __nccwpck_require__(1877);
-
-var TO_STRING_TAG = wellKnownSymbol('toStringTag');
-var test = {};
-
-test[TO_STRING_TAG] = 'z';
-
-module.exports = String(test) === '[object z]';
-
-
-/***/ }),
-
-/***/ 5461:
-/***/ ((module) => {
-
-
-var $String = String;
-
-module.exports = function (argument) {
-  try {
-    return $String(argument);
-  } catch (error) {
-    return 'Object';
-  }
-};
-
-
-/***/ }),
-
-/***/ 2054:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var uncurryThis = __nccwpck_require__(4310);
-
-var id = 0;
-var postfix = Math.random();
-var toString = uncurryThis(1.0.toString);
-
-module.exports = function (key) {
-  return 'Symbol(' + (key === undefined ? '' : key) + ')_' + toString(++id + postfix, 36);
-};
-
-
-/***/ }),
-
-/***/ 3546:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-/* eslint-disable es/no-symbol -- required for testing */
-var NATIVE_SYMBOL = __nccwpck_require__(97);
-
-module.exports = NATIVE_SYMBOL &&
-  !Symbol.sham &&
-  typeof Symbol.iterator == 'symbol';
-
-
-/***/ }),
-
-/***/ 7732:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var DESCRIPTORS = __nccwpck_require__(3821);
-var fails = __nccwpck_require__(2533);
-
-// V8 ~ Chrome 36-
-// https://bugs.chromium.org/p/v8/issues/detail?id=3334
-module.exports = DESCRIPTORS && fails(function () {
-  // eslint-disable-next-line es/no-object-defineproperty -- required for testing
-  return Object.defineProperty(function () { /* empty */ }, 'prototype', {
-    value: 42,
-    writable: false
-  }).prototype !== 42;
-});
-
-
-/***/ }),
-
-/***/ 4112:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var globalThis = __nccwpck_require__(7462);
-var isCallable = __nccwpck_require__(3151);
-
-var WeakMap = globalThis.WeakMap;
-
-module.exports = isCallable(WeakMap) && /native code/.test(String(WeakMap));
-
-
-/***/ }),
-
-/***/ 1877:
-/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var globalThis = __nccwpck_require__(7462);
-var shared = __nccwpck_require__(8747);
-var hasOwn = __nccwpck_require__(911);
-var uid = __nccwpck_require__(2054);
-var NATIVE_SYMBOL = __nccwpck_require__(97);
-var USE_SYMBOL_AS_UID = __nccwpck_require__(3546);
-
-var Symbol = globalThis.Symbol;
-var WellKnownSymbolsStore = shared('wks');
-var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol['for'] || Symbol : Symbol && Symbol.withoutSetter || uid;
-
-module.exports = function (name) {
-  if (!hasOwn(WellKnownSymbolsStore, name)) {
-    WellKnownSymbolsStore[name] = NATIVE_SYMBOL && hasOwn(Symbol, name)
-      ? Symbol[name]
-      : createWellKnownSymbol('Symbol.' + name);
-  } return WellKnownSymbolsStore[name];
-};
-
-
-/***/ }),
-
-/***/ 5098:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var $ = __nccwpck_require__(6320);
-var uncurryThis = __nccwpck_require__(4310);
-var aCallable = __nccwpck_require__(5236);
-var requireObjectCoercible = __nccwpck_require__(6868);
-var iterate = __nccwpck_require__(2078);
-var MapHelpers = __nccwpck_require__(1342);
-var IS_PURE = __nccwpck_require__(2985);
-var fails = __nccwpck_require__(2533);
-
-var Map = MapHelpers.Map;
-var has = MapHelpers.has;
-var get = MapHelpers.get;
-var set = MapHelpers.set;
-var push = uncurryThis([].push);
-
-var DOES_NOT_WORK_WITH_PRIMITIVES = IS_PURE || fails(function () {
-  return Map.groupBy('ab', function (it) {
-    return it;
-  }).get('a').length !== 1;
-});
-
-// `Map.groupBy` method
-// https://tc39.es/ecma262/#sec-map.groupby
-$({ target: 'Map', stat: true, forced: IS_PURE || DOES_NOT_WORK_WITH_PRIMITIVES }, {
-  groupBy: function groupBy(items, callbackfn) {
-    requireObjectCoercible(items);
-    aCallable(callbackfn);
-    var map = new Map();
-    var k = 0;
-    iterate(items, function (value) {
-      var key = callbackfn(value, k++);
-      if (!has(map, key)) set(map, key, [value]);
-      else push(get(map, key), value);
-    });
-    return map;
-  }
-});
-
-
-/***/ }),
-
-/***/ 713:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-var $ = __nccwpck_require__(6320);
-var getBuiltIn = __nccwpck_require__(973);
-var uncurryThis = __nccwpck_require__(4310);
-var aCallable = __nccwpck_require__(5236);
-var requireObjectCoercible = __nccwpck_require__(6868);
-var toPropertyKey = __nccwpck_require__(5299);
-var iterate = __nccwpck_require__(2078);
-var fails = __nccwpck_require__(2533);
-
-// eslint-disable-next-line es/no-object-groupby -- testing
-var nativeGroupBy = Object.groupBy;
-var create = getBuiltIn('Object', 'create');
-var push = uncurryThis([].push);
-
-var DOES_NOT_WORK_WITH_PRIMITIVES = !nativeGroupBy || fails(function () {
-  return nativeGroupBy('ab', function (it) {
-    return it;
-  }).a.length !== 1;
-});
-
-// `Object.groupBy` method
-// https://tc39.es/ecma262/#sec-object.groupby
-$({ target: 'Object', stat: true, forced: DOES_NOT_WORK_WITH_PRIMITIVES }, {
-  groupBy: function groupBy(items, callbackfn) {
-    requireObjectCoercible(items);
-    aCallable(callbackfn);
-    var obj = create(null);
-    var k = 0;
-    iterate(items, function (value) {
-      var key = toPropertyKey(callbackfn(value, k++));
-      // in some IE versions, `hasOwnProperty` returns incorrect result on integer keys
-      // but since it's a `null` prototype object, we can safely use `in`
-      if (key in obj) push(obj[key], value);
-      else obj[key] = [value];
-    });
-    return obj;
-  }
-});
-
-
-/***/ }),
-
-/***/ 5537:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-// TODO: Remove from `core-js@4`
-__nccwpck_require__(5098);
-
-
-/***/ }),
-
-/***/ 5252:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-// TODO: Remove from `core-js@4`
-__nccwpck_require__(713);
-
-
-/***/ }),
-
-/***/ 8729:
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __nccwpck_require__) => {
-
-
-// https://github.com/tc39/proposal-array-grouping
-__nccwpck_require__(5537);
-__nccwpck_require__(5252);
 
 
 /***/ }),
