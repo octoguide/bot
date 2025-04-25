@@ -96207,7 +96207,11 @@ async function getCommentForReports(entity, locator, octokit, reports) {
 
 async function runOctoGuideAction(context) {
     const { payload } = context;
-    const target = payload.comment ?? payload.issue ?? payload.pull_request;
+    console.log("payload:", payload);
+    const target = payload.discussion ??
+        payload.comment ??
+        payload.issue ??
+        payload.pull_request;
     if (!target) {
         throw new Error("Could not determine an entity to run OctoGuide on.");
     }
@@ -96215,7 +96219,7 @@ async function runOctoGuideAction(context) {
         throw new Error("Target entity's html_url is not a string.");
     }
     core.info(`Targeting entity at html_url: ${target.html_url}`);
-    const config = core.getInput("config");
+    const config = core.getInput("config") || "recommended";
     if (!isKnownConfig(config)) {
         throw new Error(`Unknown config provided: ${config}`);
     }
