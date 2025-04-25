@@ -47,8 +47,6 @@ function checkEntity(context: RuleContext, entity: Entity) {
 	}
 
 	const lines = body.split(/\n/);
-	console.log({ body, lines });
-	console.log("------");
 
 	for (const lintError of lintErrors) {
 		context.report(createReportData(lines, lintError));
