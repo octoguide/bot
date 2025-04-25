@@ -13,8 +13,7 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 
 		return [
 			`[**${about.name}**](${url})`,
-			": ",
-			about.description,
+			":",
 			ruleReports.length > 1 ? "\n\n" : " ",
 			ruleReports
 				.map((report) =>
@@ -23,22 +22,25 @@ export function markdownReporter(entity: Entity, reports: RuleReport[]) {
 					),
 				)
 				.join("\n\n"),
-			"\n\n",
+			"\n",
 			about.explanation.join(" "),
-			` Read more on [OctoGuide > ${about.name}](${url}).`,
 		].join("");
 	});
 
-	const entityAlias = entity.type.replace("_", " ");
+	const entityAlias = `your ${entity.type.replace("_", " ")}`;
+	const entityText =
+		entity.type === "comment"
+			? `[${entityAlias}](${entity.data.url})`
+			: entityAlias;
 
 	return [
-		"👋",
-		entity.user ? ` @${entity.user}` : "",
-		"automated checks found",
-		reports.length > 1 ? "issues" : "an issue",
-		"with your",
-		entityAlias,
-		". Could you please take a look?\n\n",
+		"👋 Hi",
+		entity.user ? ` @${entity.user} ` : "",
+		"!, thanks for the ",
+		entityText,
+		"! An automatic scan reported ",
+		reports.length > 1 ? "concerns" : "a concern",
+		" with it. Could you please take a look?\n\n",
 		printedReports.join("\n\n"),
 	].join("");
 }

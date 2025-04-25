@@ -85263,8 +85263,8 @@ const commentMeaningless = {
         config: "strict",
         description: "Comments should be meaningful, not just '+1'-style bumps.",
         explanation: [
-            `Posting replies containing just _"+1"_, _any update?"_, or other phrases without new information don't meaningfully contribute to a discussion.`,
-            `If done too much, they can even become disruptive to other contributors.`,
+            `Replies containing just _"+1"_, _any update?"_, or other phrases without new information aren't helpful.`,
+            `If posted too much, they can even become disruptive to other contributors.`,
         ],
         name: "comment-meaningless",
     },
@@ -85277,10 +85277,6 @@ const commentMeaningless = {
         // https://github.com/JoshuaKGoldberg/is-comment-meaningless/issues/6
         context.report({
             primary: `Saying just '${text}' is unnecessary: it doesn't add any new information to the discussion.`,
-            secondary: [
-                "Although your enthusiasm is appreciated, posting a new comment gives everyone subscribed to the thread.",
-                `It's generally better to give a GitHub emoji reaction instead.`,
-            ],
         });
     },
 };
@@ -86232,8 +86228,9 @@ const textImageAltText = {
         config: "recommended",
         description: "Images should have descriptive alt text.",
         explanation: [
-            `Image alternative text, or "alt text", is a text description attached to an image.`,
-            `It provides a way for non-sighted users and tools to understand the image despite not being able to visually see it.`,
+            `Alternative text, or "alt text", is a text description attached to an image.`,
+            `It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
+            `To resolve this report, please add descriptive alt text to the image.`,
         ],
         name: "text-image-alt-text",
     },
@@ -95894,23 +95891,27 @@ function markdownReporter(entity, reports) {
         const url = `https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md`;
         return [
             `[**${about.name}**](${url})`,
-            ": ",
-            about.description,
+            ":",
             ruleReports.length > 1 ? "\n\n" : " ",
             ruleReports
                 .map((report) => [report.data.primary, ...formatSecondary(report.data.secondary)].join("\n"))
                 .join("\n\n"),
-            "\n\n",
+            "\n",
             about.explanation.join(" "),
-            ` Read more on [OctoGuide > ${about.name}](${url}).`,
         ].join("");
     });
-    const entityAlias = entity.type.replace("_", " ");
+    const entityAlias = `your ${entity.type.replace("_", " ")}`;
+    const entityText = entity.type === "comment"
+        ? `[${entityAlias}](${entity.data.url})`
+        : entityAlias;
     return [
-        `👋${entity.user ? ` @${entity.user},` : ""} automated checks found ${reports.length > 1 ? "issues" : "an issue"} with your ${entityAlias}. `,
-        `Could you please take a look? `,
-        `Thanks!`,
-        "\n\n",
+        "👋 Hi",
+        entity.user ? ` @${entity.user} ` : "",
+        "!, thanks for the ",
+        entityText,
+        "! An automatic scan reported ",
+        reports.length > 1 ? "concerns" : "a concern",
+        " with it. Could you please take a look?\n\n",
         printedReports.join("\n\n"),
     ].join("");
 }
@@ -95926,7 +95927,7 @@ function createCommentBody(entity, message) {
     return [
         message,
         "---",
-        `> 🗺️ _This message posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide), a bot that helps with best practices for repositories on GitHub._`,
+        `> 🗺️ _This message was posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide): a bot for GitHub repository best practices._`,
         createCommentIdentifier(entity),
     ].join("\n\n");
 }
