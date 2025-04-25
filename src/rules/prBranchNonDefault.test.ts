@@ -71,7 +71,12 @@ describe(prBranchNonDefault.about.name, () => {
 			primary: "This PR is sent from the head repository's default branch",
 			secondary: [
 				`Sending a PR from a default branch means the head repository can't easily be updated after the PR is merged.`,
-				`Please create a new branch and send the PR from there.`,
+			],
+			suggestion: [
+				"You'll need to:",
+				"1. Create a new branch on your fork",
+				"2. Send a new pull request from that branch",
+				"3. Close this pull request",
 			],
 		});
 	});

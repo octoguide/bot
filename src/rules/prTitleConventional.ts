@@ -16,16 +16,16 @@ export const prTitleConventional = {
 			`This repository asks that pull request titles start with a type in the [Conventional Commits](https://www.conventionalcommits.org) format.`,
 			`Doing so helps make the purpose of each pull request clear for humans and machines.`,
 		],
-		name: "pr-conventional-title",
+		name: "pr-title-conventional",
 	},
 	pullRequest(context, entity) {
 		const parsed = commitParser.parse(entity.data.title);
 		if (!parsed.type) {
 			context.report({
-				primary: `The PR title is missing a conventional commit type, such as _'docs: '_ or _'feat: '_:`,
+				primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_:`,
 				suggestion: [
-					parsed.subject
-						? `To resolve this report, add a conventional commit type in front of the title, like 'feat: ${parsed.subject}'.`
+					parsed.header
+						? `To resolve this report, add a conventional commit type in front of the title, like _"feat: ${parsed.header}"_.`
 						: `To resolve this report, add a conventional commit type in front of the title.`,
 				],
 			});
@@ -43,8 +43,8 @@ export const prTitleConventional = {
 				],
 				suggestion: [
 					parsed.subject
-						? `To resolve this report, replace the current PR type with one of those known types, like 'feat: ${parsed.subject}'.`
-						: `To resolve this report, replace the current PR type with one of those known types.`,
+						? `To resolve this report, replace the current type with one of those known types, like _"feat: ${parsed.subject}"_.`
+						: `To resolve this report, replace the current type with one of those known types.`,
 				],
 			});
 			return;
@@ -54,7 +54,7 @@ export const prTitleConventional = {
 			context.report({
 				primary: `PR title is missing a subject after its type.`,
 				suggestion: [
-					`To resolve this report, add text after the type, like '${parsed.type}: etc.'`,
+					`To resolve this report, add text after the type, like _"${parsed.type}: etc."_`,
 				],
 			});
 			return;

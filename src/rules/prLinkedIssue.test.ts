@@ -73,6 +73,12 @@ describe(prLinkedIssue.about.name, () => {
 
 		expect(report).toHaveBeenCalledWith({
 			primary: "This pull request is not linked as closing any issues.",
+			suggestion: [
+				"To resolve this report:",
+				"* If this is a straightforward documentation change that doesn't need an issue, you can ignore this report",
+				"* If there is a backing issue, add a 'fixes #...' link to the pull request body",
+				"* Otherwise, file an issue explaining what you'd like to happen",
+			],
 		});
 	});
 });

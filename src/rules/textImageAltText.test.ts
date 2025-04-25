@@ -70,6 +70,9 @@ describe(textImageAltText.about.name, () => {
 		expect(report).toHaveBeenCalledWith({
 			primary: "The following image is missing alt text:",
 			secondary: [["> ```md", "> ![](img.jpg)", "> ```"].join("\n")],
+			suggestion: [
+				"To resolve this report, add descriptive alt text to the image.",
+			],
 		});
 	});
 
@@ -96,6 +99,9 @@ describe(textImageAltText.about.name, () => {
 					"> ![Screen Shot 2025-06-26 at 7 41 30 PM](img.jpg)",
 					"> ```",
 				].join("\n"),
+			],
+			suggestion: [
+				"To resolve this report, add descriptive alt text to the image.",
 			],
 		});
 	});

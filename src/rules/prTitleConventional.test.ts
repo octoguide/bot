@@ -20,8 +20,10 @@ describe(prTitleConventional.about.name, () => {
 		);
 
 		expect(report).toHaveBeenCalledWith({
-			primary: `The PR title is missing a conventional commit type, such as 'docs: ' or 'feat: ':`,
-			secondary: [title],
+			primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_:`,
+			suggestion: [
+				`To resolve this report, add a conventional commit type in front of the title, like _"feat: add this new feature"_.`,
+			],
 		});
 	});
 
@@ -44,7 +46,9 @@ describe(prTitleConventional.about.name, () => {
 			primary: `The PR title has an unknown type: 'other'.`,
 			secondary: [
 				"Known types are: 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'",
-				"You'll want to replace the PR type with one of those known types.",
+			],
+			suggestion: [
+				`To resolve this report, replace the current type with one of those known types, like _"feat: add this new feature"_.`,
 			],
 		});
 	});
@@ -66,8 +70,8 @@ describe(prTitleConventional.about.name, () => {
 
 		expect(report).toHaveBeenCalledWith({
 			primary: `PR title is missing a subject after its type.`,
-			secondary: [
-				`You'll want to add text after the type, like 'feat: etc. etc.'`,
+			suggestion: [
+				`To resolve this report, add text after the type, like _"feat: etc."_`,
 			],
 		});
 	});

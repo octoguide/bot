@@ -11,7 +11,7 @@ export const prTaskCompletion = {
 			`This repository provides a set of tasks that pull request authors are expected to complete.`,
 			`Those tasks should be marked as completed with a \`[x]\` in the pull request description.`,
 		],
-		name: "pr-conventional-title",
+		name: "pr-title-completion",
 	},
 	async pullRequest(context, entity) {
 		const templateResponse = await wrapSafe(

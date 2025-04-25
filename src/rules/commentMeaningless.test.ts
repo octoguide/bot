@@ -47,17 +47,18 @@ describe(commentMeaningless.about.name, () => {
 				data: {
 					body: "+1",
 				},
+				parentType: "issue",
 				type: "comment",
 			},
 			{ report },
 		);
 
 		expect(report).toHaveBeenCalledWith({
-			primary:
-				"Saying just '+1' is unnecessary: it doesn't add any new information to the discussion.",
-			secondary: [
-				"Although your enthusiasm is appreciated, posting a new comment gives everyone subscribed to the thread.",
-				"It's generally better to give a GitHub emoji reaction instead.",
+			primary: `Saying just _"+1"_ doesn't add any new information to the discussion.`,
+			suggestion: [
+				`To resolve this report:`,
+				`* If you have new information that'll help the discussion, edit it into the comment`,
+				`* Otherwise, delete the comment and emoji react to the issue`,
 			],
 		});
 	});
