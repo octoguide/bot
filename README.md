@@ -31,6 +31,8 @@ You can think of OctoGuide as a very friendly linter, but for online GitHub acti
 
 ## Usage
 
+### GitHub Action
+
 OctoGuide can run quickly in GitHub Actions for comment, issue, and pull request events:
 
 ```yml
@@ -64,10 +66,36 @@ permissions:
   pull-requests: write
 ```
 
-You can also preview what the action would report with its npm CLI:
+You can specify using the _strict_ config rather than the _recommended_ config by adding `config: strict` to the action's `with`:
+
+```yml
+jobs:
+  octoguide:
+    if: ${{ !endsWith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: JoshuaKGoldberg/octoguide@v0.1.2
+        with:
+          config: strict
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+The _strict_ config includes all rules from _recommended_ plus more rules that enforce more opinionated practices.
+See [All Rules](#all-rules) for the list of rules in each config.
+
+### Node.js
+
+You can also preview what the action would report with its npm CLI.
+It takes in a URL to analyze:
 
 ```shell
 npx octoguide https://github.com/JoshuaKGoldberg/octoguide-test/pull/2
+```
+
+You Optionally, provide a `--config strict` to switch from the `recommended` config to `strict`:
+
+```shell
+npx octoguide https://github.com/JoshuaKGoldberg/octoguide-test/pull/2 --config strict
 ```
 
 ### All Rules
@@ -96,8 +124,11 @@ Rules are generally titled in the format of `<entity>-<area>(-<concern>)`:
 
 ## Prior Art
 
-> 🚨 **OctoGuide is very early stage and not yet fully implemented.**
-> WIP!
+OctoGuide is a lightweight action: it does not install dependencies or run any build scripts.
+It runs as quickly as possible, generally around 10 seconds a run.
+
+> Know of another comparable action or ecosystem approach?
+> Please [open an documentation issue](https://github.com/JoshuaKGoldberg/OctoGuide/issues/new?template=02-documentation.yml) to have it mentioned here!
 
 ### Comparison with Neighboring Actions
 

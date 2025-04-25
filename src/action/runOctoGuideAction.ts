@@ -4,6 +4,7 @@ import * as core from "@actions/core";
 
 import { runOctoGuide } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
+import { isKnownConfig } from "../rules/configs.js";
 import { getCommentForReports } from "./comments/setCommentForReports.js";
 
 export async function runOctoGuideAction(context: typeof github.context) {
@@ -20,7 +21,13 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	core.info(`Targeting entity at html_url: ${target.html_url}`);
 
+	const config = core.getInput("config");
+	if (!isKnownConfig(config)) {
+		throw new Error(`Unknown config provided: ${config}`);
+	}
+
 	const { entity, locator, octokit, reports } = await runOctoGuide({
+		config,
 		githubToken: core.getInput("github-token"),
 		url: target.html_url,
 	});

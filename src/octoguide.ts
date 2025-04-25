@@ -2,13 +2,15 @@ import type { Octokit } from "octokit";
 
 import { octokitFromAuth } from "octokit-from-auth";
 
+import type { ConfigName } from "./types/configs.js";
 import type { RepositoryLocator } from "./types/data.js";
 import type { Entity } from "./types/entities.js";
 import type { RuleContext, RuleReport } from "./types/rules.js";
 
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
 import { resolveLintable } from "./resolvers/resolveEntity.js";
-import { rules } from "./rules/index.js";
+import { configs } from "./rules/configs.js";
+import { rules } from "./rules/all.js";
 
 export interface OctoGuideResult {
 	entity: Entity;
@@ -18,11 +20,13 @@ export interface OctoGuideResult {
 }
 
 export interface OctoGuideSettings {
+	config?: ConfigName | undefined;
 	githubToken?: string | undefined;
 	url: string;
 }
 
 export async function runOctoGuide({
+	config = "recommended",
 	githubToken,
 	url,
 }: OctoGuideSettings): Promise<OctoGuideResult> {
@@ -39,7 +43,7 @@ export async function runOctoGuide({
 	const reports: RuleReport[] = [];
 
 	await Promise.all(
-		Object.values(rules).map(async (rule) => {
+		Object.values(configs[config]).map(async (rule) => {
 			const context: RuleContext = {
 				locator,
 				octokit,
