@@ -3,6 +3,6 @@
 text-image-alt-text: Images should have descriptive alt text. The following image is missing alt text:
 
 ![](https://github.com/user-attachments/assets/a8c44dd9-061a-41cf-a408-6774a872c737)
-Image alternative text, or "alt text", is a text description attached to an image. It provides a way for non-sighted users and tools to understand the image despite not being able to visually see it. Read more on OctoGuide > text-image-alt-text.
+Image alternative text, or "alt text", is a description attached to an image. It provides a way for non-sighted users and tools to understand the image despite not being able to visually see it. Read more on OctoGuide > text-image-alt-text.
 
 🗺️ This message posted automatically by OctoGuide, a bot that helps with best practices for repositories on GitHub.
