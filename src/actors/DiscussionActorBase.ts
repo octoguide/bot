@@ -79,7 +79,11 @@ export abstract class DiscussionActorBase<
 
 	async updateComment(number: number, newBody: string) {
 		const comments = await this.listComments();
-		console.log({ comments });
+
+		const nodeId = comments.find((comment) => comment.id === number)?.node_id;
+		if (!nodeId) {
+			throw new Error(`Comment with ID ${number.toString()} not found`);
+		}
 
 		await this.octokit.graphql(
 			`
@@ -98,7 +102,7 @@ export abstract class DiscussionActorBase<
 			`,
 			{
 				body: newBody,
-				commentId: number,
+				commentId: nodeId,
 			},
 		);
 	}

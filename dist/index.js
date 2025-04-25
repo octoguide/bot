@@ -94023,7 +94023,10 @@ class DiscussionActorBase extends EntityActorBase {
     }
     async updateComment(number, newBody) {
         const comments = await this.listComments();
-        console.log({ comments });
+        const nodeId = comments.find((comment) => comment.id === number)?.node_id;
+        if (!nodeId) {
+            throw new Error(`Comment with ID ${number.toString()} not found`);
+        }
         await this.octokit.graphql(`
 				mutation($body: String!, $commentId: ID!) {
 					updateDiscussionComment(input: {
@@ -94039,7 +94042,7 @@ class DiscussionActorBase extends EntityActorBase {
 				}
 			`, {
             body: newBody,
-            commentId: number,
+            commentId: nodeId,
         });
     }
 }
