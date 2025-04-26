@@ -1,4 +1,4 @@
-import { octokitFromAuth } from "octokit-from-auth";
+import { Octokit } from "octokit";
 
 import type { EntityActor } from "./actors/types.js";
 import type { ConfigName } from "./types/configs.js";
@@ -6,7 +6,6 @@ import type { Entity } from "./types/entities.js";
 import type { RuleContext, RuleReport } from "./types/rules.js";
 
 import { createActor } from "./actors/createActor.js";
-import { parseLocator } from "./actors/parseLocator.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
 import { configs } from "./rules/configs.js";
 
@@ -18,25 +17,16 @@ export interface OctoGuideResult {
 
 export interface OctoGuideSettings {
 	config?: ConfigName | undefined;
-	githubToken?: string | undefined;
+	octokit: Octokit;
 	url: string;
 }
 
 export async function runOctoGuide({
 	config = "recommended",
-	githubToken,
+	octokit,
 	url,
 }: OctoGuideSettings): Promise<OctoGuideResult> {
-	const octokit = await octokitFromAuth({
-		auth: githubToken,
-	});
-
-	const locator = parseLocator(url);
-	if (!locator) {
-		throw new Error("Could not resolve GitHub entity locator.");
-	}
-
-	const actor = createActor(locator, octokit, url);
+	const { actor, locator } = createActor(octokit, url);
 	if (!actor) {
 		throw new Error("Could not resolve GitHub entity actor.");
 	}

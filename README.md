@@ -51,15 +51,15 @@ on:
   discussion:
     types: [created, edited]
   discussion_comment:
-    types: [created, edited]
+    types: [created, deleted, edited]
   issue_comment:
-    types: [created, edited]
+    types: [created, deleted, edited]
   issues:
     types: [edited, opened]
   pull_request:
     types: [edited, opened]
   pull_request_review_comment:
-    types: [created, edited]
+    types: [created, deleted, edited]
 
 permissions:
   discussions: write

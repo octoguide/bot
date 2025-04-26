@@ -1,4 +1,5 @@
 import { parseArgs } from "node:util";
+import { octokitFromAuth } from "octokit-from-auth";
 
 import { runOctoGuide } from "./index.js";
 import { cliReporter } from "./reporters/cliReporter.js";
@@ -26,7 +27,8 @@ export async function cli(...args: string[]) {
 		throw new Error(`Unknown config provided: ${config}`);
 	}
 
-	const { reports } = await runOctoGuide({ config, url });
+	const octokit = await octokitFromAuth();
+	const { reports } = await runOctoGuide({ config, octokit, url });
 
 	console.log(cliReporter(reports));
 }
