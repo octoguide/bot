@@ -1,7 +1,4 @@
 globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
-globalThis.require = __WEBPACK_EXTERNAL_createRequire(import.meta.dirname);
 import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "module";
 /******/ var __webpack_modules__ = ({
 
@@ -85204,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(1955);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2982);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85214,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 1955:
+/***/ 2982:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -94193,33 +94190,6 @@ class IssueLikeCommentActor extends IssueLikeActorBase {
     }
 }
 
-;// CONCATENATED MODULE: ./src/actors/createActor.ts
-
-
-
-
-function createActor(locator, octokit, url) {
-    const matches = /(discussions|issues|pull)\/(\d+)/.exec(url);
-    if (!matches) {
-        return undefined;
-    }
-    const [, urlType, parentNumber] = matches;
-    const commentNumber = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
-    switch (urlType) {
-        case "discussions":
-            return commentNumber
-                ? new DiscussionCommentActor(+commentNumber, +parentNumber, locator, octokit)
-                : new DiscussionActor(+parentNumber, locator, octokit);
-        case "issues":
-        case "pull": {
-            const parentType = urlType === "issues" ? "issue" : "pull_request";
-            return commentNumber
-                ? new IssueLikeCommentActor(+commentNumber, locator, octokit, +parentNumber, parentType)
-                : new IssueLikeActor(+parentNumber, parentType, locator, octokit);
-        }
-    }
-}
-
 // EXTERNAL MODULE: ./node_modules/.pnpm/parse-github-url@1.0.3/node_modules/parse-github-url/index.js
 var parse_github_url = __nccwpck_require__(8468);
 var parse_github_url_default = /*#__PURE__*/__nccwpck_require__.n(parse_github_url);
@@ -94234,6 +94204,41 @@ function parseLocator(url) {
         owner: parsed.owner,
         repository: parsed.name,
     };
+}
+
+;// CONCATENATED MODULE: ./src/actors/createActor.ts
+
+
+
+
+
+function createActor(octokit, url) {
+    const locator = parseLocator(url);
+    if (!locator) {
+        throw new Error("Could not resolve GitHub entity locator.");
+    }
+    const matches = /(discussions|issues|pull)\/(\d+)/.exec(url);
+    if (!matches) {
+        throw new Error("Could not resolve GitHub url type.");
+    }
+    const [, urlType, parentNumber] = matches;
+    const commentNumber = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
+    const actor = (() => {
+        switch (urlType) {
+            case "discussions":
+                return commentNumber
+                    ? new DiscussionCommentActor(+commentNumber, +parentNumber, locator, octokit)
+                    : new DiscussionActor(+parentNumber, locator, octokit);
+            case "issues":
+            case "pull": {
+                const parentType = urlType === "issues" ? "issue" : "pull_request";
+                return commentNumber
+                    ? new IssueLikeCommentActor(+commentNumber, locator, octokit, +parentNumber, parentType)
+                    : new IssueLikeActor(+parentNumber, parentType, locator, octokit);
+            }
+        }
+    })();
+    return { actor, locator };
 }
 
 ;// CONCATENATED MODULE: ./src/execution/runRuleOnEntity.ts
@@ -95437,17 +95442,8 @@ function isKnownConfig(config) {
 
 
 
-
-
-async function runOctoGuide({ config = "recommended", githubToken, url, }) {
-    const octokit = await octokitFromAuth({
-        auth: githubToken,
-    });
-    const locator = parseLocator(url);
-    if (!locator) {
-        throw new Error("Could not resolve GitHub entity locator.");
-    }
-    const actor = createActor(locator, octokit, url);
+async function runOctoGuide({ config = "recommended", octokit, url, }) {
+    const { actor, locator } = createActor(octokit, url);
     if (!actor) {
         throw new Error("Could not resolve GitHub entity actor.");
     }
@@ -96250,8 +96246,8 @@ function markdownReporter(entity, reports) {
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
-function createCommentIdentifier(entity) {
-    return `<!-- OctoGuide response for: ${entity.data.html_url} -->`;
+function createCommentIdentifier(url) {
+    return `<!-- OctoGuide response for: ${url} -->`;
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentBody.ts
@@ -96260,7 +96256,7 @@ function createCommentBody(entity, message) {
     return [
         message,
         `> 🗺️ _This message was posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide): a bot for GitHub repository best practices._`,
-        createCommentIdentifier(entity),
+        createCommentIdentifier(entity.data.html_url),
     ].join("\n\n");
 }
 
@@ -96276,8 +96272,8 @@ async function createNewCommentForReports(actor, entity, reports) {
 
 ;// CONCATENATED MODULE: ./src/action/comments/getExistingComment.ts
 
-async function getExistingComment(actor, entity) {
-    const commentIdentifier = createCommentIdentifier(entity);
+async function getExistingComment(actor, url) {
+    const commentIdentifier = createCommentIdentifier(url);
     const comments = await actor.listComments();
     return comments.find((comment) => comment.body?.endsWith(commentIdentifier));
 }
@@ -96302,7 +96298,7 @@ async function updateExistingCommentForReports(actor, entity, existingComment, r
 
 
 async function getCommentForReports(actor, entity, reports) {
-    const existingComment = await getExistingComment(actor, entity);
+    const existingComment = await getExistingComment(actor, entity.data.html_url);
     core.info(existingComment
         ? `Found existing comment: ${existingComment.html_url}`
         : "No existing comment found.");
@@ -96327,7 +96323,51 @@ async function getCommentForReports(actor, entity, reports) {
     };
 }
 
+;// CONCATENATED MODULE: ./src/action/runCommentCleanup.ts
+
+
+
+async function runCommentCleanup({ octokit, payload, url, }) {
+    if (!payload.comment) {
+        return;
+    }
+    const { actor, locator } = createActor(octokit, url);
+    if (!actor) {
+        throw new Error("Could not resolve GitHub entity actor.");
+    }
+    const existingComment = await getExistingComment(actor, url);
+    if (!existingComment) {
+        core.info("No existing comment found. Nothing to clean up.");
+        return;
+    }
+    if (payload.discussion) {
+        await octokit.graphql(`
+				mutation($body: String!, $commentId: ID!) {
+					deleteDiscussionComment(input: {
+						body: $body,
+						commentId: $commentId
+					}) {
+						comment {
+							id
+						}
+					}
+				}
+			`, {
+            commentId: existingComment.node_id,
+        });
+    }
+    else {
+        await octokit.rest.issues.deleteComment({
+            comment_id: existingComment.id,
+            owner: locator.owner,
+            repo: locator.repository,
+        });
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/action/runOctoGuideAction.ts
+
+
 
 
 
@@ -96335,6 +96375,10 @@ async function getCommentForReports(actor, entity, reports) {
 
 async function runOctoGuideAction(context) {
     const { payload } = context;
+    if (!payload.action) {
+        core.info("Unknown payload action. Exiting.");
+        return;
+    }
     core.debug(`Full target payload: ${JSON.stringify(payload, null, 2)}`);
     const target = (payload.comment ??
         payload.discussion ??
@@ -96343,18 +96387,26 @@ async function runOctoGuideAction(context) {
     if (!target) {
         throw new Error("Could not determine an entity to run OctoGuide on.");
     }
-    if (typeof target.html_url !== "string") {
+    const url = target.html_url;
+    if (typeof url !== "string") {
         throw new Error("Target entity's html_url is not a string.");
     }
-    core.info(`Targeting entity at html_url: ${target.html_url}`);
+    const octokit = await octokitFromAuth({
+        auth: core.getInput("github-token"),
+    });
+    core.info(`Targeting ${payload.action} entity at html_url: ${url}`);
+    if (payload.action === "deleted") {
+        await runCommentCleanup({ octokit, payload, url });
+        return;
+    }
     const config = core.getInput("config") || "recommended";
     if (!isKnownConfig(config)) {
         throw new Error(`Unknown config provided: ${config}`);
     }
     const { actor, entity, reports } = await runOctoGuide({
         config,
-        githubToken: core.getInput("github-token"),
-        url: target.html_url,
+        octokit,
+        url,
     });
     core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
     if (reports.length) {

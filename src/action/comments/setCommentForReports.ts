@@ -19,7 +19,7 @@ export async function getCommentForReports(
 	entity: Entity,
 	reports: RuleReport[],
 ): Promise<ReportComment | undefined> {
-	const existingComment = await getExistingComment(actor, entity);
+	const existingComment = await getExistingComment(actor, entity.data.html_url);
 
 	core.info(
 		existingComment
