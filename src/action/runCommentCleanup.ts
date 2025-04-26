@@ -35,17 +35,17 @@ export async function runCommentCleanup({
 	if (payload.discussion) {
 		await octokit.graphql(
 			`
-                mutation($body: String!, $commentId: ID!) {
-                    deleteDiscussionComment(input: {
-                        body: $body,
-                        commentId: $commentId
-                    }) {
-                        comment {
-                            id
-                        }
-                    }
-                }
-            `,
+				mutation($body: String!, $commentId: ID!) {
+					deleteDiscussionComment(input: {
+						body: $body,
+						commentId: $commentId
+					}) {
+						comment {
+							id
+						}
+					}
+				}
+			`,
 			{
 				commentId: existingComment.node_id,
 			},
