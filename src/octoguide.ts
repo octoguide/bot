@@ -1,3 +1,5 @@
+import { paginateRest } from "@octokit/plugin-paginate-rest";
+import { Octokit } from "octokit";
 import { octokitFromAuth } from "octokit-from-auth";
 
 import type { EntityActor } from "./actors/types.js";
@@ -27,8 +29,11 @@ export async function runOctoGuide({
 	githubToken,
 	url,
 }: OctoGuideSettings): Promise<OctoGuideResult> {
+	const MyOctokit = Octokit.plugin(paginateRest);
+
 	const octokit = await octokitFromAuth({
 		auth: githubToken,
+		Octokit: MyOctokit,
 	});
 
 	const locator = parseLocator(url);
