@@ -1,7 +1,10 @@
 import type * as github from "@actions/github";
 import type { Octokit } from "octokit";
 
-import { parseLocator } from "../actors/parseLocator.js";
+import * as core from "@actions/core";
+
+import { createActor } from "../actors/createActor";
+import { getExistingComment } from "./comments/getExistingComment";
 
 export interface RunCommentCleanupSettings {
 	octokit: Octokit;
@@ -18,9 +21,15 @@ export async function runCommentCleanup({
 		return;
 	}
 
-	const locator = parseLocator(url);
-	if (!locator) {
-		throw new Error("Could not resolve GitHub entity locator.");
+	const { actor, locator } = createActor(octokit, url);
+	if (!actor) {
+		throw new Error("Could not resolve GitHub entity actor.");
+	}
+
+	const existingComment = await getExistingComment(actor, url);
+	if (!existingComment) {
+		core.info("No existing comment found. Nothing to clean up.");
+		return;
 	}
 
 	if (payload.discussion) {
@@ -38,12 +47,12 @@ export async function runCommentCleanup({
                 }
             `,
 			{
-				commentId: payload.comment.node_id,
+				commentId: existingComment.node_id,
 			},
 		);
 	} else {
 		await octokit.rest.issues.deleteComment({
-			comment_id: payload.comment.id,
+			comment_id: existingComment.id,
 			owner: locator.owner,
 			repo: locator.repository,
 		});

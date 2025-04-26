@@ -7,10 +7,6 @@ import { DiscussionCommentActor } from "./DiscussionCommentActor";
 import { IssueLikeActor } from "./IssueLikeActor";
 import { IssueLikeCommentActor } from "./IssueLikeCommentActor";
 
-const mockLocator = {
-	owner: "",
-	repository: "",
-};
 const mockOctokit = {} as Octokit;
 
 describe(createActor, () => {
@@ -19,7 +15,7 @@ describe(createActor, () => {
 			it("creates a DiscussionCommentActor when given a discussion comment URL", () => {
 				const url = "discussions/123#discussioncomment-456";
 
-				const actor = createActor(mockLocator, mockOctokit, url);
+				const actor = createActor(mockOctokit, url);
 
 				expect(actor).toBeInstanceOf(DiscussionCommentActor);
 			});
@@ -27,7 +23,7 @@ describe(createActor, () => {
 			it("creates a DiscussionActor when given a discussion URL", () => {
 				const url = "discussions/123";
 
-				const actor = createActor(mockLocator, mockOctokit, url);
+				const actor = createActor(mockOctokit, url);
 
 				expect(actor).toBeInstanceOf(DiscussionActor);
 			});
@@ -35,7 +31,7 @@ describe(createActor, () => {
 			it("creates an IssueLikeCommentActor when given an issue comment URL", () => {
 				const url = "issues/123#issuecomment-456";
 
-				const actor = createActor(mockLocator, mockOctokit, url);
+				const actor = createActor(mockOctokit, url);
 
 				expect(actor).toBeInstanceOf(IssueLikeCommentActor);
 			});
@@ -43,7 +39,7 @@ describe(createActor, () => {
 			it("creates an IssueLikeActor when given an issue URL", () => {
 				const url = "issues/123";
 
-				const actor = createActor(mockLocator, mockOctokit, url);
+				const actor = createActor(mockOctokit, url);
 
 				expect(actor).toBeInstanceOf(IssueLikeActor);
 			});
@@ -51,7 +47,7 @@ describe(createActor, () => {
 			it("creates an IssueLikeCommentActor when given a pull request comment URL", () => {
 				const url = "pull/123#issuecomment-456";
 
-				const actor = createActor(mockLocator, mockOctokit, url);
+				const actor = createActor(mockOctokit, url);
 
 				expect(actor).toBeInstanceOf(IssueLikeCommentActor);
 			});
@@ -59,7 +55,7 @@ describe(createActor, () => {
 			it("creates an IssueLikeActor when given a pull request URL", () => {
 				const url = "pull/123";
 
-				const actor = createActor(mockLocator, mockOctokit, url);
+				const actor = createActor(mockOctokit, url);
 
 				expect(actor).toBeInstanceOf(IssueLikeActor);
 			});
@@ -67,7 +63,7 @@ describe(createActor, () => {
 			it("returns undefined when given an invalid URL", () => {
 				const url = "invalid/url";
 
-				const actor = createActor(mockLocator, mockOctokit, url);
+				const actor = createActor(mockOctokit, url);
 
 				expect(actor).toBeUndefined();
 			});
