@@ -33,6 +33,9 @@ export async function runCommentCleanup({
 	}
 
 	if (payload.discussion) {
+		core.info(
+			`Deleting discussion comment with node ID: ${existingComment.node_id}`,
+		);
 		await octokit.graphql(
 			`
 				mutation($body: String!, $commentId: ID!) {
@@ -51,6 +54,9 @@ export async function runCommentCleanup({
 			},
 		);
 	} else {
+		core.info(
+			`Deleting issue comment with id: ${existingComment.id.toString()}`,
+		);
 		await octokit.rest.issues.deleteComment({
 			comment_id: existingComment.id,
 			owner: locator.owner,

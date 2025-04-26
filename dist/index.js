@@ -96341,6 +96341,7 @@ async function runCommentCleanup({ octokit, payload, url, }) {
         return;
     }
     if (payload.discussion) {
+        core.info(`Deleting discussion comment with node ID: ${existingComment.node_id}`);
         await octokit.graphql(`
 				mutation($body: String!, $commentId: ID!) {
 					deleteDiscussionComment(input: {
@@ -96357,6 +96358,7 @@ async function runCommentCleanup({ octokit, payload, url, }) {
         });
     }
     else {
+        core.info(`Deleting issue comment with id: ${existingComment.id.toString()}`);
         await octokit.rest.issues.deleteComment({
             comment_id: existingComment.id,
             owner: locator.owner,
