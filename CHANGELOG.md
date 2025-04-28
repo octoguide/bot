@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.7.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.6.0...0.7.0) (2025-04-28)
+
+### Features
+
+- add createDefineRule ([#57](https://github.com/JoshuaKGoldberg/OctoGuide/issues/57)) ([93de906](https://github.com/JoshuaKGoldberg/OctoGuide/commit/93de906a9dc7796de3055b19e978fbeb1bb68f15)), closes [#54](https://github.com/JoshuaKGoldberg/OctoGuide/issues/54) [#22](https://github.com/JoshuaKGoldberg/OctoGuide/issues/22) [#53](https://github.com/JoshuaKGoldberg/OctoGuide/issues/53)
+
 # [0.6.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.5.0...0.6.0) (2025-04-28)
 
 ### Features
