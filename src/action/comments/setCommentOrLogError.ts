@@ -5,6 +5,7 @@ import type { Entity } from "../../types/entities";
 import type { RuleReport } from "../../types/reports";
 
 import { actionReporter } from "../../reporters/actionReporter";
+import { createHeadline } from "../../reporters/createHeadline";
 import { markdownReporter } from "../../reporters/markdownReporter.js";
 import { isRequestError } from "./isRequestError.js";
 import { getCommentForReports } from "./setCommentForReports.js";
@@ -14,16 +15,7 @@ export async function setCommentOrLogError(
 	entity: Entity,
 	reports: RuleReport[],
 ) {
-	const headline = [
-		"👋 Hi",
-		entity.data.user ? ` @${entity.data.user.login}` : "",
-		", thanks for the ",
-		entity.type.replace("_", " "),
-		"! A scan flagged ",
-		reports.length > 1 ? "some concerns" : "a concern",
-		" with it. Could you please take a look?",
-	].join("");
-
+	const headline = createHeadline(entity, reports);
 	const reported = markdownReporter(headline, reports);
 
 	try {
@@ -35,13 +27,14 @@ export async function setCommentOrLogError(
 				: "No comment created.",
 		);
 	} catch (error) {
-		core.info("Received an error attempting to set a comments.");
+		core.info("Received an error attempting to set comments.");
 
 		if (isRequestError(error) && error.status === 403) {
-			console.info(error.message);
+			console.info(`[${error.status}] ${error.message}`);
 			core.info(
 				"This is expected if the action is run for a PR by a fork of a public repository.",
 			);
+			core.debug(`Full error stack: ${error.stack}`);
 		} else {
 			console.error(error);
 		}

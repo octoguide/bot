@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7721);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(251);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 7721:
+/***/ 251:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -96312,6 +96312,23 @@ function actionReporter(headline, reports, summary) {
     summary.addRaw(`🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>`);
 }
 
+;// CONCATENATED MODULE: ./src/reporters/createHeadline.ts
+function createHeadline(entity, reports) {
+    const entityAlias = entity.type.replace("_", " ");
+    const entityText = entity.type === "comment"
+        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
+        : entityAlias;
+    return [
+        "👋 Hi",
+        entity.data.user ? ` @${entity.data.user.login}` : "",
+        ", thanks for the ",
+        entityText,
+        "! A scan flagged ",
+        reports.length > 1 ? "some concerns" : "a concern",
+        " with it. Could you please take a look?\n\n",
+    ].join("");
+}
+
 ;// CONCATENATED MODULE: ./src/action/comments/isRequestError.ts
 function isRequestError(error) {
     return (typeof error === "object" &&
@@ -96396,16 +96413,9 @@ async function getCommentForReports(actor, entity, reported) {
 
 
 
+
 async function setCommentOrLogError(actor, entity, reports) {
-    const headline = [
-        "👋 Hi",
-        entity.data.user ? ` @${entity.data.user.login}` : "",
-        ", thanks for the ",
-        entity.type.replace("_", " "),
-        "! A scan flagged ",
-        reports.length > 1 ? "some concerns" : "a concern",
-        " with it. Could you please take a look?",
-    ].join("");
+    const headline = createHeadline(entity, reports);
     const reported = markdownReporter(headline, reports);
     try {
         const comment = await getCommentForReports(actor, entity, reported);
@@ -96414,10 +96424,11 @@ async function setCommentOrLogError(actor, entity, reports) {
             : "No comment created.");
     }
     catch (error) {
-        core.info("Received an error attempting to set a comments.");
+        core.info("Received an error attempting to set comments.");
         if (isRequestError(error) && error.status === 403) {
-            console.info(error.message);
+            console.info(`[${error.status}] ${error.message}`);
             core.info("This is expected if the action is run for a PR by a fork of a public repository.");
+            core.debug(`Full error stack: ${error.stack}`);
         }
         else {
             console.error(error);

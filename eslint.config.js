@@ -52,6 +52,10 @@ export default tseslint.config(
 			},
 		},
 		rules: {
+			"@typescript-eslint/restrict-template-expressions": [
+				"error",
+				{ allowNumber: true },
+			],
 			"n/no-missing-import": "off",
 			"n/no-unsupported-features/node-builtins": "off",
 

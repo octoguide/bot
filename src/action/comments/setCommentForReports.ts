@@ -1,13 +1,9 @@
 import * as core from "@actions/core";
 
 import type { Entity } from "../../types/entities.js";
-import type { RuleReport } from "../../types/reports.js";
 
 import { EntityActor } from "../../actors/types.js";
-import {
-	markdownReporter,
-	markdownReportPassMessage,
-} from "../../reporters/markdownReporter.js";
+import { markdownReportPassMessage } from "../../reporters/markdownReporter.js";
 import { createNewCommentForReports } from "./createNewCommentForReports.js";
 import { getExistingComment } from "./getExistingComment.js";
 import { updateExistingCommentForReports } from "./updateExistingCommentForReports.js";

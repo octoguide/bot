@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 
-import type { Entity, IssueData } from "../types/entities.js";
 import type { RuleReportData } from "../types/reports.js";
 import type { RuleAboutWithUrl } from "../types/rules.js";
 
