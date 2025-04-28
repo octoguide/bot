@@ -55,6 +55,7 @@ table {
 	--sl-color-gray-7: #f4f7f3;
 	--sl-color-black: #ffffff;
 
+	--color-gradient-center: var(--sl-color-black);
 	--color-gradient-outer: #ecf6f3;
 
 	--color-grayscale-1: #1a1a1a;
