@@ -1,10 +1,12 @@
 import type * as core from "@actions/core";
 
+import { marked } from "marked";
+
 import type { RuleReport } from "../types/reports.js";
 
 import { groupBy } from "../action/groupBy.js";
 
-export function actionReporter(
+export async function actionReporter(
 	headline: string,
 	reports: RuleReport[],
 	summary: typeof core.summary,
@@ -18,19 +20,19 @@ export function actionReporter(
 		const { about } = ruleReports[0];
 
 		summary.addHeading(`<a href="${about.url}">${about.name}</a>`, 2);
-		summary.addRaw(about.description);
+		summary.addRaw(await marked.parse(about.description));
 		summary.addBreak();
-		summary.addRaw(about.explanation.join(" "));
+		summary.addRaw(await marked.parse(about.explanation.join(" ")));
 		summary.addBreak();
 
 		for (const report of ruleReports) {
-			summary.addRaw(report.data.primary);
+			summary.addRaw(await marked.parse(report.data.primary));
 
 			if (report.data.secondary) {
-				summary.addRaw(report.data.secondary.join(" "));
+				summary.addRaw(await marked.parse(report.data.secondary.join(" ")));
 			}
 
-			summary.addRaw(report.data.suggestion.join("\n"));
+			summary.addRaw(await marked.parse(report.data.suggestion.join("\n")));
 		}
 	}
 

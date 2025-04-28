@@ -10,7 +10,7 @@ import { markdownReporter } from "../../reporters/markdownReporter.js";
 import { isRequestError } from "./isRequestError.js";
 import { getCommentForReports } from "./setCommentForReports.js";
 
-export async function setCommentOrLogError(
+export async function outputActionReports(
 	actor: EntityActor,
 	entity: Entity,
 	reports: RuleReport[],
@@ -40,7 +40,7 @@ export async function setCommentOrLogError(
 		}
 	}
 
-	actionReporter(headline, reports, core.summary);
+	await actionReporter(headline, reports, core.summary);
 	await core.summary.write();
 	core.setFailed(headline);
 }
