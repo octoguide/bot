@@ -39,8 +39,18 @@ export async function setCommentOrLogError(
 			console.error(error);
 		}
 
-		actionReporter(entity, reports);
-		core.setFailed(reported);
+		const headline = [
+			"👋 Hi",
+			entity.data.user ? ` @${entity.data.user.login}` : "",
+			", thanks for the ",
+			entity.type.replace("_", " "),
+			"! A scan flagged ",
+			reports.length > 1 ? "some concerns" : "a concern",
+		].join("");
+
+		actionReporter(headline, reports, core.summary);
+		await core.summary.write();
+		core.setFailed(headline);
 	}
 }
 

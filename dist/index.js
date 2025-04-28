@@ -96302,36 +96302,27 @@ async function runOctoGuideRules({ auth, config = "recommended", entity: url, })
 
 ;// CONCATENATED MODULE: ./src/reporters/actionReporter.ts
 
-
-function actionReporter(entity, reports) {
+function actionReporter(headline, reports, summary) {
     const byRule = groupBy(reports, (report) => report.about.name);
-    const entityAlias = entity.type.replace("_", " ");
-    core.summary.addHeading("OctoGuide Report", 1);
-    core.summary.addRaw([
-        "👋 Hi",
-        entity.data.user ? ` @${entity.data.user.login}` : "",
-        ", thanks for the ",
-        entityAlias,
-        "! A scan flagged ",
-        reports.length > 1 ? "some concerns" : "a concern",
-    ].join(""));
+    summary.addHeading("OctoGuide Report", 1);
+    summary.addRaw(headline);
     for (const ruleReports of Object.values(byRule)) {
         const { about } = ruleReports[0];
-        core.summary.addHeading(`<a href="${about.url}">${about.name}</a>`, 2);
-        core.summary.addRaw(about.description);
-        core.summary.addBreak();
-        core.summary.addRaw(about.explanation.join(" "));
-        core.summary.addBreak();
+        summary.addHeading(`<a href="${about.url}">${about.name}</a>`, 2);
+        summary.addRaw(about.description);
+        summary.addBreak();
+        summary.addRaw(about.explanation.join(" "));
+        summary.addBreak();
         for (const report of ruleReports) {
-            core.summary.addRaw(report.data.primary);
+            summary.addRaw(report.data.primary);
             if (report.data.secondary) {
-                core.summary.addRaw(report.data.secondary.join(" "));
+                summary.addRaw(report.data.secondary.join(" "));
             }
-            core.summary.addRaw(report.data.suggestion.join("\n"));
+            summary.addRaw(report.data.suggestion.join("\n"));
         }
     }
-    core.summary.addSeparator();
-    core.summary.addRaw(`🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>`);
+    summary.addSeparator();
+    summary.addRaw(`🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>`);
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
@@ -96428,8 +96419,17 @@ async function setCommentOrLogError(actor, entity, reports) {
         else {
             console.error(error);
         }
-        actionReporter(entity, reports);
-        core.setFailed(reported);
+        const headline = [
+            "👋 Hi",
+            entity.data.user ? ` @${entity.data.user.login}` : "",
+            ", thanks for the ",
+            entity.type.replace("_", " "),
+            "! A scan flagged ",
+            reports.length > 1 ? "some concerns" : "a concern",
+        ].join("");
+        actionReporter(headline, reports, core.summary);
+        await core.summary.write();
+        core.setFailed(headline);
     }
 }
 function isGitHubError(error) {
