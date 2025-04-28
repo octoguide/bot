@@ -1,6 +1,5 @@
 import type * as core from "@actions/core";
 
-import type { Entity } from "../types/entities.js";
 import type { RuleReport } from "../types/reports.js";
 
 import { groupBy } from "../action/groupBy.js";

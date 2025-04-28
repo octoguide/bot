@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(1643);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7721);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 1643:
+/***/ 7721:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -85957,7 +85957,7 @@ function cliReporter(reports) {
 
 
 const markdownReportPassMessage = "All reports are resolved now. Thanks! ✅";
-function markdownReporter(entity, reports) {
+function markdownReporter(headline, reports) {
     if (!reports.length) {
         return markdownReportPassMessage;
     }
@@ -85982,20 +85982,7 @@ function markdownReporter(entity, reports) {
                 .join("\n\n"),
         ].join("");
     });
-    const entityAlias = entity.type.replace("_", " ");
-    const entityText = entity.type === "comment"
-        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
-        : entityAlias;
-    return [
-        "👋 Hi",
-        entity.data.user ? ` @${entity.data.user.login}` : "",
-        ", thanks for the ",
-        entityText,
-        "! A scan flagged ",
-        reports.length > 1 ? "some concerns" : "a concern",
-        " with it. Could you please take a look?\n\n",
-        printedReports.join("\n\n"),
-    ].join("");
+    return [headline, printedReports.join("\n\n")].join("");
 }
 
 ;// CONCATENATED MODULE: external "node:child_process"
@@ -96325,6 +96312,14 @@ function actionReporter(headline, reports, summary) {
     summary.addRaw(`🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>`);
 }
 
+;// CONCATENATED MODULE: ./src/action/comments/isRequestError.ts
+function isRequestError(error) {
+    return (typeof error === "object" &&
+        !!error &&
+        "status" in error &&
+        typeof error.status === "number");
+}
+
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
 function createCommentIdentifier(url) {
     return `<!-- OctoGuide response for: ${url} -->`;
@@ -96400,8 +96395,18 @@ async function getCommentForReports(actor, entity, reported) {
 
 
 
+
 async function setCommentOrLogError(actor, entity, reports) {
-    const reported = markdownReporter(entity, reports);
+    const headline = [
+        "👋 Hi",
+        entity.data.user ? ` @${entity.data.user.login}` : "",
+        ", thanks for the ",
+        entity.type.replace("_", " "),
+        "! A scan flagged ",
+        reports.length > 1 ? "some concerns" : "a concern",
+        " with it. Could you please take a look?",
+    ].join("");
+    const reported = markdownReporter(headline, reports);
     try {
         const comment = await getCommentForReports(actor, entity, reported);
         core.info(comment
@@ -96409,34 +96414,18 @@ async function setCommentOrLogError(actor, entity, reports) {
             : "No comment created.");
     }
     catch (error) {
-        core.info("Received an error attempting to set a comments. Falling back to logging.");
-        console.log("1. ", "status" in error);
-        console.log("2. ", typeof error.status);
-        if (isGitHubError(error) && error.status !== 403) {
-            core.info("403 error: expected if the action is run for a PR by a fork of a public repository.");
-            console.info(error);
+        core.info("Received an error attempting to set a comments.");
+        if (isRequestError(error) && error.status === 403) {
+            console.info(error.message);
+            core.info("This is expected if the action is run for a PR by a fork of a public repository.");
         }
         else {
             console.error(error);
         }
-        const headline = [
-            "👋 Hi",
-            entity.data.user ? ` @${entity.data.user.login}` : "",
-            ", thanks for the ",
-            entity.type.replace("_", " "),
-            "! A scan flagged ",
-            reports.length > 1 ? "some concerns" : "a concern",
-        ].join("");
-        actionReporter(headline, reports, core.summary);
-        await core.summary.write();
-        core.setFailed(headline);
     }
-}
-function isGitHubError(error) {
-    return (typeof error === "object" &&
-        !!error &&
-        "status" in error &&
-        typeof error.status === "number");
+    actionReporter(headline, reports, core.summary);
+    await core.summary.write();
+    core.setFailed(headline);
 }
 
 ;// CONCATENATED MODULE: ./src/action/runCommentCleanup.ts

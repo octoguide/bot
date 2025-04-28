@@ -18,20 +18,13 @@ const fakeData = {
 	suggestion: ["Fake suggestion."],
 } satisfies RuleReportData;
 
-const fakeEntity = {
-	data: {
-		html_url: "fake-html-url",
-		id: 123,
-		url: "fake-url",
-	} as IssueData,
-	number: 123,
-	type: "issue",
-} satisfies Entity;
+const heading =
+	"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?";
 
 describe(markdownReporter, () => {
 	test("one report", () => {
 		expect(
-			markdownReporter(fakeEntity, [
+			markdownReporter(heading, [
 				{
 					about: fakeAbout,
 					data: fakeData,
@@ -46,7 +39,7 @@ describe(markdownReporter, () => {
 
 	test("two reports in one group", () => {
 		expect(
-			markdownReporter(fakeEntity, [
+			markdownReporter(heading, [
 				{
 					about: fakeAbout,
 					data: fakeData,
@@ -69,7 +62,7 @@ describe(markdownReporter, () => {
 
 	test("two reports across two group", () => {
 		expect(
-			markdownReporter(fakeEntity, [
+			markdownReporter(heading, [
 				{
 					about: {
 						...fakeAbout,
@@ -96,7 +89,7 @@ describe(markdownReporter, () => {
 
 	test("four reports across two group", () => {
 		expect(
-			markdownReporter(fakeEntity, [
+			markdownReporter(heading, [
 				{
 					about: {
 						...fakeAbout,
