@@ -96391,7 +96391,7 @@ async function setCommentOrLogError(actor, entity, reports) {
         else {
             console.error(error);
         }
-        core.error(reported);
+        core.setFailed(reported);
     }
 }
 function isGitHubError(error) {

@@ -36,7 +36,7 @@ export async function setCommentOrLogError(
 			console.error(error);
 		}
 
-		core.error(reported);
+		core.setFailed(reported);
 	}
 }
 
