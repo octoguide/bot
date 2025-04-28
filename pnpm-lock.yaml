@@ -57,9 +57,6 @@ importers:
       '@eslint/js':
         specifier: 9.25.0
         version: 9.25.0
-      '@fontsource/varela-round':
-        specifier: ^5.2.5
-        version: 5.2.5
       '@konami-emoji-blast/astro':
         specifier: ^0.1.1
         version: 0.1.1(astro@5.7.5(@types/node@22.14.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.7.1))(konami-emoji-blast@0.5.9)
@@ -731,9 +728,6 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
-
-  '@fontsource/varela-round@5.2.5':
-    resolution: {integrity: sha512-POJZWBI5CjsnmI8Z+TL+WbOuare/xl5w871rh+k0krz1ebJF68aerjAsvJ44Fb0EwI8hiAZgz61sWu/cR86Zag==}
 
   '@github/markdownlint-github@0.7.0':
     resolution: {integrity: sha512-NwEj1U7caT2i6cZ8LwCHu2PtJkBcyQGSq9legLh0iRTwBg+uIs9Cy+MelpZ4smtuweiPPx/GggzJYMFz+hQocQ==}
@@ -5286,8 +5280,6 @@ snapshots:
       '@expressive-code/core': 0.41.2
 
   '@fastify/busboy@2.1.1': {}
-
-  '@fontsource/varela-round@5.2.5': {}
 
   '@github/markdownlint-github@0.7.0':
     dependencies:
