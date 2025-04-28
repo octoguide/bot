@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7409);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(1643);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 7409:
+/***/ 1643:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -96300,6 +96300,40 @@ async function runOctoGuideRules({ auth, config = "recommended", entity: url, })
 
 
 
+;// CONCATENATED MODULE: ./src/reporters/actionReporter.ts
+
+
+function actionReporter(entity, reports) {
+    const byRule = groupBy(reports, (report) => report.about.name);
+    const entityAlias = entity.type.replace("_", " ");
+    core.summary.addHeading("OctoGuide Report", 1);
+    core.summary.addRaw([
+        "👋 Hi",
+        entity.data.user ? ` @${entity.data.user.login}` : "",
+        ", thanks for the ",
+        entityAlias,
+        "! A scan flagged ",
+        reports.length > 1 ? "some concerns" : "a concern",
+    ].join(""));
+    for (const ruleReports of Object.values(byRule)) {
+        const { about } = ruleReports[0];
+        core.summary.addHeading(`<a href="${about.url}">${about.name}</a>`, 2);
+        core.summary.addRaw(about.description);
+        core.summary.addBreak();
+        core.summary.addRaw(about.explanation.join(" "));
+        core.summary.addBreak();
+        for (const report of ruleReports) {
+            core.summary.addRaw(report.data.primary);
+            if (report.data.secondary) {
+                core.summary.addRaw(report.data.secondary.join(" "));
+            }
+            core.summary.addRaw(report.data.suggestion.join("\n"));
+        }
+    }
+    core.summary.addSeparator();
+    core.summary.addRaw(`🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>`);
+}
+
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
 function createCommentIdentifier(url) {
     return `<!-- OctoGuide response for: ${url} -->`;
@@ -96374,6 +96408,7 @@ async function getCommentForReports(actor, entity, reported) {
 
 
 
+
 async function setCommentOrLogError(actor, entity, reports) {
     const reported = markdownReporter(entity, reports);
     try {
@@ -96393,6 +96428,7 @@ async function setCommentOrLogError(actor, entity, reports) {
         else {
             console.error(error);
         }
+        actionReporter(entity, reports);
         core.setFailed(reported);
     }
 }

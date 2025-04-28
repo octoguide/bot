@@ -4,6 +4,7 @@ import type { EntityActor } from "../../actors/types";
 import type { Entity } from "../../types/entities";
 import type { RuleReport } from "../../types/reports";
 
+import { actionReporter } from "../../reporters/actionReporter";
 import { markdownReporter } from "../../reporters/markdownReporter.js";
 import { getCommentForReports } from "./setCommentForReports.js";
 
@@ -38,6 +39,7 @@ export async function setCommentOrLogError(
 			console.error(error);
 		}
 
+		actionReporter(entity, reports);
 		core.setFailed(reported);
 	}
 }
