@@ -42,11 +42,7 @@ export interface Rule<About extends RuleAbout = RuleAbout> {
 }
 
 /**
- * &lt;&lt;&lt;&lt;&lt;&lt;< HEAD
- * Metadata about a rule.
- * =======
  * Metadata about a rule, as used to define the rule.
- * >>>>>>> main
  */
 export interface RuleAbout {
 	/**
@@ -66,8 +62,6 @@ export interface RuleAbout {
 }
 
 /**
- * &lt;&lt;&lt;&lt;&lt;&lt;< HEAD
- * =======
  * Metadata about a rule, as available for a defined rule.
  */
 export interface RuleAboutWithUrl extends RuleAbout {
@@ -78,7 +72,6 @@ export interface RuleAboutWithUrl extends RuleAbout {
 }
 
 /**
- * >>>>>>> main
  * Shared context provided to rules when they run on an entity.
  */
 export interface RuleContext {
