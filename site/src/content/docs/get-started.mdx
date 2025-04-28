@@ -78,8 +78,8 @@ See [Preset Configs](./configs) for more information on preset configs and their
 
 ### `github-token`
 
-OctoGuide requires a `github-token` to be able to write to issues.
-The default `${{ secrets.GITHUB_TOKEN }}` allows it to post as the general `github-actions[bot]`.
+OctoGuide requires a `github-token` for the action to be able to post comments.
+GitHub's provided `${{ secrets.GITHUB_TOKEN }}` allows it to post as the general `github-actions[bot]`.
 
 If you'd like the action to post as a different user, you can provide a token with permissions to comment on your repository.
 For public repositories that's the following permissions:

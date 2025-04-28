@@ -1,11 +1,10 @@
 ---
 import { Image } from "astro:assets";
 
-import mascot from "~/assets/mascot.svg";
+import mascot from "~/assets/mascot.webp";
 
 import ButtonLink from "./ButtonLink.astro";
 import Credits from "./Credits.astro";
-import GitHubComment from "./GitHubComment.astro";
 import Title from "./Title.astro";
 import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 ---
@@ -16,7 +15,7 @@ import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 
 		<Title as="h1" class="hero-title" />
 
-		<p class="hero-description-primary">
+		<p class="hero-description hero-description-primary">
 			A friendly bot that helps contributors adhere to best practices for your
 			repository on GitHub.
 		</p>
@@ -30,7 +29,7 @@ import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 			</ButtonLink>
 		</div>
 
-		<div class="image-area">
+		<div class="comment-area">
 			<OctoGuideGitHubComment
 				primary="The following image is missing alt text:"
 				rule="image-alt-text"
@@ -50,27 +49,31 @@ import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 			</OctoGuideGitHubComment>
 		</div>
 
-		<p class="hero-description-secondary">
-			Tired of drive-by <em>"+1"</em> comments? Inaccessible images? Having to bug
-			contributors to complete issue and PR tasks?
-			<br />
-			Let <strong>OctoGuide</strong> gently ask contributors to do these necessary
-			things for you.
-		</p>
+		<div class="hero-description hero-description-secondary">
+			<p>
+				Tired of drive-by <em>"+1"</em> comments? Inaccessible images? Having to
+				bug contributors to complete issue and PR tasks?
+			</p>
+			<p>
+				Let <strong>OctoGuide</strong> gently ask contributors to do these necessary
+				things for you.
+			</p>
+		</div>
 	</div>
+</div>
 
-	<div class="buttons">
-		<ButtonLink class="button" href="/get-started#installation" level="primary">
-			Install the GitHub Actions Workflow
-		</ButtonLink>
-	</div>
+<div class="buttons">
+	<ButtonLink class="button" href="/get-started#installation" level="primary">
+		Install the GitHub Actions Workflow
+	</ButtonLink>
 </div>
 
 <Credits class="hero-credits" />
 
 <style>
 	#hero {
-		padding-top: 8rem;
+		--hero-vertical-padding: clamp(0rem, 3.5vh, 2rem);
+		padding-top: calc(var(--hero-vertical-padding) + 2rem);
 		height: 100%;
 		position: relative;
 		text-align: center;
@@ -85,19 +88,27 @@ import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 	}
 
 	.hero-image {
-		height: 15rem;
-		margin: auto;
+		height: 16rem;
+		margin: 0 auto 0.5rem;
+		shape-rendering: crispEdges;
 		user-select: none;
-		width: 15rem;
+		width: 16rem;
 	}
 
 	.hero-title {
 		font-size: var(--font-size-hero);
 	}
 
+	.hero-description {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 70vw;
+		text-align: center;
+	}
+
 	.hero-description-primary {
 		font-size: var(--font-size-large);
-		margin: 1rem;
+		margin: calc(var(--hero-vertical-padding) / 3) auto;
 	}
 
 	.buttons {
@@ -109,13 +120,16 @@ import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 		margin: 1.5rem;
 	}
 
-	.image-area {
-		margin: 3rem auto;
+	.comment-area {
+		margin: var(--hero-vertical-padding) auto;
 	}
 
 	.hero-description-secondary {
+		display: flex;
+		flex-direction: column;
 		font-size: var(--font-size-medium);
-		margin-bottom: 1.5rem;
+		gap: 1rem;
+		margin-bottom: calc(var(--hero-vertical-padding) / 2);
 	}
 
 	.hero-credits {
@@ -123,6 +137,10 @@ import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 	}
 
 	@media (width >= 1024px) {
+		#hero {
+			--hero-vertical-padding: clamp(0rem, 7vh, 4rem);
+		}
+
 		.buttons {
 			flex-direction: row;
 		}

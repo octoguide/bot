@@ -28,7 +28,7 @@ export default defineConfig({
 				TwoColumnContent: "./src/components/TwoColumnContent.astro",
 			},
 			customCss: ["./src/styles/global.css"],
-			favicon: "./src/assets/mascot.png",
+			favicon: "favicon.ico",
 			logo: {
 				src: "./src/assets/favicon.png",
 			},
