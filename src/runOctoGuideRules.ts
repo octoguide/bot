@@ -1,9 +1,10 @@
 import { octokitFromAuth } from "octokit-from-auth";
 
 import type { EntityActor } from "./actors/types.js";
-import type { ConfigName } from "./types/configs.js";
+import type { ConfigName } from "./types/core.js";
 import type { Entity } from "./types/entities.js";
-import type { RuleContext, RuleReport } from "./types/rules.js";
+import type { RuleReport } from "./types/reports.js";
+import type { RuleContext } from "./types/rules.js";
 
 import { createActor } from "./actors/createActor.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";

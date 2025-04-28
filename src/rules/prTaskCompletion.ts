@@ -1,8 +1,7 @@
-import type { Rule } from "../types/rules.js";
-
 import { wrapSafe } from "../types/utils.js";
+import { defineRule } from "./defineRule.js";
 
-export const prTaskCompletion = {
+export const prTaskCompletion = defineRule({
 	about: {
 		config: "recommended",
 		description:
@@ -80,7 +79,7 @@ export const prTaskCompletion = {
 			],
 		});
 	},
-} satisfies Rule;
+});
 
 function normalizeWhitespace(text: string) {
 	return text.replaceAll(/[ \t]/g, "");

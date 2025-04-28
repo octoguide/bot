@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import type { RuleReport } from "../types/rules.js";
+import type { RuleReport } from "../types/reports.js";
 
 import { groupBy } from "../action/groupBy.js";
 import { formatReport } from "./formatReport.js";

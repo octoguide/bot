@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 
 import type { Entity } from "../../types/entities.js";
-import type { RuleReport } from "../../types/rules.js";
+import type { RuleReport } from "../../types/reports.js";
 
 import { EntityActor } from "../../actors/types.js";
 import { createNewCommentForReports } from "./createNewCommentForReports.js";

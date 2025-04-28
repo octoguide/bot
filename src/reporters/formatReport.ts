@@ -1,4 +1,4 @@
-import type { RuleReport } from "../types/rules.js";
+import type { RuleReport } from "../types/reports.js";
 
 import { formatSecondary } from "./formatSecondary.js";
 

@@ -1,4 +1,4 @@
-import type { Rule } from "../types/rules.js";
+import { defineRule } from "./defineRule.js";
 
 interface ClosingIssuesResponse {
 	repository: {
@@ -12,7 +12,7 @@ interface ClosingIssuesResponse {
 	};
 }
 
-export const prLinkedIssue = {
+export const prLinkedIssue = defineRule({
 	about: {
 		config: "strict",
 		description: "PRs should be linked as closing an issue.",
@@ -58,4 +58,4 @@ export const prLinkedIssue = {
 			],
 		});
 	},
-} satisfies Rule;
+});

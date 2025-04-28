@@ -1,10 +1,10 @@
 import { isCommentMeaningless } from "is-comment-meaningless";
 
-import type { Rule } from "../types/rules.js";
+import { defineRule } from "./defineRule.js";
 
-export const commentMeaningless = {
+export const commentMeaningless = defineRule({
 	about: {
-		config: "strict",
+		config: "recommended",
 		description: "Comments should be meaningful, not just '+1'-style bumps.",
 		explanation: [
 			`Replies containing just _"+1"_, _any update?"_, or other phrases without new information aren't helpful.`,
@@ -29,4 +29,4 @@ export const commentMeaningless = {
 			],
 		});
 	},
-} satisfies Rule;
+});

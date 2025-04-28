@@ -1,12 +1,12 @@
 import { describe, expect, test } from "vitest";
 
 import type { Entity, IssueData } from "../types/entities.js";
+import type { RuleReportData } from "../types/reports.js";
+import type { RuleAbout } from "../types/rules.js";
 
-import { RuleAbout, RuleReportData } from "../types/rules.js";
 import { markdownReporter } from "./markdownReporter.js";
 
 const fakeAbout = {
-	config: "recommended",
 	description: "Fake description.",
 	explanation: ["Fake explanation."],
 	name: "fake-rule",
