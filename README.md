@@ -115,8 +115,6 @@ Config key:
 | PRs      | [pr-task-completion](./docs/rules/pr-task-completion.md)       | all required tasks are [x] completed        | ✅     |
 | PRs      | [pr-title-conventional](./docs/rules/pr-title-conventional.md) | title must be in conventional commit format | 🔒     |
 
-<!-- | Issues   | [issue-required-fields-content](./docs/rules/issue-required-fields-content.md) | required fields must have meaningful content | ✅     | -->
-
 Rules are generally titled in the format of `<entity>-<area>(-<concern>)`:
 
 - `<entity>`: one of `comment`, `issue`, `pr`, or the catch-all `text`
@@ -133,15 +131,14 @@ It runs as quickly as possible, generally around 10 seconds a run.
 
 ### Comparison with Neighboring Actions
 
-| Area     | OctoGuide Rule                                                           | accessibility-alt-text-bot | pr-compliance-action |
-| -------- | ------------------------------------------------------------------------ | -------------------------- | -------------------- |
-| Comments | [comment-meaningless](./docs/comment-meaningless.md)                     |                            |                      |
-| Issues   | [issue-required-fields-content](./docs/issue-required-fields-content.md) |                            |                      |
-| PRs      | [pr-branch-non-default](./docs/pr-branch-non-default.md)                 |                            | ✔️                   |
-| PRs      | [pr-linked-issue](./docs/pr-linked-issue.md)                             |                            | ✔️                   |
-| PRs      | [pr-task-completion](./docs/pr-task-completion.md)                       |                            |                      |
-| PRs      | [pr-title-conventional](./docs/pr-title-conventional.md)                 |                            | ✔️                   |
-| Texts    | [text-image-alt-text](./docs/text-image-alt-text.md)                     | ✔️                         |                      |
+| Area     | OctoGuide Rule                                           | accessibility-alt-text-bot | pr-compliance-action |
+| -------- | -------------------------------------------------------- | -------------------------- | -------------------- |
+| Comments | [comment-meaningless](./docs/comment-meaningless.md)     |                            |                      |
+| PRs      | [pr-branch-non-default](./docs/pr-branch-non-default.md) |                            | ✔️                   |
+| PRs      | [pr-linked-issue](./docs/pr-linked-issue.md)             |                            | ✔️                   |
+| PRs      | [pr-task-completion](./docs/pr-task-completion.md)       |                            |                      |
+| PRs      | [pr-title-conventional](./docs/pr-title-conventional.md) |                            | ✔️                   |
+| Texts    | [text-image-alt-text](./docs/text-image-alt-text.md)     | ✔️                         |                      |
 
 ### Other Ecosystem Approaches
 

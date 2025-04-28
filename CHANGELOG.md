@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.6.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.5.0...0.6.0) (2025-04-28)
+
+### Features
+
+- delete bot comment if target comment is deleted ([#55](https://github.com/JoshuaKGoldberg/OctoGuide/issues/55)) ([3f469c6](https://github.com/JoshuaKGoldberg/OctoGuide/commit/3f469c6857015873ddab87e02305568e6cf6be32)), closes [#42](https://github.com/JoshuaKGoldberg/OctoGuide/issues/42) [#43](https://github.com/JoshuaKGoldberg/OctoGuide/issues/43)
+
 # [0.5.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.4.0...0.5.0) (2025-04-25)
 
 ### Features

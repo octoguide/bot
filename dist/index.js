@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9104);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7266);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 9104:
+/***/ 7266:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -85350,19 +85350,6 @@ const commentMeaningless = {
                 `* Otherwise, delete the comment and emoji react to the ${entity.parentType}`,
             ],
         });
-    },
-};
-
-;// CONCATENATED MODULE: ./src/rules/issueRequiredFieldsContent.ts
-const issueRequiredFieldsContent = {
-    about: {
-        config: "recommended",
-        description: "TODO",
-        explanation: [],
-        name: "issue-required-fields-content",
-    },
-    issue( /* context, entity */) {
-        // TODO...
     },
 };
 
@@ -86380,10 +86367,8 @@ const ruleDescriptions = {
 
 
 
-
 const rules = [
     commentMeaningless,
-    issueRequiredFieldsContent,
     prBranchNonDefault,
     prLinkedIssue,
     prTaskCompletion,
@@ -95394,11 +95379,11 @@ function parseLocator(url) {
 function createActor(octokit, url) {
     const locator = parseLocator(url);
     if (!locator) {
-        throw new Error("Could not resolve GitHub entity locator.");
+        return {};
     }
     const matches = /(discussions|issues|pull)\/(\d+)/.exec(url);
     if (!matches) {
-        throw new Error("Could not resolve GitHub url type.");
+        return { locator };
     }
     const [, urlType, parentNumber] = matches;
     const commentNumber = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
@@ -95445,8 +95430,6 @@ async function runRuleOnEntity(context, rule, entity) {
 
 /**
  * Runs OctoGuide's rules to generate a list of reports for a GitHub entity.
- * @param param0
- * @returns
  */
 async function runOctoGuideRules({ auth, config = "recommended", entity: url, }) {
     // TODO: There's no need to create a full *writing* actor here;
