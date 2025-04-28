@@ -1,3 +1,4 @@
+import * as core from "@actions/core";
 import { octokitFromAuth } from "octokit-from-auth";
 
 import type { EntityActor } from "./actors/types.js";
@@ -76,6 +77,8 @@ export async function runOctoGuideRules({
 		data: await actor.getData(),
 		...actor.metadata,
 	} as Entity;
+	core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
+
 	const reports: RuleReport[] = [];
 
 	await Promise.all(

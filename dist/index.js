@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(95);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9901);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 95:
+/***/ 9901:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -94918,9 +94918,9 @@ class IssueLikeActorBase {
     }
 }
 
-;// CONCATENATED MODULE: ./src/actors/IssueLikeActor.ts
+;// CONCATENATED MODULE: ./src/actors/IssueActor.ts
 
-class IssueLikeActor extends IssueLikeActorBase {
+class IssueActor extends IssueLikeActorBase {
     metadata;
     constructor(entityNumber, entityType, locator, octokit) {
         super(entityNumber, locator, octokit);
@@ -94978,7 +94978,29 @@ function parseLocator(url) {
     };
 }
 
+;// CONCATENATED MODULE: ./src/actors/PullRequestActor.ts
+
+class PullRequestActor extends IssueLikeActorBase {
+    metadata;
+    constructor(entityNumber, entityType, locator, octokit) {
+        super(entityNumber, locator, octokit);
+        this.metadata = {
+            number: entityNumber,
+            type: entityType,
+        };
+    }
+    async getData() {
+        const { data } = await this.octokit.rest.pulls.get({
+            owner: this.locator.owner,
+            pull_number: this.entityNumber,
+            repo: this.locator.repository,
+        });
+        return data;
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/actors/createActor.ts
+
 
 
 
@@ -95004,9 +95026,12 @@ function createActor(octokit, url) {
             case "issues":
             case "pull": {
                 const parentType = urlType === "issues" ? "issue" : "pull_request";
-                return commentNumber
-                    ? new IssueLikeCommentActor(+commentNumber, locator, octokit, +parentNumber, parentType)
-                    : new IssueLikeActor(+parentNumber, parentType, locator, octokit);
+                if (commentNumber) {
+                    return new IssueLikeCommentActor(+commentNumber, locator, octokit, +parentNumber, parentType);
+                }
+                return parentType === "issue"
+                    ? new IssueActor(+parentNumber, parentType, locator, octokit)
+                    : new PullRequestActor(+parentNumber, parentType, locator, octokit);
             }
         }
     })();
@@ -96227,6 +96252,7 @@ function isKnownConfig(config) {
 
 
 
+
 /**
  * Runs OctoGuide's rules to generate a list of reports for a GitHub entity.
  */
@@ -96246,6 +96272,7 @@ async function runOctoGuideRules({ auth, config = "recommended", entity: url, })
         data: await actor.getData(),
         ...actor.metadata,
     };
+    core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
     const reports = [];
     await Promise.all(Object.values(configs[config]).map(async (rule) => {
         const context = {
@@ -96429,7 +96456,6 @@ async function runOctoGuideAction(context) {
         config,
         entity: url,
     });
-    core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
     if (reports.length) {
         core.info(`Found ${reports.length.toString()} report(s).`);
         console.log(cliReporter(reports));

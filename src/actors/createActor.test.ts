@@ -4,8 +4,9 @@ import { describe, expect, it } from "vitest";
 import { createActor } from "./createActor";
 import { DiscussionActor } from "./DiscussionActor";
 import { DiscussionCommentActor } from "./DiscussionCommentActor";
-import { IssueLikeActor } from "./IssueLikeActor";
+import { IssueActor } from "./IssueActor";
 import { IssueLikeCommentActor } from "./IssueLikeCommentActor";
+import { PullRequestActor } from "./PullRequestActor";
 
 const mockOctokit = {} as Octokit;
 
@@ -52,12 +53,12 @@ describe(createActor, () => {
 		expect(actor).toBeInstanceOf(IssueLikeCommentActor);
 	});
 
-	it("creates an IssueLikeActor when given an issue URL", () => {
+	it("creates an IssueActor when given an issue URL", () => {
 		const url = "https://github.com/owner/repository/issues/123";
 
 		const { actor } = createActor(mockOctokit, url);
 
-		expect(actor).toBeInstanceOf(IssueLikeActor);
+		expect(actor).toBeInstanceOf(IssueActor);
 	});
 
 	it("creates an IssueLikeCommentActor when given a pull request comment URL", () => {
@@ -68,11 +69,11 @@ describe(createActor, () => {
 		expect(actor).toBeInstanceOf(IssueLikeCommentActor);
 	});
 
-	it("creates an IssueLikeActor when given a pull request URL", () => {
+	it("creates a PullRequestActor when given a pull request URL", () => {
 		const url = "https://github.com/owner/repository/pull/123";
 
 		const { actor } = createActor(mockOctokit, url);
 
-		expect(actor).toBeInstanceOf(IssueLikeActor);
+		expect(actor).toBeInstanceOf(PullRequestActor);
 	});
 });
