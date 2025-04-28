@@ -3,9 +3,6 @@ import { konamiEmojiBlast } from "@konami-emoji-blast/astro";
 import { defineConfig, fontProviders } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
 
-// TODO: put version in header
-// TODO: include commit hash in code snippets
-
 export default defineConfig({
 	experimental: {
 		fonts: [
@@ -24,7 +21,6 @@ export default defineConfig({
 			components: {
 				Footer: "./src/components/Footer.astro",
 				Head: "./src/components/Head.astro",
-				// SiteTitle: "./src/components/SiteTitle.astro",
 				TwoColumnContent: "./src/components/TwoColumnContent.astro",
 			},
 			customCss: ["./src/styles/global.css"],
