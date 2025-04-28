@@ -4,7 +4,7 @@ export type RuleUrlCreator<Metadata> = (about: Metadata & RuleAbout) => string;
 
 /**
  * Creates a function that defines a rule with a URL.
- * @param createUrl Generates a URL for the rule based on its metadata.
+ * @param createUrl Generates a URL a rule based on its metadata.
  */
 export function createDefineRule<Metadata>(
 	createUrl: RuleUrlCreator<Metadata>,
