@@ -28,9 +28,8 @@ export default defineConfig({
 				TwoColumnContent: "./src/components/TwoColumnContent.astro",
 			},
 			customCss: ["./src/styles/global.css"],
-			favicon: "mascot.png",
+			favicon: "./src/assets/mascot.png",
 			logo: {
-				// TODO: Why is this not getting put in the header? :(
 				src: "./src/assets/favicon.png",
 			},
 			sidebar: [

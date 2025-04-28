@@ -18,6 +18,8 @@
 	<img alt="💪 TypeScript: Strict" src="https://img.shields.io/badge/%F0%9F%92%AA_typescript-strict-21bb42.svg" />
 </p>
 
+<img align="right" alt="Project logo: a cute teal cartoon octopus holding a map, showing dotted lines leading to a purple GitHub merged pull request icon" height="128" src="./site/src/assets/mascot.svg" width="128">
+
 OctoGuide checks that contributor activity on your GitHub repository aligns with common expectations of smoothly-running projects.
 It will automatically post friendly comments when contributors take actions you don't want them to.
 
