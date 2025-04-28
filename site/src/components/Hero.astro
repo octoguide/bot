@@ -71,9 +71,23 @@ import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 </div>
 
 <style>
+	:root {
+		--hero-gradient-start: #ffffff;
+		--hero-gradient-end: #ecf6f3;
+	}
+
+	:root[data-theme="dark"] {
+		--hero-gradient-start: #1f2a1c;
+		--hero-gradient-end: #151a13;
+	}
+
 	#hero {
 		--hero-vertical-padding: clamp(0rem, 3.5vh, 2rem);
-		background: radial-gradient(circle at 50% 20%, #ffffff, #ecf6f3);
+		background: radial-gradient(
+			circle at 50% 20%,
+			var(--hero-gradient-start),
+			var(--hero-gradient-end)
+		);
 		height: 100%;
 		padding-top: calc(var(--hero-vertical-padding) + 2rem);
 		position: relative;
