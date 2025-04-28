@@ -2,9 +2,10 @@ import type { Octokit } from "octokit";
 
 import { DiscussionActor } from "./DiscussionActor.js";
 import { DiscussionCommentActor } from "./DiscussionCommentActor.js";
-import { IssueLikeActor } from "./IssueLikeActor.js";
+import { IssueActor } from "./IssueActor.js";
 import { IssueLikeCommentActor } from "./IssueLikeCommentActor.js";
 import { parseLocator } from "./parseLocator.js";
+import { PullRequestActor } from "./PullRequestActor.js";
 
 export function createActor(octokit: Octokit, url: string) {
 	const locator = parseLocator(url);
@@ -36,15 +37,19 @@ export function createActor(octokit: Octokit, url: string) {
 			case "issues":
 			case "pull": {
 				const parentType = urlType === "issues" ? "issue" : "pull_request";
-				return commentNumber
-					? new IssueLikeCommentActor(
-							+commentNumber,
-							locator,
-							octokit,
-							+parentNumber,
-							parentType,
-						)
-					: new IssueLikeActor(+parentNumber, parentType, locator, octokit);
+				if (commentNumber) {
+					return new IssueLikeCommentActor(
+						+commentNumber,
+						locator,
+						octokit,
+						+parentNumber,
+						parentType,
+					);
+				}
+
+				return parentType === "issue"
+					? new IssueActor(+parentNumber, parentType, locator, octokit)
+					: new PullRequestActor(+parentNumber, parentType, locator, octokit);
 			}
 		}
 	})();

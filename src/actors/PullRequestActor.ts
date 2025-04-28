@@ -9,7 +9,7 @@ import type {
 
 import { IssueLikeActorBase } from "./IssueLikeActorBase.js";
 
-export class IssueLikeActor extends IssueLikeActorBase<IssueLikeData> {
+export class PullRequestActor extends IssueLikeActorBase<IssueLikeData> {
 	readonly metadata: Omit<IssueLikeEntity, "data">;
 
 	constructor(
@@ -27,9 +27,9 @@ export class IssueLikeActor extends IssueLikeActorBase<IssueLikeData> {
 	}
 
 	async getData() {
-		const { data } = await this.octokit.rest.issues.get({
-			issue_number: this.entityNumber,
+		const { data } = await this.octokit.rest.pulls.get({
 			owner: this.locator.owner,
+			pull_number: this.entityNumber,
 			repo: this.locator.repository,
 		});
 
