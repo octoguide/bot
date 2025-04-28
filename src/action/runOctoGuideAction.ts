@@ -1,7 +1,6 @@
 import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
-import { octokitFromAuth } from "octokit-from-auth";
 
 import { runOctoGuideRules } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";

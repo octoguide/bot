@@ -53,8 +53,6 @@ export interface RunOctoGuideRulesResult {
 
 /**
  * Runs OctoGuide's rules to generate a list of reports for a GitHub entity.
- * @param param0
- * @returns
  */
 export async function runOctoGuideRules({
 	auth,
