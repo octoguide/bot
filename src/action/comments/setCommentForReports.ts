@@ -4,6 +4,10 @@ import type { Entity } from "../../types/entities.js";
 import type { RuleReport } from "../../types/reports.js";
 
 import { EntityActor } from "../../actors/types.js";
+import {
+	markdownReporter,
+	markdownReportPassMessage,
+} from "../../reporters/markdownReporter.js";
 import { createNewCommentForReports } from "./createNewCommentForReports.js";
 import { getExistingComment } from "./getExistingComment.js";
 import { updateExistingCommentForReports } from "./updateExistingCommentForReports.js";
@@ -16,7 +20,7 @@ export interface ReportComment {
 export async function getCommentForReports(
 	actor: EntityActor,
 	entity: Entity,
-	reports: RuleReport[],
+	reported: string,
 ): Promise<ReportComment | undefined> {
 	const existingComment = await getExistingComment(actor, entity.data.html_url);
 
@@ -26,14 +30,14 @@ export async function getCommentForReports(
 			: "No existing comment found.",
 	);
 
-	if (!reports.length) {
+	if (reported === markdownReportPassMessage) {
 		if (existingComment) {
 			core.info("Updating existing comment as passed.");
 			await updateExistingCommentForReports(
 				actor,
 				entity,
 				existingComment,
-				reports,
+				reported,
 			);
 		}
 		return (
@@ -47,7 +51,7 @@ export async function getCommentForReports(
 			actor,
 			entity,
 			existingComment,
-			reports,
+			reported,
 		);
 		return { status: "existing", url: existingComment.html_url };
 	}
@@ -56,7 +60,7 @@ export async function getCommentForReports(
 	const newCommentUrl = await createNewCommentForReports(
 		actor,
 		entity,
-		reports,
+		reported,
 	);
 	core.info(`Created new comment: ${newCommentUrl}`);
 
