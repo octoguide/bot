@@ -6,7 +6,7 @@ import { runOctoGuideRules } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
 import { isKnownConfig } from "../rules/configs.js";
 import { EntityData } from "../types/entities.js";
-import { getCommentForReports } from "./comments/setCommentForReports.js";
+import { setCommentOrLogError } from "./comments/setCommentOrLogError.js";
 import { runCommentCleanup } from "./runCommentCleanup.js";
 
 export async function runOctoGuideAction(context: typeof github.context) {
@@ -61,11 +61,5 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		core.info("Found 0 reports. Great! ✅");
 	}
 
-	const comment = await getCommentForReports(actor, entity, reports);
-
-	core.info(
-		comment
-			? `Reports comment: ${comment.url} (${comment.status})`
-			: "No comment created.",
-	);
+	await setCommentOrLogError(actor, entity, reports);
 }

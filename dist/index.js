@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(9901);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(251);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 9901:
+/***/ 251:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -85956,7 +85956,11 @@ function cliReporter(reports) {
 ;// CONCATENATED MODULE: ./src/reporters/markdownReporter.ts
 
 
-function markdownReporter(entity, reports) {
+const markdownReportPassMessage = "All reports are resolved now. Thanks! ✅";
+function markdownReporter(headline, reports) {
+    if (!reports.length) {
+        return markdownReportPassMessage;
+    }
     const byRule = groupBy(reports, (report) => report.about.name);
     const printedReports = Object.values(byRule).map((ruleReports) => {
         const { about } = ruleReports[0];
@@ -85978,20 +85982,7 @@ function markdownReporter(entity, reports) {
                 .join("\n\n"),
         ].join("");
     });
-    const entityAlias = entity.type.replace("_", " ");
-    const entityText = entity.type === "comment"
-        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
-        : entityAlias;
-    return [
-        "👋 Hi",
-        entity.data.user ? ` @${entity.data.user.login}` : "",
-        ", thanks for the ",
-        entityText,
-        "! A scan flagged ",
-        reports.length > 1 ? "some concerns" : "a concern",
-        " with it. Could you please take a look?\n\n",
-        printedReports.join("\n\n"),
-    ].join("");
+    return [headline, printedReports.join("\n\n")].join("");
 }
 
 ;// CONCATENATED MODULE: external "node:child_process"
@@ -96296,6 +96287,56 @@ async function runOctoGuideRules({ auth, config = "recommended", entity: url, })
 
 
 
+;// CONCATENATED MODULE: ./src/reporters/actionReporter.ts
+
+function actionReporter(headline, reports, summary) {
+    const byRule = groupBy(reports, (report) => report.about.name);
+    summary.addHeading("OctoGuide Report", 1);
+    summary.addRaw(headline);
+    for (const ruleReports of Object.values(byRule)) {
+        const { about } = ruleReports[0];
+        summary.addHeading(`<a href="${about.url}">${about.name}</a>`, 2);
+        summary.addRaw(about.description);
+        summary.addBreak();
+        summary.addRaw(about.explanation.join(" "));
+        summary.addBreak();
+        for (const report of ruleReports) {
+            summary.addRaw(report.data.primary);
+            if (report.data.secondary) {
+                summary.addRaw(report.data.secondary.join(" "));
+            }
+            summary.addRaw(report.data.suggestion.join("\n"));
+        }
+    }
+    summary.addSeparator();
+    summary.addRaw(`🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>`);
+}
+
+;// CONCATENATED MODULE: ./src/reporters/createHeadline.ts
+function createHeadline(entity, reports) {
+    const entityAlias = entity.type.replace("_", " ");
+    const entityText = entity.type === "comment"
+        ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
+        : entityAlias;
+    return [
+        "👋 Hi",
+        entity.data.user ? ` @${entity.data.user.login}` : "",
+        ", thanks for the ",
+        entityText,
+        "! A scan flagged ",
+        reports.length > 1 ? "some concerns" : "a concern",
+        " with it. Could you please take a look?\n\n",
+    ].join("");
+}
+
+;// CONCATENATED MODULE: ./src/action/comments/isRequestError.ts
+function isRequestError(error) {
+    return (typeof error === "object" &&
+        !!error &&
+        "status" in error &&
+        typeof error.status === "number");
+}
+
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
 function createCommentIdentifier(url) {
     return `<!-- OctoGuide response for: ${url} -->`;
@@ -96314,11 +96355,10 @@ function createCommentBody(entity, message) {
 ;// CONCATENATED MODULE: ./src/action/comments/createNewCommentForReports.ts
 
 
-
-async function createNewCommentForReports(actor, entity, reports) {
+async function createNewCommentForReports(actor, entity, reported) {
     const targetNumber = entity.type === "comment" ? entity.parentNumber : entity.number;
     core.info(`Target number for comment creation: ${targetNumber.toString()}`);
-    return await actor.createComment(createCommentBody(entity, markdownReporter(entity, reports)));
+    return await actor.createComment(createCommentBody(entity, reported));
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/getExistingComment.ts
@@ -96331,9 +96371,8 @@ async function getExistingComment(actor, url) {
 
 ;// CONCATENATED MODULE: ./src/action/comments/updateExistingCommentForReports.ts
 
-
-async function updateExistingCommentForReports(actor, entity, existingComment, reports) {
-    await actor.updateComment(existingComment.id, createCommentBody(entity, markdownReporter(entity, reports)));
+async function updateExistingCommentForReports(actor, entity, existingComment, reported) {
+    await actor.updateComment(existingComment.id, createCommentBody(entity, reported));
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/setCommentForReports.ts
@@ -96341,30 +96380,63 @@ async function updateExistingCommentForReports(actor, entity, existingComment, r
 
 
 
-async function getCommentForReports(actor, entity, reports) {
+
+async function getCommentForReports(actor, entity, reported) {
     const existingComment = await getExistingComment(actor, entity.data.html_url);
     core.info(existingComment
         ? `Found existing comment: ${existingComment.html_url}`
         : "No existing comment found.");
-    if (!reports.length) {
+    if (reported === markdownReportPassMessage) {
         if (existingComment) {
             core.info("Updating existing comment as passed.");
-            await updateExistingCommentForReports(actor, entity, existingComment, reports);
+            await updateExistingCommentForReports(actor, entity, existingComment, reported);
         }
         return (existingComment && { status: "existing", url: existingComment.html_url });
     }
     if (existingComment) {
         core.info("Updating existing comment for reports.");
-        await updateExistingCommentForReports(actor, entity, existingComment, reports);
+        await updateExistingCommentForReports(actor, entity, existingComment, reported);
         return { status: "existing", url: existingComment.html_url };
     }
     core.info("Creating existing comment for reports.");
-    const newCommentUrl = await createNewCommentForReports(actor, entity, reports);
+    const newCommentUrl = await createNewCommentForReports(actor, entity, reported);
     core.info(`Created new comment: ${newCommentUrl}`);
     return {
         status: "created",
         url: newCommentUrl,
     };
+}
+
+;// CONCATENATED MODULE: ./src/action/comments/setCommentOrLogError.ts
+
+
+
+
+
+
+async function setCommentOrLogError(actor, entity, reports) {
+    const headline = createHeadline(entity, reports);
+    const reported = markdownReporter(headline, reports);
+    try {
+        const comment = await getCommentForReports(actor, entity, reported);
+        core.info(comment
+            ? `Reports comment: ${comment.url} (${comment.status})`
+            : "No comment created.");
+    }
+    catch (error) {
+        core.info("Received an error attempting to set comments.");
+        if (isRequestError(error) && error.status === 403) {
+            console.info(`[${error.status}] ${error.message}`);
+            core.info("This is expected if the action is run for a PR by a fork of a public repository.");
+            core.debug(`Full error stack: ${error.stack}`);
+        }
+        else {
+            console.error(error);
+        }
+    }
+    actionReporter(headline, reports, core.summary);
+    await core.summary.write();
+    core.setFailed(headline);
 }
 
 ;// CONCATENATED MODULE: ./src/action/runCommentCleanup.ts
@@ -96463,10 +96535,7 @@ async function runOctoGuideAction(context) {
     else {
         core.info("Found 0 reports. Great! ✅");
     }
-    const comment = await getCommentForReports(actor, entity, reports);
-    core.info(comment
-        ? `Reports comment: ${comment.url} (${comment.status})`
-        : "No comment created.");
+    await setCommentOrLogError(actor, entity, reports);
 }
 
 
