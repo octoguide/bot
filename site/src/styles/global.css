@@ -29,6 +29,9 @@ table {
 	--sl-color-gray-6: #1f2a1c;
 	--sl-color-black: #151a13;
 
+	--color-gradient-center: #000000;
+	--color-gradient-outer: #343a35;
+
 	--color-grayscale-1: #eaeaea;
 	--color-grayscale-2: #bdbdbd;
 	--color-grayscale-3: #828282;
@@ -51,6 +54,8 @@ table {
 	--sl-color-gray-6: #eaf0e8;
 	--sl-color-gray-7: #f4f7f3;
 	--sl-color-black: #ffffff;
+
+	--color-gradient-outer: #ecf6f3;
 
 	--color-grayscale-1: #1a1a1a;
 	--color-grayscale-2: #303030;
