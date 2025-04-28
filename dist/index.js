@@ -98880,10 +98880,7 @@ async function actionReporter(headline, reports, summary) {
     for (const ruleReports of Object.values(byRule)) {
         const { about } = ruleReports[0];
         summary.addHeading(`<a href="${about.url}">${about.name}</a>`, 2);
-        summary.addRaw(await marked.parse(about.description));
-        summary.addBreak();
         summary.addRaw(await marked.parse(about.explanation.join(" ")));
-        summary.addBreak();
         for (const report of ruleReports) {
             summary.addRaw(await marked.parse(report.data.primary));
             if (report.data.secondary) {
