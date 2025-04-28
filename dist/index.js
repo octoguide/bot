@@ -96227,6 +96227,7 @@ function isKnownConfig(config) {
 
 
 
+
 /**
  * Runs OctoGuide's rules to generate a list of reports for a GitHub entity.
  */
@@ -96246,6 +96247,7 @@ async function runOctoGuideRules({ auth, config = "recommended", entity: url, })
         data: await actor.getData(),
         ...actor.metadata,
     };
+    core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
     const reports = [];
     await Promise.all(Object.values(configs[config]).map(async (rule) => {
         const context = {
@@ -96429,7 +96431,6 @@ async function runOctoGuideAction(context) {
         config,
         entity: url,
     });
-    core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
     if (reports.length) {
         core.info(`Found ${reports.length.toString()} report(s).`);
         console.log(cliReporter(reports));
