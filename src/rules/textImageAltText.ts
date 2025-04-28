@@ -7,9 +7,11 @@ import markdownlintGitHub from "@github/markdownlint-github";
 import markdownlint from "markdownlint";
 
 import type { Entity } from "../types/entities.js";
-import type { Rule, RuleContext } from "../types/rules.js";
+import type { RuleContext } from "../types/rules.js";
 
-export const textImageAltText = {
+import { defineRule } from "./defineRule.js";
+
+export const textImageAltText = defineRule({
 	about: {
 		config: "recommended",
 		description: "Images should have descriptive alt text.",
@@ -23,7 +25,7 @@ export const textImageAltText = {
 	discussion: checkEntity,
 	issue: checkEntity,
 	pullRequest: checkEntity,
-} satisfies Rule;
+});
 
 function checkEntity(context: RuleContext, entity: Entity) {
 	const body = entity.data.body?.trim();

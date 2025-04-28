@@ -1,0 +1,31 @@
+---
+title: Ecosystem Comparisons
+---
+
+OctoGuide is a lightweight action: it does not install dependencies or run any build scripts.
+It runs as quickly as possible, generally around 10 seconds a run.
+
+:::note[Call for Comparisons]
+Know of another comparable action or ecosystem approach?
+Is this page missing a feature of another action?
+Please [open an documentation issue](https://github.com/JoshuaKGoldberg/OctoGuide/issues/new?template=02-documentation.yml) to improve these docs!
+:::
+
+## Comparison with Neighboring Actions
+
+OctoGuide is a rough superset of other dedicated actions for specific practices.
+
+| Area     | OctoGuide Rule                                                           | accessibility-alt-text-bot | pr-compliance-action |
+| -------- | ------------------------------------------------------------------------ | -------------------------- | -------------------- |
+| Comments | [comment-meaningless](./docs/comment-meaningless.md)                     |                            |                      |
+| Issues   | [issue-required-fields-content](./docs/issue-required-fields-content.md) |                            |                      |
+| PRs      | [pr-branch-non-default](./docs/pr-branch-non-default.md)                 |                            | ✔️                   |
+| PRs      | [pr-linked-issue](./docs/pr-linked-issue.md)                             |                            | ✔️                   |
+| PRs      | [pr-task-completion](./docs/pr-task-completion.md)                       |                            |                      |
+| PRs      | [pr-title-conventional](./docs/pr-title-conventional.md)                 |                            | ✔️                   |
+| Texts    | [text-image-alt-text](./docs/text-image-alt-text.md)                     | ✔️                         |                      |
+
+## Other Ecosystem Approaches
+
+- [Danger](https://danger.systems): is a much larger, more powerful system that has repositories write their rules in imperative configuration files.
+  However, Danger is not made for analyzing GitHub comments, discussions, or issues — only pull requests.

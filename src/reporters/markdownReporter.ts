@@ -1,15 +1,19 @@
-import type { RuleReport } from "../types/rules.js";
+import type { RuleReport } from "../types/reports.js";
 
 import { groupBy } from "../action/groupBy.js";
 import { Entity } from "../types/entities.js";
 import { formatReport } from "./formatReport.js";
 
 export function markdownReporter(entity: Entity, reports: RuleReport[]) {
+	if (!reports.length) {
+		return "All reports are resolved now. Thanks! ✅";
+	}
+
 	const byRule = groupBy(reports, (report) => report.about.name);
 
 	const printedReports = Object.values(byRule).map((ruleReports) => {
 		const { about } = ruleReports[0];
-		const start = `[[**${about.name}**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/${about.name}.md)]`;
+		const start = `[[**${about.name}**](https://octo.guide/rules/${about.name}]`;
 
 		if (ruleReports.length > 1) {
 			return [

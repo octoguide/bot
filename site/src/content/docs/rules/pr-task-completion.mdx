@@ -1,6 +1,7 @@
-# `pr-linked-issue`
-
-> Tasks lists from the pull request template should be [x] filled out.
+---
+description: "Tasks lists from the pull request template should be [x] filled out"
+title: "pr-linked-issue"
+---
 
 > Included in configs: ✅ recommended, 🔒 strict
 
@@ -21,14 +22,19 @@ GitHub-flavored Markdown does not provide a way to indicate which task list item
 This rule cannot statically determine which tasks must have a `[x]`.
 
 If you don't believe a task needs to be completed, consider marking the task's text with `~~` strikethrough and explaining why.
-For example:
+For example, the following markdown:
 
 ```md
 - [x] ~~Added tests~~ Docs-only change
 ```
 
+...is rendered as:
+
+- [x] ~~Added tests~~ Docs-only change
+
 ## See More
 
 - [GitHub Docs: About issue and pull request templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/about-issue-and-pull-request-templates)
 - [GitHub Docs: About task lists](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/about-task-lists)
-- [Rule source](../../src/rules/prTaskCompletion.ts)
+- [Rule source](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/rules/prTaskCompletion.ts)
+- [Rule tests](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/rules/prTaskCompletion.test.ts)

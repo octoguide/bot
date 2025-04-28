@@ -2,7 +2,7 @@ import * as core from "@actions/core";
 
 import type { EntityActor } from "../../actors/types.js";
 import type { Entity } from "../../types/entities.js";
-import type { RuleReport } from "../../types/rules.js";
+import type { RuleReport } from "../../types/reports.js";
 
 import { markdownReporter } from "../../reporters/markdownReporter.js";
 import { createCommentBody } from "./createCommentBody.js";

@@ -1,0 +1,51 @@
+---
+title: Standalone CLI
+---
+
+import { PackageManagers } from "starlight-package-managers";
+
+OctoGuide also provides a standalone `octoguide` CLI you can run outside GitHub Actions.
+`octoguide` can analyze a GitHub contribution and preview what rule violations that the OctoGuide action would report for it.
+
+{/* TODO: Show a sample repository's issue with reports */}
+
+<PackageManagers
+	args="https://github.com/JoshuaKGoldberg/OctoGuide/issues/19"
+	pkg="octoguide"
+	type="dlx"
+/>
+
+```plaintext
+Found 0 reports. Great! ✅
+```
+
+:::note
+The `octoguide` CLI only logs pretty-printed reports back in your terminal.
+It does not create comments or otherwise post any data to GitHub.
+:::
+
+{/* TODO: Allow JoshuaKGoldberg/OctoGuide shorthand */}
+{/* TODO: Allow OctoGuide shorthand if logged in */}
+
+The `octoguide` CLI takes in one required positional argument for the activity to be scanned.
+The activity can be provided as any of:
+
+- Full URL: `npx octoguide https://github.com/JoshuaKGoldberg/OctoGuide/issues/19`
+- **Coming soon:** Omitting the `https://github.com`: `npx octoguide JoshuaKGoldberg/OctoGuide/issues/19`
+- **Coming soon:** Defaulting the author to your logged in CLI user: `npx octoguide OctoGuide/issues/19`
+
+## Flags
+
+### `--config`
+
+Which [preset config](/configs) to use, as either:
+
+- `recommended` _(default)_
+- `strict`
+
+```shell
+npx octoguide JoshuaKGoldberg/OctoGuide/issues/19 --config strict
+```
+
+{/* TODO: Have the CLI default to reading `.github/actions/octoguide.yml` */}
+{/* TODO: Have the CLI mention what config it inferred */}

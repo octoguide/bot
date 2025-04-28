@@ -1,6 +1,5 @@
 import type { Octokit } from "octokit";
 
-import type { ConfigName } from "./configs.js";
 import type { RepositoryLocator } from "./data.js";
 import type {
 	CommentEntity,
@@ -9,42 +8,89 @@ import type {
 	IssueEntity,
 	PullRequestEntity,
 } from "./entities.js";
+import type { RuleReportData } from "./reports.js";
 
-export interface Rule {
-	about: RuleAbout;
+/**
+ * Defines how to analyze entities for a single best practice.
+ */
+
+export interface Rule<About extends RuleAbout = RuleAbout> {
+	/**
+	 * Metadata about the rule.
+	 */
+	about: About;
+
+	/**
+	 * Callback to run if the entity is a comment.
+	 */
 	comment?: RuleListener<CommentEntity>;
+
+	/**
+	 * Callback to run if the entity is a discussion.
+	 */
 	discussion?: RuleListener<DiscussionEntity>;
+
+	/**
+	 * Callback to run if the entity is a issue.
+	 */
 	issue?: RuleListener<IssueEntity>;
+
+	/**
+	 * Callback to run if the entity is a pull request.
+	 */
 	pullRequest?: RuleListener<PullRequestEntity>;
 }
 
+/**
+ * Metadata about a rule.
+ */
 export interface RuleAbout {
-	config: ConfigName;
+	/**
+	 * Single sentence description of the rule.
+	 */
 	description: string;
+
+	/**
+	 * Additional sentences describing the rule.
+	 */
 	explanation: string[];
+
+	/**
+	 * kebab-case name of the rule.
+	 */
 	name: string;
 }
 
+/**
+ * Shared context provided to rules when they run on an entity.
+ */
 export interface RuleContext {
+	/**
+	 * Repository location on GitHub.
+	 */
 	locator: RepositoryLocator;
+
+	/**
+	 * Octokit instance that can send GitHub API calls.
+	 */
 	octokit: Octokit;
+
+	/**
+	 * Registers a new violation.
+	 */
 	report: RuleReporter;
 }
 
-export type RuleListener<Located extends Entity> = (
+/**
+ * Rule property called if the rule is run on the corresponding entity type.
+ * @template Target Type of entity this function may be called on.
+ */
+export type RuleListener<Target extends Entity> = (
 	context: RuleContext,
-	entity: Located,
+	entity: Target,
 ) => Promise<void> | void;
 
-export interface RuleReport {
-	about: RuleAbout;
-	data: RuleReportData;
-}
-
-export interface RuleReportData {
-	primary: string;
-	secondary?: string[];
-	suggestion: string[];
-}
-
+/**
+ * Context function for a rule to register a new violation.
+ */
 export type RuleReporter = (data: RuleReportData) => void;

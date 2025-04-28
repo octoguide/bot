@@ -1,0 +1,14 @@
+---
+import Default from "@astrojs/starlight/components/Head.astro";
+import { Font } from "astro:assets";
+---
+
+<Default {...Astro.props} />
+
+<Font cssVariable="--font-varela-round" preload />
+
+<style>
+	body {
+		font-family: var(--font-varela-round);
+	}
+</style>

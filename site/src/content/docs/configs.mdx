@@ -1,0 +1,26 @@
+---
+title: Preset Configs
+---
+
+OctoGuide provides two starting preset "configs", or lists of rules:
+
+- **recommended** _(default)_: Rules that apply to almost every open source GitHub repository
+- **strict**: Everything in _recommended_, plus enforcing semantic pull request conventions
+
+See [Configuration > `config`](./get-started#configuration) for how to specify a config in your GitHub Actions workflow.
+
+## Rules Table
+
+Config key:
+
+- ✅: Recommended
+- 🔒: Strict
+
+| Area     | OctoGuide Rule                                         | Entity Requirement                          | Config |
+| -------- | ------------------------------------------------------ | ------------------------------------------- | ------ |
+| Comments | [comment-meaningless](./rules/comment-meaningless)     | should be meaningful, not just '+1' bumps   | ✅     |
+| PRs      | [pr-branch-non-default](./rules/pr-branch-non-default) | must be sent from a non-default branch      | 🔒     |
+| PRs      | [pr-linked-issue](./rules/pr-linked-issue)             | must be linked to an issue                  | 🔒     |
+| PRs      | [pr-task-completion](./rules/pr-task-completion)       | all required tasks are [x] completed        | ✅     |
+| PRs      | [pr-title-conventional](./rules/pr-title-conventional) | title must be in conventional commit format | 🔒     |
+| Text     | [text-image-alt-text](./rules/text-image-alt-text)     | images must have accessible alt text        | ✅     |

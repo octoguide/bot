@@ -1,0 +1,90 @@
+---
+title: Get Started
+---
+
+OctoGuide checks that contributor activity on your GitHub repository aligns with common expectations of smoothly-running projects.
+It will automatically post friendly comments when contributors take actions you don't want them to.
+
+## Installation
+
+Once added as a GitHub Actions workflow, OctoGuide will automatically post comments advising users if their contribution activity violates any common best practices.
+OctoGuide can scan comment, discussion, issue, and pull request events.
+
+Add the following `.github/workflows/octoguide.yml` file to get started:
+
+```yml title=".github/workflows/octoguide.yml"
+jobs:
+  octoguide:
+    if: ${{ !endsWith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: JoshuaKGoldberg/octoguide@v0.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+name: OctoGuide
+
+on:
+  discussion:
+    types: [created, edited]
+  discussion_comment:
+    types: [created, deleted, edited]
+  issue_comment:
+    types: [created, deleted, edited]
+  issues:
+    types: [edited, opened]
+  pull_request:
+    types: [edited, opened]
+  pull_request_review_comment:
+    types: [created, deleted, edited]
+
+permissions:
+  discussions: write
+  issues: write
+  pull-requests: write
+```
+
+Once you've created that `.yml` file, congrats!
+OctoGuide should be enabled on your repository.
+👏
+
+To test it out, try adding a comment with just the text _"+1"_ on an existing issue.
+OctoGuide should post a response within 10-15 seconds.
+
+{/* TODO: Make and use a component that mimics GitHub comments (for light & dark mode) */}
+
+## Configuration
+
+### `config`
+
+OctoGuide by default enables a _recommended_ set of rules.
+You can extend it to use a _strict_ superset by adding `config: strict` to the action's `with`:
+
+```diff lang="yml" title=".github/workflows/octoguide.yml"
+jobs:
+  octoguide:
+    if: ${{ !endsWith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: JoshuaKGoldberg/octoguide@v0.1.2
+        with:
++          config: strict
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+The _strict_ config includes all rules from _recommended_ plus more rules that enforce more opinionated practices.
+
+See [Preset Configs](./configs) for more information on preset configs and their rules.
+
+### `github-token`
+
+OctoGuide requires a `github-token` to be able to write to issues.
+The default `${{ secrets.GITHUB_TOKEN }}` allows it to post as the general `github-actions[bot]`.
+
+If you'd like the action to post as a different user, you can provide a token with permissions to comment on your repository.
+For public repositories that's the following permissions:
+
+- `repo` > `public_repo`
+- `read:discussion`
+
+{/* TODO: Test this! What happens in a fork? */}

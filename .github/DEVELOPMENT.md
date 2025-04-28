@@ -101,3 +101,11 @@ Add `--watch` to keep the type checker running in a watch mode that updates the 
 ```shell
 pnpm tsc --watch
 ```
+
+## Website
+
+This repository also includes the source code for [octo.guide](https://octo.guide), built with [Astro Starlight](https://starlight.astro.build).
+You can run [Astro CLI commands](https://docs.astro.build/en/reference/cli-reference) with `pnpm astro`.
+
+- `pnpm astro dev`: starts a local dev server
+- `pnpm astro build`: creates a built production website in `dist-site/`

@@ -6,6 +6,6 @@ export function createCommentBody(entity: Entity, message: string): string {
 	return [
 		message,
 		`> 🗺️ _This message was posted automatically by [OctoGuide](https://github.com/JoshuaKGoldberg/OctoGuide): a bot for GitHub repository best practices._`,
-		createCommentIdentifier(entity),
+		createCommentIdentifier(entity.data.html_url),
 	].join("\n\n");
 }

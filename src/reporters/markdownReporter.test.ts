@@ -2,7 +2,8 @@ import { describe, expect, test } from "vitest";
 
 import type { Entity, IssueData } from "../types/entities.js";
 
-import { RuleAbout, RuleReportData } from "../types/rules.js";
+import { CoreRuleAbout } from "../types/core.js";
+import { RuleReportData } from "../types/reports.js";
 import { markdownReporter } from "./markdownReporter.js";
 
 const fakeAbout = {
@@ -10,7 +11,7 @@ const fakeAbout = {
 	description: "Fake description.",
 	explanation: ["Fake explanation."],
 	name: "fake-rule",
-} satisfies RuleAbout;
+} satisfies CoreRuleAbout;
 
 const fakeData = {
 	primary: "Fake primary.",

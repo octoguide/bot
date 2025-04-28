@@ -1,6 +1,6 @@
-import type { Rule } from "../types/rules.js";
+import { defineRule } from "./defineRule.js";
 
-export const prBranchNonDefault = {
+export const prBranchNonDefault = defineRule({
 	about: {
 		config: "strict",
 		description:
@@ -32,4 +32,4 @@ export const prBranchNonDefault = {
 			});
 		}
 	},
-} satisfies Rule;
+});

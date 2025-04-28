@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+export type TitleAs = "div" | "h1";
+
+export type Props<As extends TitleAs> = HTMLAttributes<As> & {
+	as: As;
+};
+
+const { as: Component, class: className, ...rest } = Astro.props;
+---
+
+<Component class:list={["title", className]} {...rest}> OctoGuide </Component>
+
+<style>
+	.title {
+		font-weight: bold;
+		color: var(--sl-color-accent);
+	}
+</style>

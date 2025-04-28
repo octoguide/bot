@@ -1,0 +1,62 @@
+:root {
+	--font-github:
+		-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+		Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+
+	--font-size-hero: 2.5rem;
+	--font-size-large: 1.25rem;
+	--font-size-medium: 1.1rem;
+
+	--transition-medium: 350ms;
+}
+
+table {
+	font-size: 90%;
+	width: 100%;
+}
+
+/* Dark mode colors. */
+:root {
+	--sl-color-accent-low: #112828;
+	--sl-color-accent: #0a9f61;
+	--sl-color-accent-high: #b3cfce;
+	--sl-color-white: #ffffff;
+	--sl-color-gray-1: #eaf0e8;
+	--sl-color-gray-2: #bdc4bb;
+	--sl-color-gray-3: #82907f;
+	--sl-color-gray-4: #4f5c4d;
+	--sl-color-gray-5: #303c2d;
+	--sl-color-gray-6: #1f2a1c;
+	--sl-color-black: #151a13;
+
+	--color-grayscale-1: #eaeaea;
+	--color-grayscale-2: #bdbdbd;
+	--color-grayscale-3: #828282;
+	--color-grayscale-4: #4f4f4f;
+	--color-grayscale-5: #303030;
+	--color-grayscale-6: #1f1f1f;
+}
+
+/* Light mode colors. */
+:root[data-theme="light"] {
+	--sl-color-accent-low: #c7dcdb;
+	--sl-color-accent: #007967;
+	--sl-color-accent-high: #103938;
+	--sl-color-white: #151a13;
+	--sl-color-gray-1: #1a2118;
+	--sl-color-gray-2: #303c2d;
+	--sl-color-gray-3: #4f5c4d;
+	--sl-color-gray-4: #82907f;
+	--sl-color-gray-5: #bdc4bb;
+	--sl-color-gray-6: #eaf0e8;
+	--sl-color-gray-7: #f4f7f3;
+	--sl-color-black: #ffffff;
+
+	--color-grayscale-1: #1a1a1a;
+	--color-grayscale-2: #303030;
+	--color-grayscale-3: #4f4f4f;
+	--color-grayscale-4: #828282;
+	--color-grayscale-5: #bdbdbd;
+	--color-grayscale-6: #eaeaea;
+	--color-grayscale-7: #f4f4f4;
+}
