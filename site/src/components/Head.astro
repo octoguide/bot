@@ -1,11 +1,26 @@
 ---
 import Default from "@astrojs/starlight/components/Head.astro";
 import { Font } from "astro:assets";
+
+const data = Astro.props.entry?.data ?? {
+	description:
+		"A friendly bot that helps contributors adhere to best practices for your repository on GitHub.",
+	title: "OctoGuide",
+};
+
+const ogImageUrl = new URL(`social.png`, Astro.site);
 ---
 
 <Default {...Astro.props} />
 
 <Font cssVariable="--font-varela-round" preload />
+
+<meta property="og:image" content={ogImageUrl} />
+<meta property="twitter:domain" content={Astro.site} />
+<meta property="twitter:url" content={Astro.site} />
+<meta name="twitter:description" content={data.description} />
+<meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:title" content={data.title} />
 
 <style>
 	body {

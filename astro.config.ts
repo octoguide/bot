@@ -71,7 +71,7 @@ export default defineConfig({
 	outDir: "dist-site",
 	publicDir: "./site/public",
 	root: "./site",
-	site: "https://create.bingo",
+	site: "https://octo.guide",
 	srcDir: "./site/src",
 	trailingSlash: "never",
 });

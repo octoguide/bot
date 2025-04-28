@@ -1,7 +1,7 @@
 {
 	"name": "octoguide",
 	"version": "0.8.0",
-	"description": "A linter for GitHub repository activity. 🗺️",
+	"description": "A friendly bot that helps contributors adhere to best practices for your repository on GitHub. 🗺️",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/JoshuaKGoldberg/OctoGuide.git"
