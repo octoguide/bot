@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import type { RuleReportData } from "../types/reports.js";
-import type { RuleAbout } from "../types/rules.js";
+import type { RuleAboutWithUrl } from "../types/rules.js";
 
 import { cliReporter } from "./cliReporter.js";
 
@@ -9,7 +9,8 @@ const fakeAbout = {
 	description: "Fake description.",
 	explanation: ["Fake explanation."],
 	name: "fake-rule",
-} satisfies RuleAbout;
+	url: "https://octo.guide/rules/fake-rule",
+} satisfies RuleAboutWithUrl;
 
 const fakeData = {
 	primary: "Fake primary.",

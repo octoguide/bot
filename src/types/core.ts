@@ -5,7 +5,7 @@ export type ConfigName = "recommended" | "strict";
 /**
  * Metadata for a core OctoGuide rule.
  */
-export interface CoreRuleAbout extends RuleAbout {
+export interface CoreRuleMetadata extends RuleAbout {
 	/**
 	 * Which preset config starts including the rule.
 	 */
