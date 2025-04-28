@@ -1,17 +1,17 @@
 import { describe, expect, test } from "vitest";
 
 import type { Entity, IssueData } from "../types/entities.js";
+import type { RuleReportData } from "../types/reports.js";
+import type { RuleAboutWithUrl } from "../types/rules.js";
 
-import { CoreRuleAbout } from "../types/core.js";
-import { RuleReportData } from "../types/reports.js";
 import { markdownReporter } from "./markdownReporter.js";
 
 const fakeAbout = {
-	config: "recommended",
 	description: "Fake description.",
 	explanation: ["Fake explanation."],
 	name: "fake-rule",
-} satisfies CoreRuleAbout;
+	url: "https://octo.guide/rules/fake-rule",
+} satisfies RuleAboutWithUrl;
 
 const fakeData = {
 	primary: "Fake primary.",
@@ -40,7 +40,7 @@ describe(markdownReporter, () => {
 		).toMatchInlineSnapshot(`
 			"👋 Hi, thanks for the issue! A scan flagged a concern with it. Could you please take a look?
 
-			[[**fake-rule**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/fake-rule.md)] Fake primary. Fake explanation. Fake suggestion."
+			[[**fake-rule**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion."
 		`);
 	});
 
@@ -59,7 +59,7 @@ describe(markdownReporter, () => {
 		).toMatchInlineSnapshot(`
 			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
 
-			[[**fake-rule**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/fake-rule.md)] Fake explanation.
+			[[**fake-rule**](https://octo.guide/rules/fake-rule)] Fake explanation.
 
 			Fake primary. Fake suggestion.
 
@@ -88,9 +88,9 @@ describe(markdownReporter, () => {
 		).toMatchInlineSnapshot(`
 			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
 
-			[[**first**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/first.md)] Fake primary. Fake explanation. Fake suggestion.
+			[[**first**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion.
 
-			[[**second**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/second.md)] Fake primary. Fake explanation. Fake suggestion."
+			[[**second**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion."
 		`);
 	});
 
@@ -129,13 +129,13 @@ describe(markdownReporter, () => {
 		).toMatchInlineSnapshot(`
 			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
 
-			[[**first**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/first.md)] Fake explanation.
+			[[**first**](https://octo.guide/rules/fake-rule)] Fake explanation.
 
 			Fake primary. Fake suggestion.
 
 			Fake primary. Fake suggestion.
 
-			[[**second**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/second.md)] Fake explanation.
+			[[**second**](https://octo.guide/rules/fake-rule)] Fake explanation.
 
 			Fake primary. Fake suggestion.
 

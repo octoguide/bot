@@ -1,5 +1,6 @@
-import type { Rule, RuleAbout } from "../types/rules";
+import { createDefineRule } from "../createDefineRule.js";
+import { CoreRuleMetadata } from "../types/core.js";
 
-export function defineRule<About extends RuleAbout>(rule: Rule<About>) {
-	return rule;
-}
+export const defineRule = createDefineRule<CoreRuleMetadata>(
+	(about) => `https://octo.guide/rules/${about.name}.md`,
+);

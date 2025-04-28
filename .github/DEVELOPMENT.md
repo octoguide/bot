@@ -3,8 +3,8 @@
 After [forking the repo from GitHub](https://help.github.com/articles/fork-a-repo) and [installing pnpm](https://pnpm.io/installation):
 
 ```shell
-git clone https://github.com/(your-name-here)/octoguide
-cd octoguide
+git clone https://github.com/(your-name-here)/OctoGuide
+cd OctoGuide
 pnpm install
 ```
 
