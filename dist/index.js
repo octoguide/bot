@@ -96384,6 +96384,8 @@ async function setCommentOrLogError(actor, entity, reports) {
     }
     catch (error) {
         core.info("Received an error attempting to set a comments. Falling back to logging.");
+        console.log("1. ", "status" in error);
+        console.log("2. ", typeof error.status);
         if (isGitHubError(error) && error.status !== 403) {
             core.info("403 error: expected if the action is run for a PR by a fork of a public repository.");
             console.info(error);
@@ -96396,7 +96398,7 @@ async function setCommentOrLogError(actor, entity, reports) {
 }
 function isGitHubError(error) {
     return (typeof error === "object" &&
-        error !== null &&
+        !!error &&
         "status" in error &&
         typeof error.status === "number");
 }

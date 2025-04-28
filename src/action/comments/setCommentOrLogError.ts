@@ -26,6 +26,8 @@ export async function setCommentOrLogError(
 		core.info(
 			"Received an error attempting to set a comments. Falling back to logging.",
 		);
+		console.log("1. ", "status" in (error as object));
+		console.log("2. ", typeof (error as { status: unknown }).status);
 
 		if (isGitHubError(error) && error.status !== 403) {
 			core.info(
@@ -43,8 +45,8 @@ export async function setCommentOrLogError(
 function isGitHubError(error: unknown): error is { status: number } {
 	return (
 		typeof error === "object" &&
-		error !== null &&
+		!!error &&
 		"status" in error &&
-		typeof (error as { status: unknown }).status === "number"
+		typeof error.status === "number"
 	);
 }
