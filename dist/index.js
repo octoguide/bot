@@ -94758,7 +94758,7 @@ class DiscussionActorBase extends EntityActorBase {
         const comments = await this.listComments();
         const nodeId = comments.find((comment) => comment.id === number)?.node_id;
         if (!nodeId) {
-            throw new Error(`Comment with ID ${number.toString()} not found`);
+            throw new Error(`Comment with ID ${number} not found`);
         }
         await this.octokit.graphql(`
 				mutation($body: String!, $commentId: ID!) {
@@ -94863,7 +94863,7 @@ class DiscussionCommentActor extends DiscussionActorBase {
         const comments = await this.listComments();
         const comment = comments.find((comment) => comment.id === number);
         if (!comment) {
-            throw new Error(`Could not find comment with number: ${number.toString()}`);
+            throw new Error(`Could not find comment with number: ${number}`);
         }
         return comment;
     }
@@ -96476,7 +96476,7 @@ async function runCommentCleanup({ auth, payload, url, }) {
         });
     }
     else {
-        core.info(`Deleting issue-like comment with id: ${existingComment.id.toString()}`);
+        core.info(`Deleting issue-like comment with id: ${existingComment.id}`);
         await octokit.rest.issues.deleteComment({
             comment_id: existingComment.id,
             owner: locator.owner,
@@ -96529,7 +96529,7 @@ async function runOctoGuideAction(context) {
         entity: url,
     });
     if (reports.length) {
-        core.info(`Found ${reports.length.toString()} report(s).`);
+        core.info(`Found ${reports.length} report(s).`);
         console.log(cliReporter(reports));
     }
     else {

@@ -42,9 +42,7 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 		const comment = comments.find((comment) => comment.id === number);
 
 		if (!comment) {
-			throw new Error(
-				`Could not find comment with number: ${number.toString()}`,
-			);
+			throw new Error(`Could not find comment with number: ${number}`);
 		}
 
 		return comment;

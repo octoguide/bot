@@ -55,7 +55,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	});
 
 	if (reports.length) {
-		core.info(`Found ${reports.length.toString()} report(s).`);
+		core.info(`Found ${reports.length} report(s).`);
 		console.log(cliReporter(reports));
 	} else {
 		core.info("Found 0 reports. Great! ✅");

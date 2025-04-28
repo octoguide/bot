@@ -119,7 +119,7 @@ describe(runCommentCleanup, () => {
 
 		await runCommentCleanup({ auth, payload, url });
 		expect(mockCore.info).toHaveBeenCalledWith(
-			`Deleting issue-like comment with id: ${id.toString()}`,
+			`Deleting issue-like comment with id: ${id}`,
 		);
 	});
 });

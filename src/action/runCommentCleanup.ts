@@ -55,9 +55,7 @@ export async function runCommentCleanup({
 			},
 		);
 	} else {
-		core.info(
-			`Deleting issue-like comment with id: ${existingComment.id.toString()}`,
-		);
+		core.info(`Deleting issue-like comment with id: ${existingComment.id}`);
 		await octokit.rest.issues.deleteComment({
 			comment_id: existingComment.id,
 			owner: locator.owner,
