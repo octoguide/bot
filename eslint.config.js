@@ -16,10 +16,13 @@ export default tseslint.config(
 		ignores: [
 			"**/*.snap",
 			"coverage",
+			"dist-site",
 			"dist",
 			"lib",
 			"node_modules",
 			"pnpm-lock.yaml",
+			"site/.astro",
+			"site/node_modules",
 		],
 	},
 	{ linterOptions: { reportUnusedDisableDirectives: "error" } },

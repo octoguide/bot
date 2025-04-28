@@ -1,11 +1,13 @@
 {
 	"$schema": "https://unpkg.com/knip@5.46.0/schema.json",
 	"entry": [
+		"site/**/*.mdx",
 		"src/action/index.ts",
 		"src/cli.ts",
 		"src/index.ts",
 		"src/**/*.test.*"
 	],
+	"ignoreDependencies": ["sharp"],
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
-	"project": ["src/**/*.ts"]
+	"project": ["site/**/*.mdx", "src/**/*.ts"]
 }

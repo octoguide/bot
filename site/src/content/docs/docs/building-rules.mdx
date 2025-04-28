@@ -30,14 +30,14 @@ These docs don't refer to OctoGuide as a linter because some users have a negati
 💡
 :::
 
-## `defineRule`
+## Defining Rules
 
-A factory function that takes in an object describing a rule, then returns that object directly.
+Rules are created internally by OctoGuide using a `defineRule` function.
 
-```ts
-import { defineRule } from "octoguide";
+```ts title="src/rules/text-require-emoji.ts"
+import { defineRule } from "./defineRule.js";
 
-export const myRule = defineRule({
+export const textRequireEmoji = defineRule({
 	// ...
 });
 ```
@@ -50,8 +50,6 @@ This will be included in any [rule reports](./types#rulereport).
 At least the properties in [`RuleAbout`](./types#ruleabout) are required.
 
 ```ts
-import { defineRule } from "octoguide";
-
 export const issueRequireEmoji = defineRule({
 	about: {
 		description:
@@ -82,8 +80,6 @@ They each define two parameters:
 Runs if an entity is a comment on a discussion, issue, or pull request.
 
 ```ts
-import { defineRule } from "octoguide";
-
 export const commentRequireEmoji = defineRule({
 	// ...
 	comment(context, entity) {
@@ -109,8 +105,6 @@ export const commentRequireEmoji = defineRule({
 Runs if an entity is a issue.
 
 ```ts
-import { defineRule } from "octoguide";
-
 export const issueRequireEmoji = defineRule({
 	// ...
 	issue(context, entity) {
@@ -136,8 +130,6 @@ export const issueRequireEmoji = defineRule({
 Runs if an entity is a discussion.
 
 ```ts
-import { defineRule } from "octoguide";
-
 export const discussionRequireEmoji = defineRule({
 	// ...
 	discussion(context, entity) {
@@ -163,8 +155,6 @@ export const discussionRequireEmoji = defineRule({
 Runs if an entity is a pull request.
 
 ```ts
-import { defineRule } from "octoguide";
-
 export const pullRequestRequireEmoji = defineRule({
 	// ...
 	pullRequest(context, entity) {
