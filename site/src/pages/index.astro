@@ -1,0 +1,12 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+import Hero from "~/components/Hero.astro";
+---
+
+<StarlightPage
+	frontmatter={{ tableOfContents: false, title: "Guide Your Contributors" }}
+	hasSidebar={false}
+>
+	<Hero />
+</StarlightPage>

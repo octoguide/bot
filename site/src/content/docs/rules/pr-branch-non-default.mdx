@@ -1,0 +1,33 @@
+---
+description: "PRs should not be sent from their head repository's default branch"
+title: "pr-branch-non-default"
+---
+
+> Included in configs: ✅ recommended, 🔒 strict
+
+Sending a PR from a repository's default branch, commonly `main`, means that repository will have a hard time pulling in updates from the upstream repository.
+It's generally recommended to instead create a new branch per pull request.
+
+## "Base" and "Head"
+
+Two terms are useful to know when working with forked repositories and pull requests:
+
+- **"Base"**: The main repository that receives the pull request.
+  - Your local Git clone likely refers to this as _"upstream"_.
+- **"Head"**: Your fork that is sending the pull request.
+  - Your local Git clone likely refers to this as _"origin"_.
+
+## Suggested Steps
+
+GitHub does not provide a way to change the head branch of a pull request.
+You'll want to:
+
+1. Create a new branch on the head repository
+2. Close the original pull request on GitHub
+3. Send a new pull request from that branch
+
+## See More
+
+- [GitHub Docs: Creating a pull request from a fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork)
+- [Rule source](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/rules/prBranchNonDefault.ts)
+- [Rule tests](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/rules/prBranchNonDefault.test.ts)

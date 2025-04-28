@@ -4,11 +4,11 @@
 import conventionalTypes from "conventional-commit-types" with { type: "json" };
 import { CommitParser } from "conventional-commits-parser";
 
-import type { Rule } from "../types/rules.js";
+import { defineRule } from "./defineRule.js";
 
 const commitParser = new CommitParser();
 
-export const prTitleConventional = {
+export const prTitleConventional = defineRule({
 	about: {
 		config: "strict",
 		description: "PR titles should be in conventional commit format.",
@@ -60,4 +60,4 @@ export const prTitleConventional = {
 			return;
 		}
 	},
-} satisfies Rule;
+});

@@ -1,0 +1,46 @@
+---
+import GitHubComment from "./GitHubComment.astro";
+
+interface Props {
+	primary: string;
+	rule: string;
+	suggestion: string[];
+}
+
+const { primary, rule, suggestion } = Astro.props;
+---
+
+<div class="octoguide-github-comment">
+	<GitHubComment>
+		👋 Hi <strong>@JoshuaKGoldberg</strong>, thanks for the issue! A scan
+		flagged a concern with it. Could you please take a look?
+
+		<br />
+		<br />
+
+		[<strong><a href={`/rules/${rule}`}>{rule}</a></strong>] {primary}
+
+		<br />
+		<br />
+
+		<slot />
+
+		<br />
+
+		{suggestion.join(" ")}
+
+		<br />
+		<br />
+
+		<blockquote>
+			🗺️ This message was posted automatically by
+			<a href="/">OctoGuide</a>: a bot for GitHub repository best practices.
+		</blockquote>
+	</GitHubComment>
+</div>
+
+<style>
+	.octoguide-github-comment {
+		position: relative;
+	}
+</style>

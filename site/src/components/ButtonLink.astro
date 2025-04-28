@@ -1,0 +1,60 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"a"> {
+	level: "primary" | "secondary";
+}
+
+const { class: className, level, ...props } = Astro.props;
+---
+
+<a class:list={["button-link", `button-link-${level}`, className]} {...props}>
+	<slot />
+</a>
+
+<style>
+	.button-link {
+		border-radius: 12px;
+		border: none;
+		box-shadow: 0 6px 7px var(--sl-color-gray-5);
+		cursor: pointer;
+		font-family: var(--font-varela-round);
+		font-size: var(--font-size-large);
+		font-weight: bold;
+		line-height: 1.35;
+		padding: 1rem 1.5rem;
+		text-align: center;
+		text-wrap: pretty;
+		text-decoration: none;
+		transition:
+			var(--transition-medium) box-shadow,
+			var(--transition-medium) transform;
+	}
+
+	.button-link:hover {
+		transform: translateY(-3px);
+	}
+
+	.button-link-primary {
+		background: var(--sl-color-accent);
+		color: #fff;
+	}
+
+	.button-link-primary:hover {
+		box-shadow: 0 5px 12px 4px var(--sl-color-accent-low);
+	}
+
+	.button-link-secondary {
+		background: #fff;
+		box-shadow:
+			0 1px 2px var(--sl-color-accent-low),
+			0 6px 7px var(--sl-color-gray-5);
+		color: var(--sl-color-accent);
+	}
+
+	.button-link-secondary:hover {
+		box-shadow:
+			0 1px 2px var(--sl-color-accent-low),
+			0 4px 9px 2px var(--sl-color-accent-low);
+	}
+</style>

@@ -1,0 +1,29 @@
+---
+import Default from "@astrojs/starlight/components/Head.astro";
+import { Font } from "astro:assets";
+
+const data = Astro.props.entry?.data ?? {
+	description:
+		"Tired of drive-by +1 comments? Inaccessible images? Having to bug contributors to complete issue and PR tasks? Let OctoGuide gently nudge contributors for you.",
+	title: "OctoGuide",
+};
+
+const ogImageUrl = new URL(`social.png`, Astro.site);
+---
+
+<Default {...Astro.props} />
+
+<Font cssVariable="--font-varela-round" preload />
+
+<meta property="og:image" content={ogImageUrl} />
+<meta property="twitter:domain" content={Astro.site} />
+<meta property="twitter:url" content={Astro.site} />
+<meta name="twitter:description" content={data.description} />
+<meta name="twitter:image" content={ogImageUrl} />
+<meta name="twitter:title" content={data.title} />
+
+<style>
+	body {
+		font-family: var(--font-varela-round);
+	}
+</style>

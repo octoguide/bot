@@ -16,10 +16,13 @@ export default tseslint.config(
 		ignores: [
 			"**/*.snap",
 			"coverage",
+			"dist-site",
 			"dist",
 			"lib",
 			"node_modules",
 			"pnpm-lock.yaml",
+			"site/.astro",
+			"site/node_modules",
 		],
 	},
 	{ linterOptions: { reportUnusedDisableDirectives: "error" } },
@@ -49,6 +52,10 @@ export default tseslint.config(
 			},
 		},
 		rules: {
+			"@typescript-eslint/restrict-template-expressions": [
+				"error",
+				{ allowNumber: true },
+			],
 			"n/no-missing-import": "off",
 			"n/no-unsupported-features/node-builtins": "off",
 

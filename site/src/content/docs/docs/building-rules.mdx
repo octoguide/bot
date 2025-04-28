@@ -1,0 +1,176 @@
+---
+title: Building Rules
+---
+
+:::caution[Work in Progress]
+OctoGuide doesn't support custom (user-defined) rules yet: [🚀 Feature: Custom rules #22](https://github.com/JoshuaKGoldberg/OctoGuide/issues/22).
+If this feature is important to you, please do send a pull request! 😉
+:::
+
+OctoGuide rules each define how to analyze entities for a single best practice.
+Each rule is defined as an object containing:
+
+- `about`: [`RuleAbout`](./types#ruleabout): Metadata about the rule.
+- Any number of _listener_ properties defining how the rule interacts with GitHub entities:
+  - [`comment`](#comment)
+  - [`issue`](#issue)
+  - [`discussion`](#discussion)
+  - [`pullRequest`](#pullrequest)
+
+Rules are generally titled in the format of `<entity>-<area>(-<concern>)`:
+
+- `<entity>`: one of `comment`, `discussion`, `issue`, `pr`, or the catch-all `text`
+- `<area>`: the part of the entity, such as an issue's `required-fields` or a PR's `linked-issue`
+- `<concern>`: if the rule checks a part of the area, such as an issue's required fields `content`
+
+:::tip
+OctoGuide rules are structurally similar to rules in linters such as ESLint.
+You can even think of OctoGuide as a linter for GitHub activity.
+These docs don't refer to OctoGuide as a linter because some users have a negative association with them.
+💡
+:::
+
+## Defining Rules
+
+Rules are created internally by OctoGuide using a `defineRule` function.
+
+```ts title="src/rules/text-require-emoji.ts"
+import { defineRule } from "./defineRule.js";
+
+export const textRequireEmoji = defineRule({
+	// ...
+});
+```
+
+### `about`
+
+Metadata about the rule.
+This will be included in any [rule reports](./types#rulereport).
+
+At least the properties in [`RuleAbout`](./types#ruleabout) are required.
+
+```ts
+export const issueRequireEmoji = defineRule({
+	about: {
+		description:
+			"Issues should include an emoji to confirm our contributing guidelines.",
+		explanation: [
+			"Our CONTRIBUTING.md asks that you include an emoji in your issue.",
+			"Not including an emoji hints that you haven't fully read the file. 😜",
+		],
+		name: "issue-require-emoji",
+	},
+	// ...
+});
+```
+
+### Listener Properties
+
+These rule properties are called if the corresponding entity type is what the rule is being run on.
+A rule may define multiple of these if it is able to analyze multiple types of entities.
+
+These properties may be asynchronous.
+They each define two parameters:
+
+- `context`: [`RuleContext`](./types#rulecontext)
+- `entity`: [`Entity`](./types#entity)
+
+#### `comment`
+
+Runs if an entity is a comment on a discussion, issue, or pull request.
+
+```ts
+export const commentRequireEmoji = defineRule({
+	// ...
+	comment(context, entity) {
+		if (entity.data.body && !/\p{Emoji}/u.test(entity.data.body)) {
+			context.report({
+				primary:
+					"An emoji is missing, but our contributing guidelines ask that you include one.",
+				secondary: [
+					"Our contributing guidelines asks to include an emoji to indicate you read them.",
+					"We know it's a little silly, but we've found this check to be very helpful in getting contributors to read the docs.",
+				],
+				suggestion: [
+					"To resolve this report, read the contributing docs, then include an emoji such as 🩵 anywhere in your comment.",
+				],
+			});
+		}
+	},
+});
+```
+
+#### `issue`
+
+Runs if an entity is a issue.
+
+```ts
+export const issueRequireEmoji = defineRule({
+	// ...
+	issue(context, entity) {
+		if (entity.data.body && !/\p{Emoji}/u.test(entity.data.body)) {
+			context.report({
+				primary:
+					"An emoji is missing, but our contributing guidelines ask that you include one.",
+				secondary: [
+					"Our contributing guidelines asks to include an emoji to indicate you read them.",
+					"We know it's a little silly, but we've found this check to be very helpful in getting contributors to read the docs.",
+				],
+				suggestion: [
+					"To resolve this report, read the contributing docs, then include an emoji such as 🩵 anywhere in your comment.",
+				],
+			});
+		}
+	},
+});
+```
+
+#### `discussion`
+
+Runs if an entity is a discussion.
+
+```ts
+export const discussionRequireEmoji = defineRule({
+	// ...
+	discussion(context, entity) {
+		if (entity.data.body && !/\p{Emoji}/u.test(entity.data.body)) {
+			context.report({
+				primary:
+					"An emoji is missing, but our contributing guidelines ask that you include one.",
+				secondary: [
+					"Our contributing guidelines asks to include an emoji to indicate you read them.",
+					"We know it's a little silly, but we've found this check to be very helpful in getting contributors to read the docs.",
+				],
+				suggestion: [
+					"To resolve this report, read the contributing docs, then include an emoji such as 🩵 anywhere in your comment.",
+				],
+			});
+		}
+	},
+});
+```
+
+#### `pullRequest`
+
+Runs if an entity is a pull request.
+
+```ts
+export const pullRequestRequireEmoji = defineRule({
+	// ...
+	pullRequest(context, entity) {
+		if (entity.data.body && !/\p{Emoji}/u.test(entity.data.body)) {
+			context.report({
+				primary:
+					"An emoji is missing, but our contributing guidelines ask that you include one.",
+				secondary: [
+					"Our contributing guidelines asks to include an emoji to indicate you read them.",
+					"We know it's a little silly, but we've found this check to be very helpful in getting contributors to read the docs.",
+				],
+				suggestion: [
+					"To resolve this report, read the contributing docs, then include an emoji such as 🩵 anywhere in your comment.",
+				],
+			});
+		}
+	},
+});
+```

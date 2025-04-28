@@ -1,0 +1,166 @@
+---
+import GitHubLogo from "./GitHubLogo.astro";
+---
+
+<div class="github-comment">
+	<div class="github-photo-area">
+		<GitHubLogo class="github-photo" />
+	</div>
+	<div class="github-comment-area">
+		<div class="github-comment-user">
+			github-actions
+			<svg
+				aria-hidden="true"
+				class="github-comment-user-dots"
+				viewBox="0 0 16 16"
+				width="16"
+				height="16"
+				fill="var(--color-grayscale-4)"
+				display="inline-block"
+				><path
+					d="M8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
+				></path></svg
+			>
+		</div>
+		<div class="github-comment-body">
+			<slot />
+		</div>
+	</div>
+</div>
+
+<style>
+	.github-comment {
+		--github-border-radius: 6px;
+		--github-comment-timeline-left: 4rem;
+		--github-padding-inner: 1rem;
+		--github-padding-outer: 2rem;
+
+		display: flex;
+		flex-direction: row;
+		font-family: var(--font-github);
+		gap: 1rem;
+		max-width: 735px;
+		padding: var(--github-padding-outer) 0.5rem;
+		position: relative;
+		text-align: left;
+		width: 100%;
+	}
+
+	.github-photo-area {
+		position: absolute;
+		top: calc(var(--github-padding-outer) + 0.25rem);
+		left: 1.25rem;
+		z-index: 2;
+	}
+
+	.github-photo {
+		--github-photo-size: 1rem;
+		height: var(--github-photo-size);
+		width: var(--github-photo-size);
+	}
+
+	.github-comment::after,
+	.github-comment::before {
+		content: "";
+		display: block;
+		height: var(--github-padding-outer);
+		position: absolute;
+		left: var(--github-comment-timeline-left);
+		width: 2px;
+	}
+
+	.github-comment::after {
+		background: linear-gradient(
+			to bottom,
+			transparent,
+			var(--color-grayscale-5)
+		);
+		top: 0;
+	}
+
+	.github-comment::before {
+		background: linear-gradient(to top, transparent, var(--color-grayscale-5));
+		bottom: 0;
+	}
+
+	.github-comment-area {
+		background: var(--sl-color-black);
+		border-radius: var(--github-border-radius);
+		border: 1px solid var(--color-grayscale-5);
+		letter-spacing: -0.5px;
+		z-index: 1;
+	}
+
+	.github-comment-user {
+		align-items: center;
+		background: var(--color-grayscale-7);
+		border-bottom: 1px solid var(--color-grayscale-5);
+		border-radius: var(--github-border-radius) var(--github-border-radius) 0 0;
+		display: flex;
+		font-size: 13px;
+		font-weight: bold;
+		height: 2rem;
+		justify-content: space-between;
+		padding: 0 var(--github-padding-inner) 0
+			calc(var(--github-padding-inner) * 2);
+		user-select: none;
+		width: 100%;
+	}
+
+	.github-comment-user-dots {
+		content: "";
+	}
+
+	.github-comment-body {
+		font-weight: 475;
+		font-size: 12px;
+		padding: var(--github-padding-inner);
+		line-height: 16px;
+	}
+
+	.github-comment-body :global(a) {
+		color: var(--sl-color-accent);
+	}
+
+	.github-comment-body :global(blockquote) {
+		border-left: 2px solid var(--color-grayscale-5);
+		color: var(--color-grayscale-3);
+		font-style: italic;
+		padding-left: 0.5rem;
+	}
+
+	.github-comment-body :global(code) {
+		background: var(--sl-color-gray-7);
+		border-radius: 3px;
+		color: var(--sl-color-accent-high);
+		font-family: monospace;
+		font-size: 11px;
+		font-style: normal;
+		padding: 1rem 0.75rem;
+		display: block;
+	}
+
+	@media (width >= 1024px) {
+		.github-photo-area {
+			position: relative;
+		}
+
+		.github-photo-area {
+			top: 0;
+			left: 0;
+		}
+
+		.github-photo {
+			--github-photo-size: 2rem;
+		}
+
+		.github-comment {
+			--github-comment-timeline-left: 6rem;
+			margin-right: 1rem;
+		}
+
+		.github-comment-user {
+			padding: 0 var(--github-padding-inner);
+		}
+	}
+</style>

@@ -1,0 +1,19 @@
+---
+import type { StarlightRouteData } from "@astrojs/starlight/route-data";
+import Default from "@astrojs/starlight/components/Footer.astro";
+import Credits from "./Credits.astro";
+
+export type Props = StarlightRouteData;
+---
+
+<Default {...Astro.props}>
+	<slot />
+</Default>
+
+<Credits class="footer-credits" />
+
+<style>
+	.footer-credits {
+		padding-top: 2rem;
+	}
+</style>

@@ -1,0 +1,52 @@
+---
+description: "PRs should have a description beyond the template"
+title: "pr-body-not-empty"
+---
+
+> Included in configs: ✅ recommended, 🔒 strict
+
+This repository expects pull requests to include a description explaining the changes.
+The description should have at least one word not in the PR template, or any content if no template exists.
+
+Pull requests should include meaningful descriptions that explain the purpose and context of the changes.
+This helps reviewers understand what's being changed and why, making the review process more efficient.
+
+## Requirements
+
+- If no PR template exists, the pull request must have at least one word in its description
+- If a PR template exists (in `.github/PULL_REQUEST_TEMPLATE.md`), the pull request must include at least one word that isn't part of the template
+
+## Resolving Issues
+
+To resolve violations of this rule:
+
+- Add a meaningful description to your pull request
+- Include details about what and why you changed
+- If using a template, add your own words explaining the specific changes
+
+## Examples
+
+### Good
+
+If a repository has a template with "## Description" and "Please describe your changes", a good PR description would be:
+
+```markdown
+## Description
+
+I fixed the login issue by updating the authentication logic to handle expired tokens properly.
+```
+
+### Bad
+
+Just using the template without adding any specific information:
+
+```markdown
+## Description
+
+Please describe your changes
+```
+
+## See More
+
+- [About pull requests](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
+- [Rule source](../../src/rules/prBodyNotEmpty.ts)

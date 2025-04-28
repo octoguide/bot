@@ -1,0 +1,149 @@
+---
+import { Image } from "astro:assets";
+
+import mascot from "~/assets/mascot.webp";
+
+import ButtonLink from "./ButtonLink.astro";
+import Credits from "./Credits.astro";
+import Title from "./Title.astro";
+import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
+---
+
+<div id="hero">
+	<div id="contents">
+		<Image src={mascot} alt="" class="hero-image" />
+
+		<Title as="h1" class="hero-title" />
+
+		<p class="hero-description hero-description-primary">
+			A friendly bot that helps contributors adhere to best practices for your
+			repository on GitHub.
+		</p>
+
+		<div class="buttons">
+			<ButtonLink class="button" href="/get-started" level="primary">
+				Get Started
+			</ButtonLink>
+			<ButtonLink class="button" href="/configs" level="secondary">
+				Rule Details
+			</ButtonLink>
+		</div>
+
+		<div class="comment-area">
+			<OctoGuideGitHubComment
+				primary="The following image is missing alt text:"
+				rule="text-image-alt-text"
+				suggestion={[
+					`Alternative text, or \"alt text\", is a description attached to an image.`,
+					`It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
+					`To resolve this report, add descriptive alt text to the image.`,
+				]}
+			>
+				<blockquote>
+					<code
+						>![](<u
+							>https://github.com/user-attachments/assets/bea565ea-7741-475a-a40b-f300e5d2090a</u
+						>)</code
+					>
+				</blockquote>
+			</OctoGuideGitHubComment>
+		</div>
+
+		<div class="hero-description hero-description-secondary">
+			<p>
+				Tired of drive-by <em>"+1"</em> comments? Inaccessible images? Having to
+				bug contributors to complete issue and PR tasks?
+			</p>
+			<p>
+				Let <strong>OctoGuide</strong> gently explain best practices and nudge contributors
+				to do them for you.
+			</p>
+		</div>
+	</div>
+
+	<div class="buttons">
+		<ButtonLink class="button" href="/get-started#installation" level="primary">
+			Install the GitHub Actions Workflow
+		</ButtonLink>
+	</div>
+
+	<Credits class="hero-credits" />
+</div>
+
+<style>
+	#hero {
+		--hero-vertical-padding: clamp(0rem, 3.5vh, 2rem);
+		background: radial-gradient(circle at 50% 20%, #ffffff, #ecf6f3);
+		height: 100%;
+		padding-top: calc(var(--hero-vertical-padding) + 2rem);
+		position: relative;
+		text-align: center;
+		text-wrap: pretty;
+		width: 100%;
+	}
+
+	#contents {
+		display: flex;
+		flex-direction: column;
+		margin: 0 max(5vw, 0.5rem);
+	}
+
+	.hero-image {
+		height: 16rem;
+		margin: 0 auto 0.5rem;
+		shape-rendering: crispEdges;
+		user-select: none;
+		width: 16rem;
+	}
+
+	.hero-title {
+		font-size: var(--font-size-hero);
+	}
+
+	.hero-description {
+		margin-left: auto;
+		margin-right: auto;
+		max-width: 70vw;
+		text-align: center;
+	}
+
+	.hero-description-primary {
+		font-size: var(--font-size-large);
+		margin: calc(var(--hero-vertical-padding) / 3) auto;
+	}
+
+	.buttons {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		justify-content: center;
+		margin: 1.5rem;
+	}
+
+	.comment-area {
+		margin: var(--hero-vertical-padding) auto;
+	}
+
+	.hero-description-secondary {
+		display: flex;
+		flex-direction: column;
+		font-size: var(--font-size-medium);
+		gap: 1rem;
+		margin-bottom: calc(var(--hero-vertical-padding) / 2);
+	}
+
+	.hero-credits {
+		padding-bottom: 2rem;
+	}
+
+	@media (width >= 1024px) {
+		#hero {
+			--hero-vertical-padding: clamp(0rem, 7vh, 4rem);
+		}
+
+		.buttons {
+			flex-direction: row;
+		}
+	}
+</style>

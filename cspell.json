@@ -6,17 +6,25 @@
 		"CHANGELOG.md",
 		"coverage",
 		"dist",
+		"dist-site",
 		"lib",
 		"node_modules",
-		"pnpm-lock.yaml"
+		"pnpm-lock.yaml",
+		"site/.astro",
+		"site/node_modules"
 	],
 	"words": [
+		"astropub",
 		"discussioncomment",
+		"frontmatter",
+		"grayscale",
 		"issuecomment",
 		"lintable",
+		"octo.guide",
 		"octocat",
 		"octoguide",
 		"postbuild",
-		"screenreaders"
+		"screenreaders",
+		"varela"
 	]
 }

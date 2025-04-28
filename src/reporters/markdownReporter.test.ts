@@ -1,51 +1,41 @@
 import { describe, expect, test } from "vitest";
 
-import type { Entity, IssueData } from "../types/entities.js";
+import type { RuleReportData } from "../types/reports.js";
+import type { RuleAboutWithUrl } from "../types/rules.js";
 
-import { RuleAbout, RuleReportData } from "../types/rules.js";
 import { markdownReporter } from "./markdownReporter.js";
 
 const fakeAbout = {
-	config: "recommended",
 	description: "Fake description.",
 	explanation: ["Fake explanation."],
 	name: "fake-rule",
-} satisfies RuleAbout;
+	url: "https://octo.guide/rules/fake-rule",
+} satisfies RuleAboutWithUrl;
 
 const fakeData = {
 	primary: "Fake primary.",
 	suggestion: ["Fake suggestion."],
 } satisfies RuleReportData;
 
-const fakeEntity = {
-	data: {
-		html_url: "fake-html-url",
-		id: 123,
-		url: "fake-url",
-	} as IssueData,
-	number: 123,
-	type: "issue",
-} satisfies Entity;
+const heading = "Hi, thanks for the issue, etc.";
 
 describe(markdownReporter, () => {
 	test("one report", () => {
 		expect(
-			markdownReporter(fakeEntity, [
+			markdownReporter(heading, [
 				{
 					about: fakeAbout,
 					data: fakeData,
 				},
 			]),
-		).toMatchInlineSnapshot(`
-			"👋 Hi, thanks for the issue! A scan flagged a concern with it. Could you please take a look?
-
-			[[**fake-rule**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/fake-rule.md)] Fake primary. Fake explanation. Fake suggestion."
-		`);
+		).toMatchInlineSnapshot(
+			`"Hi, thanks for the issue, etc.[[**fake-rule**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion."`,
+		);
 	});
 
 	test("two reports in one group", () => {
 		expect(
-			markdownReporter(fakeEntity, [
+			markdownReporter(heading, [
 				{
 					about: fakeAbout,
 					data: fakeData,
@@ -56,9 +46,7 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
-
-			[[**fake-rule**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/fake-rule.md)] Fake explanation.
+			"Hi, thanks for the issue, etc.[[**fake-rule**](https://octo.guide/rules/fake-rule)] Fake explanation.
 
 			Fake primary. Fake suggestion.
 
@@ -68,7 +56,7 @@ describe(markdownReporter, () => {
 
 	test("two reports across two group", () => {
 		expect(
-			markdownReporter(fakeEntity, [
+			markdownReporter(heading, [
 				{
 					about: {
 						...fakeAbout,
@@ -85,17 +73,15 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
+			"Hi, thanks for the issue, etc.[[**first**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion.
 
-			[[**first**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/first.md)] Fake primary. Fake explanation. Fake suggestion.
-
-			[[**second**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/second.md)] Fake primary. Fake explanation. Fake suggestion."
+			[[**second**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion."
 		`);
 	});
 
 	test("four reports across two group", () => {
 		expect(
-			markdownReporter(fakeEntity, [
+			markdownReporter(heading, [
 				{
 					about: {
 						...fakeAbout,
@@ -126,15 +112,13 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"👋 Hi, thanks for the issue! A scan flagged some concerns with it. Could you please take a look?
-
-			[[**first**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/first.md)] Fake explanation.
+			"Hi, thanks for the issue, etc.[[**first**](https://octo.guide/rules/fake-rule)] Fake explanation.
 
 			Fake primary. Fake suggestion.
 
 			Fake primary. Fake suggestion.
 
-			[[**second**](https://github.com/JoshuaKGoldberg/octoguide/blob/main/docs/rules/second.md)] Fake explanation.
+			[[**second**](https://octo.guide/rules/fake-rule)] Fake explanation.
 
 			Fake primary. Fake suggestion.
 

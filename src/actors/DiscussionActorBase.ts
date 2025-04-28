@@ -49,7 +49,7 @@ export abstract class DiscussionActorBase<
 
 		const nodeId = comments.find((comment) => comment.id === number)?.node_id;
 		if (!nodeId) {
-			throw new Error(`Comment with ID ${number.toString()} not found`);
+			throw new Error(`Comment with ID ${number} not found`);
 		}
 
 		await this.octokit.graphql(
