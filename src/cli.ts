@@ -1,6 +1,6 @@
 import { parseArgs } from "node:util";
 
-import { runOctoGuide } from "./index.js";
+import { runOctoGuideRules } from "./index.js";
 import { cliReporter } from "./reporters/cliReporter.js";
 import { isKnownConfig } from "./rules/configs.js";
 
@@ -26,7 +26,7 @@ export async function cli(...args: string[]) {
 		throw new Error(`Unknown config provided: ${config}`);
 	}
 
-	const { reports } = await runOctoGuide({ config, url });
+	const { reports } = await runOctoGuideRules({ config, entity: url });
 
 	console.log(cliReporter(reports));
 }
