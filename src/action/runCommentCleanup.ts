@@ -3,8 +3,8 @@ import type * as github from "@actions/github";
 import * as core from "@actions/core";
 import { octokitFromAuth } from "octokit-from-auth";
 
-import { createActor } from "../actors/createActor";
-import { getExistingComment } from "./comments/getExistingComment";
+import { createActor } from "../actors/createActor.js";
+import { getExistingComment } from "./comments/getExistingComment.js";
 
 export interface RunCommentCleanupSettings {
 	auth: string;
@@ -35,7 +35,7 @@ export async function runCommentCleanup({
 
 	if (payload.discussion) {
 		core.info(
-			`Deleting discussion comment with node ID: ${existingComment.node_id}`,
+			`Deleting discussion comment with node id: ${existingComment.node_id}`,
 		);
 		await octokit.graphql(
 			`
@@ -56,7 +56,7 @@ export async function runCommentCleanup({
 		);
 	} else {
 		core.info(
-			`Deleting issue comment with id: ${existingComment.id.toString()}`,
+			`Deleting issue-like comment with id: ${existingComment.id.toString()}`,
 		);
 		await octokit.rest.issues.deleteComment({
 			comment_id: existingComment.id,
