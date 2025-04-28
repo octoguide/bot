@@ -95167,7 +95167,7 @@ function createDefineRule(createUrl) {
 
 ;// CONCATENATED MODULE: ./src/rules/defineRule.ts
 
-const defineRule = createDefineRule((about) => `https://octo.guide/rules/${about.name}.md`);
+const defineRule = createDefineRule((about) => `https://octo.guide/rules/${about.name}`);
 
 ;// CONCATENATED MODULE: ./src/rules/commentMeaningless.ts
 
