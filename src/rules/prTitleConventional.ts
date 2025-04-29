@@ -22,7 +22,7 @@ export const prTitleConventional = defineRule({
 		const parsed = commitParser.parse(entity.data.title);
 		if (!parsed.type) {
 			context.report({
-				primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_:`,
+				primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
 				suggestion: [
 					parsed.header
 						? `To resolve this report, add a conventional commit type in front of the title, like _"feat: ${parsed.header}"_.`

@@ -3,6 +3,8 @@ description: "Images should have descriptive alt text"
 title: "text-image-alt-text"
 ---
 
+import OctoGuideGitHubComment from "~/components/OctoGuideGitHubComment.astro";
+
 > Included in config: ✅ recommended, 🔒 strict
 
 Alternative text, or "alt text", is a description attached to an image.
@@ -37,6 +39,29 @@ Not doing so restricts users who can't visually see it:
 
 - People who have low or no sight, including people who are "blind", and rely on screenreaders to narrate page contents
 - People who are on slow network connections that take too long to -or cannot at all- download images
+
+## Examples
+
+[Issue with an image lacking alt text](https://github.com/JoshuaKGoldberg/OctoGuideExamples/issues/10#issuecomment-2839495349):
+
+<OctoGuideGitHubComment rule="text-image-alt-text">
+The following image is missing alt text:
+
+<blockquote>
+	<code>
+		![](
+		<u>
+			https://github.com/user-attachments/assets/bea565ea-7741-475a-a40b-f300e5d2090a
+		</u>
+		)
+	</code>
+</blockquote>
+
+Alternative text, or \"alt text\", is a description attached to an image.
+It allows non-sighted users and tools to understand the image despite not being able to visually see it.
+To resolve this report, add descriptive alt text to the image.
+
+</OctoGuideGitHubComment>
 
 ## See More
 

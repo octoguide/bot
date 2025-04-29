@@ -5,8 +5,8 @@ import mascot from "~/assets/mascot.webp";
 
 import ButtonLink from "./ButtonLink.astro";
 import Credits from "./Credits.astro";
-import Title from "./Title.astro";
 import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
+import Title from "./Title.astro";
 ---
 
 <div id="hero">
@@ -30,22 +30,21 @@ import OctoGuideGitHubComment from "./OctoGuideGitHubComment.astro";
 		</div>
 
 		<div class="comment-area">
-			<OctoGuideGitHubComment
-				primary="The following image is missing alt text:"
-				rule="text-image-alt-text"
-				suggestion={[
-					`Alternative text, or \"alt text\", is a description attached to an image.`,
-					`It allows non-sighted users and tools to understand the image despite not being able to visually see it.`,
-					`To resolve this report, add descriptive alt text to the image.`,
-				]}
-			>
+			<OctoGuideGitHubComment full rule="text-image-alt-text">
+				The following image is missing alt text:
+
 				<blockquote>
-					<code
-						>![](<u
+					<code>
+						![](<u
 							>https://github.com/user-attachments/assets/bea565ea-7741-475a-a40b-f300e5d2090a</u
-						>)</code
-					>
+						>)
+					</code>
 				</blockquote>
+
+				Alternative text, or <em>"alt text"</em>, is a description attached to
+				an image. It allows non-sighted users and tools to understand the image
+				despite not being able to visually see it. To resolve this report, add
+				descriptive alt text to the image.
 			</OctoGuideGitHubComment>
 		</div>
 

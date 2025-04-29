@@ -7,7 +7,7 @@ export const commentMeaningless = defineRule({
 		config: "recommended",
 		description: "Comments should be meaningful, not just '+1'-style bumps.",
 		explanation: [
-			`Replies containing just _"+1"_, _any update?"_, or other phrases without new information aren't helpful.`,
+			`Replies containing just _"+1"_, _"any update?"_, or other phrases without new information aren't helpful.`,
 			`They cause unnecessary notifications for other contributors and take up space.`,
 		],
 		name: "comment-meaningless",

@@ -3,6 +3,8 @@ description: "PRs should be linked as closing an issue"
 title: "pr-linked-issue"
 ---
 
+import OctoGuideGitHubComment from "~/components/OctoGuideGitHubComment.astro";
+
 > Included in config: 🔒 strict
 
 A repository using this rule keeps to GitHub issues for discussing potential changes.
@@ -28,6 +30,30 @@ The advantages of starting with issues are:
 - Tracking: issues often use different their own sets of labels tailored to their conversations
 
 Most importantly, if you're contributing to a repository with a contribution guide, please read and respect that contribution guide.
+
+## Examples
+
+[PR not linked to an existing issue](https://github.com/JoshuaKGoldberg/OctoGuideExamples/pull/6#issuecomment-2839460254):
+
+<OctoGuideGitHubComment rule="pr-branch-non-default">
+This pull request is not linked as closing any issues.
+This repository keeps to GitHub issues for discussing potential changes.
+Most or all changes should be marked as approved in an issue before a pull request is sent to resolve them.
+To resolve this report:
+
+<ol>
+	<li>
+		If this is a straightforward documentation change that doesn't need an
+		issue, you can ignore this report
+	</li>
+	<li>
+		If there is a backing issue, add a 'fixes #...' link to the pull request
+		body
+	</li>
+	<li>Otherwise, file an issue explaining what you'd like to happen</li>
+</ol>
+
+</OctoGuideGitHubComment>
 
 ## See More
 

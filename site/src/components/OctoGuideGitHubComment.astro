@@ -2,38 +2,28 @@
 import GitHubComment from "./GitHubComment.astro";
 
 interface Props {
-	primary: string;
+	full?: boolean;
 	rule: string;
-	suggestion: string[];
 }
 
-const { primary, rule, suggestion } = Astro.props;
+const { full, rule } = Astro.props;
 ---
 
 <div class="octoguide-github-comment">
-	<GitHubComment>
-		👋 Hi <strong>@JoshuaKGoldberg</strong>, thanks for the issue! A scan
-		flagged a concern with it. Could you please take a look?
+	<GitHubComment full={full}>
+		👋 Hi <strong>@YourUsername</strong>, thanks for the issue! A scan flagged a
+		concern with it. Could you please take a look?
 
 		<br />
 		<br />
 
-		[<strong><a href={`/rules/${rule}`}>{rule}</a></strong>] {primary}
-
-		<br />
-		<br />
+		[<strong><a href={`/rules/${rule}`}>{rule}</a></strong>]
 
 		<slot />
 
-		<br />
-
-		{suggestion.join(" ")}
-
-		<br />
-		<br />
-
-		<blockquote>
-			🗺️ This message was posted automatically by
+		<blockquote class="octoguide-github-comment-footer">
+			<em class="octoguide-github-comment-footer-emoji">🗺️</em> This message was
+			posted automatically by
 			<a href="/">OctoGuide</a>: a bot for GitHub repository best practices.
 		</blockquote>
 	</GitHubComment>
@@ -42,5 +32,14 @@ const { primary, rule, suggestion } = Astro.props;
 <style>
 	.octoguide-github-comment {
 		position: relative;
+	}
+
+	:global(blockquote).octoguide-github-comment-footer {
+		display: block;
+		margin: 1rem 0 0;
+	}
+
+	.octoguide-github-comment-footer-emoji {
+		font-style: initial;
 	}
 </style>

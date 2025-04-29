@@ -3,6 +3,8 @@ description: "PR titles should be in conventional commit format"
 title: "pr-title-conventional"
 ---
 
+import OctoGuideGitHubComment from "~/components/OctoGuideGitHubComment.astro";
+
 > Included in config: 🔒 strict
 
 A repository using this rule enforces that pull request titles follow the [Conventional Commits](https://www.conventionalcommits.org) format.
@@ -35,6 +37,20 @@ docs: mention 'rick' feature in README.md
 feat: add optional new 'roll' option to API
 fix(parser): don't throw error on consecutive semicolons
 ```
+
+## Examples
+
+[Pull request with a non-semantic title](https://github.com/JoshuaKGoldberg/OctoGuideExamples/pull/3#issuecomment-2839276016):
+
+<OctoGuideGitHubComment rule="pr-branch-non-default">
+	The PR title is missing a conventional commit type, such as <em>"docs: "</em>{" "}
+	or <em>"feat: "</em>. This repository asks that pull request titles start with
+	a type in the{" "}
+	<a href="https://www.conventionalcommits.org">Conventional Commits</a> format.
+	Doing so helps make the purpose of each pull request clear for humans and
+	machines. To resolve this report, add a conventional commit type in front of
+	the title, like <em>"feat: Update README.md"</em>.
+</OctoGuideGitHubComment>
 
 ## See More
 

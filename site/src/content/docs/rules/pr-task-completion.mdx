@@ -3,6 +3,8 @@ description: "Tasks lists from the pull request template should be [x] filled ou
 title: "pr-task-completion"
 ---
 
+import OctoGuideGitHubComment from "~/components/OctoGuideGitHubComment.astro";
+
 > Included in configs: ✅ recommended, 🔒 strict
 
 Repositories often provide a set of tasks that pull request authors are expected to complete.
@@ -31,6 +33,31 @@ For example, the following markdown:
 ...is rendered as:
 
 - [x] ~~Added tests~~ Docs-only change
+
+## Examples
+
+[Pull request missing task list items](https://github.com/JoshuaKGoldberg/OctoGuideExamples/pull/4#issuecomment-2839280872):
+
+<OctoGuideGitHubComment rule="pr-branch-non-default">
+This PR's body is missing [x] checks on the following tasks from the PR template.
+
+<blockquote>
+	<ul>
+		<li>
+			<input type="checkbox"></input>That issue was marked as{" "}
+			<code>status: accepting prs</code>
+		</li>
+		<li>
+			<input type="checkbox"></input>Steps in CONTRIBUTING.md were taken
+		</li>
+	</ul>
+</blockquote>
+
+Repositories often provide a set of tasks that pull request authors are expected to complete.
+Those tasks should be marked as completed with a <code>[x]</code> in the pull request description.
+Please complete those tasks and mark the checks as <code>[x]</code> completed.
+
+</OctoGuideGitHubComment>
 
 ## See More
 

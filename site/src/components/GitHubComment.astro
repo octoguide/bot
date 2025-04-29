@@ -1,11 +1,24 @@
 ---
 import GitHubLogo from "./GitHubLogo.astro";
+
+interface Props {
+	full?: boolean;
+}
 ---
 
-<div class="github-comment">
-	<div class="github-photo-area">
-		<GitHubLogo class="github-photo" />
-	</div>
+<div
+	class:list={[
+		"github-comment",
+		Astro.props.full ? "github-comment-full" : "github-comment-compact",
+	]}
+>
+	{
+		Astro.props.full && (
+			<div class="github-photo-area">
+				<GitHubLogo class="github-photo" />
+			</div>
+		)
+	}
 	<div class="github-comment-area">
 		<div class="github-comment-user">
 			github-actions
@@ -31,7 +44,6 @@ import GitHubLogo from "./GitHubLogo.astro";
 <style>
 	.github-comment {
 		--github-border-radius: 6px;
-		--github-comment-timeline-left: 4rem;
 		--github-padding-inner: 1rem;
 		--github-padding-outer: 2rem;
 
@@ -40,10 +52,18 @@ import GitHubLogo from "./GitHubLogo.astro";
 		font-family: var(--font-github);
 		gap: 1rem;
 		max-width: 735px;
-		padding: var(--github-padding-outer) 0.5rem;
+		padding: var(--github-padding-outer) 0;
 		position: relative;
 		text-align: left;
 		width: 100%;
+	}
+
+	.github-comment.github-comment-compact {
+		--github-comment-timeline-left: 3.5rem;
+	}
+
+	.github-comment.github-comment-full {
+		--github-comment-timeline-left: 4rem;
 	}
 
 	.github-photo-area {
@@ -101,10 +121,13 @@ import GitHubLogo from "./GitHubLogo.astro";
 		font-weight: bold;
 		height: 2rem;
 		justify-content: space-between;
-		padding: 0 var(--github-padding-inner) 0
-			calc(var(--github-padding-inner) * 2);
+		padding: 0 var(--github-padding-inner) 0;
 		user-select: none;
 		width: 100%;
+	}
+
+	.github-comment-full .github-comment-user {
+		padding-left: calc(var(--github-padding-inner) * 2);
 	}
 
 	.github-comment-user-dots {
@@ -118,26 +141,53 @@ import GitHubLogo from "./GitHubLogo.astro";
 		line-height: 16px;
 	}
 
-	.github-comment-body :global(a) {
+	:global(.github-comment-body a) {
 		color: var(--sl-color-accent);
 	}
 
-	.github-comment-body :global(blockquote) {
+	:global(.github-comment-body blockquote) {
 		border-left: 2px solid var(--color-grayscale-5);
 		color: var(--color-grayscale-3);
 		font-style: italic;
 		padding-left: 0.5rem;
+		margin: 1rem 0;
 	}
 
-	.github-comment-body :global(code) {
+	:global(.github-comment-body blockquote ul) {
+		font-style: initial;
+	}
+
+	:global(.github-comment-body code) {
+		border-radius: 4px;
+		padding: 0.1rem 0.2rem;
+	}
+
+	:global(.github-comment-body pre) {
 		background: var(--sl-color-gray-7);
 		border-radius: 3px;
 		color: var(--sl-color-accent-high);
+		display: block;
 		font-family: monospace;
 		font-size: 11px;
 		font-style: normal;
 		padding: 1rem 0.75rem;
+	}
+	:global(.github-comment-body blockquote > code) {
+		background: var(--sl-color-gray-7);
 		display: block;
+		font-style: initial;
+		font-size: 12px;
+		padding: 0.75rem 0.75rem;
+	}
+
+	:global(.github-comment-body ol),
+	:global(.github-comment-body ul) {
+		padding-left: 1.5rem;
+	}
+
+	:global(.github-comment-body li input) {
+		margin: 0 0.35rem 0.25rem -1rem;
+		vertical-align: middle;
 	}
 
 	@media (width >= 1024px) {
@@ -152,15 +202,37 @@ import GitHubLogo from "./GitHubLogo.astro";
 
 		.github-photo {
 			--github-photo-size: 2rem;
+			max-width: initial;
 		}
 
-		.github-comment {
+		.github-comment.github-comment-full {
 			--github-comment-timeline-left: 6rem;
 			margin-right: 1rem;
 		}
 
-		.github-comment-user {
+		.github-comment.github-comment-compact {
+			--github-comment-timeline-left: 3.5rem;
+		}
+
+		.github-comment-full .github-comment-user {
 			padding: 0 var(--github-padding-inner);
 		}
+	}
+
+	/* Overrides for .sl-content-markdown conflicts */
+
+	.github-comment-area,
+	.github-comment-body,
+	.github-comment-user {
+		margin-top: 0;
+	}
+
+	.github-photo {
+		display: inline;
+	}
+
+	:global(.github-comment-body p, u) {
+		display: inline;
+		margin-top: 0;
 	}
 </style>

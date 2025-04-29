@@ -3,6 +3,8 @@ description: "Comments should be meaningful, not just '+1'-style bumps"
 title: "comment-meaningless"
 ---
 
+import OctoGuideGitHubComment from "~/components/OctoGuideGitHubComment.astro";
+
 > Included in configs: ✅ recommended, 🔒 strict
 
 Posting replies containing just _"+1"_, _any update?"_, or other phrases without new information don't meaningfully contribute to a discussion.
@@ -24,6 +26,25 @@ Otherwise, stick to [GitHub emoji reactions](https://github.blog/news-insights/p
 Most open source repositories perform all activity in public.
 If there is any progress made, such as a PR being sent or updated, you'll see it publicly.
 There's no need to explicitly ask for updates in repos that work in public this way.
+
+## Examples
+
+[Comment that only states _"+1"_](https://github.com/JoshuaKGoldberg/OctoGuideExamples/issues/2#issuecomment-2839206981):
+
+<OctoGuideGitHubComment rule="comment-meaningless">
+	Saying just <em>"+1"</em> doesn't add any new information to the discussion.
+	Replies containing just <em>"+1"</em>, <em>"any update?"</em>, or other
+	phrases without new information aren't helpful. They cause unnecessary
+	notifications for other contributors and take up space. To resolve this
+	report:
+	<ul>
+		<li>
+			If you have new information that'll help the discussion, edit it into the
+			comment
+		</li>
+		<li>Otherwise, delete the comment and emoji react to the issue</li>
+	</ul>
+</OctoGuideGitHubComment>
 
 ## See More
 
