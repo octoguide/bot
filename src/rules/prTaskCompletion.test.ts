@@ -203,7 +203,7 @@ describe(prTaskCompletion.about.name, () => {
 		expect(report).toHaveBeenCalledWith({
 			primary:
 				"This PR's body is missing [x] checks on the following tasks from the PR template.",
-			secondary: ["- [ ] Task 2"],
+			secondary: ["> - [ ] Task 2"],
 			suggestion: [
 				"Please complete those tasks and mark the checks as [x] completed.",
 			],
@@ -245,7 +245,7 @@ describe(prTaskCompletion.about.name, () => {
 		expect(report).toHaveBeenCalledWith({
 			primary:
 				"This PR's body is missing [x] checks on the following tasks from the PR template.",
-			secondary: ["- [ ] Task 1", "- [ ] Task 2"],
+			secondary: ["> - [ ] Task 1", "> - [ ] Task 2"],
 			suggestion: [
 				"Please complete those tasks and mark the checks as [x] completed.",
 			],

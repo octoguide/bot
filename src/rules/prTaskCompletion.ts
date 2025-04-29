@@ -73,7 +73,7 @@ export const prTaskCompletion = defineRule({
 		context.report({
 			primary:
 				"This PR's body is missing [x] checks on the following tasks from the PR template.",
-			secondary: missingTasks,
+			secondary: missingTasks.map((task) => `> ${task}`),
 			suggestion: [
 				"Please complete those tasks and mark the checks as [x] completed.",
 			],
