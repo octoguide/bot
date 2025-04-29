@@ -43,31 +43,6 @@ const summary = {
 } as unknown as Mocked<typeof core.summary>;
 
 describe(actionReporter, () => {
-	test("no reports", async () => {
-		await actionReporter(headline, [], summary);
-
-		expect(summary.addHeading.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "OctoGuide Report",
-			    1,
-			  ],
-			]
-		`);
-		expect(summary.addRaw.mock.calls).toMatchInlineSnapshot(`
-			[
-			  [
-			    "Hello, world!
-
-			",
-			  ],
-			  [
-			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
-			  ],
-			]
-		`);
-	});
-
 	test("one report", async () => {
 		await actionReporter(
 			headline,

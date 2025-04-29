@@ -93,6 +93,8 @@ describe(outputActionReports, () => {
 			  ],
 			]
 		`);
+		expect(mockCore.summary.write).toHaveBeenCalled();
+		expect(mockCore.setFailed).toHaveBeenCalled();
 	});
 
 	it("logs info and not error when comment creation succeeds", async () => {
@@ -107,6 +109,8 @@ describe(outputActionReports, () => {
 			  ],
 			]
 		`);
+		expect(mockCore.summary.write).toHaveBeenCalled();
+		expect(mockCore.setFailed).toHaveBeenCalled();
 	});
 
 	it("logs the request error when comment creation fails with a 403 GitHub error", async () => {
@@ -127,7 +131,7 @@ describe(outputActionReports, () => {
 			  ],
 			]
 		`);
-		expect(mockConsole.error.mock.calls).toMatchInlineSnapshot(`[]`);
+		expect(mockConsole.error).not.toHaveBeenCalled();
 	});
 
 	it("logs the error as an error when comment creation fails with an unknown error", async () => {
@@ -149,5 +153,16 @@ describe(outputActionReports, () => {
 			  ],
 			]
 		`);
+		expect(mockCore.summary.write).toHaveBeenCalled();
+		expect(mockCore.setFailed).toHaveBeenCalled();
+	});
+
+	it("does not write an Actions summary when there are no reports", async () => {
+		mockSetCommentForReports.mockResolvedValueOnce(undefined);
+
+		await outputActionReports(actor, entity, []);
+
+		expect(mockCore.summary.write).not.toHaveBeenCalled();
+		expect(mockCore.setFailed).not.toHaveBeenCalled();
 	});
 });

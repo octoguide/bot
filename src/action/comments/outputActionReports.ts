@@ -40,7 +40,9 @@ export async function outputActionReports(
 		}
 	}
 
-	await actionReporter(headline, reports, core.summary);
-	await core.summary.write();
-	core.setFailed(headline);
+	if (reports.length) {
+		await actionReporter(headline, reports, core.summary);
+		await core.summary.write();
+		core.setFailed(headline);
+	}
 }
