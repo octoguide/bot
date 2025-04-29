@@ -40,7 +40,27 @@ describe(formatReportAsMarkdown, () => {
 		`);
 	});
 
-	test("report with block quote secondary", () => {
+	test("report with secondary starting with a block quote", () => {
+		const actual = formatReportAsMarkdown({
+			about,
+			data: {
+				primary: "Primary line.",
+				secondary: ["```md", "[]()", "```", "Last secondary line."],
+				suggestion: ["Suggestion line"],
+			},
+		});
+
+		expect(actual).toMatchInlineSnapshot(`
+			"Primary line.
+
+			\`\`\`md
+			[]()
+			\`\`\`
+			Last secondary line. Suggestion line"
+		`);
+	});
+
+	test("report with secondary ending with a block quote", () => {
 		const actual = formatReportAsMarkdown({
 			about,
 			data: {
