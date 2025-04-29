@@ -1,7 +1,7 @@
 import type { RuleReport } from "../types/reports.js";
 
 import { groupBy } from "../action/groupBy.js";
-import { formatReport } from "./formatReport.js";
+import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
 
 export const markdownReportPassMessage =
 	"All reports are resolved now. Thanks! ✅";
@@ -23,7 +23,9 @@ export function markdownReporter(headline: string, reports: RuleReport[]) {
 				" ",
 				about.explanation.join(" "),
 				"\n\n",
-				ruleReports.map((report) => formatReport(report)).join("\n\n"),
+				ruleReports
+					.map((report) => formatReportAsMarkdown(report))
+					.join("\n\n"),
 			].join("");
 		}
 
@@ -31,10 +33,10 @@ export function markdownReporter(headline: string, reports: RuleReport[]) {
 			start,
 			" ",
 			ruleReports
-				.map((report) => formatReport(report, about.explanation))
+				.map((report) => formatReportAsMarkdown(report, about.explanation))
 				.join("\n\n"),
 		].join("");
 	});
 
-	return [headline, printedReports.join("\n\n")].join("");
+	return [headline, "\n\n", printedReports.join("\n\n")].join("");
 }

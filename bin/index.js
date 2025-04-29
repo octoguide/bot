@@ -2,4 +2,4 @@
 
 import { cli } from "../lib/cli.js";
 
-await cli(...process.argv.slice(2));
+console.log(await cli(...process.argv.slice(2)));

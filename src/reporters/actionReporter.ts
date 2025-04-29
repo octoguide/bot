@@ -14,7 +14,7 @@ export async function actionReporter(
 	const byRule = groupBy(reports, (report) => report.about.name);
 
 	summary.addHeading("OctoGuide Report", 1);
-	summary.addRaw(headline);
+	summary.addRaw(headline + "\n\n");
 
 	for (const ruleReports of Object.values(byRule)) {
 		const { about } = ruleReports[0];

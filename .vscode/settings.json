@@ -3,6 +3,10 @@
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.rulers": [80],
+	"search.exclude": {
+		"**/node_modules": true,
+		"dist/*": true
+	},
 	"eslint.probe": [
 		"javascript",
 		"javascriptreact",

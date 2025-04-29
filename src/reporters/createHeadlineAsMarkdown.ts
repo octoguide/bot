@@ -1,6 +1,6 @@
 import type { Entity } from "../types/entities.js";
 
-export function createHeadline(entity: Entity, reports: unknown[]) {
+export function createHeadlineAsMarkdown(entity: Entity, reports: unknown[]) {
 	const entityAlias = entity.type.replace("_", " ");
 	const entityText =
 		entity.type === "comment"
@@ -14,6 +14,6 @@ export function createHeadline(entity: Entity, reports: unknown[]) {
 		entityText,
 		"! A scan flagged ",
 		reports.length > 1 ? "some concerns" : "a concern",
-		" with it. Could you please take a look?\n\n",
+		" with it. Could you please take a look?",
 	].join("");
 }

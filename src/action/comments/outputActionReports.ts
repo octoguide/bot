@@ -1,25 +1,25 @@
 import * as core from "@actions/core";
 
-import type { EntityActor } from "../../actors/types";
-import type { Entity } from "../../types/entities";
-import type { RuleReport } from "../../types/reports";
+import type { EntityActor } from "../../actors/types.js";
+import type { Entity } from "../../types/entities.js";
+import type { RuleReport } from "../../types/reports.js";
 
-import { actionReporter } from "../../reporters/actionReporter";
-import { createHeadline } from "../../reporters/createHeadline";
+import { actionReporter } from "../../reporters/actionReporter.js";
+import { createHeadlineAsMarkdown } from "../../reporters/createHeadlineAsMarkdown.js";
 import { markdownReporter } from "../../reporters/markdownReporter.js";
 import { isRequestError } from "./isRequestError.js";
-import { getCommentForReports } from "./setCommentForReports.js";
+import { setCommentForReports } from "./setCommentForReports.js";
 
 export async function outputActionReports(
 	actor: EntityActor,
 	entity: Entity,
 	reports: RuleReport[],
 ) {
-	const headline = createHeadline(entity, reports);
+	const headline = createHeadlineAsMarkdown(entity, reports);
 	const reported = markdownReporter(headline, reports);
 
 	try {
-		const comment = await getCommentForReports(actor, entity, reported);
+		const comment = await setCommentForReports(actor, entity, reported);
 
 		core.info(
 			comment

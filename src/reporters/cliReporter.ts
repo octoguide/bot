@@ -3,7 +3,7 @@ import chalk from "chalk";
 import type { RuleReport } from "../types/reports.js";
 
 import { groupBy } from "../action/groupBy.js";
-import { formatReport } from "./formatReport.js";
+import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
 
 export function cliReporter(reports: RuleReport[]) {
 	if (!reports.length) {
@@ -29,14 +29,16 @@ export function cliReporter(reports: RuleReport[]) {
 				[
 					about.explanation.join(" "),
 					"\n\n",
-					ruleReports.map((report) => formatReport(report)).join("\n\n"),
+					ruleReports
+						.map((report) => formatReportAsMarkdown(report))
+						.join("\n\n"),
 				].join(""),
 			);
 		} else {
 			lines.push(
 				[
 					ruleReports
-						.map((report) => formatReport(report, about.explanation))
+						.map((report) => formatReportAsMarkdown(report, about.explanation))
 						.join("\n\n"),
 				].join(""),
 			);

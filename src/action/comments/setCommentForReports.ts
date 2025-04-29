@@ -13,7 +13,7 @@ export interface ReportComment {
 	url: string;
 }
 
-export async function getCommentForReports(
+export async function setCommentForReports(
 	actor: EntityActor,
 	entity: Entity,
 	reported: string,

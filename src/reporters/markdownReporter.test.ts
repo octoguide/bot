@@ -20,6 +20,12 @@ const fakeData = {
 const heading = "Hi, thanks for the issue, etc.";
 
 describe(markdownReporter, () => {
+	test("no reports", () => {
+		expect(markdownReporter(heading, [])).toMatchInlineSnapshot(
+			`"All reports are resolved now. Thanks! ✅"`,
+		);
+	});
+
 	test("one report", () => {
 		expect(
 			markdownReporter(heading, [
@@ -29,7 +35,11 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(
-			`"Hi, thanks for the issue, etc.[[**fake-rule**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion."`,
+			`
+			"Hi, thanks for the issue, etc.
+
+			[[**fake-rule**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion."
+		`,
 		);
 	});
 
@@ -46,7 +56,9 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"Hi, thanks for the issue, etc.[[**fake-rule**](https://octo.guide/rules/fake-rule)] Fake explanation.
+			"Hi, thanks for the issue, etc.
+
+			[[**fake-rule**](https://octo.guide/rules/fake-rule)] Fake explanation.
 
 			Fake primary. Fake suggestion.
 
@@ -73,7 +85,9 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"Hi, thanks for the issue, etc.[[**first**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion.
+			"Hi, thanks for the issue, etc.
+
+			[[**first**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion.
 
 			[[**second**](https://octo.guide/rules/fake-rule)] Fake primary. Fake explanation. Fake suggestion."
 		`);
@@ -112,7 +126,9 @@ describe(markdownReporter, () => {
 				},
 			]),
 		).toMatchInlineSnapshot(`
-			"Hi, thanks for the issue, etc.[[**first**](https://octo.guide/rules/fake-rule)] Fake explanation.
+			"Hi, thanks for the issue, etc.
+
+			[[**first**](https://octo.guide/rules/fake-rule)] Fake explanation.
 
 			Fake primary. Fake suggestion.
 
