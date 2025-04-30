@@ -15,8 +15,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       '@github/markdownlint-github':
-        specifier: ^0.7.0
-        version: 0.7.0
+        specifier: ^0.8.0
+        version: 0.8.0
       '@octokit/plugin-rest-endpoint-methods':
         specifier: ^14.0.0
         version: 14.0.0(@octokit/core@6.1.5)
@@ -732,8 +732,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@github/markdownlint-github@0.7.0':
-    resolution: {integrity: sha512-NwEj1U7caT2i6cZ8LwCHu2PtJkBcyQGSq9legLh0iRTwBg+uIs9Cy+MelpZ4smtuweiPPx/GggzJYMFz+hQocQ==}
+  '@github/markdownlint-github@0.8.0':
+    resolution: {integrity: sha512-079sWT/2Z8EI5v02GTtSfvG06E1m8Q6xjYoQiGdPg6rSKVntpfBw6in79fGs+vc9cYihBHl73vkOoDcyH/Jl8g==}
     engines: {node: '>=18'}
 
   '@humanfs/core@0.19.1':
@@ -5289,7 +5289,7 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@github/markdownlint-github@0.7.0':
+  '@github/markdownlint-github@0.8.0':
     dependencies:
       lodash-es: 4.17.21
 
