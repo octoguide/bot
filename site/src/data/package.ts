@@ -1,7 +1,3 @@
-import fs from "node:fs";
-
-const packageData = JSON.parse(
-	fs.readFileSync(new URL("../../../package.json", import.meta.url), "utf-8"),
-) as typeof import("../../../package.json");
+import packageData from "../../../package.json" assert { type: "json" };
 
 export const { version } = packageData;
