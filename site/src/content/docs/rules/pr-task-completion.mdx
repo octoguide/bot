@@ -3,7 +3,7 @@ description: "Tasks lists from the pull request template should be [x] filled ou
 title: "pr-task-completion"
 ---
 
-import OctoGuideGitHubComment from "~/components/OctoGuideGitHubComment.astro";
+import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
 
 > Included in configs: ✅ recommended, 🔒 strict
 
@@ -39,7 +39,7 @@ For example, the following markdown:
 [Pull request missing task list items](https://github.com/JoshuaKGoldberg/OctoGuideExamples/pull/4#issuecomment-2839280872):
 
 <OctoGuideGitHubComment rule="pr-branch-non-default">
-This PR's body is missing [x] checks on the following tasks from the PR template.
+This PR's body is missing <code>[x]</code> checks on the following tasks from the PR template.
 
 <blockquote>
 	<ul>

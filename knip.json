@@ -2,6 +2,7 @@
 	"$schema": "https://unpkg.com/knip@5.46.0/schema.json",
 	"entry": [
 		"site/**/*.mdx",
+		"site/src/**/*.astro",
 		"src/action/index.ts",
 		"src/cli.ts",
 		"src/index.ts",
@@ -9,5 +10,8 @@
 	],
 	"ignoreDependencies": ["sharp"],
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
-	"project": ["site/**/*.mdx", "src/**/*.ts"]
+	"project": ["site/**/*.mdx", "src/**/*.ts"],
+	"typescript": {
+		"config": ["tsconfig.json", "site/tsconfig.json"]
+	}
 }

@@ -20,7 +20,7 @@ describe(prTitleConventional.about.name, () => {
 		);
 
 		expect(report).toHaveBeenCalledWith({
-			primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_:`,
+			primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
 			suggestion: [
 				`To resolve this report, add a conventional commit type in front of the title, like _"feat: add this new feature"_.`,
 			],
