@@ -1,7 +1,6 @@
-import { latestCommit } from "./git.js";
 import { version } from "./package.js";
 
-const atVersion = `@${latestCommit} # v${version}`;
+const atVersion = `@${version}`;
 
 export const getStartedBase = `jobs:
   octoguide:
