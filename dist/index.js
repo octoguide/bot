@@ -99173,7 +99173,7 @@ async function runOctoGuideAction(context) {
     if (typeof url !== "string") {
         throw new Error("Target entity's html_url is not a string.");
     }
-    const auth = core.getInput("github-token");
+    const auth = core.getInput("github-token") || process.env.GITHUB_TOKEN;
     if (!auth) {
         throw new Error("Please provide a with.github-token to octoguide.");
     }
