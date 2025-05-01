@@ -22,10 +22,10 @@ on:
     types: [created, deleted, edited]
   issues:
     types: [edited, opened]
-  pull_request_target:
-    types: [edited, opened]
   pull_request_review_comment:
     types: [created, deleted, edited]
+  pull_request_target:
+    types: [edited, opened]
 
 permissions:
   discussions: write
