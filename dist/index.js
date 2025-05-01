@@ -85201,7 +85201,7 @@ function wrappy (fn, cb) {
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(2819);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(4122);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(1669);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__.context);
@@ -85211,7 +85211,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 4122:
+/***/ 1669:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -95973,9 +95973,7 @@ const prTitleConventional = defineRule({
     },
 });
 
-;// CONCATENATED MODULE: external "fs/promises"
-const promises_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("fs/promises");
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-empty-alt-text.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.0/node_modules/@github/markdownlint-github/src/rules/no-empty-alt-text.js
 const noEmptyStringAltRule = {
   names: ["GH003", "no-empty-alt-text"],
   description: "Please provide an alternative text for the image.",
@@ -96025,7 +96023,7 @@ const noEmptyStringAltRule = {
   },
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/helpers/strip-and-downcase-text.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.0/node_modules/@github/markdownlint-github/src/helpers/strip-and-downcase-text.js
 /* Downcase and strip extra whitespaces and punctuation */
 function stripAndDowncaseText(text) {
   return text
@@ -96035,7 +96033,7 @@ function stripAndDowncaseText(text) {
     .trim();
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-generic-link-text.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.0/node_modules/@github/markdownlint-github/src/rules/no-generic-link-text.js
 
 
 const bannedLinkText = [
@@ -96093,7 +96091,7 @@ const noGenericLinkTextRule = {
   },
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/no-default-alt-text.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.0/node_modules/@github/markdownlint-github/src/rules/no-default-alt-text.js
 /**
  * Examples:
  * * "Screen Shot 2020-10-20 at 2 52 27 PM"
@@ -96164,7 +96162,7 @@ const altTextRule = {
   },
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/src/rules/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.0/node_modules/@github/markdownlint-github/src/rules/index.js
 
 
 
@@ -96175,22 +96173,42 @@ const rules_githubMarkdownLint = [
   noEmptyStringAltRule,
 ];
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.7.0/node_modules/@github/markdownlint-github/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.0/node_modules/@github/markdownlint-github/style/accessibility.js
+/* harmony default export */ const accessibility = ({
+  "no-alt-text": true,
+  "no-default-alt-text": true,
+  "no-duplicate-heading": true,
+  "no-emphasis-as-heading": true,
+  "no-generic-link-text": true,
+  "heading-increment": true,
+  "no-space-in-links": false,
+  "ol-prefix": "ordered",
+  "single-h1": true,
+  "ul-style": {
+    style: "asterisk",
+  },
+});
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.0/node_modules/@github/markdownlint-github/style/base.js
+/* harmony default export */ const base = ({
+  default: true,
+  "no-inline-html": false,
+  "no-bare-urls": false,
+  "no-blanks-blockquote": false,
+  "fenced-code-language": true,
+});
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.0/node_modules/@github/markdownlint-github/index.js
+
+
 
 
 
 
 const offByDefault = (/* unused pure expression or super */ null && (["no-empty-alt-text"]));
 
-async function init(consumerConfig) {
-  // left overwrites right
-  const accessibilityRules = JSON.parse(
-    await readFile(__nccwpck_require__.ab + "accessibility.json"),
-  );
-
-  const base = JSON.parse(
-    await readFile(__nccwpck_require__.ab + "base.json"),
-  );
+function init(consumerConfig) {
+  const base = { ...baseRules };
 
   for (const rule of githubMarkdownLint) {
     const ruleName = rule.names[1];
