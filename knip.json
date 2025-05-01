@@ -8,6 +8,7 @@
 		"src/index.ts",
 		"src/**/*.test.*"
 	],
+	"ignore": ["dist/index.js"],
 	"ignoreDependencies": ["sharp"],
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
 	"project": ["site/**/*.mdx", "src/**/*.ts"],

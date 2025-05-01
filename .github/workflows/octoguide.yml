@@ -21,7 +21,6 @@ on:
     types: [edited, opened]
   pull_request_review_comment:
     types: [created, deleted, edited]
-
 permissions:
   discussions: write
   issues: write
