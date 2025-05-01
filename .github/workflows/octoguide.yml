@@ -4,10 +4,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - run: node dist/index.js
-        env:
+      - env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
+        run: node dist/index.js
 name: OctoGuide
 
 on:
