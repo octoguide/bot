@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.5](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.10.4...0.10.5) (2025-04-30)
+
+### Bug Fixes
+
+- **deps:** update dependency @github/markdownlint-github to ^0.8.0 ([#98](https://github.com/JoshuaKGoldberg/OctoGuide/issues/98)) ([5f7fbb1](https://github.com/JoshuaKGoldberg/OctoGuide/commit/5f7fbb1ec7f4483992c95057176a9987184a6c4b))
+
+## [0.10.4](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.10.3...0.10.4) (2025-04-29)
+
+### Bug Fixes
+
+- don't run core.debug() in CLI unless isDebug() ([6ede0ec](https://github.com/JoshuaKGoldberg/OctoGuide/commit/6ede0ecc8e6c1efbd79b0303358b2df0a43ea28c))
+
 ## [0.10.3](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.10.2...0.10.3) (2025-04-29)
 
 ### Bug Fixes

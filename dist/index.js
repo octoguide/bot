@@ -95175,7 +95175,7 @@ const commentMeaningless = defineRule({
         config: "recommended",
         description: "Comments should be meaningful, not just '+1'-style bumps.",
         explanation: [
-            `Replies containing just _"+1"_, _any update?"_, or other phrases without new information aren't helpful.`,
+            `Replies containing just _"+1"_, _"any update?"_, or other phrases without new information aren't helpful.`,
             `They cause unnecessary notifications for other contributors and take up space.`,
         ],
         name: "comment-meaningless",
@@ -95352,7 +95352,7 @@ const prLinkedIssue = defineRule({
 const prTaskCompletion = defineRule({
     about: {
         config: "recommended",
-        description: "Tasks lists from the pull request template should be [x] filled out.",
+        description: "Tasks lists from the pull request template should be `[x]` filled out.",
         explanation: [
             `Repositories often provide a set of tasks that pull request authors are expected to complete.`,
             `Those tasks should be marked as completed with a \`[x]\` in the pull request description.`,
@@ -95379,7 +95379,7 @@ const prTaskCompletion = defineRule({
             context.report({
                 primary: "This PR's body is empty, but there is a template with tasks to be done.",
                 suggestion: [
-                    "Please fill out the pull request template and make sure all the tasks are [x] checked.",
+                    "Please fill out the pull request template and make sure all the tasks are `[x]` checked.",
                 ],
             });
             return;
@@ -95396,10 +95396,10 @@ const prTaskCompletion = defineRule({
             return;
         }
         context.report({
-            primary: "This PR's body is missing [x] checks on the following tasks from the PR template.",
+            primary: "This PR's body is missing `[x]` checks on the following tasks from the PR template.",
             secondary: missingTasks.map((task) => `> ${task}`),
             suggestion: [
-                "Please complete those tasks and mark the checks as [x] completed.",
+                "Please complete those tasks and mark the checks as `[x]` completed.",
             ],
         });
     },
@@ -95935,7 +95935,7 @@ const prTitleConventional = defineRule({
         const parsed = commitParser.parse(entity.data.title);
         if (!parsed.type) {
             context.report({
-                primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_:`,
+                primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
                 suggestion: [
                     parsed.header
                         ? `To resolve this report, add a conventional commit type in front of the title, like _"feat: ${parsed.header}"_.`
@@ -96323,7 +96323,9 @@ async function runOctoGuideRules({ auth, config = "recommended", entity: url, })
         data: await actor.getData(),
         ...actor.metadata,
     };
-    core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
+    if (core.isDebug()) {
+        core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);
+    }
     const reports = [];
     await Promise.all(Object.values(configs[config]).map(async (rule) => {
         const context = {

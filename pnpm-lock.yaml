@@ -15,8 +15,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       '@github/markdownlint-github':
-        specifier: ^0.7.0
-        version: 0.7.0
+        specifier: ^0.8.0
+        version: 0.8.0
       '@octokit/plugin-rest-endpoint-methods':
         specifier: ^14.0.0
         version: 14.0.0(@octokit/core@6.1.5)
@@ -121,8 +121,8 @@ importers:
         specifier: 2.7.0
         version: 2.7.0(eslint@9.25.0(jiti@2.4.2))
       eslint-plugin-yml:
-        specifier: 1.17.0
-        version: 1.17.0(eslint@9.25.0(jiti@2.4.2))
+        specifier: 1.18.0
+        version: 1.18.0(eslint@9.25.0(jiti@2.4.2))
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -732,8 +732,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@github/markdownlint-github@0.7.0':
-    resolution: {integrity: sha512-NwEj1U7caT2i6cZ8LwCHu2PtJkBcyQGSq9legLh0iRTwBg+uIs9Cy+MelpZ4smtuweiPPx/GggzJYMFz+hQocQ==}
+  '@github/markdownlint-github@0.8.0':
+    resolution: {integrity: sha512-079sWT/2Z8EI5v02GTtSfvG06E1m8Q6xjYoQiGdPg6rSKVntpfBw6in79fGs+vc9cYihBHl73vkOoDcyH/Jl8g==}
     engines: {node: '>=18'}
 
   '@humanfs/core@0.19.1':
@@ -2452,8 +2452,8 @@ packages:
     peerDependencies:
       eslint: '>=8.44.0'
 
-  eslint-plugin-yml@1.17.0:
-    resolution: {integrity: sha512-Q3LXFRnNpGYAK/PM0BY1Xs0IY1xTLfM0kC986nNQkx1l8tOGz+YS50N6wXkAJkrBpeUN9OxEMB7QJ+9MTDAqIQ==}
+  eslint-plugin-yml@1.18.0:
+    resolution: {integrity: sha512-9NtbhHRN2NJa/s3uHchO3qVVZw0vyOIvWlXWGaKCr/6l3Go62wsvJK5byiI6ZoYztDsow4GnS69BZD3GnqH3hA==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -5289,7 +5289,7 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@github/markdownlint-github@0.7.0':
+  '@github/markdownlint-github@0.8.0':
     dependencies:
       lodash-es: 4.17.21
 
@@ -7136,7 +7136,7 @@ snapshots:
       regexp-ast-analysis: 0.7.1
       scslre: 0.3.0
 
-  eslint-plugin-yml@1.17.0(eslint@9.25.0(jiti@2.4.2)):
+  eslint-plugin-yml@1.18.0(eslint@9.25.0(jiti@2.4.2)):
     dependencies:
       debug: 4.4.0
       escape-string-regexp: 4.0.0
