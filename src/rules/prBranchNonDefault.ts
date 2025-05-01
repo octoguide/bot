@@ -3,8 +3,7 @@ import { defineRule } from "./defineRule.js";
 export const prBranchNonDefault = defineRule({
 	about: {
 		config: "recommended",
-		description:
-			"PRs should not be sent from their head repository's default branch.",
+		description: "PRs should be sent from a non-default branch.",
 		explanation: [
 			`Sending a PR from a repository's default branch, commonly \`main\`, means that repository will have a hard time pulling in updates from the upstream repository.`,
 			`It's generally recommended to instead create a new branch per pull request.`,

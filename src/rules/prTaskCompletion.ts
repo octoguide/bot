@@ -4,8 +4,7 @@ import { defineRule } from "./defineRule.js";
 export const prTaskCompletion = defineRule({
 	about: {
 		config: "recommended",
-		description:
-			"Tasks lists from the pull request template should be `[x]` filled out.",
+		description: "Tasks from the template should be `[x]` filled out.",
 		explanation: [
 			`Repositories often provide a set of tasks that pull request authors are expected to complete.`,
 			`Those tasks should be marked as completed with a \`[x]\` in the pull request description.`,

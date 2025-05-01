@@ -1,0 +1,98 @@
+---
+import { marked } from "marked";
+
+import { allRules } from "../../../src/rules/all.js";
+import type { Rule } from "../../../src/types/rules.js";
+
+const configEmojis = {
+	recommended: "✅",
+	strict: "🔒",
+};
+
+function getRuleArea(rule: Rule) {
+	switch (rule.about.name.split("-")[0]) {
+		case "comment":
+			return "Comments";
+		case "pr":
+			return "PRs";
+		case "issue":
+			return "Issues";
+		default:
+			return "Text";
+	}
+}
+
+async function getRuleDescription(rule: Rule) {
+	return await marked.parseInline(
+		rule.about.description
+			.replace(/(?:comment|pr|pr)s?/i, "")
+			.replace(/\.$/, "")
+			.toLowerCase(),
+	);
+}
+---
+
+<div>Config key:</div>
+
+<dl id="config-key-dl">
+	<dt>✅</dt><dd>Recommended</dd>
+	<dt>🔒</dt><dd>Strict</dd>
+</dl>
+
+<table aria-describedby="config-key-dl">
+	<thead>
+		<tr>
+			<th>Area</th>
+			<th>OctoGuide Rule</th>
+			<th>Entity Description</th>
+			<th>Config</th>
+		</tr>
+	</thead>
+	<tbody>
+		{
+			allRules.map(async (rule) => (
+				<tr>
+					<td>{getRuleArea(rule)}</td>
+					<td>
+						<a href={`/rules/{rule.about.name}`}>{rule.about.name}</a>
+					</td>
+					<td>
+						<Fragment set:html={await getRuleDescription(rule)} />
+					</td>
+					<td>{configEmojis[rule.about.config]}</td>
+				</tr>
+			))
+		}
+	</tbody>
+</table>
+
+<style>
+	dl {
+		display: inline-grid;
+		grid-template-columns: auto 1fr;
+		grid-template-rows: auto auto;
+	}
+
+	dt {
+		display: list-item;
+		list-style-type: disc;
+		margin-inline-start: 2.5rem;
+		padding-inline-start: 0;
+		margin-top: 0;
+	}
+
+	dt::after {
+		content: ": ";
+		margin-right: 0.5rem;
+	}
+
+	dd,
+	dt {
+		margin-top: 0;
+	}
+
+	dd {
+		display: inline;
+		padding-inline-start: 0;
+	}
+</style>
