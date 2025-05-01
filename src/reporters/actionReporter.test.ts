@@ -34,7 +34,7 @@ const fakeDataWithSecondary = {
 	secondary: ["Fake secondary."],
 } satisfies RuleReportData;
 
-const headline = "Hello, world!";
+const headline = "Hello, world! [octo.guide](https://octo.guide)";
 
 const summary = {
 	addHeading: vi.fn(),
@@ -70,7 +70,8 @@ describe(actionReporter, () => {
 		expect(summary.addRaw.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
-			    "Hello, world!
+			    "<p>Hello, world! <a href="https://octo.guide">octo.guide</a></p>
+
 
 			",
 			  ],
@@ -124,7 +125,8 @@ describe(actionReporter, () => {
 		expect(summary.addRaw.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
-			    "Hello, world!
+			    "<p>Hello, world! <a href="https://octo.guide">octo.guide</a></p>
+
 
 			",
 			  ],
@@ -196,7 +198,8 @@ describe(actionReporter, () => {
 		expect(summary.addRaw.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
-			    "Hello, world!
+			    "<p>Hello, world! <a href="https://octo.guide">octo.guide</a></p>
+
 
 			",
 			  ],
@@ -286,7 +289,8 @@ describe(actionReporter, () => {
 		expect(summary.addRaw.mock.calls).toMatchInlineSnapshot(`
 			[
 			  [
-			    "Hello, world!
+			    "<p>Hello, world! <a href="https://octo.guide">octo.guide</a></p>
+
 
 			",
 			  ],

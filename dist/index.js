@@ -98956,7 +98956,7 @@ const lexer = _Lexer.lex;
 async function actionReporter(headline, reports, summary) {
     const byRule = groupBy(reports, (report) => report.about.name);
     summary.addHeading("OctoGuide Report", 1);
-    summary.addRaw(headline + "\n\n");
+    summary.addRaw((await marked.parse(headline)) + "\n\n");
     for (const ruleReports of Object.values(byRule)) {
         const { about } = ruleReports[0];
         summary.addHeading(`<a href="${about.url}">${about.name}</a>`, 2);
