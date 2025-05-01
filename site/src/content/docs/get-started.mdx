@@ -2,6 +2,11 @@
 title: Get Started
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
+import { latestCommit } from "../../data/git.js";
+import { getStartedBase, getStartedStrict } from "../../data/yml.js";
+
 OctoGuide checks that contributor activity on your GitHub repository aligns with common expectations of smoothly-running projects.
 It will automatically post friendly comments when contributors take actions you don't want them to.
 
@@ -12,37 +17,11 @@ OctoGuide can scan comment, discussion, issue, and pull request events.
 
 Add the following `.github/workflows/octoguide.yml` file to get started:
 
-```yml title=".github/workflows/octoguide.yml"
-jobs:
-  octoguide:
-    if: ${{ !endsWith(github.actor, '[bot]') }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: JoshuaKGoldberg/octoguide@0.10.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-name: OctoGuide
-
-on:
-  discussion:
-    types: [created, edited]
-  discussion_comment:
-    types: [created, deleted, edited]
-  issue_comment:
-    types: [created, deleted, edited]
-  issues:
-    types: [edited, opened]
-  pull_request_target:
-    types: [edited, opened]
-  pull_request_review_comment:
-    types: [created, deleted, edited]
-
-permissions:
-  discussions: write
-  issues: write
-  pull-requests: write
-```
+<Code
+	code={getStartedBase}
+	lang="yml"
+	title=".github/workflows/octoguide.yml"
+/>
 
 Once you've created that `.yml` file, congrats!
 OctoGuide should be enabled on your repository.
@@ -58,17 +37,12 @@ OctoGuide should post a response within 10-15 seconds.
 OctoGuide by default enables a _recommended_ set of rules.
 You can extend it to use a _strict_ superset by adding `config: strict` to the action's `with`:
 
-```diff lang="yml" title=".github/workflows/octoguide.yml"
-jobs:
-  octoguide:
-    if: ${{ !endsWith(github.actor, '[bot]') }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: JoshuaKGoldberg/octoguide@0.10.0
-        with:
-+          config: strict
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-```
+<Code
+	code={getStartedStrict}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
 
 The _strict_ config includes all rules from _recommended_ plus more rules that enforce more opinionated practices.
 

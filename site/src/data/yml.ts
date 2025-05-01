@@ -1,0 +1,45 @@
+import { latestCommit } from "./git.js";
+import { version } from "./package.js";
+
+const atVersion = `@${latestCommit} # v${version}`;
+
+export const getStartedBase = `jobs:
+  octoguide:
+    if: \${{ !endsWith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: JoshuaKGoldberg/octoguide${atVersion}
+        with:
+          github-token: \${{ secrets.GITHUB_TOKEN }}
+
+name: OctoGuide
+
+on:
+  discussion:
+    types: [created, edited]
+  discussion_comment:
+    types: [created, deleted, edited]
+  issue_comment:
+    types: [created, deleted, edited]
+  issues:
+    types: [edited, opened]
+  pull_request_target:
+    types: [edited, opened]
+  pull_request_review_comment:
+    types: [created, deleted, edited]
+
+permissions:
+  discussions: write
+  issues: write
+  pull-requests: write`;
+
+export const getStartedStrict = `
+jobs:
+  octoguide:
+    if: \${{ !endsWith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: JoshuaKGoldberg/octoguide${atVersion}
+        with:
++          config: strict
+          github-token: \${{ secrets.GITHUB_TOKEN }}`;
