@@ -1,4 +1,7 @@
 author: JoshuaKGoldberg
+branding:
+  icon: "map"
+  color: "green"
 description: Runs OctoGuide as a GitHub Action. 🗺️
 inputs:
   config:
