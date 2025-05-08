@@ -46,7 +46,19 @@
       "name": "François Best",
       "avatar_url": "https://avatars.githubusercontent.com/u/1174092?v=4",
       "profile": "https://francoisbest.com/",
-      "contributions": ["bug", "code"]
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "fabioatcorreia",
+      "name": "Fábio Correia",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22024644?v=4",
+      "profile": "https://github.com/fabioatcorreia",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
