@@ -54,7 +54,7 @@ async function getRuleDescription(rule: Rule) {
 				<tr>
 					<td>{getRuleArea(rule)}</td>
 					<td>
-						<a href={`/rules/{rule.about.name}`}>{rule.about.name}</a>
+						<a href={`/rules/${rule.about.name}`}>{rule.about.name}</a>
 					</td>
 					<td>
 						<Fragment set:html={await getRuleDescription(rule)} />
