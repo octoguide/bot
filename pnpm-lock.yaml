@@ -127,8 +127,8 @@ importers:
         specifier: 9.1.7
         version: 9.1.7
       knip:
-        specifier: 5.51.0
-        version: 5.51.0(@types/node@22.15.0)(typescript@5.8.2)
+        specifier: 5.52.0
+        version: 5.52.0(@types/node@22.15.0)(typescript@5.8.2)
       konami-emoji-blast:
         specifier: 0.5.9
         version: 0.5.9
@@ -1969,10 +1969,6 @@ packages:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
 
-  clone@1.0.4:
-    resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
-    engines: {node: '>=0.8'}
-
   clone@2.1.2:
     resolution: {integrity: sha512-3Pe/CF1Nn94hyhIYpjtiLhdCoEoz0DqQ+988E9gmeEdQZlojxnOb74wctFyuwWQHzqyf9X7C7MG8juUpqBJT8w==}
     engines: {node: '>=0.8'}
@@ -2220,9 +2216,6 @@ packages:
     resolution: {integrity: sha512-WY/3TUME0x3KPYdRRxEJJvXRHV4PyPoUsxtZa78lwItwRQRHhd2U9xOscaT/YTf8uCXIAjeJOFBVEh/7FtD8Xg==}
     engines: {node: '>=18'}
 
-  defaults@1.0.4:
-    resolution: {integrity: sha512-eFuaLoy/Rxalv2kr+lqMlUnrDWV+3j4pljOIJgLIhI058IQfWJ7vXhyEIHu+HtC738klGALYxOKDO0bQP3tg8A==}
-
   define-lazy-prop@3.0.0:
     resolution: {integrity: sha512-N+MeXYoqr3pOgn8xfyRPREN7gHakLYjhsHhWGT3fWAiL4IkAt0iDw14QiiEm2bE30c5XX5q0FtAA3CK5f9/BUg==}
     engines: {node: '>=12'}
@@ -2302,9 +2295,6 @@ packages:
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
-
-  easy-table@1.2.0:
-    resolution: {integrity: sha512-OFzVOv03YpvtcWGe5AayU5G2hgybsg3iqA6drU8UaoZyB9jLGMTrz9+asnLp/E+6qPh88yEI1gvyZFZ41dmgww==}
 
   emoji-blast@0.10.2:
     resolution: {integrity: sha512-3VrqajirPj8QeQxQeMHUfD+03H64XTEVPGRjxP5rjDCVEC5NGF3FgutMpU5scIOhcuzG23Qvs32k0Pnj+hRzGA==}
@@ -3090,8 +3080,8 @@ packages:
     resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
     engines: {node: '>= 8'}
 
-  knip@5.51.0:
-    resolution: {integrity: sha512-gw5TzLt9FikIk1oPWDc7jPRb/+L3Aw1ia25hWUQBb+hXS/Rbdki/0rrzQygjU5/CVYnRWYqc1kgdNi60Jm1lPg==}
+  knip@5.52.0:
+    resolution: {integrity: sha512-Jac+wJvfrGSYp664sQbEMPCs9m4z0VSdvzSZAgvVIA9gXuE+a2I2O5YnDpiitHTZ2eGbbMNJyewO/4me6LFMHQ==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -4575,9 +4565,6 @@ packages:
 
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
-
-  wcwidth@1.0.1:
-    resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
@@ -6589,9 +6576,6 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
-  clone@1.0.4:
-    optional: true
-
   clone@2.1.2: {}
 
   clsx@2.1.1: {}
@@ -6876,11 +6860,6 @@ snapshots:
       bundle-name: 4.1.0
       default-browser-id: 5.0.0
 
-  defaults@1.0.4:
-    dependencies:
-      clone: 1.0.4
-    optional: true
-
   define-lazy-prop@3.0.0: {}
 
   defu@6.1.4: {}
@@ -6934,12 +6913,6 @@ snapshots:
   dset@3.1.4: {}
 
   eastasianwidth@0.2.0: {}
-
-  easy-table@1.2.0:
-    dependencies:
-      ansi-regex: 5.0.1
-    optionalDependencies:
-      wcwidth: 1.0.1
 
   emoji-blast@0.10.2: {}
 
@@ -7914,11 +7887,10 @@ snapshots:
 
   klona@2.0.6: {}
 
-  knip@5.51.0(@types/node@22.15.0)(typescript@5.8.2):
+  knip@5.52.0(@types/node@22.15.0)(typescript@5.8.2):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@types/node': 22.15.0
-      easy-table: 1.2.0
       enhanced-resolve: 5.18.1
       fast-glob: 3.3.3
       jiti: 2.4.2
@@ -9893,11 +9865,6 @@ snapshots:
   vscode-languageserver-textdocument@1.0.12: {}
 
   vscode-uri@3.1.0: {}
-
-  wcwidth@1.0.1:
-    dependencies:
-      defaults: 1.0.4
-    optional: true
 
   web-namespaces@2.0.1: {}
 
