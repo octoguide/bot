@@ -15,6 +15,10 @@ table {
 	width: 100%;
 }
 
+table td ul {
+	padding-inline-start: 1em;
+}
+
 /* Dark mode colors. */
 :root {
 	--sl-color-accent-low: #112828;
