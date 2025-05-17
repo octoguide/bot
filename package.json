@@ -81,7 +81,7 @@
 		"husky": "9.1.7",
 		"knip": "5.55.0",
 		"konami-emoji-blast": "0.5.9",
-		"lint-staged": "15.5.0",
+		"lint-staged": "16.0.0",
 		"markdownlint-cli": "0.44.0",
 		"prettier": "3.5.3",
 		"prettier-plugin-astro": "0.14.1",
