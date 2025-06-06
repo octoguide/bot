@@ -56,7 +56,7 @@
 	"devDependencies": {
 		"@astrojs/starlight": "0.34.1",
 		"@eslint-community/eslint-plugin-eslint-comments": "4.5.0",
-		"@eslint/js": "9.27.0",
+		"@eslint/js": "9.28.0",
 		"@konami-emoji-blast/astro": "0.1.1",
 		"@release-it/conventional-changelog": "10.0.0",
 		"@types/eslint-plugin-markdown": "2.0.2",
