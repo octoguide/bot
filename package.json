@@ -64,7 +64,7 @@
 		"@types/node": "22.15.0",
 		"@types/parse-github-url": "1.0.3",
 		"@vercel/ncc": "0.38.3",
-		"@vitest/coverage-v8": "3.1.1",
+		"@vitest/coverage-v8": "3.2.0",
 		"@vitest/eslint-plugin": "1.2.0",
 		"astro": "5.8.0",
 		"console-fail-test": "0.5.0",
@@ -96,7 +96,7 @@
 		"type-fest": "4.40.0",
 		"typescript": "5.8.2",
 		"typescript-eslint": "8.33.0",
-		"vitest": "3.1.1"
+		"vitest": "3.2.0"
 	},
 	"packageManager": "pnpm@10.11.0",
 	"engines": {
