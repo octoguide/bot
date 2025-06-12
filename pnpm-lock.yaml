@@ -53,7 +53,7 @@ importers:
     devDependencies:
       '@astrojs/starlight':
         specifier: 0.34.1
-        version: 0.34.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
+        version: 0.34.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: 4.5.0
         version: 4.5.0(eslint@9.28.0(jiti@2.4.2))
@@ -62,7 +62,7 @@ importers:
         version: 9.28.0
       '@konami-emoji-blast/astro':
         specifier: 0.1.1
-        version: 0.1.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))(konami-emoji-blast@0.5.9)
+        version: 0.1.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))(konami-emoji-blast@0.5.9)
       '@release-it/conventional-changelog':
         specifier: 10.0.0
         version: 10.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.1.0)(release-it@19.0.1(@types/node@22.15.0)(magicast@0.3.5))
@@ -88,8 +88,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.2)(vitest@3.2.0(@types/debug@4.1.12)(@types/node@22.15.0)(jiti@2.4.2)(yaml@2.8.0))
       astro:
-        specifier: 5.8.0
-        version: 5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
+        specifier: 5.9.0
+        version: 5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
       console-fail-test:
         specifier: 0.5.0
         version: 0.5.0
@@ -164,10 +164,10 @@ importers:
         version: 0.34.1
       starlight-links-validator:
         specifier: 0.16.0
-        version: 0.16.0(@astrojs/starlight@0.34.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)))
+        version: 0.16.0(@astrojs/starlight@0.34.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)))
       starlight-package-managers:
         specifier: 0.11.0
-        version: 0.11.0(@astrojs/starlight@0.34.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)))
+        version: 0.11.0(@astrojs/starlight@0.34.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)))
       type-fest:
         specifier: 4.40.0
         version: 4.40.0
@@ -205,8 +205,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@astrojs/compiler@2.11.0':
-    resolution: {integrity: sha512-zZOO7i+JhojO8qmlyR/URui6LyfHJY6m+L9nwyX5GiKD78YoRaZ5tzz6X0fkl+5bD3uwlDHayf6Oe8Fu36RKNg==}
+  '@astrojs/compiler@2.12.2':
+    resolution: {integrity: sha512-w2zfvhjNCkNMmMMOn5b0J8+OmUaBL1o40ipMvqcG6NRpdC+lKxmTi48DT8Xw0SzJ3AfmeFLB45zXZXtmbsjcgw==}
 
   '@astrojs/internal-helpers@0.6.1':
     resolution: {integrity: sha512-l5Pqf6uZu31aG+3Lv8nl/3s4DbUzdlxTWDof4pEpto6GUJNhhCbelVi9dEyurOVyqaelwmS9oSyOWOENSfgo9A==}
@@ -2042,8 +2042,8 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^5.0.0-beta || ^3.3.0
 
-  astro@5.8.0:
-    resolution: {integrity: sha512-G57ELkdIntDiSrucA5lQaRtBOjquaZ9b9NIwoz2f471ZuuJcynLjWgItgBzlrz5UMY4WqnFbVWUCKlJb7nt9bA==}
+  astro@5.9.0:
+    resolution: {integrity: sha512-AHF7oZDBQRwggHUG0bwBhRQjrDD+vJpCtPd0/GVxDB1hGRV0SQuFWS0UHX5bYczIqFcao1z9o9o0r2rQtHrTMg==}
     engines: {node: 18.20.8 || ^20.3.0 || >=22.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -5049,7 +5049,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@astrojs/compiler@2.11.0': {}
+  '@astrojs/compiler@2.12.2': {}
 
   '@astrojs/internal-helpers@0.6.1': {}
 
@@ -5105,12 +5105,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.2.5(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))':
+  '@astrojs/mdx@4.2.5(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.1
       '@mdx-js/mdx': 3.1.0(acorn@8.14.1)
       acorn: 8.14.1
-      astro: 5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
+      astro: 5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -5138,17 +5138,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.24.2
 
-  '@astrojs/starlight@0.34.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))':
+  '@astrojs/starlight@0.34.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.2
-      '@astrojs/mdx': 4.2.5(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
+      '@astrojs/mdx': 4.2.5(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
       '@astrojs/sitemap': 3.3.1
       '@pagefind/default-ui': 1.3.0
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
-      astro-expressive-code: 0.41.2(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
+      astro: 5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
+      astro-expressive-code: 0.41.2(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -5955,9 +5955,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@konami-emoji-blast/astro@0.1.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))(konami-emoji-blast@0.5.9)':
+  '@konami-emoji-blast/astro@0.1.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))(konami-emoji-blast@0.5.9)':
     dependencies:
-      astro: 5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
+      astro: 5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
       konami-emoji-blast: 0.5.9
 
   '@mdx-js/mdx@3.1.0(acorn@8.14.1)':
@@ -6960,14 +6960,14 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.41.2(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)):
+  astro-expressive-code@0.41.2(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)):
     dependencies:
-      astro: 5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
+      astro: 5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0)
       rehype-expressive-code: 0.41.2
 
-  astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0):
+  astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0):
     dependencies:
-      '@astrojs/compiler': 2.11.0
+      '@astrojs/compiler': 2.12.2
       '@astrojs/internal-helpers': 0.6.1
       '@astrojs/markdown-remark': 6.3.2
       '@astrojs/telemetry': 3.3.0
@@ -9644,7 +9644,7 @@ snapshots:
 
   prettier-plugin-astro@0.14.1:
     dependencies:
-      '@astrojs/compiler': 2.11.0
+      '@astrojs/compiler': 2.12.2
       prettier: 3.5.3
       sass-formatter: 0.7.9
 
@@ -10210,9 +10210,9 @@ snapshots:
 
   stackback@0.0.2: {}
 
-  starlight-links-validator@0.16.0(@astrojs/starlight@0.34.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))):
+  starlight-links-validator@0.16.0(@astrojs/starlight@0.34.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))):
     dependencies:
-      '@astrojs/starlight': 0.34.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
+      '@astrojs/starlight': 0.34.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
       '@types/picomatch': 3.0.2
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.3
@@ -10226,9 +10226,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-package-managers@0.11.0(@astrojs/starlight@0.34.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))):
+  starlight-package-managers@0.11.0(@astrojs/starlight@0.34.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))):
     dependencies:
-      '@astrojs/starlight': 0.34.1(astro@5.8.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
+      '@astrojs/starlight': 0.34.1(astro@5.9.0(@types/node@22.15.0)(jiti@2.4.2)(rollup@4.39.0)(typescript@5.8.2)(yaml@2.8.0))
 
   std-env@3.9.0: {}
 
