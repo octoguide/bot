@@ -127,8 +127,8 @@ importers:
         specifier: 9.1.7
         version: 9.1.7
       knip:
-        specifier: 5.60.0
-        version: 5.60.0(@types/node@22.15.0)(typescript@5.8.2)
+        specifier: 5.61.0
+        version: 5.61.0(@types/node@22.15.0)(typescript@5.8.2)
       konami-emoji-blast:
         specifier: 0.5.9
         version: 0.5.9
@@ -3326,8 +3326,8 @@ packages:
     resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
     engines: {node: '>= 8'}
 
-  knip@5.60.0:
-    resolution: {integrity: sha512-r6oIbaV0Ztz/7DKe1voxg2O5IRhLi9Q0GjhplfRqUZ1gvTChew6ywmLzehuaXIHVKkPs8LF5UKOxFlc93RKzow==}
+  knip@5.61.0:
+    resolution: {integrity: sha512-g4zwSPUoSCWXWTHshNgtsiuM90jnLpZyBZ6J7BQaydfoOjclgh4NfrD7BL+TjChgDbeYg5bEQcERKK/vdJlpmA==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -8486,7 +8486,7 @@ snapshots:
 
   klona@2.0.6: {}
 
-  knip@5.60.0(@types/node@22.15.0)(typescript@5.8.2):
+  knip@5.61.0(@types/node@22.15.0)(typescript@5.8.2):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@types/node': 22.15.0
