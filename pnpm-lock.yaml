@@ -39,8 +39,8 @@ importers:
         specifier: 0.33.0
         version: 0.33.0
       marked:
-        specifier: ^15.0.11
-        version: 15.0.11
+        specifier: ^16.0.0
+        version: 16.0.0
       octokit:
         specifier: ^5.0.0
         version: 5.0.2
@@ -3469,9 +3469,9 @@ packages:
     resolution: {integrity: sha512-xaSxkaU7wY/0852zGApM8LdlIfGCW8ETZ0Rr62IQtAnUMlMuifsg09vWJcNYeL4f0anvr8Vo4ZQar8jGpV0btQ==}
     engines: {node: '>=20'}
 
-  marked@15.0.11:
-    resolution: {integrity: sha512-1BEXAU2euRCG3xwgLVT1y0xbJEld1XOrmRJpUwRCcy7rxhSCwMrmEu9LXoPhHSCJG41V7YcQ2mjKRr5BA3ITIA==}
-    engines: {node: '>= 18'}
+  marked@16.0.0:
+    resolution: {integrity: sha512-MUKMXDjsD/eptB7GPzxo4xcnLS6oo7/RHimUMHEDRhUooPwmN9BEpMl7AEOJv3bmso169wHI2wUF9VQgL7zfmA==}
+    engines: {node: '>= 20'}
     hasBin: true
 
   mdast-util-definitions@6.0.0:
@@ -8673,7 +8673,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  marked@15.0.11: {}
+  marked@16.0.0: {}
 
   mdast-util-definitions@6.0.0:
     dependencies:
