@@ -3,7 +3,7 @@ import { marked } from "marked";
 
 import { allRules } from "../../../src/rules/all.js";
 import type { Rule } from "../../../src/types/rules.js";
-import { configEmojis } from "src/data/configEmojis";
+import { configEmojis } from "../data/configEmojis";
 
 function getRuleArea(rule: Rule) {
 	switch (rule.about.name.split("-")[0]) {
