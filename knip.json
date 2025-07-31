@@ -1,5 +1,6 @@
 {
-	"$schema": "https://unpkg.com/knip@5.46.0/schema.json",
+	"$schema": "https://unpkg.com/knip@5.62.0/schema.json",
+	"treatConfigHintsAsErrors": true,
 	"entry": [
 		"site/**/*.mdx",
 		"site/src/**/*.astro",
