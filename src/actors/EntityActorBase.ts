@@ -6,9 +6,6 @@ import type { RepositoryLocator } from "../types/data.js";
 import type { CommentData, Entity, EntityData } from "../types/entities.js";
 import type { EntityActor } from "./types.js";
 
-/**
- * Response type for the minimizeComment GraphQL mutation.
- */
 interface MinimizeCommentResponse {
 	minimizeComment: {
 		minimizedComment: {
@@ -17,9 +14,6 @@ interface MinimizeCommentResponse {
 	};
 }
 
-/**
- * Response type for the unminimizeComment GraphQL mutation.
- */
 interface UnminimizeCommentResponse {
 	unminimizeComment: {
 		unminimizedComment: {

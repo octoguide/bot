@@ -324,7 +324,6 @@ describe(setCommentForReports, () => {
 			settings,
 		);
 
-		// Should still update the existing comment
 		expect(mockUpdateExistingCommentForReports).toHaveBeenCalledWith(
 			actor,
 			entity,
@@ -332,7 +331,7 @@ describe(setCommentForReports, () => {
 			markdownReportPassMessage,
 			settings,
 		);
-		// GraphQL should not be called if node_id is missing
+
 		expect(mockMinimizeComment).not.toHaveBeenCalled();
 		expect(mockUnminimizeComment).not.toHaveBeenCalled();
 		expect(actual).toEqual({
@@ -352,7 +351,6 @@ describe(setCommentForReports, () => {
 			settings,
 		);
 
-		// GraphQL should not be called if body is missing
 		expect(mockMinimizeComment).not.toHaveBeenCalled();
 		expect(mockUnminimizeComment).not.toHaveBeenCalled();
 		expect(actual).toEqual({
@@ -372,7 +370,6 @@ describe(setCommentForReports, () => {
 			settings,
 		);
 
-		// GraphQL should not be called if comment was not previously resolved
 		expect(mockMinimizeComment).not.toHaveBeenCalled();
 		expect(mockUnminimizeComment).not.toHaveBeenCalled();
 		expect(actual).toEqual({
