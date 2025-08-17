@@ -105,6 +105,9 @@ const createMockActor = (): EntityActor =>
 			number: 1,
 			type: "issue",
 		} as Omit<IssueEntity, "data">,
+		minimizeComment:
+			vi.fn<(nodeId: string, reason?: "RESOLVED") => Promise<boolean>>(),
+		unminimizeComment: vi.fn<(nodeId: string) => Promise<boolean>>(),
 		updateComment: vi.fn<(number: number, newBody: string) => Promise<void>>(),
 	}) satisfies EntityActor;
 

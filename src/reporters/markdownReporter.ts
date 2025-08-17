@@ -4,7 +4,7 @@ import { groupBy } from "../action/groupBy.js";
 import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
 
 export const markdownReportPassMessage =
-	"All reports are resolved now. Thanks! ✅";
+	"All reports are resolved now. Thanks! ✅\n\n<!-- resolved-by: OctoGuide -->";
 
 export function markdownReporter(headline: string, reports: RuleReport[]) {
 	if (!reports.length) {
