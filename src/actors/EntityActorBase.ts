@@ -86,7 +86,7 @@ export abstract class EntityActorBase<Data extends EntityData>
 	}
 
 	/**
-	 * Unminimizes a comment using GitHub's GraphQL API.
+	 * Unminimize a comment using GitHub's GraphQL API.
 	 * @param nodeId The GraphQL node ID of the comment to unminimize
 	 * @returns Promise that resolves to true if the comment was successfully unminimized, false otherwise
 	 */
