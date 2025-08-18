@@ -217,6 +217,9 @@ describe(setCommentForReports, () => {
 		expect(mockCore.info).toHaveBeenCalledWith(
 			`Created new comment: ${newCommentUrl}`,
 		);
+		// Should not call minimize/unminimize for new comments
+		expect(mockMinimizeComment).not.toHaveBeenCalled();
+		expect(mockUnminimizeComment).not.toHaveBeenCalled();
 	});
 
 	it("minimizes comment when report passes with no violations", async () => {
@@ -375,6 +378,26 @@ describe(setCommentForReports, () => {
 		expect(actual).toEqual({
 			status: "existing",
 			url: existingUnresolvedComment.html_url,
+		});
+	});
+
+	it("handles GraphQL errors gracefully when minimizing comments", async () => {
+		mockGetExistingComment.mockResolvedValueOnce(existingComment);
+		mockMinimizeComment.mockResolvedValueOnce(false); // Simulate failure due to error
+		mockUpdateExistingCommentForReports.mockResolvedValueOnce(undefined);
+
+		const actual = await setCommentForReports(
+			actor,
+			entity,
+			markdownReportPassMessage,
+			settings,
+		);
+
+		expect(mockMinimizeComment).toHaveBeenCalledWith(existingComment.node_id);
+		// Should still return success even if minimize fails
+		expect(actual).toEqual({
+			status: "existing",
+			url: existingComment.html_url,
 		});
 	});
 });
