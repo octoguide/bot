@@ -397,8 +397,8 @@ describe("runOctoGuideAction", () => {
 
 		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
 			auth: "mock-token",
-			entity: "https://github.com/test",
 			config: "none",
+			entity: "https://github.com/test",
 		});
 	});
 
