@@ -44,26 +44,29 @@ vi.mock("./execution/runRuleOnEntity.js", () => ({
 
 vi.mock("./rules/configs.js", () => ({
 	configs: {
-		recommended: {
-			"comment-meaningless": {
+		recommended: [
+			{
 				about: {
 					description: "Comments should not be meaningless",
 					name: "comment-meaningless",
 				},
+				comment: vi.fn(),
 			},
-			"pr-body-not-empty": {
+			{
 				about: {
 					description: "PR bodies should not be empty",
 					name: "pr-body-not-empty",
 				},
+				pullRequest: vi.fn(),
 			},
-			"pr-branch-non-default": {
+			{
 				about: {
 					description: "PRs should be sent from a non-default branch",
 					name: "pr-branch-non-default",
 				},
+				pullRequest: vi.fn(),
 			},
-		},
+		],
 	},
 }));
 
@@ -74,30 +77,35 @@ vi.mock("./rules/all.js", () => ({
 				description: "Comments should not be meaningless",
 				name: "comment-meaningless",
 			},
+			comment: vi.fn(),
 		},
 		{
 			about: {
 				description: "PR bodies should not be empty",
 				name: "pr-body-not-empty",
 			},
+			pullRequest: vi.fn(),
 		},
 		{
 			about: {
 				description: "PRs should be sent from a non-default branch",
 				name: "pr-branch-non-default",
 			},
+			pullRequest: vi.fn(),
 		},
 		{
 			about: {
 				description: "PR titles should be in conventional commit format",
 				name: "pr-title-conventional",
 			},
+			pullRequest: vi.fn(),
 		},
 		{
 			about: {
 				description: "PRs should be linked as closing an issue",
 				name: "pr-linked-issue",
 			},
+			pullRequest: vi.fn(),
 		},
 	],
 }));
@@ -135,10 +143,6 @@ describe("runOctoGuideRules", () => {
 		vi.clearAllMocks();
 	});
 
-	it("should be a function", () => {
-		expect(typeof runOctoGuideRules).toBe("function");
-	});
-
 	it("should throw error when actor cannot be resolved", async () => {
 		const mockOctokit = createMockOctokit();
 
@@ -158,7 +162,7 @@ describe("runOctoGuideRules", () => {
 		);
 	});
 
-	it("should use provided authentication token", async () => {
+	it("should use the authentication token when provided", async () => {
 		const mockOctokit = createMockOctokit();
 
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
@@ -220,7 +224,7 @@ describe("runOctoGuideRules", () => {
 		expect(mockRunRuleOnEntity).not.toHaveBeenCalled();
 	});
 
-	it("should run all config rules when no settings are provided", async () => {
+	it("should run all config rules when no rule settings are provided", async () => {
 		const mockOctokit = createMockOctokit();
 		const mockEntityData = {
 			html_url: "https://github.com/test-owner/test-repo/issues/1",
@@ -266,7 +270,7 @@ describe("runOctoGuideRules", () => {
 		expect(calledRules).toContain("pr-branch-non-default");
 	});
 
-	it("should default to recommended config when no settings are provided at all", async () => {
+	it("should default to recommended config when no settings are provided", async () => {
 		const mockOctokit = createMockOctokit();
 		const mockEntityData = {
 			html_url: "https://github.com/test-owner/test-repo/issues/1",

@@ -50,7 +50,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	}
 
 	const rules = allRules.reduce((acc: Record<string, boolean>, rule) => {
-		const ruleInput = core.getInput(rule.about.name);
+		const ruleInput = core.getInput(`rule-${rule.about.name}`);
 
 		if (!ruleInput) {
 			return acc;

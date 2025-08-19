@@ -507,8 +507,8 @@ describe("runOctoGuideAction", () => {
 
 	it("should include enabled rules in settings when specified in inputs", async () => {
 		createMockActionInputs({
-			"pr-body-not-empty": "true",
-			"pr-title-conventional": "false",
+			"rule-pr-body-not-empty": "true",
+			"rule-pr-title-conventional": "false",
 		});
 		createMinimalRuleExecution();
 

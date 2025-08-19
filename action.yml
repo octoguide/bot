@@ -10,10 +10,6 @@ inputs:
   comment-header:
     description: Custom header text for bot comments.
     required: false
-  # Individual rule overrides
-  comment-meaningless:
-    description: Enable/disable the comment-meaningless rule (true/false)
-    required: false
   config:
     default: recommended
     description: Which config to use, as 'recommended' (default), 'strict', or 'none'.
@@ -21,22 +17,26 @@ inputs:
   github-token:
     description: GitHub token (PAT) with repo and workflow permissions.
     required: false
-  pr-body-not-empty:
+  # Individual rule overrides
+  rule-comment-meaningless:
+    description: Enable/disable the comment-meaningless rule (true/false)
+    required: false
+  rule-pr-body-not-empty:
     description: Enable/disable the pr-body-not-empty rule (true/false)
     required: false
-  pr-branch-non-default:
+  rule-pr-branch-non-default:
     description: Enable/disable the pr-branch-non-default rule (true/false)
     required: false
-  pr-linked-issue:
+  rule-pr-linked-issue:
     description: Enable/disable the pr-linked-issue rule (true/false)
     required: false
-  pr-task-completion:
+  rule-pr-task-completion:
     description: Enable/disable the pr-task-completion rule (true/false)
     required: false
-  pr-title-conventional:
+  rule-pr-title-conventional:
     description: Enable/disable the pr-title-conventional rule (true/false)
     required: false
-  text-image-alt-text:
+  rule-text-image-alt-text:
     description: Enable/disable the text-image-alt-text rule (true/false)
     required: false
 name: OctoGuide Action
