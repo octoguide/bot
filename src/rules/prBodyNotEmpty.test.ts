@@ -41,7 +41,6 @@ describe(prBodyNotEmpty.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockRejectedValue(new Error("Not found")),
 						},
 					},
@@ -73,7 +72,6 @@ describe(prBodyNotEmpty.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),
@@ -111,7 +109,6 @@ describe(prBodyNotEmpty.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockRejectedValue(new Error("Not found")),
 						},
 					},
@@ -141,7 +138,6 @@ describe(prBodyNotEmpty.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),
@@ -177,7 +173,6 @@ describe(prBodyNotEmpty.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),
@@ -211,7 +206,6 @@ describe(prBodyNotEmpty.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),
@@ -253,7 +247,6 @@ describe(prBodyNotEmpty.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),

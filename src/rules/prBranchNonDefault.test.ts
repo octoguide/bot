@@ -26,11 +26,7 @@ describe(prBranchNonDefault.about.name, () => {
 			{
 				octokit: {
 					rest: {
-						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
-							get,
-						},
+						repos: { get },
 					},
 				},
 				report,
@@ -56,11 +52,7 @@ describe(prBranchNonDefault.about.name, () => {
 			{
 				octokit: {
 					rest: {
-						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
-							get,
-						},
+						repos: { get },
 					},
 				},
 				report,

@@ -19,8 +19,6 @@ describe(prTaskCompletion.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockRejectedValue(new Error("Not found")),
 						},
 					},
@@ -47,8 +45,6 @@ describe(prTaskCompletion.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: [],
 							}),
@@ -77,8 +73,6 @@ describe(prTaskCompletion.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									type: "dir",
@@ -109,8 +103,6 @@ describe(prTaskCompletion.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: "Just send it.",
@@ -142,8 +134,6 @@ describe(prTaskCompletion.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from("- [ ] Task 1\n- [ ] Task 2").toString(
@@ -183,8 +173,6 @@ describe(prTaskCompletion.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from("- [ ] Task 1\n- [ ] Task 2").toString(
@@ -225,8 +213,6 @@ describe(prTaskCompletion.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from("- [ ] Task 1\n- [ ] Task 2").toString(
@@ -267,8 +253,6 @@ describe(prTaskCompletion.about.name, () => {
 				octokit: {
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from("- [ ] Task 1\n- [ ] Task 2").toString(
