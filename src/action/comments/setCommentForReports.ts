@@ -4,6 +4,7 @@ import type { Entity } from "../../types/entities.js";
 import type { Settings } from "../../types/settings.js";
 
 import { EntityActor } from "../../actors/types.js";
+import { RESOLVED_BY_OCTOGUIDE } from "../../constants.js";
 import { markdownReportPassMessage } from "../../reporters/markdownReporter.js";
 import { createNewCommentForReports } from "./createNewCommentForReports.js";
 import { getExistingComment } from "./getExistingComment.js";
@@ -127,7 +128,7 @@ async function handlePassingReport(
 }
 
 function isCommentResolved(commentBody: string): boolean {
-	return commentBody.includes("<!-- resolved-by: OctoGuide -->");
+	return commentBody.includes(RESOLVED_BY_OCTOGUIDE);
 }
 
 async function minimizeCommentIfPossible(
