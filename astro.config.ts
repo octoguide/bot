@@ -12,7 +12,9 @@ export default defineConfig({
 				provider: fontProviders.google(),
 			},
 		],
-		responsiveImages: true,
+	},
+	image: {
+		responsiveStyles: true,
 	},
 	integrations: [
 		konamiEmojiBlast(),

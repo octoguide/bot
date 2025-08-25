@@ -4,6 +4,7 @@ import type { Rule } from "../types/rules.js";
 import { allRules } from "./all.js";
 
 export const configs = {
+	none: [],
 	recommended: allRules.filter((rule) => rule.about.config === "recommended"),
 	strict: allRules.filter((rule) =>
 		["recommended", "strict"].includes(rule.about.config),

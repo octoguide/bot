@@ -1,6 +1,6 @@
 import type { RuleAbout } from "./rules.js";
 
-export type ConfigName = "recommended" | "strict";
+export type ConfigName = "none" | "recommended" | "strict";
 
 /**
  * Metadata for a core OctoGuide rule.

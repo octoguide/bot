@@ -5,7 +5,9 @@ branding:
 description: Runs OctoGuide as a GitHub Action. 🗺️
 inputs:
   config:
-    description: Which config to use, as 'recommended' (default) or 'strict'.
+    default: recommended
+    description: Which config to use, as 'recommended' (default), 'strict', or 'none'.
+    required: false
   github-token:
     description: GitHub token (PAT) with repo and workflow permissions.
 name: OctoGuide Action

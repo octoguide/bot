@@ -1,30 +1,10 @@
-import type { Octokit } from "octokit";
+import type { CommentData, IssueLikeData } from "../types/entities.js";
 
-import type { RepositoryLocator } from "../types/data.js";
-import type { EntityActor } from "./types.js";
-
-import { CommentData, Entity, IssueLikeData } from "../types/entities.js";
+import { EntityActorBase } from "./EntityActorBase.js";
 
 export abstract class IssueLikeActorBase<
 	Data extends CommentData | IssueLikeData,
-> implements EntityActor<Data>
-{
-	abstract readonly metadata: Omit<Entity, "data">;
-
-	protected entityNumber: number;
-	protected locator: RepositoryLocator;
-	protected octokit: Octokit;
-
-	constructor(
-		entityNumber: number,
-		locator: RepositoryLocator,
-		octokit: Octokit,
-	) {
-		this.entityNumber = entityNumber;
-		this.locator = locator;
-		this.octokit = octokit;
-	}
-
+> extends EntityActorBase<Data> {
 	async createComment(body: string) {
 		const response = await this.octokit.rest.issues.createComment({
 			body,

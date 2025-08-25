@@ -20,8 +20,6 @@ describe(prLinkedIssue.about.name, () => {
 			},
 			{
 				octokit: {
-					// https://github.com/sindresorhus/type-fest/issues/1107
-					// @ts-expect-error -- this should be fully partial
 					graphql: vi.fn().mockResolvedValue({
 						repository: {
 							pullRequest: {
@@ -55,8 +53,6 @@ describe(prLinkedIssue.about.name, () => {
 			},
 			{
 				octokit: {
-					// https://github.com/sindresorhus/type-fest/issues/1107
-					// @ts-expect-error -- this should be fully partial
 					graphql: vi.fn().mockResolvedValue({
 						repository: {
 							pullRequest: {

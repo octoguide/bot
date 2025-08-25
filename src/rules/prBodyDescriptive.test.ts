@@ -1,3 +1,5 @@
+import type { Octokit } from "octokit";
+
 import { describe, expect, it, vi } from "vitest";
 
 import { testRule } from "../tests/testRule.js";
@@ -39,9 +41,11 @@ describe(prBodyDescriptive.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {},
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockRejectedValue(new Error("Not found")),
 						},
 					},
@@ -71,9 +75,13 @@ describe(prBodyDescriptive.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: templateContent },
+						},
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),
@@ -109,9 +117,11 @@ describe(prBodyDescriptive.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {},
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockRejectedValue(new Error("Not found")),
 						},
 					},
@@ -139,9 +149,13 @@ describe(prBodyDescriptive.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: templateContent },
+						},
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),
@@ -175,9 +189,13 @@ describe(prBodyDescriptive.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: templateContent },
+						},
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),
@@ -209,9 +227,13 @@ describe(prBodyDescriptive.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: templateContent },
+						},
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),
@@ -251,9 +273,13 @@ describe(prBodyDescriptive.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: templateContent },
+						},
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from(templateContent).toString("base64"),

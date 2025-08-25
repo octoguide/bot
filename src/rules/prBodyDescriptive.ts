@@ -1,4 +1,4 @@
-import { wrapSafe } from "../types/utils.js";
+import { findPrTemplate } from "../action/findPrTemplate.js";
 import { defineRule } from "./defineRule.js";
 
 export const prBodyDescriptive = defineRule({
@@ -22,19 +22,9 @@ export const prBodyDescriptive = defineRule({
 			return;
 		}
 
-		const templateResponse = await wrapSafe(
-			context.octokit.rest.repos.getContent({
-				owner: context.locator.owner,
-				path: ".github/PULL_REQUEST_TEMPLATE.md",
-				repo: context.locator.repository,
-			}),
-		);
+		const template = await findPrTemplate(context.octokit, context.locator);
 
-		if (
-			!templateResponse ||
-			Array.isArray(templateResponse.data) ||
-			templateResponse.data.type !== "file"
-		) {
+		if (!template) {
 			if (
 				entity.data.body
 					.trim()
@@ -50,11 +40,6 @@ export const prBodyDescriptive = defineRule({
 			}
 			return;
 		}
-
-		const template = Buffer.from(
-			templateResponse.data.content,
-			"base64",
-		).toString("utf-8");
 
 		const templateWords = new Set(
 			template.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [],
