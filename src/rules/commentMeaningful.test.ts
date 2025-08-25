@@ -1,14 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { testRule } from "../tests/testRule.js";
-import { commentMeaningless } from "./commentMeaningless.js";
+import { commentMeaningful } from "./commentMeaningful.js";
 
-describe(commentMeaningless.about.name, () => {
+describe(commentMeaningful.about.name, () => {
 	it("does not report when the comment has no body text", async () => {
 		const report = vi.fn();
 
 		await testRule(
-			commentMeaningless,
+			commentMeaningful,
 			{
 				data: {
 					body: "",
@@ -25,7 +25,7 @@ describe(commentMeaningless.about.name, () => {
 		const report = vi.fn();
 
 		await testRule(
-			commentMeaningless,
+			commentMeaningful,
 			{
 				data: {
 					body: "mmh, yes, indeed, a fine point, thank you 🧐",
@@ -42,7 +42,7 @@ describe(commentMeaningless.about.name, () => {
 		const report = vi.fn();
 
 		await testRule(
-			commentMeaningless,
+			commentMeaningful,
 			{
 				data: {
 					body: "+1",

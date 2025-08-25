@@ -1,7 +1,7 @@
 import { wrapSafe } from "../types/utils.js";
 import { defineRule } from "./defineRule.js";
 
-export const prBodyNotEmpty = defineRule({
+export const prBodyDescriptive = defineRule({
 	about: {
 		config: "recommended",
 		description: "PRs should have a description beyond the template.",
@@ -9,7 +9,7 @@ export const prBodyNotEmpty = defineRule({
 			`This repository expects pull requests to include a description explaining the changes.`,
 			`The description should have at least one word not in the PR template, or any content if no template exists.`,
 		],
-		name: "pr-body-not-empty",
+		name: "pr-body-descriptive",
 	},
 	async pullRequest(context, entity) {
 		if (!entity.data.body) {
