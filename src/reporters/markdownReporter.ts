@@ -1,10 +1,10 @@
 import type { RuleReport } from "../types/reports.js";
 
 import { groupBy } from "../action/groupBy.js";
+import { RESOLVED_BY_OCTOGUIDE } from "../constants.js";
 import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
 
-export const markdownReportPassMessage =
-	"All reports are resolved now. Thanks! ✅";
+export const markdownReportPassMessage = `All reports are resolved now. Thanks! ✅\n\n${RESOLVED_BY_OCTOGUIDE}`;
 
 export function markdownReporter(headline: string, reports: RuleReport[]) {
 	if (!reports.length) {

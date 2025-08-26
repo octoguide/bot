@@ -22,7 +22,11 @@ const heading = "Hi, thanks for the issue, etc.";
 describe(markdownReporter, () => {
 	test("no reports", () => {
 		expect(markdownReporter(heading, [])).toMatchInlineSnapshot(
-			`"All reports are resolved now. Thanks! ✅"`,
+			`
+			"All reports are resolved now. Thanks! ✅
+
+			<!-- resolved-by: OctoGuide -->"
+		`,
 		);
 	});
 

@@ -1,12 +1,12 @@
 ---
 description: "PRs should have a description beyond the template"
-title: "pr-body-not-empty"
+title: "pr-body-descriptive"
 ---
 
 import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
 import IncludedIn from "../../../components/IncludedIn.astro";
 
-<IncludedIn rule="pr-body-not-empty" />
+<IncludedIn rule="pr-body-descriptive" />
 
 This repository expects pull requests to include a description explaining the changes.
 The description should have at least one word not in the PR template, or any content if no template exists.
@@ -51,7 +51,7 @@ Please describe your changes
 
 [Pull request with a body not adding to the template](https://github.com/JoshuaKGoldberg/OctoGuideExamples/pull/6#issuecomment-2839460254):
 
-<OctoGuideGitHubComment rule="pr-body-not-empty">
+<OctoGuideGitHubComment rule="pr-body-descriptive">
 	This PR's description doesn't contain any content beyond the template. This
 	repository expects pull requests to include a description explaining the
 	changes. The description should have at least one word not in the PR template,

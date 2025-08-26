@@ -1,4 +1,4 @@
-import { wrapSafe } from "../types/utils.js";
+import { findPrTemplate } from "../action/findPrTemplate.js";
 import { defineRule } from "./defineRule.js";
 
 export const prTaskCompletion = defineRule({
@@ -12,26 +12,11 @@ export const prTaskCompletion = defineRule({
 		name: "pr-task-completion",
 	},
 	async pullRequest(context, entity) {
-		const templateResponse = await wrapSafe(
-			context.octokit.rest.repos.getContent({
-				owner: context.locator.owner,
-				path: ".github/PULL_REQUEST_TEMPLATE.md",
-				repo: context.locator.repository,
-			}),
-		);
+		const template = await findPrTemplate(context.octokit, context.locator);
 
-		if (
-			!templateResponse ||
-			Array.isArray(templateResponse.data) ||
-			templateResponse.data.type !== "file"
-		) {
+		if (!template) {
 			return;
 		}
-
-		const template = Buffer.from(
-			templateResponse.data.content,
-			"base64",
-		).toString("utf-8");
 		const templateTasks = Array.from(
 			template.matchAll(/[-*]\s*\[\s*\]\s*(.+)/g),
 		);

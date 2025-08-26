@@ -105,6 +105,9 @@ const createMockActor = (): EntityActor =>
 			number: 1,
 			type: "issue",
 		} as Omit<IssueEntity, "data">,
+		minimizeComment:
+			vi.fn<(nodeId: string, reason?: "RESOLVED") => Promise<boolean>>(),
+		unminimizeComment: vi.fn<(nodeId: string) => Promise<boolean>>(),
 		updateComment: vi.fn<(number: number, newBody: string) => Promise<void>>(),
 	}) satisfies EntityActor;
 
@@ -415,6 +418,19 @@ describe("runOctoGuideAction", () => {
 				config: "none",
 				rules: {},
 			},
+		});
+	});
+
+	it("should pass none as config when specified in action inputs", async () => {
+		createMockActionInputs({ config: "none" });
+		createMinimalRuleExecution();
+
+		await runOctoGuideAction(createMockContext(createMockPayload()));
+
+		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
+			auth: "mock-token",
+			config: "none",
+			entity: "https://github.com/test",
 		});
 	});
 

@@ -27,6 +27,8 @@
 		"octoguide",
 		"postbuild",
 		"screenreaders",
+		"unminimize",
+		"unminimized",
 		"varela"
 	]
 }

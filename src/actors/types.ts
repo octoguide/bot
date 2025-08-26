@@ -8,4 +8,8 @@ export interface EntityActor<Data extends EntityData = EntityData> {
 	getData(): Promise<Data>;
 	listComments(): Promise<CommentData[]>;
 	updateComment(number: number, newBody: string): Promise<void>;
+
+	// GraphQL operations for comment management
+	minimizeComment(nodeId: string, reason?: "RESOLVED"): Promise<boolean>;
+	unminimizeComment(nodeId: string): Promise<boolean>;
 }

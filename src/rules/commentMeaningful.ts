@@ -2,7 +2,7 @@ import { isCommentMeaningless } from "is-comment-meaningless";
 
 import { defineRule } from "./defineRule.js";
 
-export const commentMeaningless = defineRule({
+export const commentMeaningful = defineRule({
 	about: {
 		config: "recommended",
 		description: "Comments should be meaningful, not just '+1'-style bumps.",
@@ -10,7 +10,7 @@ export const commentMeaningless = defineRule({
 			`Replies containing just _"+1"_, _"any update?"_, or other phrases without new information aren't helpful.`,
 			`They cause unnecessary notifications for other contributors and take up space.`,
 		],
-		name: "comment-meaningless",
+		name: "comment-meaningful",
 	},
 	comment(context, entity) {
 		const text = entity.data.body;

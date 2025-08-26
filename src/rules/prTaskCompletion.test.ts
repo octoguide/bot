@@ -1,3 +1,5 @@
+import type { Octokit } from "octokit";
+
 import { describe, expect, it, vi } from "vitest";
 
 import { testRule } from "../tests/testRule.js";
@@ -17,10 +19,11 @@ describe(prTaskCompletion.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {},
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockRejectedValue(new Error("Not found")),
 						},
 					},
@@ -32,7 +35,7 @@ describe(prTaskCompletion.about.name, () => {
 		expect(report).not.toHaveBeenCalled();
 	});
 
-	it("does not report when the PR template response has array data", async () => {
+	it("does not report when the PR template response has array data (simulating non-file from GraphQL)", async () => {
 		const report = vi.fn();
 
 		await testRule(
@@ -45,10 +48,11 @@ describe(prTaskCompletion.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: { file0: {} },
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: [],
 							}),
@@ -62,7 +66,7 @@ describe(prTaskCompletion.about.name, () => {
 		expect(report).not.toHaveBeenCalled();
 	});
 
-	it("does not report when the PR template response is not a file", async () => {
+	it("does not report when the PR template response is not a file (simulating non-file from GraphQL)", async () => {
 		const report = vi.fn();
 
 		await testRule(
@@ -75,10 +79,11 @@ describe(prTaskCompletion.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: { file0: { type: "dir" } },
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									type: "dir",
@@ -96,6 +101,7 @@ describe(prTaskCompletion.about.name, () => {
 
 	it("does not report when the PR template response has no tasks", async () => {
 		const report = vi.fn();
+		const templateContent = "Just send it.";
 
 		await testRule(
 			prTaskCompletion,
@@ -107,10 +113,11 @@ describe(prTaskCompletion.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: { file0: { text: templateContent } },
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: "Just send it.",
@@ -129,6 +136,7 @@ describe(prTaskCompletion.about.name, () => {
 
 	it("reports when the template has tasks and the pull request body is empty", async () => {
 		const report = vi.fn();
+		const templateContent = "- [ ] Task 1\n- [ ] Task 2";
 
 		await testRule(
 			prTaskCompletion,
@@ -140,10 +148,11 @@ describe(prTaskCompletion.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: { file0: { text: templateContent } },
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from("- [ ] Task 1\n- [ ] Task 2").toString(
@@ -170,6 +179,7 @@ describe(prTaskCompletion.about.name, () => {
 
 	it("reports when the template has tasks and the pull request body only completes one of them", async () => {
 		const report = vi.fn();
+		const templateContent = "- [ ] Task 1\n- [ ] Task 2";
 
 		await testRule(
 			prTaskCompletion,
@@ -181,10 +191,11 @@ describe(prTaskCompletion.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: { file0: { text: templateContent } },
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from("- [ ] Task 1\n- [ ] Task 2").toString(
@@ -212,6 +223,7 @@ describe(prTaskCompletion.about.name, () => {
 
 	it("reports when the template has tasks and the pull request body completes none of them", async () => {
 		const report = vi.fn();
+		const templateContent = "- [ ] Task 1\n- [ ] Task 2";
 
 		await testRule(
 			prTaskCompletion,
@@ -223,10 +235,11 @@ describe(prTaskCompletion.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: { file0: { text: templateContent } },
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from("- [ ] Task 1\n- [ ] Task 2").toString(
@@ -254,6 +267,7 @@ describe(prTaskCompletion.about.name, () => {
 
 	it("does not report when the template has tasks and the pull request body completes all of them", async () => {
 		const report = vi.fn();
+		const templateContent = "- [ ] Task 1\n- [ ] Task 2";
 
 		await testRule(
 			prTaskCompletion,
@@ -265,10 +279,11 @@ describe(prTaskCompletion.about.name, () => {
 			},
 			{
 				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: { file0: { text: templateContent } },
+					}) as unknown as Octokit["graphql"],
 					rest: {
 						repos: {
-							// https://github.com/sindresorhus/type-fest/issues/1107
-							// @ts-expect-error -- this should be fully partial
 							getContent: vi.fn().mockResolvedValueOnce({
 								data: {
 									content: Buffer.from("- [ ] Task 1\n- [ ] Task 2").toString(
