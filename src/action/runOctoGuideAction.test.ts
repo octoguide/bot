@@ -429,8 +429,16 @@ describe("runOctoGuideAction", () => {
 
 		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
 			auth: "mock-token",
-			config: "none",
 			entity: "https://github.com/test",
+			settings: {
+				comments: {
+					footer:
+						"🗺️ This message was posted automatically by [OctoGuide](https://octo.guide): a bot for GitHub repository best practices.",
+					header: "",
+				},
+				config: "none",
+				rules: {},
+			},
 		});
 	});
 
