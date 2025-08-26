@@ -47,15 +47,15 @@ vi.mock("./rules/configs.js", () => ({
 		recommended: [
 			{
 				about: {
-					description: "Comments should not be meaningless",
-					name: "comment-meaningless",
+					description: "Comments should be meaningful",
+					name: "comment-meaningful",
 				},
 				comment: vi.fn(),
 			},
 			{
 				about: {
-					description: "PR bodies should not be empty",
-					name: "pr-body-not-empty",
+					description: "PR bodies should be descriptive",
+					name: "pr-body-descriptive",
 				},
 				pullRequest: vi.fn(),
 			},
@@ -74,15 +74,15 @@ vi.mock("./rules/all.js", () => ({
 	allRules: [
 		{
 			about: {
-				description: "Comments should not be meaningless",
-				name: "comment-meaningless",
+				description: "Comments should be meaningful",
+				name: "comment-meaningful",
 			},
 			comment: vi.fn(),
 		},
 		{
 			about: {
-				description: "PR bodies should not be empty",
-				name: "pr-body-not-empty",
+				description: "PR bodies should be descriptive",
+				name: "pr-body-descriptive",
 			},
 			pullRequest: vi.fn(),
 		},
@@ -204,8 +204,8 @@ describe("runOctoGuideRules", () => {
 			settings: {
 				config: "recommended",
 				rules: {
-					"comment-meaningless": false,
-					"pr-body-not-empty": false,
+					"comment-meaningful": false,
+					"pr-body-descriptive": false,
 					"pr-branch-non-default": false,
 				},
 			},
@@ -265,8 +265,8 @@ describe("runOctoGuideRules", () => {
 		const calledRules = mockRunRuleOnEntity.mock.calls.map(
 			(call) => (call[1] as { about: { name: string } }).about.name,
 		);
-		expect(calledRules).toContain("comment-meaningless");
-		expect(calledRules).toContain("pr-body-not-empty");
+		expect(calledRules).toContain("comment-meaningful");
+		expect(calledRules).toContain("pr-body-descriptive");
 		expect(calledRules).toContain("pr-branch-non-default");
 	});
 
@@ -308,8 +308,8 @@ describe("runOctoGuideRules", () => {
 		const calledRules = mockRunRuleOnEntity.mock.calls.map(
 			(call) => (call[1] as { about: { name: string } }).about.name,
 		);
-		expect(calledRules).toContain("comment-meaningless");
-		expect(calledRules).toContain("pr-body-not-empty");
+		expect(calledRules).toContain("comment-meaningful");
+		expect(calledRules).toContain("pr-body-descriptive");
 		expect(calledRules).toContain("pr-branch-non-default");
 	});
 
@@ -361,8 +361,8 @@ describe("runOctoGuideRules", () => {
 			(call) => (call[1] as { about: { name: string } }).about.name,
 		);
 
-		expect(calledRules).toContain("comment-meaningless");
-		expect(calledRules).toContain("pr-body-not-empty");
+		expect(calledRules).toContain("comment-meaningful");
+		expect(calledRules).toContain("pr-body-descriptive");
 		expect(calledRules).toContain("pr-linked-issue");
 		expect(calledRules).toContain("pr-title-conventional");
 		expect(calledRules).not.toContain("pr-branch-non-default");

@@ -18,11 +18,11 @@ inputs:
     description: GitHub token (PAT) with repo and workflow permissions.
     required: false
   # Individual rule overrides
-  rule-comment-meaningless:
-    description: Enable/disable the comment-meaningless rule (true/false)
+  rule-comment-meaningful:
+    description: Enable/disable the comment-meaningful rule (true/false)
     required: false
-  rule-pr-body-not-empty:
-    description: Enable/disable the pr-body-not-empty rule (true/false)
+  rule-pr-body-descriptive:
+    description: Enable/disable the pr-body-descriptive rule (true/false)
     required: false
   rule-pr-branch-non-default:
     description: Enable/disable the pr-branch-non-default rule (true/false)

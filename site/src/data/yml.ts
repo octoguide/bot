@@ -70,7 +70,7 @@ export const getStartedRuleDisable = `jobs:
     steps:
       - uses: JoshuaKGoldberg/octoguide${atVersion}
         with:
-+          comment-meaningless: "false"
++          comment-meaningful: "false"
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
 
 export const getStartedRuleEnable = `jobs:
@@ -91,7 +91,7 @@ export const getStartedRuleNone = `jobs:
     steps:
       - uses: JoshuaKGoldberg/octoguide${atVersion}
         with:
-+          comment-meaningless: "true"
++          comment-meaningful: "true"
 +          config: none
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          pr-linked-issue: "true"
