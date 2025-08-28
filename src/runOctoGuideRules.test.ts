@@ -260,14 +260,15 @@ describe("runOctoGuideRules", () => {
 			reports: [],
 		});
 
-		expect(mockRunRuleOnEntity).toHaveBeenCalledTimes(3);
-
-		const calledRules = mockRunRuleOnEntity.mock.calls.map(
-			(call) => (call[1] as { about: { name: string } }).about.name,
-		);
-		expect(calledRules).toContain("comment-meaningful");
-		expect(calledRules).toContain("pr-body-descriptive");
-		expect(calledRules).toContain("pr-branch-non-default");
+		expect(
+			mockRunRuleOnEntity.mock.calls.map(
+				(call) => (call[1] as { about: { name: string } }).about.name,
+			),
+		).toEqual([
+			"comment-meaningful",
+			"pr-body-descriptive",
+			"pr-branch-non-default",
+		]);
 	});
 
 	it("should default to recommended config when no settings are provided", async () => {
@@ -313,7 +314,7 @@ describe("runOctoGuideRules", () => {
 		expect(calledRules).toContain("pr-branch-non-default");
 	});
 
-	it("should filter rules based on config and rule overrides", async () => {
+	it("should filter rules when rule overrides are provided", async () => {
 		const mockOctokit = createMockOctokit();
 		const mockEntityData = {
 			html_url: "https://github.com/test-owner/test-repo/pull/1",
@@ -337,7 +338,6 @@ describe("runOctoGuideRules", () => {
 			settings: {
 				config: "recommended",
 				rules: {
-					"non-existent-rule": true,
 					"pr-branch-non-default": false,
 					"pr-linked-issue": true,
 					"pr-title-conventional": true,
@@ -355,18 +355,16 @@ describe("runOctoGuideRules", () => {
 			reports: [],
 		});
 
-		expect(mockRunRuleOnEntity).toHaveBeenCalledTimes(4);
-
-		const calledRules = mockRunRuleOnEntity.mock.calls.map(
-			(call) => (call[1] as { about: { name: string } }).about.name,
-		);
-
-		expect(calledRules).toContain("comment-meaningful");
-		expect(calledRules).toContain("pr-body-descriptive");
-		expect(calledRules).toContain("pr-linked-issue");
-		expect(calledRules).toContain("pr-title-conventional");
-		expect(calledRules).not.toContain("pr-branch-non-default");
-		expect(calledRules).not.toContain("non-existent-rule");
+		expect(
+			mockRunRuleOnEntity.mock.calls.map(
+				(call) => (call[1] as { about: { name: string } }).about.name,
+			),
+		).toEqual([
+			"comment-meaningful",
+			"pr-body-descriptive",
+			"pr-title-conventional",
+			"pr-linked-issue",
+		]);
 
 		expect(mockOctokitFromAuth).toHaveBeenCalledWith({ auth: "test-token" });
 		expect(mockCreateActor).toHaveBeenCalledWith(
