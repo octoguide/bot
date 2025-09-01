@@ -2,9 +2,10 @@
 // https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
 // TODO: see if we can extract a version that doesn't rely on markdownlint?
 // https://github.com/JoshuaKGoldberg/OctoGuide/issues/33
+import type { LintError } from "markdownlint";
 
 import markdownlintGitHub from "@github/markdownlint-github";
-import markdownlint from "markdownlint";
+import { lint } from "markdownlint/sync";
 
 import type { Entity } from "../types/entities.js";
 import type { RuleContext } from "../types/rules.js";
@@ -33,7 +34,7 @@ function checkEntity(context: RuleContext, entity: Entity) {
 		return undefined;
 	}
 
-	const { content: lintErrors } = markdownlint.sync({
+	const { content: lintErrors } = lint({
 		config: {
 			default: false,
 			"no-alt-text": true,
@@ -56,7 +57,7 @@ function checkEntity(context: RuleContext, entity: Entity) {
 	}
 }
 
-function createReportData(lines: string[], lintError: markdownlint.LintError) {
+function createReportData(lines: string[], lintError: LintError) {
 	return {
 		primary: ruleDescriptions[lintError.ruleNames[1]],
 		secondary: [
