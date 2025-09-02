@@ -11,7 +11,7 @@
 	"ignore": ["dist/index.js"],
 	"ignoreDependencies": ["sharp"],
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
-	"project": ["site/**/*.mdx", "src/**/*.ts"],
+	"project": ["site/**/*.mdx"],
 	"typescript": {
 		"config": ["tsconfig.json", "site/tsconfig.json"]
 	}
