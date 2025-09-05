@@ -43,6 +43,18 @@ jobs:
 +          config: strict
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
 
+export const getStartedNone = `
+jobs:
+  octoguide:
+    if: \${{ !endsWith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: JoshuaKGoldberg/octoguide${atVersion}
+        with:
++          config: none
+          github-token: \${{ secrets.GITHUB_TOKEN }}
+          pr-linked-issue: "true"`;
+
 export const getStartedHeader = `jobs:
   octoguide:
     if: \${{ !endsWith(github.actor, '[bot]') }}

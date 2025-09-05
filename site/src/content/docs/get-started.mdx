@@ -7,6 +7,7 @@ import { Code } from "@astrojs/starlight/components";
 import {
 	getStartedBase,
 	getStartedStrict,
+	getStartedNone,
 	getStartedHeader,
 	getStartedFooter,
 	getStartedRuleDisable,
@@ -52,6 +53,17 @@ You can extend it to use a _strict_ superset by adding `config: strict` to the a
 />
 
 The _strict_ config includes all rules from _recommended_ plus more rules that enforce more opinionated practices.
+
+You can also use no config by setting `config: none` in the action's `with`:
+
+<Code
+	code={getStartedNone}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+The _none_ config includes no rules. Only rules explicitly enabled in the config will be enforced.
 
 See [Preset Configs](./configs) for more information on preset configs and their rules.
 
