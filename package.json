@@ -30,12 +30,9 @@
 		"lint:md": "markdownlint \"**/*.md\" \".github/**/*.md\" --rules sentences-per-line",
 		"lint:packages": "pnpm dedupe --check",
 		"lint:spelling": "cspell \"**\" \".github/**/*\"",
-		"prepare": "husky",
+		"prepare": "lefthook install",
 		"test": "vitest",
 		"tsc": "tsc"
-	},
-	"lint-staged": {
-		"*": "prettier --ignore-unknown --write"
 	},
 	"dependencies": {
 		"@actions/core": "^1.11.1",
@@ -78,10 +75,9 @@
 		"eslint-plugin-perfectionist": "4.15.0",
 		"eslint-plugin-regexp": "2.10.0",
 		"eslint-plugin-yml": "1.18.0",
-		"husky": "9.1.7",
 		"knip": "5.63.0",
 		"konami-emoji-blast": "0.5.9",
-		"lint-staged": "16.1.0",
+		"lefthook": "^1.13.0",
 		"markdownlint-cli": "0.45.0",
 		"prettier": "3.6.0",
 		"prettier-plugin-astro": "0.14.1",
