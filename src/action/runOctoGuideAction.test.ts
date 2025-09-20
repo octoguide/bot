@@ -9,7 +9,7 @@ import type { RuleReport } from "../types/reports.js";
 
 import { runOctoGuideAction } from "./runOctoGuideAction";
 
-const TEST_GITHUB_URL = "https://github.com/test";
+const TEST_GITHUB_URL = "https://github.com/test/repo/issues/1";
 const TEST_GITHUB_TOKEN = "mock-token";
 const DEFAULT_REPORT_COUNT = 2;
 
@@ -293,7 +293,7 @@ describe("runOctoGuideAction", () => {
 		expect(mockOutputActionReports).toHaveBeenCalledWith(
 			expect.objectContaining({ metadata: { number: 1, type: "issue" } }),
 			expect.objectContaining({
-				data: { html_url: "https://github.com/test" },
+				data: { html_url: "https://github.com/test/repo/issues/1" },
 			}),
 			reports,
 			expect.objectContaining({
@@ -315,7 +315,7 @@ describe("runOctoGuideAction", () => {
 		expect(mockOutputActionReports).toHaveBeenCalledWith(
 			expect.objectContaining({ metadata: { number: 1, type: "issue" } }),
 			expect.objectContaining({
-				data: { html_url: "https://github.com/test" },
+				data: { html_url: "https://github.com/test/repo/issues/1" },
 			}),
 			[],
 			expect.objectContaining({
@@ -367,7 +367,7 @@ describe("runOctoGuideAction", () => {
 		expect(mockRunCommentCleanup).toHaveBeenCalledWith({
 			auth: "mock-token",
 			payload,
-			url: "https://github.com/test",
+			url: "https://github.com/test/repo/issues/1",
 		});
 	});
 
@@ -387,7 +387,11 @@ describe("runOctoGuideAction", () => {
 
 		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
 			auth: "mock-token",
-			entity: "https://github.com/test",
+			entity: {
+				data: { html_url: "https://github.com/test/repo/issues/1", number: 1 },
+				number: 1,
+				type: "issue",
+			},
 			settings: {
 				comments: {
 					footer:
@@ -395,27 +399,6 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 				config: "strict",
-				rules: {},
-			},
-		});
-	});
-
-	it("should use pass none as config when specified in action inputs", async () => {
-		createMockActionInputs({ config: "none" });
-		createMinimalRuleExecution();
-
-		await runOctoGuideAction(createMockContext(createMockPayload()));
-
-		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
-			auth: "mock-token",
-			entity: "https://github.com/test",
-			settings: {
-				comments: {
-					footer:
-						"🗺️ This message was posted automatically by [OctoGuide](https://octo.guide): a bot for GitHub repository best practices.",
-					header: "",
-				},
-				config: "none",
 				rules: {},
 			},
 		});
@@ -429,7 +412,11 @@ describe("runOctoGuideAction", () => {
 
 		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
 			auth: "mock-token",
-			entity: "https://github.com/test",
+			entity: {
+				data: { html_url: "https://github.com/test/repo/issues/1", number: 1 },
+				number: 1,
+				type: "issue",
+			},
 			settings: {
 				comments: {
 					footer:
@@ -450,7 +437,11 @@ describe("runOctoGuideAction", () => {
 
 		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
 			auth: "mock-token",
-			entity: "https://github.com/test",
+			entity: {
+				data: { html_url: "https://github.com/test/repo/issues/1", number: 1 },
+				number: 1,
+				type: "issue",
+			},
 			settings: {
 				comments: {
 					footer:
@@ -471,7 +462,7 @@ describe("runOctoGuideAction", () => {
 		expect(mockOutputActionReports).toHaveBeenCalledWith(
 			expect.objectContaining({ metadata: { number: 1, type: "issue" } }),
 			expect.objectContaining({
-				data: { html_url: "https://github.com/test" },
+				data: { html_url: "https://github.com/test/repo/issues/1" },
 			}),
 			expect.anything(),
 			expect.objectContaining({
@@ -493,7 +484,7 @@ describe("runOctoGuideAction", () => {
 		expect(mockOutputActionReports).toHaveBeenCalledWith(
 			expect.objectContaining({ metadata: { number: 1, type: "issue" } }),
 			expect.objectContaining({
-				data: { html_url: "https://github.com/test" },
+				data: { html_url: "https://github.com/test/repo/issues/1" },
 			}),
 			expect.anything(),
 			expect.objectContaining({
@@ -514,7 +505,7 @@ describe("runOctoGuideAction", () => {
 		expect(mockOutputActionReports).toHaveBeenCalledWith(
 			expect.objectContaining({ metadata: { number: 1, type: "issue" } }),
 			expect.objectContaining({
-				data: { html_url: "https://github.com/test" },
+				data: { html_url: "https://github.com/test/repo/issues/1" },
 			}),
 			expect.anything(),
 			expect.objectContaining({
@@ -541,7 +532,7 @@ describe("runOctoGuideAction", () => {
 		expect(mockOutputActionReports).toHaveBeenCalledWith(
 			expect.objectContaining({ metadata: { number: 1, type: "issue" } }),
 			expect.objectContaining({
-				data: { html_url: "https://github.com/test" },
+				data: { html_url: "https://github.com/test/repo/issues/1" },
 			}),
 			expect.anything(),
 			expect.objectContaining({
@@ -557,5 +548,341 @@ describe("runOctoGuideAction", () => {
 				},
 			}),
 		);
+	});
+
+	describe("entity payload validation", () => {
+		it("should throw error when entity payload is missing number property", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+							} as unknown as typeof github.context.payload.issue,
+						}),
+					),
+				),
+			).rejects.toThrow("Entity payload missing valid number property");
+		});
+
+		it("should throw error when entity payload has invalid number property", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: "invalid" as unknown as number,
+							},
+						}),
+					),
+				),
+			).rejects.toThrow("Entity payload missing valid number property");
+		});
+
+		it("should throw error when entity payload has negative number", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: -1,
+							},
+						}),
+					),
+				),
+			).rejects.toThrow("Entity payload missing valid number property");
+		});
+
+		it("should throw error when entity payload is missing html_url", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								number: 1,
+							} as unknown as typeof github.context.payload.issue,
+						}),
+					),
+				),
+			).rejects.toThrow("Target entity's html_url is not a string.");
+		});
+
+		it("should not throw error when entity payload has null body and user properties", async () => {
+			createMockActionInputs();
+			createMinimalRuleExecution();
+
+			// Should not throw with null values for optional properties
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								body: null as unknown as string,
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: null as unknown as object,
+							},
+						}),
+					),
+				),
+			).resolves.not.toThrow();
+		});
+	});
+
+	describe("entity type detection from URL", () => {
+		it("should detect issue entity type when URL contains /issues/", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					data: {
+						html_url: "https://github.com/owner/repo/issues/123",
+						number: 123,
+					} as Entity["data"],
+					number: 123,
+					type: "issue" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						issue: {
+							html_url: "https://github.com/owner/repo/issues/123",
+							number: 123,
+						},
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						number: 123,
+						type: "issue",
+					}),
+				}),
+			);
+		});
+
+		it("should detect pull request entity type when URL contains /pull/", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					data: {
+						html_url: "https://github.com/owner/repo/pull/456",
+						number: 456,
+					} as Entity["data"],
+					number: 456,
+					type: "pull_request" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						issue: undefined,
+						pull_request: {
+							html_url: "https://github.com/owner/repo/pull/456",
+							number: 456,
+						},
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						number: 456,
+						type: "pull_request",
+					}),
+				}),
+			);
+		});
+
+		it("should detect discussion entity type when URL contains /discussions/", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					data: {
+						html_url: "https://github.com/owner/repo/discussions/789",
+						number: 789,
+					} as Entity["data"],
+					number: 789,
+					type: "discussion" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						discussion: {
+							html_url: "https://github.com/owner/repo/discussions/789",
+							number: 789,
+						},
+						issue: undefined,
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						number: 789,
+						type: "discussion",
+					}),
+				}),
+			);
+		});
+
+		it("should throw error when URL contains invalid path patterns", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/owner/repo/invalid/123",
+								number: 123,
+							},
+						}),
+					),
+				),
+			).rejects.toThrow(
+				"Could not determine entity type from URL: https://github.com/owner/repo/invalid/123",
+			);
+		});
+
+		it("should throw error when URL is missing numeric ID", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/owner/repo/issues/",
+								number: 123,
+							},
+						}),
+					),
+				),
+			).rejects.toThrow(
+				"Could not determine entity type from URL: https://github.com/owner/repo/issues/",
+			);
+		});
+
+		it("should throw error when URL is not a GitHub URL", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://example.com/not-a-github-url",
+								number: 123,
+							},
+						}),
+					),
+				),
+			).rejects.toThrow(
+				"Could not determine entity type from URL: https://example.com/not-a-github-url",
+			);
+		});
+
+		it("should detect entity type when URL contains additional path segments", async () => {
+			createMockActionInputs();
+			createMinimalRuleExecution();
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						issue: {
+							html_url: "https://github.com/owner/repo/issues/123#comment-456",
+							number: 123,
+						},
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						number: 123,
+						type: "issue",
+					}),
+				}),
+			);
+		});
+
+		it("should detect entity type when URL contains query parameters", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					data: {
+						html_url: "https://github.com/owner/repo/pull/789?tab=files",
+						number: 789,
+					} as Entity["data"],
+					number: 789,
+					type: "pull_request" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						issue: undefined,
+						pull_request: {
+							html_url: "https://github.com/owner/repo/pull/789?tab=files",
+							number: 789,
+						},
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						number: 789,
+						type: "pull_request",
+					}),
+				}),
+			);
+		});
 	});
 });

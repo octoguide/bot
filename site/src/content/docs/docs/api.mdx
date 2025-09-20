@@ -13,7 +13,7 @@ This package is the same as the [standalone CLI](/cli) and its code is directly 
 ## `runOctoGuideRules`
 
 Runs OctoGuide's rules to generate a list of reports for a GitHub entity.
-The entity will be fetched from its URL.
+The entity can be provided as either a URL string (which will be fetched from the API) or pre-existing entity data.
 
 Takes in a single parameter of type [`RunOctoGuideRulesOptions`](#runoctoguiderulesoptions).
 Returns a [`RunOctoGuideRulesResult`](#runoctoguiderulesresult).
@@ -37,15 +37,33 @@ Only `entity` is required.
   - If not provided, retrieved with [`get-github-auth-token`](https://www.npmjs.com/package/get-github-auth-token).
 - `config: "recommended" | "strict"`: Preset configuration to run rules from.
   - If not provided, defaults to `"recommended"`.
-- `entity: string`: URL of the entity to run rules on.
+- `entity: string | Entity`: GitHub entity to run rules on. Can be either:
+  - A string URL (e.g., `"https://github.com/owner/repo/issues/123"`) - will fetch entity data via GitHub API
+  - An [`Entity`](./types#entity) object with pre-fetched data - avoids additional API calls when data is already available
 
 ```ts
 import { runOctoGuideRules } from "octoguide";
 
+// Using a URL string - will fetch data from GitHub API
 await runOctoGuideRules({
 	auth: "ghp_...",
 	config: "strict",
 	entity: "https://github.com/JoshuaKGoldberg/OctoGuide/issues/19",
+});
+
+// Using pre-existing Entity data - avoids API calls
+const existingEntity = {
+	data: {
+		/* GitHub API response data */
+	},
+	number: 19,
+	type: "issue",
+};
+
+await runOctoGuideRules({
+	auth: "ghp_...",
+	config: "strict",
+	entity: existingEntity,
 });
 ```
 

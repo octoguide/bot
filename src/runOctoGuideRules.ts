@@ -22,11 +22,11 @@ export interface RunOctoGuideRulesOptions {
 	auth?: string;
 
 	/**
-	 * URL of the GitHub entity to scan.
-	 * @todo Support passing in the entity itself:
-	 * https://github.com/JoshuaKGoldberg/OctoGuide/issues/85
+	 * GitHub entity to scan. Can be either:
+	 * - A string URL (e.g., "https://github.com/owner/repo/issues/123") - will fetch entity data via API
+	 * - An Entity object with pre-fetched data - avoids additional API calls when data is already available
 	 */
-	entity: string;
+	entity: Entity | string;
 
 	/**
 	 * Settings for the run, including rules to enable.
@@ -56,10 +56,15 @@ export interface RunOctoGuideRulesResult {
 
 /**
  * Runs OctoGuide's rules to generate a list of reports for a GitHub entity.
+ * @param options Configuration object
+ * @param options.auth GitHub authentication token or Octokit instance
+ * @param options.entity Entity input (URL string or entity data object)
+ * @param options.settings OctoGuide configuration settings including rules and comments
+ * @returns Promise resolving to results with actor, entity data, and rule reports
  */
 export async function runOctoGuideRules({
 	auth,
-	entity: url,
+	entity: entityInput,
 	settings,
 }: RunOctoGuideRulesOptions): Promise<RunOctoGuideRulesResult> {
 	// TODO: There's no need to create a full *writing* actor here;
@@ -70,15 +75,26 @@ export async function runOctoGuideRules({
 	// ...where only 1. is needed for runOctoGuide.
 	// https://github.com/JoshuaKGoldberg/OctoGuide/issues/56
 	const octokit = await octokitFromAuth({ auth });
+
+	const url =
+		typeof entityInput === "string" ? entityInput : entityInput.data.html_url;
+
+	if (typeof url !== "string") {
+		throw new Error("Entity data's html_url is not a string.");
+	}
+
 	const { actor, locator } = createActor(octokit, url);
 	if (!actor) {
 		throw new Error("Could not resolve GitHub entity actor.");
 	}
 
-	const entity = {
-		data: await actor.getData(),
-		...actor.metadata,
-	} as Entity;
+	const entity =
+		typeof entityInput === "string"
+			? ({
+					data: await actor.getData(),
+					...actor.metadata,
+				} as Entity)
+			: entityInput;
 
 	if (core.isDebug()) {
 		core.debug(`Full entity: ${JSON.stringify(entity, null, 2)}`);

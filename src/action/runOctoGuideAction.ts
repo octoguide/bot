@@ -2,11 +2,12 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
+import { parseEntityUrl } from "../actors/parseEntityUrl.js";
 import { runOctoGuideRules } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
 import { allRules } from "../rules/all.js";
 import { isKnownConfig } from "../rules/configs.js";
-import { EntityData } from "../types/entities.js";
+import { Entity, EntityData } from "../types/entities.js";
 import { outputActionReports } from "./comments/outputActionReports.js";
 import { runCommentCleanup } from "./runCommentCleanup.js";
 
@@ -72,9 +73,42 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		rules,
 	};
 
+	// Use the entity data directly to avoid re-fetching!
+	// The target already contains the entity data we need.
+	// Note: This uses type assertion because webhook payloads are structurally
+	// compatible with API responses at runtime, even though TypeScript types differ.
+
+	// Parse entity type and number from URL (lightweight, no API calls)
+	const matches = parseEntityUrl(url);
+	if (!matches) {
+		throw new Error(`Could not determine entity type from URL: ${url}`);
+	}
+
+	const [, urlType] = matches;
+	const entityType =
+		urlType === "discussions"
+			? "discussion"
+			: urlType === "issues"
+				? "issue"
+				: "pull_request";
+
+	// Extract number from target - webhook payloads use 'number' property
+	const entityNumber =
+		"number" in target && typeof target.number === "number" && target.number > 0
+			? target.number
+			: (() => {
+					throw new Error("Entity payload missing valid number property");
+				})();
+
+	const entityInput: Entity = {
+		data: target,
+		number: entityNumber,
+		type: entityType,
+	} as Entity;
+
 	const { actor, entity, reports } = await runOctoGuideRules({
 		auth,
-		entity: url,
+		entity: entityInput,
 		settings,
 	});
 

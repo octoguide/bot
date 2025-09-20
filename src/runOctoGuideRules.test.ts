@@ -2,6 +2,9 @@ import type { Octokit } from "octokit";
 
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import type { Entity } from "./types/entities.js";
+import type { RuleContext } from "./types/rules.js";
+
 import { runOctoGuideRules } from "./runOctoGuideRules.js";
 
 const mockCore = {
@@ -141,6 +144,24 @@ const createMockOctokit = () =>
 describe("runOctoGuideRules", () => {
 	afterEach(() => {
 		vi.clearAllMocks();
+		mockRunRuleOnEntity.mockImplementation(() => undefined);
+	});
+
+	it("should throw error when entity data's html_url is not a string", async () => {
+		const mockOctokit = createMockOctokit();
+		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
+
+		const invalidEntity = {
+			data: { html_url: null },
+			number: 1,
+			type: "issue",
+		} as unknown as Entity;
+
+		await expect(
+			runOctoGuideRules({
+				entity: invalidEntity,
+			}),
+		).rejects.toThrow("Entity data's html_url is not a string.");
 	});
 
 	it("should throw error when actor cannot be resolved", async () => {
@@ -271,6 +292,53 @@ describe("runOctoGuideRules", () => {
 		]);
 	});
 
+	it("should collect reports when rules call the report function", async () => {
+		const mockOctokit = createMockOctokit();
+		const mockEntityData = {
+			html_url: "https://github.com/test-owner/test-repo/issues/1",
+			number: 1,
+			title: "Test Issue",
+		};
+		const mockActor = {
+			getData: vi.fn().mockResolvedValue(mockEntityData),
+			metadata: { number: 1, type: "issue" as const },
+		};
+
+		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
+		mockCreateActor.mockReturnValue({
+			actor: mockActor,
+			locator: { owner: "test-owner", repository: "test-repo" },
+		});
+
+		mockRunRuleOnEntity.mockImplementation((context: RuleContext) => {
+			context.report({
+				primary: "Test violation",
+				secondary: [],
+				suggestion: ["Fix this"],
+			});
+		});
+
+		const result = await runOctoGuideRules({
+			entity: "https://github.com/test-owner/test-repo/issues/1",
+			settings: {
+				config: "recommended",
+			},
+		});
+
+		expect(result.reports).toHaveLength(3);
+		expect(result.reports[0]).toEqual({
+			about: {
+				description: "Comments should be meaningful",
+				name: "comment-meaningful",
+			},
+			data: {
+				primary: "Test violation",
+				secondary: [],
+				suggestion: ["Fix this"],
+			},
+		});
+	});
+
 	it("should default to recommended config when no settings are provided", async () => {
 		const mockOctokit = createMockOctokit();
 		const mockEntityData = {
@@ -372,5 +440,51 @@ describe("runOctoGuideRules", () => {
 			"https://github.com/test-owner/test-repo/pull/1",
 		);
 		expect(mockActor.getData).toHaveBeenCalled();
+	});
+
+	it("should use pre-fetched entity data instead of URL string when entity object is provided", async () => {
+		const mockOctokit = createMockOctokit();
+		const mockEntityData = {
+			html_url: "https://github.com/test-owner/test-repo/issues/42",
+			number: 42,
+			title: "Test Issue with Pre-fetched Data",
+		};
+		const mockActor = {
+			getData: vi.fn().mockResolvedValue(mockEntityData),
+			metadata: { number: 42, type: "issue" as const },
+		};
+
+		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
+		mockCreateActor.mockReturnValue({
+			actor: mockActor,
+			locator: { owner: "test-owner", repository: "test-repo" },
+		});
+
+		const entityInput = {
+			data: mockEntityData,
+			number: 42,
+			type: "issue",
+		} as Entity;
+
+		const result = await runOctoGuideRules({
+			auth: "test-token",
+			entity: entityInput,
+			settings: {
+				config: "recommended",
+			},
+		});
+
+		expect(result).toEqual({
+			actor: mockActor,
+			entity: entityInput,
+			reports: [],
+		});
+
+		expect(mockActor.getData).not.toHaveBeenCalled();
+		expect(mockOctokitFromAuth).toHaveBeenCalledWith({ auth: "test-token" });
+		expect(mockCreateActor).toHaveBeenCalledWith(
+			mockOctokit,
+			"https://github.com/test-owner/test-repo/issues/42",
+		);
 	});
 });
