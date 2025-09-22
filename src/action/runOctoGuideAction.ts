@@ -73,12 +73,6 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		rules,
 	};
 
-	// Use the entity data directly to avoid re-fetching!
-	// The target already contains the entity data we need.
-	// Note: This uses type assertion because webhook payloads are structurally
-	// compatible with API responses at runtime, even though TypeScript types differ.
-
-	// Parse entity type and number from URL (lightweight, no API calls)
 	const matches = parseEntityUrl(url);
 	if (!matches) {
 		throw new Error(`Could not determine entity type from URL: ${url}`);
@@ -92,7 +86,6 @@ export async function runOctoGuideAction(context: typeof github.context) {
 				? "issue"
 				: "pull_request";
 
-	// Extract number from target - webhook payloads use 'number' property
 	const entityNumber =
 		"number" in target && typeof target.number === "number" && target.number > 0
 			? target.number
