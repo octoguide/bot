@@ -51,7 +51,7 @@
 		"parse-github-url": "^1.0.3"
 	},
 	"devDependencies": {
-		"@astrojs/starlight": "0.35.0",
+		"@astrojs/starlight": "0.36.0",
 		"@eslint-community/eslint-plugin-eslint-comments": "4.5.0",
 		"@eslint/js": "9.35.0",
 		"@konami-emoji-blast/astro": "0.1.1",
