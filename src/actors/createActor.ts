@@ -19,7 +19,7 @@ export function createActor(octokit: Octokit, url: string) {
 		return { locator };
 	}
 
-	const [, urlType, parentNumber] = matches;
+	const [urlType, parentNumber] = matches;
 
 	const commentNumber = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
 

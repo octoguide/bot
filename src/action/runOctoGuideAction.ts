@@ -78,7 +78,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		throw new Error(`Could not determine entity type from URL: ${url}`);
 	}
 
-	const [, urlType] = matches;
+	const [urlType] = matches;
 	const entityType =
 		urlType === "discussions"
 			? "discussion"
