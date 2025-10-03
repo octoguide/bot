@@ -105,11 +105,9 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	 * @returns true if the entity was created by a bot (user.type === "Bot"), false otherwise
 	 */
 	const isEntityFromBot = (entity: Entity): boolean => {
-		const user = entity.data.user as
-			| undefined
-			| { login: string; type?: string };
+		const user = "user" in entity.data ? entity.data.user : undefined;
 
-		return user?.type === "Bot";
+		return Boolean(user && "type" in user && user.type === "Bot");
 	};
 
 	// Check if we should exclude bots
