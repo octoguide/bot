@@ -13,6 +13,7 @@ import {
 	getStartedRuleDisable,
 	getStartedRuleEnable,
 	getStartedRuleNone,
+	getStartedExcludeBotsFalse,
 } from "../../data/yml.js";
 
 OctoGuide checks that contributor activity on your GitHub repository aligns with common expectations of smoothly-running projects.
@@ -77,6 +78,28 @@ For public repositories that's the following permissions:
 
 - `repo` > `public_repo`
 - `read:discussion`
+
+### `exclude-bots`
+
+OctoGuide by default skips running rules for bot-created entities (issues, pull requests, and discussions)
+and comments. This is useful because automated tools like Dependabot, Renovate,
+and other GitHub Apps often create PRs and issues or make comments that don't
+necessarily need to follow the same contribution guidelines as human contributors.
+
+Bot detection works by checking if the entity creator's `user.type` field is `"Bot"`,
+which is the standard way GitHub identifies bot accounts and GitHub Apps.
+
+If you want OctoGuide to run rules on bot-created entities and comments, you can
+disable this by setting `exclude-bots` to `"false"`:
+
+**Example:**
+
+<Code
+	code={getStartedExcludeBotsFalse}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
 
 ### `comment-header`
 

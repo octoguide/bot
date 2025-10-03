@@ -885,4 +885,144 @@ describe("runOctoGuideAction", () => {
 			);
 		});
 	});
+
+	describe("exclude-bots configuration", () => {
+		describe("user is a bot", () => {
+			it("should skip rule execution when exclude-bots defaults to true", async () => {
+				createMockActionInputs();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "dependabot[bot]", type: "Bot" },
+							},
+						}),
+					),
+				);
+
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Skipping OctoGuide rules for bot-created issue: https://github.com/test/repo/issues/1",
+				);
+				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
+				expect(mockOutputActionReports).not.toHaveBeenCalled();
+			});
+
+			it("should run rules when exclude-bots is false", async () => {
+				createMockActionInputs({ "exclude-bots": "false" });
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "dependabot[bot]", type: "Bot" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+		});
+
+		describe("user is human", () => {
+			it("should run rules regardless of exclude-bots setting", async () => {
+				createMockActionInputs({ "exclude-bots": "true" });
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "regular-user", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+
+			it("should run rules when user has bot-like login but User type", async () => {
+				createMockActionInputs({ "exclude-bots": "true" });
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "my-bot-account", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+		});
+
+		describe("user property is missing or null", () => {
+			it("should run rules when user property is missing", async () => {
+				createMockActionInputs({ "exclude-bots": "true" });
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: undefined as unknown as { login: string },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+
+			it("should run rules when user property is null", async () => {
+				createMockActionInputs({ "exclude-bots": "true" });
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: null as unknown as { login: string },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+		});
+	});
 });
