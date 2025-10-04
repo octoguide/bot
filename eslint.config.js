@@ -100,4 +100,10 @@ export default defineConfig(
 			],
 		},
 	},
+	{
+		files: ["pnpm-workspace.yaml"],
+		rules: {
+			"yml/file-extension": "off",
+		},
+	},
 );
