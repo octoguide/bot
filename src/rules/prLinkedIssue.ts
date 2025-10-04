@@ -48,12 +48,20 @@ export const prLinkedIssue = defineRule({
 			return;
 		}
 
+		const body = entity.data.body?.trim() ?? "";
+		const dependabotAlertPattern =
+			/https:\/\/github\.com\/[^/]+\/[^/]+\/security\/dependabot\/\d+/;
+		if (dependabotAlertPattern.test(body)) {
+			return;
+		}
+
 		context.report({
 			primary: "This pull request is not linked as closing any issues.",
 			suggestion: [
 				"To resolve this report:",
 				"* If this is a straightforward documentation change that doesn't need an issue, you can ignore this report",
 				"* If there is a backing issue, add a 'fixes #...' link to the pull request body",
+				"* If addressing a Dependabot alert, add a link to the alert (e.g., https://github.com/owner/repo/security/dependabot/123)",
 				"* Otherwise, file an issue explaining what you'd like to happen",
 			],
 		});

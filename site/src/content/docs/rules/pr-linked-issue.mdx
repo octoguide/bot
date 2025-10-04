@@ -18,6 +18,17 @@ To link a pull request to an issue:
 1. Make sure there's an issue describing what you want to happen
 2. Add text in the format `closes #...` or `fixes #...` in your PR, such as `fixes #123`
 
+## Dependabot Security Alerts
+
+Pull requests that address Dependabot security alerts don't need a separate issue.
+You can satisfy this rule by including a link to the Dependabot alert in your PR body:
+
+```
+fixes https://github.com/owner/repo/security/dependabot/123
+```
+
+This recognizes that security vulnerability fixes often don't need the same discussion process as other changes.
+
 ## Why Require Issues?
 
 Requiring all contributor pull requests address an open issue adds process to a repository.
@@ -50,6 +61,10 @@ To resolve this report:
 	<li>
 		If there is a backing issue, add a 'fixes #...' link to the pull request
 		body
+	</li>
+	<li>
+		If addressing a Dependabot alert, add a link to the alert (e.g.,
+		https://github.com/owner/repo/security/dependabot/123)
 	</li>
 	<li>Otherwise, file an issue explaining what you'd like to happen</li>
 </ol>
