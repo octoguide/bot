@@ -14,8 +14,7 @@ inputs:
     default: recommended
     description: Which config to use, as 'recommended' (default), 'strict', or 'none'.
     required: false
-  exclude-bots:
-    default: "true"
+  include-bots:
     description: Skip running OctoGuide rules for bot-created entities (issues, PRs, discussions) and comments.
     required: false
   github-token:
