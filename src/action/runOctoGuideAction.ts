@@ -113,8 +113,8 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		);
 	};
 
-	const excludeBots = core.getInput("exclude-bots") !== "false";
-	if (excludeBots && isEntityFromBot(entityInput)) {
+	const includeBots = core.getInput("include-bots") === "true";
+	if (!includeBots && isEntityFromBot(entityInput)) {
 		core.info(`Skipping OctoGuide rules for bot-created ${entityType}: ${url}`);
 		return;
 	}

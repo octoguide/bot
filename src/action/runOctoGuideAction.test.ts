@@ -886,9 +886,9 @@ describe("runOctoGuideAction", () => {
 		});
 	});
 
-	describe("exclude-bots configuration", () => {
+	describe("include-bots configuration", () => {
 		describe("user is a bot", () => {
-			it("should skip rule execution when exclude-bots defaults to true", async () => {
+			it("should skip rule execution when include-bots defaults to false", async () => {
 				createMockActionInputs();
 
 				await runOctoGuideAction(
@@ -910,8 +910,8 @@ describe("runOctoGuideAction", () => {
 				expect(mockOutputActionReports).not.toHaveBeenCalled();
 			});
 
-			it("should run rules when exclude-bots is false", async () => {
-				createMockActionInputs({ "exclude-bots": "false" });
+			it("should run rules when include-bots is true", async () => {
+				createMockActionInputs({ "include-bots": "true" });
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(
@@ -934,8 +934,8 @@ describe("runOctoGuideAction", () => {
 		});
 
 		describe("user is human", () => {
-			it("should run rules regardless of exclude-bots setting", async () => {
-				createMockActionInputs({ "exclude-bots": "true" });
+			it("should run rules regardless of include-bots setting", async () => {
+				createMockActionInputs({ "include-bots": "false" });
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(
@@ -957,7 +957,7 @@ describe("runOctoGuideAction", () => {
 			});
 
 			it("should run rules when user has bot-like login but User type", async () => {
-				createMockActionInputs({ "exclude-bots": "true" });
+				createMockActionInputs({ "include-bots": "false" });
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(
@@ -981,7 +981,7 @@ describe("runOctoGuideAction", () => {
 
 		describe("user property is missing or null", () => {
 			it("should run rules when user property is missing", async () => {
-				createMockActionInputs({ "exclude-bots": "true" });
+				createMockActionInputs({ "include-bots": "false" });
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(
@@ -1003,7 +1003,7 @@ describe("runOctoGuideAction", () => {
 			});
 
 			it("should run rules when user property is null", async () => {
-				createMockActionInputs({ "exclude-bots": "true" });
+				createMockActionInputs({ "include-bots": "false" });
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(

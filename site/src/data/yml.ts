@@ -109,12 +109,12 @@ export const getStartedRuleNone = `jobs:
 +          pr-linked-issue: "true"
 +          text-image-alt-text: "true"`;
 
-export const getStartedExcludeBotsFalse = `jobs:
+export const getStartedIncludeBots = `jobs:
   octoguide:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: JoshuaKGoldberg/octoguide${atVersion}
         with:
-+          exclude-bots: "false"
++          include-bots: "true"
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
