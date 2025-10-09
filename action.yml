@@ -14,11 +14,11 @@ inputs:
     default: recommended
     description: Which config to use, as 'recommended' (default), 'strict', or 'none'.
     required: false
-  include-bots:
-    description: Skip running OctoGuide rules for bot-created entities (issues, PRs, discussions) and comments.
-    required: false
   github-token:
     description: GitHub token (PAT) with repo and workflow permissions.
+    required: false
+  include-bots:
+    description: Skip running OctoGuide rules for bot-created entities (issues, PRs, discussions) and comments.
     required: false
   # Individual rule overrides
   rule-comment-meaningful:
