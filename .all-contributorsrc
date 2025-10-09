@@ -71,7 +71,8 @@
         "doc",
         "tool",
         "code",
-        "maintenance"
+        "maintenance",
+        "bug"
       ]
     },
     {
