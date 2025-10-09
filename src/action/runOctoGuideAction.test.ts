@@ -149,7 +149,7 @@ const createMockContext = (payload: typeof github.context.payload) => {
 
 /**
  * Sets up mock implementations for GitHub Action inputs.
- * Simulates the behavior of @actions/core.getInput() for workflow inputs.
+ * Simulates the behavior of `@actions/core.getInput()` for workflow inputs.
  * @param overrides Key-value pairs of input names and their mock values
  * @example
  * ```typescript
