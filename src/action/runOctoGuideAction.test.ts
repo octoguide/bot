@@ -1025,4 +1025,170 @@ describe("runOctoGuideAction", () => {
 			});
 		});
 	});
+
+	describe("include-collaborators configuration", () => {
+		describe("collaborators are skipped by default", () => {
+			it("should skip for users with OWNER author_association", async () => {
+				createMockActionInputs();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "OWNER",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "owner", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Skipping OctoGuide rules for collaborator-created issue: https://github.com/test/repo/issues/1",
+				);
+				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
+			});
+
+			it("should skip for users with COLLABORATOR author_association", async () => {
+				createMockActionInputs();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "COLLABORATOR",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "collaborator-user", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Skipping OctoGuide rules for collaborator-created issue: https://github.com/test/repo/issues/1",
+				);
+				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
+			});
+		});
+
+		describe("non-collaborators run rules", () => {
+			it("should run rules for users with MEMBER author_association", async () => {
+				createMockActionInputs();
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "MEMBER",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "org-member", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+
+			it("should run rules for users with CONTRIBUTOR author_association", async () => {
+				createMockActionInputs();
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "CONTRIBUTOR",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "contributor", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+
+			it("should run rules for users with NONE author_association", async () => {
+				createMockActionInputs();
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "NONE",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "first-time-user", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+
+			it("should run rules when author_association is missing", async () => {
+				createMockActionInputs();
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "unknown-user", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+		});
+
+		describe("include-collaborators=true runs rules for everyone", () => {
+			it("should run rules for collaborators when include-collaborators is true", async () => {
+				createMockActionInputs({ "include-collaborators": "true" });
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "COLLABORATOR",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "collaborator-user", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+		});
+	});
 });

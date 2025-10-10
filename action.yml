@@ -18,7 +18,10 @@ inputs:
     description: GitHub token (PAT) with repo and workflow permissions.
     required: false
   include-bots:
-    description: Skip running OctoGuide rules for bot-created entities (issues, PRs, discussions) and comments.
+    description: Run OctoGuide rules on bot-created entities (issues, PRs, discussions) and comments. By default, bots are skipped.
+    required: false
+  include-collaborators:
+    description: Run OctoGuide rules on collaborator-created entities (issues, PRs, discussions) and comments. By default, collaborators are skipped.
     required: false
   # Individual rule overrides
   rule-comment-meaningful:

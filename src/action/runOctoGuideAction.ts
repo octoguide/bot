@@ -119,6 +119,30 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		return;
 	}
 
+	/**
+	 * Determines if an entity was created by a collaborator (including owners).
+	 * Uses the author_association field from GitHub's webhook payload.
+	 * @param entity The entity to check
+	 * @returns true if the entity was created by a collaborator, false otherwise
+	 */
+	const isEntityFromCollaborator = (entity: Entity): boolean => {
+		if ("author_association" in entity.data) {
+			const association = entity.data.author_association;
+			return association === "COLLABORATOR" || association === "OWNER";
+		}
+
+		return false;
+	};
+
+	const includeCollaborators =
+		core.getInput("include-collaborators") === "true";
+	if (!includeCollaborators && isEntityFromCollaborator(entityInput)) {
+		core.info(
+			`Skipping OctoGuide rules for collaborator-created ${entityType}: ${url}`,
+		);
+		return;
+	}
+
 	const { actor, entity, reports } = await runOctoGuideRules({
 		auth,
 		entity: entityInput,

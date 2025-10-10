@@ -118,3 +118,13 @@ export const getStartedIncludeBots = `jobs:
         with:
 +          include-bots: "true"
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
+
+export const getStartedIncludeCollaborators = `jobs:
+  octoguide:
+    if: \${{ !endsWith(github.actor, '[bot]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: JoshuaKGoldberg/octoguide${atVersion}
+        with:
++          include-collaborators: "true"
+          github-token: \${{ secrets.GITHUB_TOKEN }}`;
