@@ -1026,10 +1026,13 @@ describe("runOctoGuideAction", () => {
 		});
 	});
 
-	describe("include-collaborators configuration", () => {
-		describe("collaborators are skipped by default", () => {
+	describe("include-associations configuration", () => {
+		describe("default behavior (excludes COLLABORATOR and OWNER)", () => {
 			it("should skip for users with OWNER author_association", async () => {
-				createMockActionInputs();
+				createMockActionInputs({
+					"include-associations":
+						"FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER",
+				});
 
 				await runOctoGuideAction(
 					createMockContext(
@@ -1045,13 +1048,16 @@ describe("runOctoGuideAction", () => {
 				);
 
 				expect(mockCore.info).toHaveBeenCalledWith(
-					"Skipping OctoGuide rules for collaborator-created issue: https://github.com/test/repo/issues/1",
+					"Skipping OctoGuide rules for OWNER-created issue: https://github.com/test/repo/issues/1",
 				);
 				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 			});
 
 			it("should skip for users with COLLABORATOR author_association", async () => {
-				createMockActionInputs();
+				createMockActionInputs({
+					"include-associations":
+						"FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER",
+				});
 
 				await runOctoGuideAction(
 					createMockContext(
@@ -1067,15 +1073,18 @@ describe("runOctoGuideAction", () => {
 				);
 
 				expect(mockCore.info).toHaveBeenCalledWith(
-					"Skipping OctoGuide rules for collaborator-created issue: https://github.com/test/repo/issues/1",
+					"Skipping OctoGuide rules for COLLABORATOR-created issue: https://github.com/test/repo/issues/1",
 				);
 				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 			});
 		});
 
-		describe("non-collaborators run rules", () => {
+		describe("default associations run rules", () => {
 			it("should run rules for users with MEMBER author_association", async () => {
-				createMockActionInputs();
+				createMockActionInputs({
+					"include-associations":
+						"FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER",
+				});
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(
@@ -1098,7 +1107,10 @@ describe("runOctoGuideAction", () => {
 			});
 
 			it("should run rules for users with CONTRIBUTOR author_association", async () => {
-				createMockActionInputs();
+				createMockActionInputs({
+					"include-associations":
+						"FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER",
+				});
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(
@@ -1120,18 +1132,47 @@ describe("runOctoGuideAction", () => {
 				);
 			});
 
-			it("should run rules for users with NONE author_association", async () => {
-				createMockActionInputs();
+			it("should run rules for users with FIRST_TIME_CONTRIBUTOR author_association", async () => {
+				createMockActionInputs({
+					"include-associations":
+						"FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER",
+				});
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(
 					createMockContext(
 						createMockPayload({
 							issue: {
-								author_association: "NONE",
+								author_association: "FIRST_TIME_CONTRIBUTOR",
 								html_url: "https://github.com/test/repo/issues/1",
 								number: 1,
-								user: { login: "first-time-user", type: "User" },
+								user: { login: "first-time-contributor", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+
+			it("should run rules for users with FIRST_TIMER author_association", async () => {
+				createMockActionInputs({
+					"include-associations":
+						"FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER",
+				});
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "FIRST_TIMER",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "first-timer", type: "User" },
 							},
 						}),
 					),
@@ -1166,9 +1207,12 @@ describe("runOctoGuideAction", () => {
 			});
 		});
 
-		describe("include-collaborators=true runs rules for everyone", () => {
-			it("should run rules for collaborators when include-collaborators is true", async () => {
-				createMockActionInputs({ "include-collaborators": "true" });
+		describe("custom include-associations configuration", () => {
+			it("should run rules for collaborators and owners when explicitly included", async () => {
+				createMockActionInputs({
+					"include-associations":
+						"FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER,COLLABORATOR,OWNER",
+				});
 				createMinimalRuleExecution();
 
 				await runOctoGuideAction(
@@ -1188,6 +1232,99 @@ describe("runOctoGuideAction", () => {
 				expect(mockCore.info).toHaveBeenCalledWith(
 					"Found 0 reports. Great! ✅",
 				);
+			});
+
+			it("should skip contributors when not in the association list", async () => {
+				createMockActionInputs({
+					"include-associations": "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR",
+				});
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "CONTRIBUTOR",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "contributor", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Skipping OctoGuide rules for CONTRIBUTOR-created issue: https://github.com/test/repo/issues/1",
+				);
+				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
+			});
+
+			it("should always run rules for NONE regardless of configuration", async () => {
+				createMockActionInputs({
+					"include-associations": "FIRST_TIMER",
+				});
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "NONE",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "random-user", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+				expect(mockCore.info).toHaveBeenCalledWith(
+					"Found 0 reports. Great! ✅",
+				);
+			});
+
+			it("should handle empty association list by including only NONE", async () => {
+				createMockActionInputs({
+					"include-associations": "",
+				});
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "NONE",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "user", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
+			});
+
+			it("should handle whitespace in comma-separated list", async () => {
+				createMockActionInputs({
+					"include-associations": " FIRST_TIMER , CONTRIBUTOR , MEMBER ",
+				});
+				createMinimalRuleExecution();
+
+				await runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								author_association: "CONTRIBUTOR",
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: { login: "contributor", type: "User" },
+							},
+						}),
+					),
+				);
+
+				expect(mockRunOctoGuideRules).toHaveBeenCalled();
 			});
 		});
 	});

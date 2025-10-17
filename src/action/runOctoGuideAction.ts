@@ -120,25 +120,42 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	}
 
 	/**
-	 * Determines if an entity was created by a collaborator (including owners).
+	 * Determines if an entity should be included based on its author association.
 	 * Uses the author_association field from GitHub's webhook payload.
 	 * @param entity The entity to check
-	 * @returns true if the entity was created by a collaborator, false otherwise
+	 * @param includeAssociations Set of allowed author associations
+	 * @returns true if the entity should be included, false if it should be skipped
 	 */
-	const isEntityFromCollaborator = (entity: Entity): boolean => {
+	const shouldIncludeEntity = (
+		entity: Entity,
+		includeAssociations: Set<string>,
+	): boolean => {
 		if ("author_association" in entity.data) {
 			const association = entity.data.author_association;
-			return association === "COLLABORATOR" || association === "OWNER";
+			return includeAssociations.has(association);
 		}
 
-		return false;
+		return true;
 	};
 
-	const includeCollaborators =
-		core.getInput("include-collaborators") === "true";
-	if (!includeCollaborators && isEntityFromCollaborator(entityInput)) {
+	const includeAssociationsInput = core.getInput("include-associations");
+
+	const includeAssociations = new Set(
+		includeAssociationsInput
+			.split(",")
+			.map((a) => a.trim())
+			.filter((a) => a.length > 0),
+	);
+
+	includeAssociations.add("NONE");
+
+	if (!shouldIncludeEntity(entityInput, includeAssociations)) {
+		const association =
+			"author_association" in entityInput.data
+				? entityInput.data.author_association
+				: "UNKNOWN";
 		core.info(
-			`Skipping OctoGuide rules for collaborator-created ${entityType}: ${url}`,
+			`Skipping OctoGuide rules for ${association} created ${entityType}: ${url}`,
 		);
 		return;
 	}

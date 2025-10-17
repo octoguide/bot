@@ -20,9 +20,10 @@ inputs:
   include-bots:
     description: Run OctoGuide rules on bot-created entities (issues, PRs, discussions) and comments. By default, bots are skipped.
     required: false
-  include-collaborators:
-    description: Run OctoGuide rules on collaborator-created entities (issues, PRs, discussions) and comments. By default, collaborators are skipped.
+  include-associations:
+    description: "Comma-separated list of GitHub author associations to include for rule checking. NONE is always included. Default: FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER."
     required: false
+    default: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER"
   # Individual rule overrides
   rule-comment-meaningful:
     description: Enable/disable the comment-meaningful rule (true/false)

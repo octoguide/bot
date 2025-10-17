@@ -14,7 +14,9 @@ import {
 	getStartedRuleEnable,
 	getStartedRuleNone,
 	getStartedIncludeBots,
+	getStartedIncludeAssociationsDefault,
 	getStartedIncludeCollaborators,
+	getStartedIncludeFirstTimers,
 } from "../../data/yml.js";
 
 OctoGuide checks that contributor activity on your GitHub repository aligns with common expectations of smoothly-running projects.
@@ -102,33 +104,56 @@ enable this by setting `include-bots` to `"true"`:
 	title=".github/workflows/octoguide.yml"
 />
 
-### `include-collaborators`
+### `include-associations`
 
-OctoGuide by default skips running rules for collaborator-created entities (issues, pull requests, and discussions)
-and comments. This is useful because repository collaborators and owners typically
-have a deeper understanding of the project's contribution guidelines that external
-contributors may not have. Collaborators may also need flexibility to make changes
-outside of the OctoGuide rules.
+OctoGuide allows you to control which types of contributors have rules enforced on their
+entities (issues, pull requests, and discussions) and comments based on their GitHub author association.
+This is useful because repository collaborators and owners typically have a deeper understanding
+of the project's contribution guidelines that external contributors may not have.
 
-Collaborator detection uses the `author_association` field from GitHub's webhook payload.
-Users with any of the following associations are considered collaborators:
+The `include-associations` input accepts a comma-separated list of GitHub author associations
+to include for rule checking. The default value excludes collaborators and owners:
 
+<Code
+	code={getStartedIncludeAssociationsDefault}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+#### GitHub Author Associations
+
+- `FIRST_TIMER` - First time committing to GitHub
+- `FIRST_TIME_CONTRIBUTOR` - First time committing to this repository
+- `CONTRIBUTOR` - Previously committed to the repository
+- `MEMBER` - Organization member
 - `COLLABORATOR` - Repository collaborator
 - `OWNER` - Repository owner
+- `NONE` - No association (always included regardless of configuration)
 
-Contributors with associations like `MEMBER` (organization member),
-`CONTRIBUTOR` (previously committed to the repository),
-`FIRST_TIME_CONTRIBUTOR` (first time committing to this repository),
-`FIRST_TIMER` (first time committing to GitHub),
-or `NONE` (no association) will still have rules enforced.
+The `NONE` association is always included automatically, even if you don't specify it,
+ensuring that users with no association still have rules enforced.
 
-If you want OctoGuide to run rules on collaborator-created entities and comments,
-you can enable this by setting `include-collaborators` to `"true"`:
+#### Including collaborators and owners
+
+If you want OctoGuide to run rules on everyone, including collaborators and owners,
+you can specify all associations:
 
 **Example:**
 
 <Code
 	code={getStartedIncludeCollaborators}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+#### Only first-time contributors
+
+You can also be more selective. For example, to only check first-time contributors:
+
+<Code
+	code={getStartedIncludeFirstTimers}
 	meta="lang=yml"
 	lang="diff"
 	title=".github/workflows/octoguide.yml"
