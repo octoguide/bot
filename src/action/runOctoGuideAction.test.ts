@@ -1048,11 +1048,10 @@ describe("runOctoGuideAction", () => {
 				);
 
 				expect(mockCore.info).toHaveBeenCalledWith(
-					"Skipping OctoGuide rules for OWNER-created issue: https://github.com/test/repo/issues/1",
+					"Skipping OctoGuide rules for OWNER created issue: https://github.com/test/repo/issues/1",
 				);
 				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 			});
-
 			it("should skip for users with COLLABORATOR author_association", async () => {
 				createMockActionInputs({
 					"include-associations":
@@ -1073,12 +1072,11 @@ describe("runOctoGuideAction", () => {
 				);
 
 				expect(mockCore.info).toHaveBeenCalledWith(
-					"Skipping OctoGuide rules for COLLABORATOR-created issue: https://github.com/test/repo/issues/1",
+					"Skipping OctoGuide rules for COLLABORATOR created issue: https://github.com/test/repo/issues/1",
 				);
 				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 			});
 		});
-
 		describe("default associations run rules", () => {
 			it("should run rules for users with MEMBER author_association", async () => {
 				createMockActionInputs({
@@ -1253,11 +1251,10 @@ describe("runOctoGuideAction", () => {
 				);
 
 				expect(mockCore.info).toHaveBeenCalledWith(
-					"Skipping OctoGuide rules for CONTRIBUTOR-created issue: https://github.com/test/repo/issues/1",
+					"Skipping OctoGuide rules for CONTRIBUTOR created issue: https://github.com/test/repo/issues/1",
 				);
 				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 			});
-
 			it("should always run rules for NONE regardless of configuration", async () => {
 				createMockActionInputs({
 					"include-associations": "FIRST_TIMER",
