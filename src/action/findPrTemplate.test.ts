@@ -24,8 +24,11 @@ describe("findPrTemplate", () => {
 	beforeEach(() => {
 		vi.resetAllMocks();
 		graphqlMock.mockResolvedValue({ repository: {} });
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		vi.spyOn(console, "error").mockImplementation(() => {});
+
+		vi.stubGlobal("console", {
+			...console,
+			error: vi.fn(),
+		});
 	});
 
 	PR_TEMPLATE_PATHS.forEach((path, index) => {
