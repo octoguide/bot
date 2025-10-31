@@ -72,7 +72,8 @@
         "tool",
         "code",
         "maintenance",
-        "bug"
+        "bug",
+        "test"
       ]
     },
     {
