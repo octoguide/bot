@@ -58,6 +58,8 @@ export default defineConfig(
 				{ allowNumber: true },
 			],
 			"n/no-missing-import": "off",
+			// no-unpublished-bin rule is no longer necessary and will be removed from eslint-plugin-n recommended in v18
+			"n/no-unpublished-bin": "off",
 			"n/no-unsupported-features/node-builtins": "off",
 
 			// Stylistic concerns that don't interfere with Prettier
