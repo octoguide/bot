@@ -109,7 +109,8 @@ enable this by setting `include-bots` to `"true"`:
 OctoGuide allows you to control which types of contributors have rules enforced on their
 entities (issues, pull requests, and discussions) and comments based on their GitHub author association.
 This is useful because repository collaborators and owners typically have a deeper understanding
-of the project's contribution guidelines that external contributors may not have.
+of the project's contribution guidelines that external contributors may not have, and so might
+not need to be included in checks such as for pull requests without backing issues.
 
 The `include-associations` input accepts a comma-separated list of GitHub author associations
 to include for rule checking. The default value excludes collaborators and owners:
@@ -122,6 +123,8 @@ to include for rule checking. The default value excludes collaborators and owner
 />
 
 #### GitHub Author Associations
+
+OctoGuide allows filtering on [GitHub's author associations](https://docs.github.com/en/graphql/reference/enums#commentauthorassociation):
 
 - `FIRST_TIMER` - First time committing to GitHub
 - `FIRST_TIME_CONTRIBUTOR` - First time committing to this repository

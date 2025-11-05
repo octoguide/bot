@@ -1077,6 +1077,7 @@ describe("runOctoGuideAction", () => {
 				expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 			});
 		});
+
 		describe("default associations run rules", () => {
 			it("should run rules for users with MEMBER author_association", async () => {
 				createMockActionInputs({
