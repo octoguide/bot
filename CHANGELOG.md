@@ -1,6 +1,12 @@
 # Changelog
 
-# [0.16.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.15.2...0.16.0) (2025-10-09)
+## [0.17.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.16.0...0.17.0) (2025-11-05)
+
+- feat: add config for include-associations ([#327](https://github.com/JoshuaKGoldberg/OctoGuide/pull/327))
+
+### Features
+
+## [0.16.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.15.2...0.16.0) (2025-10-09)
 
 ### Features
 
@@ -18,19 +24,19 @@
 
 - **deps:** update dependency markdownlint to v0.37.4 ([#10](https://github.com/JoshuaKGoldberg/OctoGuide/issues/10)) ([4dc58c9](https://github.com/JoshuaKGoldberg/OctoGuide/commit/4dc58c9127fb488c5aab02232880e8a230b99916))
 
-# [0.15.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.14.0...0.15.0) (2025-08-28)
+## [0.15.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.14.0...0.15.0) (2025-08-28)
 
 ### Features
 
 - enable/disable individual rules in actions ([#223](https://github.com/JoshuaKGoldberg/OctoGuide/issues/223)) ([2cd138b](https://github.com/JoshuaKGoldberg/OctoGuide/commit/2cd138b99a454fde8736d20fd48079f946069fb2)), closes [#219](https://github.com/JoshuaKGoldberg/OctoGuide/issues/219)
 
-# [0.14.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.13.0...0.14.0) (2025-08-22)
+## [0.14.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.13.0...0.14.0) (2025-08-22)
 
 ### Features
 
 - add config none ([#242](https://github.com/JoshuaKGoldberg/OctoGuide/issues/242)) ([1863dab](https://github.com/JoshuaKGoldberg/OctoGuide/commit/1863dab41c3fd8d12c84414216e0ae28778646f7)), closes [#241](https://github.com/JoshuaKGoldberg/OctoGuide/issues/241)
 
-# [0.13.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.12.1...0.13.0) (2025-08-22)
+## [0.13.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.12.1...0.13.0) (2025-08-22)
 
 ### Features
 
@@ -42,7 +48,7 @@
 
 - support all github pr template locations ([#99](https://github.com/JoshuaKGoldberg/OctoGuide/issues/99)) ([04ca8bb](https://github.com/JoshuaKGoldberg/OctoGuide/commit/04ca8bb44b2730032f21038ac3d9dce20c79756a)), closes [#47](https://github.com/JoshuaKGoldberg/OctoGuide/issues/47)
 
-# [0.12.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.11.4...0.12.0) (2025-07-24)
+## [0.12.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.11.4...0.12.0) (2025-07-24)
 
 ### Features
 
@@ -72,7 +78,7 @@
 
 - properly parse headline for GHA summary ([#105](https://github.com/JoshuaKGoldberg/OctoGuide/issues/105)) ([9ed3f43](https://github.com/JoshuaKGoldberg/OctoGuide/commit/9ed3f433b34fe269fab2241c36a9e71d663feba4)), closes [#104](https://github.com/JoshuaKGoldberg/OctoGuide/issues/104)
 
-# [0.11.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.10.6...0.11.0) (2025-05-01)
+## [0.11.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.10.6...0.11.0) (2025-05-01)
 
 ### Features
 
@@ -114,13 +120,13 @@
 
 - don't fail actions or write a summary on pass ([#89](https://github.com/JoshuaKGoldberg/OctoGuide/issues/89)) ([40c9430](https://github.com/JoshuaKGoldberg/OctoGuide/commit/40c943097263078ebc5668de3f4587cc0b7534e2)), closes [#88](https://github.com/JoshuaKGoldberg/OctoGuide/issues/88)
 
-# [0.10.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.9.0...0.10.0) (2025-04-28)
+## [0.10.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.9.0...0.10.0) (2025-04-28)
 
 ### Features
 
 - add prBodyNotEmpty rule ([#46](https://github.com/JoshuaKGoldberg/OctoGuide/issues/46)) ([6f64f38](https://github.com/JoshuaKGoldberg/OctoGuide/commit/6f64f38f4552d9478b496b7c6285ab465e352d5c)), closes [#25](https://github.com/JoshuaKGoldberg/OctoGuide/issues/25)
 
-# [0.9.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.8.4...0.9.0) (2025-04-28)
+## [0.9.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.8.4...0.9.0) (2025-04-28)
 
 ### Features
 
@@ -150,31 +156,31 @@
 
 - enable pr-branch-non-default in recommended ([26fb60b](https://github.com/JoshuaKGoldberg/OctoGuide/commit/26fb60b3de01d188078b407370a10d1da1ac06df))
 
-# [0.8.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.7.0...0.8.0) (2025-04-28)
+## [0.8.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.7.0...0.8.0) (2025-04-28)
 
 ### Features
 
 - add website and logo/mascot ([#53](https://github.com/JoshuaKGoldberg/OctoGuide/issues/53)) ([ded852b](https://github.com/JoshuaKGoldberg/OctoGuide/commit/ded852b3aaf80d0aa640fc795f08921ca9c3eb23)), closes [#52](https://github.com/JoshuaKGoldberg/OctoGuide/issues/52)
 
-# [0.7.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.6.0...0.7.0) (2025-04-28)
+## [0.7.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.6.0...0.7.0) (2025-04-28)
 
 ### Features
 
 - add createDefineRule ([#57](https://github.com/JoshuaKGoldberg/OctoGuide/issues/57)) ([93de906](https://github.com/JoshuaKGoldberg/OctoGuide/commit/93de906a9dc7796de3055b19e978fbeb1bb68f15)), closes [#54](https://github.com/JoshuaKGoldberg/OctoGuide/issues/54) [#22](https://github.com/JoshuaKGoldberg/OctoGuide/issues/22) [#53](https://github.com/JoshuaKGoldberg/OctoGuide/issues/53)
 
-# [0.6.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.5.0...0.6.0) (2025-04-28)
+## [0.6.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.5.0...0.6.0) (2025-04-28)
 
 ### Features
 
 - delete bot comment if target comment is deleted ([#55](https://github.com/JoshuaKGoldberg/OctoGuide/issues/55)) ([3f469c6](https://github.com/JoshuaKGoldberg/OctoGuide/commit/3f469c6857015873ddab87e02305568e6cf6be32)), closes [#42](https://github.com/JoshuaKGoldberg/OctoGuide/issues/42) [#43](https://github.com/JoshuaKGoldberg/OctoGuide/issues/43)
 
-# [0.5.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.4.0...0.5.0) (2025-04-25)
+## [0.5.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.4.0...0.5.0) (2025-04-25)
 
 ### Features
 
 - remove the --- ([bba402a](https://github.com/JoshuaKGoldberg/OctoGuide/commit/bba402ab8899bd0e6692130a92efb7c8e1854f27))
 
-# [0.4.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.3.1...0.4.0) (2025-04-25)
+## [0.4.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.3.1...0.4.0) (2025-04-25)
 
 ### Features
 
@@ -186,7 +192,7 @@
 
 - add missing inputs.config to action.yml ([3e7fa3f](https://github.com/JoshuaKGoldberg/OctoGuide/commit/3e7fa3f6c06d97659d74c7675d11068da93deb70))
 
-# [0.3.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.2.1...0.3.0) (2025-04-25)
+## [0.3.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.2.1...0.3.0) (2025-04-25)
 
 ### Features
 
@@ -198,7 +204,7 @@
 
 - **deps:** update dependency is-comment-meaningless to ^0.2.0 ([#37](https://github.com/JoshuaKGoldberg/OctoGuide/issues/37)) ([e5664d4](https://github.com/JoshuaKGoldberg/OctoGuide/commit/e5664d49c636829da211d24e617430408a3c88ed))
 
-# [0.2.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.1.2...0.2.0) (2025-04-25)
+## [0.2.0](https://github.com/JoshuaKGoldberg/OctoGuide/compare/0.1.2...0.2.0) (2025-04-25)
 
 ### Features
 
