@@ -256,6 +256,11 @@ beforeEach(() => {
 	vi.clearAllMocks();
 	// Reset to original state
 	process.env = { ...originalEnv };
+
+	vi.stubGlobal("console", {
+		...console,
+		log: vi.fn(),
+	});
 });
 
 describe("runOctoGuideAction", () => {
@@ -269,9 +274,6 @@ describe("runOctoGuideAction", () => {
 	});
 
 	it("should log report count and CLI output when violations are found", async () => {
-		const consoleSpy = vi
-			.spyOn(console, "log")
-			.mockImplementation(() => undefined);
 		createMockActionInputs();
 		mockRuleExecutionWithReports(2);
 		mockCliReporter.mockReturnValue("Mocked CLI report");
@@ -279,11 +281,10 @@ describe("runOctoGuideAction", () => {
 		await runOctoGuideAction(createMockContext(createMockPayload()));
 
 		expect(mockCore.info).toHaveBeenCalledWith("Found 2 report(s).");
-		expect(consoleSpy).toHaveBeenCalledWith("Mocked CLI report");
+		expect(console.log).toHaveBeenCalledWith("Mocked CLI report");
 	});
 
 	it("should call outputActionReports with correct parameters when reports are found", async () => {
-		vi.spyOn(console, "log").mockImplementation(() => undefined);
 		createMockActionInputs();
 		const { reports } = mockRuleExecutionWithReports(2);
 		mockCliReporter.mockReturnValue("Mocked CLI report");

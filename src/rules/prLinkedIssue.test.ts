@@ -1,3 +1,5 @@
+import type { Octokit } from "octokit";
+
 import { describe, expect, it, vi } from "vitest";
 
 import { testRule } from "../tests/testRule.js";
@@ -28,7 +30,7 @@ describe(prLinkedIssue.about.name, () => {
 								},
 							},
 						},
-					}),
+					}) as unknown as Octokit["graphql"],
 				},
 				report,
 			},
@@ -61,7 +63,7 @@ describe(prLinkedIssue.about.name, () => {
 								},
 							},
 						},
-					}),
+					}) as unknown as Octokit["graphql"],
 				},
 				report,
 			},
@@ -104,7 +106,7 @@ describe(prLinkedIssue.about.name, () => {
 								},
 							},
 						},
-					}),
+					}) as unknown as Octokit["graphql"],
 				},
 				report,
 			},
