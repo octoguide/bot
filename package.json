@@ -41,7 +41,7 @@
 		"is-comment-meaningless": "^0.2.0",
 		"lodash": "^4.17.21",
 		"markdownlint": "0.37.4",
-		"marked": "^16.0.0",
+		"marked": "^17.0.0",
 		"octokit": "^5.0.0",
 		"octokit-from-auth": "^0.3.1",
 		"parse-github-url": "^1.0.3"
