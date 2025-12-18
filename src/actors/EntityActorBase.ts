@@ -22,9 +22,9 @@ interface UnminimizeCommentResponse {
 	};
 }
 
-export abstract class EntityActorBase<Data extends EntityData>
-	implements EntityActor<Data>
-{
+export abstract class EntityActorBase<
+	Data extends EntityData,
+> implements EntityActor<Data> {
 	abstract readonly metadata: Omit<Entity, "data">;
 
 	protected entityNumber: number;
