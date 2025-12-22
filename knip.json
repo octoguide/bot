@@ -1,9 +1,10 @@
 {
-	"$schema": "https://unpkg.com/knip@5.62.0/schema.json",
+	"$schema": "https://unpkg.com/knip@5/schema.json",
 	"treatConfigHintsAsErrors": true,
 	"entry": [
 		"site/**/*.mdx",
 		"site/src/**/*.astro",
+		"site/src/content.config.ts",
 		"src/action/index.ts",
 		"src/cli.ts",
 		"src/**/*.test.*"
@@ -11,7 +12,6 @@
 	"ignore": ["dist/index.js"],
 	"ignoreDependencies": ["sharp"],
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
-	"project": ["site/**/*.mdx"],
 	"typescript": {
 		"config": ["tsconfig.json", "site/tsconfig.json"]
 	}
