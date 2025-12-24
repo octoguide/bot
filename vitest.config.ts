@@ -8,7 +8,20 @@ export default defineConfig({
 			include: ["src"],
 			reporter: ["html", "lcov"],
 		},
-		exclude: ["lib", "node_modules"],
+		projects: [
+			{
+				test: {
+					exclude: ["lib", "node_modules", "site"],
+					name: "octoguide",
+				},
+			},
+			{
+				test: {
+					include: ["site/**/*.test.{js,ts}"],
+					name: "site",
+				},
+			},
+		],
 		setupFiles: ["console-fail-test/setup"],
 	},
 });
