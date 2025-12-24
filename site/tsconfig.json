@@ -1,7 +1,8 @@
 {
 	"compilerOptions": {
 		"baseUrl": ".",
-		"target": "esnext"
+		"target": "esnext",
+		"composite": true
 	},
 	"extends": "astro/tsconfigs/strict"
 }
