@@ -11,10 +11,5 @@
 		"strict": true,
 		"target": "ES2022"
 	},
-	"include": ["src"],
-	"references": [
-		{
-			"path": "./site"
-		}
-	]
+	"include": ["src"]
 }
