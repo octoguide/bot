@@ -2,7 +2,6 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
-		clearMocks: true,
 		coverage: {
 			all: true,
 			include: ["src"],
@@ -11,8 +10,10 @@ export default defineConfig({
 		projects: [
 			{
 				test: {
+					clearMocks: true,
 					exclude: ["lib", "node_modules", "site"],
 					name: "octoguide",
+					setupFiles: ["console-fail-test/setup"],
 				},
 			},
 			{
@@ -22,6 +23,5 @@ export default defineConfig({
 				},
 			},
 		],
-		setupFiles: ["console-fail-test/setup"],
 	},
 });
