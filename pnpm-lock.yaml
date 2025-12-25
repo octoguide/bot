@@ -135,6 +135,9 @@ importers:
       markdownlint-cli:
         specifier: 0.47.0
         version: 0.47.0
+      markdownlint-sentences-per-line:
+        specifier: 0.1.1
+        version: 0.1.1(markdownlint@0.37.4)
       prettier:
         specifier: 3.7.4
         version: 3.7.4
@@ -153,9 +156,6 @@ importers:
       release-it:
         specifier: 19.1.0
         version: 19.1.0(@types/node@24.10.0)(magicast@0.3.5)
-      sentences-per-line:
-        specifier: 0.4.0
-        version: 0.4.0
       sharp:
         specifier: 0.34.1
         version: 0.34.1
@@ -3378,6 +3378,15 @@ packages:
     resolution: {integrity: sha512-HOcxeKFAdDoldvoYDofd85vI8LgNWy8vmYpCwnlLV46PJcodmGzD7COSSBlhHwsfT4o9KrAStGodImVBus31Bg==}
     engines: {node: '>=20'}
     hasBin: true
+
+  markdownlint-rule-helpers@0.30.0:
+    resolution: {integrity: sha512-bQr0l6MGl5ia6PmkZpIP7qETSw3c/+ZXsHpACVO0SR/PaC5+VT3DFImR45G/EGGOzLwqZGussgx91Mh3cttyJw==}
+    engines: {node: '>=18'}
+
+  markdownlint-sentences-per-line@0.1.1:
+    resolution: {integrity: sha512-64IDuRF/j5ArWvpTHPrxsN6b7yc/kgEznRaP1bTC1ehBzzE1alUxWvT1L2oy+xasYfSTbq0GBNVVeYQx08Qmjw==}
+    peerDependencies:
+      markdownlint: ^0.37.0
 
   markdownlint@0.37.4:
     resolution: {integrity: sha512-u00joA/syf3VhWh6/ybVFkib5Zpj2e5KB/cfCei8fkSRuums6nyisTWGqjTWIOFoFwuXoTBQQiqlB4qFKp8ncQ==}
@@ -8383,6 +8392,14 @@ snapshots:
       tinyglobby: 0.2.15
     transitivePeerDependencies:
       - supports-color
+
+  markdownlint-rule-helpers@0.30.0: {}
+
+  markdownlint-sentences-per-line@0.1.1(markdownlint@0.37.4):
+    dependencies:
+      markdownlint: 0.37.4
+      markdownlint-rule-helpers: 0.30.0
+      sentences-per-line: 0.4.0
 
   markdownlint@0.37.4:
     dependencies:
