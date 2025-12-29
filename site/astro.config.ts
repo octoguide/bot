@@ -71,10 +71,7 @@ export default defineConfig({
 			title: "OctoGuide",
 		}),
 	],
-	outDir: "dist-site",
-	publicDir: "./site/public",
-	root: "./site",
+	outDir: "../dist-site",
 	site: "https://octo.guide",
-	srcDir: "./site/src",
 	trailingSlash: "never",
 });

@@ -1,2 +1,7 @@
+linkWorkspacePackages: true
+
 # Only install packages released at least 7 days ago
 minimumReleaseAge: 10080
+
+packages:
+  - site
