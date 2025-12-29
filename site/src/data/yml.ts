@@ -7,7 +7,7 @@ export const getStartedBase = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
           github-token: \${{ secrets.GITHUB_TOKEN }}
 
@@ -38,7 +38,7 @@ jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
 +          config: strict
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
@@ -49,7 +49,7 @@ jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
 +          config: none
           github-token: \${{ secrets.GITHUB_TOKEN }}
@@ -60,7 +60,7 @@ export const getStartedHeader = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
 +          comment-header: "Hey! You! Listen! This is a bot message from Octoguide! 🐙"
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
@@ -70,7 +70,7 @@ export const getStartedFooter = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide@v0
+      - uses: OctoGuide/bot@v0
         with:
 +          comment-footer: "🗺️ This message was posted automatically by [OctoGuide](https://octo.guide): a bot for GitHub repository best practices."
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
@@ -80,7 +80,7 @@ export const getStartedRuleDisable = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
 +          comment-meaningful: "false"
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
@@ -90,7 +90,7 @@ export const getStartedRuleEnable = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
 +          config: recommended
           github-token: \${{ secrets.GITHUB_TOKEN }}
@@ -101,7 +101,7 @@ export const getStartedRuleNone = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
 +          comment-meaningful: "true"
 +          config: none
@@ -114,7 +114,7 @@ export const getStartedIncludeBots = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
 +          include-bots: "true"
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
@@ -124,7 +124,7 @@ export const getStartedIncludeAssociationsDefault = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER"`;
@@ -134,7 +134,7 @@ export const getStartedIncludeCollaborators = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER,COLLABORATOR,OWNER"`;
@@ -144,7 +144,7 @@ export const getStartedIncludeFirstTimers = `jobs:
     if: \${{ !endsWith(github.actor, '[bot]') }}
     runs-on: ubuntu-latest
     steps:
-      - uses: JoshuaKGoldberg/octoguide${atVersion}
+      - uses: OctoGuide/bot${atVersion}
         with:
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR"`;

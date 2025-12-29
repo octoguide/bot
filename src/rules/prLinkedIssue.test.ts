@@ -88,7 +88,7 @@ describe(prLinkedIssue.about.name, () => {
 			prLinkedIssue,
 			{
 				data: {
-					body: "fixes: https://github.com/JoshuaKGoldberg/OctoGuide/security/dependabot/85",
+					body: "fixes: https://github.com/OctoGuide/bot/security/dependabot/85",
 					head: {
 						ref: "dependabot-patch",
 					},

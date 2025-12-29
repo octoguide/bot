@@ -17,7 +17,7 @@ It will contain:
   - `"issue"`: [issue data](https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#get-an-issue)
   - `"pull_request"`: [pull request data](https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#get-a-pull-request)
 
-See [`entities.ts`](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/types/entities.ts) for the specifics of the `Entity` type union and its constituents.
+See [`entities.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/entities.ts) for the specifics of the `Entity` type union and its constituents.
 
 ## `RuleAbout`
 
@@ -29,7 +29,7 @@ The following properties are all required:
 - `explanation: string[]`: Additional sentences describing the rule.
 - `name: string`: kebab-case name of the rule.
 
-See [`rules.ts`](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/types/rules.ts) for the specifics of the `RuleAbout` interface.
+See [`rules.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/rules.ts) for the specifics of the `RuleAbout` interface.
 
 ## `RuleContext`
 
@@ -39,7 +39,7 @@ Shared context provided to rules when they run on an entity.
 - `octokit`: [`Octokit`](https://octokit.github.io/rest.js): instance that can send GitHub API calls.
 - `report`: [`RuleReporter`](#rulereporter): receives [`RuleReportData`](#rulerpeportdata) to register a new violation.
 
-See [`rules.ts`](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/types/rules.ts) for the specifics of the `RuleContext` interface.
+See [`rules.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/rules.ts) for the specifics of the `RuleContext` interface.
 
 ## `RuleReporter`
 
@@ -48,7 +48,7 @@ Receives a [`RuleReportData`](#rulereportdata) object.
 
 See [Building Rules](./building-rules) for how these are used.
 
-See [`rules.ts`](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/types/rules.ts) for the specifics of the `RuleReporter` interface.
+See [`rules.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/rules.ts) for the specifics of the `RuleReporter` interface.
 
 ## `RuleReport`
 
@@ -58,7 +58,7 @@ Contains:
 - `about`: [`RuleAbout`](#ruleabout)
 - `data`: [`RuleReportData`](#rulereportdata)
 
-See [`reports.ts`](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/types/reports.ts) for the specifics of the `RuleReport` interface.
+See [`reports.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/reports.ts) for the specifics of the `RuleReport` interface.
 
 ## `RuleReportData`
 
@@ -71,4 +71,4 @@ Contains:
 
 See [Building Rules](./building-rules) for how these are used.
 
-See [`reports.ts`](https://github.com/JoshuaKGoldberg/OctoGuide/blob/main/src/types/reports.ts) for the specifics of the `RuleReportData` interface.
+See [`reports.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/reports.ts) for the specifics of the `RuleReportData` interface.

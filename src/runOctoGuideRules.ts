@@ -73,7 +73,7 @@ export async function runOctoGuideRules({
 	// 1. Entity data & type resolution: read-only allowed
 	// 2. Using that to create the equivalent actor: requires writing
 	// ...where only 1. is needed for runOctoGuide.
-	// https://github.com/JoshuaKGoldberg/OctoGuide/issues/56
+	// https://github.com/OctoGuide/bot/issues/56
 	const octokit = await octokitFromAuth({ auth });
 
 	const url =

@@ -60,7 +60,7 @@ export default defineConfig({
 			],
 			social: [
 				{
-					href: "https://github.com/JoshuaKGoldberg/OctoGuide",
+					href: "https://github.com/OctoGuide/bot",
 					icon: "github",
 					label: "GitHub",
 				},

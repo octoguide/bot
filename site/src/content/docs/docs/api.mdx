@@ -22,7 +22,7 @@ Returns a [`RunOctoGuideRulesResult`](#runoctoguiderulesresult).
 import { runOctoGuideRules } from "octoguide";
 
 const { reports } = await runOctoGuideRules({
-	entity: "https://github.com/JoshuaKGoldberg/OctoGuide/issues/19",
+	entity: "https://github.com/OctoGuide/bot/issues/19",
 });
 
 console.log("Received reports:", reports);
@@ -48,7 +48,7 @@ import { runOctoGuideRules } from "octoguide";
 await runOctoGuideRules({
 	auth: "ghp_...",
 	config: "strict",
-	entity: "https://github.com/JoshuaKGoldberg/OctoGuide/issues/19",
+	entity: "https://github.com/OctoGuide/bot/issues/19",
 });
 
 // Using pre-existing Entity data - avoids API calls
@@ -76,7 +76,7 @@ Returned data from running [`runOctoGuideRules`](#runoctoguide).
 
 ```ts
 const { entity, reports } = await runOctoGuideRules({
-	entity: "https://github.com/JoshuaKGoldberg/OctoGuide/issues/19",
+	entity: "https://github.com/OctoGuide/bot/issues/19",
 });
 
 console.log("Entity URL:", entity.data.html_url);
@@ -103,7 +103,7 @@ Otherwise it will pretty-print the reports, grouped by rule.
 import { cliReporter, runOctoGuideRules } from "octoguide";
 
 const { reports } = await runOctoGuideRules({
-	entity: "https://github.com/JoshuaKGoldberg/OctoGuide/issues/19",
+	entity: "https://github.com/OctoGuide/bot/issues/19",
 });
 
 console.log(cliReporter(reports));
@@ -120,7 +120,7 @@ Otherwise it will pretty-print the reports, grouped by rule.
 import { markdownReporter, runOctoGuideRules } from "octoguide";
 
 const { entity, reports } = await runOctoGuideRules({
-	entity: "https://github.com/JoshuaKGoldberg/OctoGuide/issues/19",
+	entity: "https://github.com/OctoGuide/bot/issues/19",
 });
 
 console.log(markdownReporter(entity, reports));

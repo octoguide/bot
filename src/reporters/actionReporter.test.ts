@@ -88,7 +88,7 @@ describe(actionReporter, () => {
 			",
 			  ],
 			  [
-			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
+			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/OctoGuide/bot">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
 			  ],
 			]
 		`);
@@ -151,7 +151,7 @@ describe(actionReporter, () => {
 			",
 			  ],
 			  [
-			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
+			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/OctoGuide/bot">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
 			  ],
 			]
 		`);
@@ -228,7 +228,7 @@ describe(actionReporter, () => {
 			",
 			  ],
 			  [
-			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
+			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/OctoGuide/bot">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
 			  ],
 			]
 		`);
@@ -343,7 +343,7 @@ describe(actionReporter, () => {
 			",
 			  ],
 			  [
-			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/JoshuaKGoldberg/OctoGuide">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
+			    "🗺️ <em>This message was posted automatically by <a href="https://github.com/OctoGuide/bot">OctoGuide</a>: a bot for GitHub repository best practices.</em>",
 			  ],
 			]
 		`);

@@ -1,7 +1,7 @@
 // Code inspired by accessibility-alt-text-bot:
 // https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
 // TODO: see if we can extract a version that doesn't rely on markdownlint?
-// https://github.com/JoshuaKGoldberg/OctoGuide/issues/33
+// https://github.com/OctoGuide/bot/issues/33
 import type { LintError } from "markdownlint";
 
 import markdownlintGitHub from "@github/markdownlint-github";

@@ -46,7 +46,7 @@ export abstract class EntityActorBase<
 	abstract updateComment(number: number, newBody: string): Promise<void>;
 
 	// TODO: It would be cleaner & faster to get this from the action event...
-	// https://github.com/JoshuaKGoldberg/OctoGuide/issues/85
+	// https://github.com/OctoGuide/bot/issues/85
 	abstract getData(): Promise<Data>;
 
 	/**
