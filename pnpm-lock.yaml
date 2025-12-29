@@ -79,8 +79,8 @@ importers:
         specifier: 4.0.3
         version: 4.0.3(vitest@4.0.3(@types/debug@4.1.12)(@types/node@24.10.0)(jiti@2.6.1)(yaml@2.8.2))
       '@vitest/eslint-plugin':
-        specifier: 1.5.1
-        version: 1.5.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)(vitest@4.0.3(@types/debug@4.1.12)(@types/node@24.10.0)(jiti@2.6.1)(yaml@2.8.2))
+        specifier: 1.6.1
+        version: 1.6.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)(vitest@4.0.3(@types/debug@4.1.12)(@types/node@24.10.0)(jiti@2.6.1)(yaml@2.8.2))
       console-fail-test:
         specifier: 0.6.0
         version: 0.6.0
@@ -115,8 +115,8 @@ importers:
         specifier: 1.19.0
         version: 1.19.0(eslint@9.39.1(jiti@2.6.1))
       knip:
-        specifier: 5.75.1
-        version: 5.75.1(@types/node@24.10.0)(typescript@5.9.2)
+        specifier: 5.76.0
+        version: 5.76.0(@types/node@24.10.0)(typescript@5.9.2)
       lefthook:
         specifier: 2.0.0
         version: 2.0.0
@@ -1828,8 +1828,8 @@ packages:
       '@vitest/browser':
         optional: true
 
-  '@vitest/eslint-plugin@1.5.1':
-    resolution: {integrity: sha512-t49CNERe/YadnLn90NTTKJLKzs99xBkXElcoUTLodG6j1G0Q7jy3mXqqiHd3N5aryG2KkgOg4UAoGwgwSrZqKQ==}
+  '@vitest/eslint-plugin@1.6.1':
+    resolution: {integrity: sha512-q4ZCihsURDxhJm6bEUtJjciXtT5k3ijWR4U+0f9XdCRAzAfML5NUUSwulsFoK1AFohBieh52akKWJEIFFMLn/g==}
     engines: {node: '>=18'}
     peerDependencies:
       eslint: '>=8.57.0'
@@ -3232,8 +3232,8 @@ packages:
     resolution: {integrity: sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==}
     engines: {node: '>= 8'}
 
-  knip@5.75.1:
-    resolution: {integrity: sha512-raguBFxTUO5JKrv8rtC8wrOtzrDwWp/fOu1F1GhrHD1F3TD2fqI1Z74JB+PyFZubL+RxqOkhGStdPAvaaXSOWQ==}
+  knip@5.76.0:
+    resolution: {integrity: sha512-Qw3rbm8oFzsegHQOP1m2VgVFB/mPiY9ws0axt/OPawqaf7glft561AC1woSFO0/UrzG3KUSwckQ2CcYBwpZ9iw==}
     engines: {node: '>=18.18.0'}
     hasBin: true
     peerDependencies:
@@ -6545,7 +6545,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/eslint-plugin@1.5.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)(vitest@4.0.3(@types/debug@4.1.12)(@types/node@24.10.0)(jiti@2.6.1)(yaml@2.8.2))':
+  '@vitest/eslint-plugin@1.6.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)(vitest@4.0.3(@types/debug@4.1.12)(@types/node@24.10.0)(jiti@2.6.1)(yaml@2.8.2))':
     dependencies:
       '@typescript-eslint/scope-manager': 8.50.0
       '@typescript-eslint/utils': 8.50.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)
@@ -8236,7 +8236,7 @@ snapshots:
 
   klona@2.0.6: {}
 
-  knip@5.75.1(@types/node@24.10.0)(typescript@5.9.2):
+  knip@5.76.0(@types/node@24.10.0)(typescript@5.9.2):
     dependencies:
       '@nodelib/fs.walk': 1.2.8
       '@types/node': 24.10.0
