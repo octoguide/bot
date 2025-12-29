@@ -28,7 +28,7 @@ export abstract class DiscussionActorBase<
 > extends EntityActorBase<Data> {
 	async listComments() {
 		// TODO: Retrieve all comments, not just the first page
-		// https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
+		// https://github.com/OctoGuide/bot/issues/34
 		const response = await this.octokit.request(
 			"GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments",
 			{

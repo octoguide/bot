@@ -20,7 +20,7 @@ export abstract class IssueLikeActorBase<
 
 	async listComments() {
 		// TODO: Retrieve all pages, not just the first one
-		// https://github.com/JoshuaKGoldberg/OctoGuide/issues/34
+		// https://github.com/OctoGuide/bot/issues/34
 		const comments = await this.octokit.rest.issues.listComments({
 			issue_number: this.entityNumber,
 			owner: this.locator.owner,

@@ -14,7 +14,7 @@ jobs:
 
             The release is available on:
 
-            * [GitHub releases](https://github.com/JoshuaKGoldberg/OctoGuide/releases/tag/{release_tag})
+            * [GitHub releases](https://github.com/OctoGuide/bot/releases/tag/{release_tag})
             * [npm package (@latest dist-tag)](https://www.npmjs.com/package/octoguide/v/${{ env.npm_version }})
 
             Cheers! 📦🚀
