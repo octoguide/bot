@@ -2,12 +2,12 @@ jobs:
   contributors:
     runs-on: ubuntu-latest
     steps:
-      - name: 🪙 Get app token
-        id: app-token
+      - id: app-token
+        name: 🪙 Get app token
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
         with:
-          private-key: ${{ secrets.all_contributors_private_key }}
           app-id: ${{ vars.all_contributors_app_id }}
+          private-key: ${{ secrets.all_contributors_private_key }}
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
         with:
           fetch-depth: 0
