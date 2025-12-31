@@ -2,12 +2,18 @@ jobs:
   contributors:
     runs-on: ubuntu-latest
     steps:
+      - name: 🪙 Get app token
+        id: app-token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
+        with:
+          private-key: ${{ secrets.all_contributors_private_key }}
+          app-id: ${{ vars.all_contributors_app_id }}
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
         with:
           fetch-depth: 0
       - uses: ./.github/actions/prepare
       - env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         uses: JoshuaKGoldberg/all-contributors-auto-action@944abe4387e751b5bbb38616cb25cf4a4ca998f2 # v0.5.0
 
 name: Contributors
