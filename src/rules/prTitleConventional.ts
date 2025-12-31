@@ -6,7 +6,14 @@ import { CommitParser } from "conventional-commits-parser";
 
 import { defineRule } from "./defineRule.js";
 
-const commitParser = new CommitParser();
+// Configuring the parser to recognize breaking-change headers that
+// include a `!` before the colon (e.g., `fix!: ...` or `fix(scope)!: ...`).
+// (see https://github.com/conventional-changelog/conventional-changelog/issues/648)
+// This helps the parser populate `parsed.type` correctly in more cases.
+const commitParser = new CommitParser({
+	// Matches: type, optional (scope), '!' and the subject
+	breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
+});
 
 export const prTitleConventional = defineRule({
 	about: {
