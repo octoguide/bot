@@ -4,7 +4,7 @@
 	"description": "A friendly bot that helps contributors adhere to best practices for your repository on GitHub. 🗺️",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/OctoGuide/bot.git"
+		"url": "git+https://github.com/octoguide/bot.git"
 	},
 	"license": "MIT",
 	"author": {
