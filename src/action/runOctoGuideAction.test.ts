@@ -523,8 +523,10 @@ describe("runOctoGuideAction", () => {
 
 	it("should include enabled rules in settings when specified in inputs", async () => {
 		createMockActionInputs({
-			"rule-pr-body-descriptive": "true",
-			"rule-pr-title-conventional": "false",
+			rules: JSON.stringify({
+				"pr-body-descriptive": true,
+				"pr-title-conventional": false,
+			}),
 		});
 		createMinimalRuleExecution();
 
