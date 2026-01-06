@@ -82,8 +82,11 @@ export const getStartedRuleDisable = `jobs:
     steps:
       - uses: OctoGuide/bot${atVersion}
         with:
-+          comment-meaningful: "false"
-          github-token: \${{ secrets.GITHUB_TOKEN }}`;
+          github-token: \${{ secrets.GITHUB_TOKEN }}
++          rules: |
++            {
++              "comment-meaningful": false
++            }`;
 
 export const getStartedRuleEnable = `jobs:
   octoguide:
@@ -94,7 +97,10 @@ export const getStartedRuleEnable = `jobs:
         with:
 +          config: recommended
           github-token: \${{ secrets.GITHUB_TOKEN }}
-+          pr-title-conventional: "true"`;
++          rules: |
++            {
++              "pr-title-conventional": true
++            }`;
 
 export const getStartedRuleNone = `jobs:
   octoguide:
@@ -103,11 +109,14 @@ export const getStartedRuleNone = `jobs:
     steps:
       - uses: OctoGuide/bot${atVersion}
         with:
-+          comment-meaningful: "true"
 +          config: none
           github-token: \${{ secrets.GITHUB_TOKEN }}
-+          pr-linked-issue: "true"
-+          text-image-alt-text: "true"`;
++          rules: |
++            {
++              "comment-meaningful": true,
++              "pr-linked-issue": true,
++              "text-image-alt-text": true,
++            }`;
 
 export const getStartedIncludeBots = `jobs:
   octoguide:

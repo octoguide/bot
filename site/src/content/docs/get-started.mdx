@@ -192,9 +192,10 @@ You can customize the footer message that OctoGuide adds to its comments by prov
 
 If no custom footer is provided, OctoGuide uses its default message.
 
-### Enabling and Disabling Individual Rules
+### `rules`
 
-You can enable or disable specific rules by providing inputs with the rule names set to `"true"` or `"false"`.
+You can enable or disable specific rules by providing a `rule` input set to a string equivalent to a JSON object.
+Its keys should be the kebab-case rule names and values of booleans to enable or disable those rules.
 This allows you to customize which rules are active beyond the preset configs.
 
 **Examples:**

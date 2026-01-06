@@ -50,14 +50,19 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		throw new Error(`Unknown config provided: ${config}`);
 	}
 
-	const rules = allRules.reduce((acc: Record<string, boolean>, rule) => {
-		const ruleInput = core.getInput(`rule-${rule.about.name}`);
+	const rulesConfig = parseRulesConfig(core.getInput("rules"));
+	if (rulesConfig instanceof Error) {
+		throw new Error(`Could not parse "rules" input:`, { cause: rulesConfig });
+	}
 
-		if (!ruleInput) {
+	const rules = allRules.reduce((acc: Record<string, boolean>, rule) => {
+		const ruleInput = rulesConfig[rule.about.name];
+
+		if (ruleInput === undefined) {
 			return acc;
 		}
 
-		acc[rule.about.name] = ruleInput === "true";
+		acc[rule.about.name] = ruleInput;
 
 		return acc;
 	}, {});
@@ -174,4 +179,16 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	}
 
 	await outputActionReports(actor, entity, reports, settings);
+}
+
+function parseRulesConfig(input: string) {
+	if (input === "") {
+		return {};
+	}
+
+	try {
+		return JSON.parse(input) as Record<string, boolean | undefined>;
+	} catch (error) {
+		return error as Error;
+	}
 }

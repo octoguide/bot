@@ -24,27 +24,8 @@ inputs:
   include-bots:
     description: Run OctoGuide rules on bot-created entities (issues, PRs, discussions) and comments. By default, bots are skipped.
     required: false
-  # Individual rule overrides
-  rule-comment-meaningful:
-    description: Enable/disable the comment-meaningful rule (true/false)
-    required: false
-  rule-pr-body-descriptive:
-    description: Enable/disable the pr-body-descriptive rule (true/false)
-    required: false
-  rule-pr-branch-non-default:
-    description: Enable/disable the pr-branch-non-default rule (true/false)
-    required: false
-  rule-pr-linked-issue:
-    description: Enable/disable the pr-linked-issue rule (true/false)
-    required: false
-  rule-pr-task-completion:
-    description: Enable/disable the pr-task-completion rule (true/false)
-    required: false
-  rule-pr-title-conventional:
-    description: Enable/disable the pr-title-conventional rule (true/false)
-    required: false
-  rule-text-image-alt-text:
-    description: Enable/disable the text-image-alt-text rule (true/false)
+  rules:
+    description: JSON object to configure rule settings
     required: false
 name: OctoGuide Action
 runs:
