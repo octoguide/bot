@@ -4,9 +4,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
-      - env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        run: node dist/index.js
+      - uses: OctoGuide/bot@json-rules-config-testing
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          rules: |
+            {
+              "comment-meaningful": false
+            }
 
 name: OctoGuide
 

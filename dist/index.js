@@ -117239,6 +117239,7 @@ async function runOctoGuideRules({ auth, entity: entityInput, settings, }) {
         }
         return configRuleNames.includes(ruleName);
     });
+    console.log({ config, configRuleNames, enabledRules, ruleOverrides });
     await Promise.all(enabledRules.map(async (rule) => {
         const context = {
             locator,

@@ -118,6 +118,8 @@ export async function runOctoGuideRules({
 		return configRuleNames.includes(ruleName);
 	});
 
+	console.log({ config, configRuleNames, enabledRules, ruleOverrides });
+
 	await Promise.all(
 		enabledRules.map(async (rule) => {
 			const context: RuleContext = {
