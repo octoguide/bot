@@ -4,7 +4,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
-      - uses: OctoGuide/bot@json-rules-config-testing
+      - uses: OctoGuide/bot@76bbf908e5af5ba6c320630f27ed6c887ef70bd9
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
