@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.21.0](https://github.com/octoguide/bot/compare/0.20.0...0.21.0) (2026-01-06)
+
+### Features
+
+- switch rule configs to a JSON 'rules' input ([#429](https://github.com/octoguide/bot/issues/429)) ([04e9a4d](https://github.com/octoguide/bot/commit/04e9a4dd467bc5fdb995d99508560b35aa25803c)), closes [#406](https://github.com/octoguide/bot/issues/406)
+
 # [0.20.0](https://github.com/octoguide/bot/compare/0.18.1...0.20.0) (2026-01-05)
 
 ### Bug Fixes
