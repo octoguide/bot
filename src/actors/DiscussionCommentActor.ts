@@ -9,7 +9,7 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 	readonly metadata: Omit<CommentEntity, "data">;
 
 	constructor(
-		commentNumber: number,
+		commentId: number,
 		discussionNumber: number,
 		locator: RepositoryLocator,
 		octokit: Octokit,
@@ -17,7 +17,7 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 		super(discussionNumber, locator, octokit);
 
 		this.metadata = {
-			commentNumber,
+			commentId,
 			parentNumber: discussionNumber,
 			parentType: "discussion",
 			type: "comment",
@@ -34,7 +34,7 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 	}
 
 	async getData() {
-		return await this.getComment(this.metadata.commentNumber);
+		return await this.getComment(this.metadata.commentId);
 	}
 
 	private async getComment(number: number) {

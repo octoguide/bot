@@ -889,6 +889,203 @@ describe("runOctoGuideAction", () => {
 		});
 	});
 
+	describe("comment entity handling", () => {
+		it("should handle pull request comment with parent PR number", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					commentId: 789,
+					data: {
+						html_url: "https://github.com/owner/repo/pull/456#issuecomment-789",
+					} as Entity["data"],
+					parentNumber: 456,
+					parentType: "pull_request" as const,
+					type: "comment" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						comment: {
+							html_url:
+								"https://github.com/owner/repo/pull/456#issuecomment-789",
+							id: 789,
+						},
+						issue: undefined,
+						pull_request: {
+							number: 456,
+						},
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						commentId: 789,
+						parentNumber: 456,
+						parentType: "pull_request",
+						type: "comment",
+					}),
+				}),
+			);
+		});
+
+		it("should handle discussion comment with parent discussion number", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					commentId: 321,
+					data: {
+						html_url:
+							"https://github.com/owner/repo/discussions/111#discussioncomment-321",
+					} as Entity["data"],
+					parentNumber: 111,
+					parentType: "discussion" as const,
+					type: "comment" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						comment: {
+							html_url:
+								"https://github.com/owner/repo/discussions/111#discussioncomment-321",
+							id: 321,
+						},
+						discussion: {
+							number: 111,
+						},
+						issue: undefined,
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						commentId: 321,
+						parentNumber: 111,
+						parentType: "discussion",
+						type: "comment",
+					}),
+				}),
+			);
+		});
+
+		it("should throw error when comment has no parent entity with number", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							comment: {
+								html_url:
+									"https://github.com/owner/repo/issues/123#issuecomment-456",
+								id: 456,
+							},
+							issue: undefined,
+						}),
+					),
+				),
+			).rejects.toThrow(
+				"Entity payload missing valid number property in parent entity",
+			);
+		});
+
+		it("should throw error when comment parent has invalid number", async () => {
+			createMockActionInputs();
+
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							comment: {
+								html_url:
+									"https://github.com/owner/repo/issues/123#issuecomment-456",
+								id: 456,
+							},
+							issue: {
+								number: "invalid" as unknown as number,
+							},
+						}),
+					),
+				),
+			).rejects.toThrow(
+				"Entity payload missing valid number property in parent entity",
+			);
+		});
+
+		it("should handle issue comment where parent number comes from issue payload", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					commentId: 3720278438,
+					data: {
+						body: "Test comment body",
+						html_url:
+							"https://github.com/flint-fyi/flint/issues/1332#issuecomment-3720278438",
+						id: 3720278438,
+						user: { login: "testuser", type: "User" },
+					} as Entity["data"],
+					parentNumber: 1332,
+					parentType: "issue" as const,
+					type: "comment" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						comment: {
+							body: "Test comment body",
+							html_url:
+								"https://github.com/flint-fyi/flint/issues/1332#issuecomment-3720278438",
+							id: 3720278438,
+							user: { login: "testuser", type: "User" },
+						},
+						issue: {
+							html_url: "https://github.com/flint-fyi/flint/issues/1332",
+							number: 1332,
+						},
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						commentId: 3720278438,
+						parentNumber: 1332,
+						parentType: "issue",
+						type: "comment",
+					}),
+				}),
+			);
+		});
+	});
+
 	describe("include-bots configuration", () => {
 		describe("user is a bot", () => {
 			it("should skip rule execution when include-bots defaults to false", async () => {

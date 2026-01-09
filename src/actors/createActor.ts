@@ -4,7 +4,7 @@ import { DiscussionActor } from "./DiscussionActor.js";
 import { DiscussionCommentActor } from "./DiscussionCommentActor.js";
 import { IssueActor } from "./IssueActor.js";
 import { IssueLikeCommentActor } from "./IssueLikeCommentActor.js";
-import { parseEntityUrl } from "./parseEntityUrl.js";
+import { parseCommentId, parseEntityUrl } from "./parseEntity.js";
 import { parseLocator } from "./parseLocator.js";
 import { PullRequestActor } from "./PullRequestActor.js";
 
@@ -21,14 +21,14 @@ export function createActor(octokit: Octokit, url: string) {
 
 	const [urlType, parentNumber] = matches;
 
-	const commentNumber = /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
+	const commentId = parseCommentId(url);
 
 	const actor = (() => {
 		switch (urlType) {
 			case "discussions":
-				return commentNumber
+				return commentId
 					? new DiscussionCommentActor(
-							+commentNumber,
+							+commentId,
 							+parentNumber,
 							locator,
 							octokit,
@@ -38,9 +38,9 @@ export function createActor(octokit: Octokit, url: string) {
 			case "issues":
 			case "pull": {
 				const parentType = urlType === "issues" ? "issue" : "pull_request";
-				if (commentNumber) {
+				if (commentId) {
 					return new IssueLikeCommentActor(
-						+commentNumber,
+						+commentId,
 						locator,
 						octokit,
 						+parentNumber,
