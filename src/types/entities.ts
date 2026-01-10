@@ -11,7 +11,7 @@ export type CommentData =
 	RestEndpointMethodTypes["issues"]["getComment"]["response"]["data"];
 
 export interface CommentEntity {
-	commentNumber: number;
+	commentId: number;
 	data: CommentData;
 	parentNumber: number;
 	parentType: CommentAbleEntityType;
