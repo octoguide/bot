@@ -1045,7 +1045,7 @@ describe("runOctoGuideAction", () => {
 						html_url:
 							"https://github.com/flint-fyi/flint/issues/1332#issuecomment-3720278438",
 						id: 3720278438,
-						user: { login: "testuser", type: "User" },
+						user: { login: "test_user", type: "User" },
 					} as Entity["data"],
 					parentNumber: 1332,
 					parentType: "issue" as const,
@@ -1063,7 +1063,7 @@ describe("runOctoGuideAction", () => {
 							html_url:
 								"https://github.com/flint-fyi/flint/issues/1332#issuecomment-3720278438",
 							id: 3720278438,
-							user: { login: "testuser", type: "User" },
+							user: { login: "test_user", type: "User" },
 						},
 						issue: {
 							html_url: "https://github.com/flint-fyi/flint/issues/1332",
