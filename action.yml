@@ -19,7 +19,7 @@ inputs:
     required: false
   include-associations:
     default: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR"
-    description: "Comma-separated list of GitHub author associations to include for rule checking. NONE is always included. Default: FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER."
+    description: "Comma-separated list of GitHub author associations to include for rule checking. NONE is always included. Default: FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR."
     required: false
   include-bots:
     description: Run OctoGuide rules on bot-created entities (issues, PRs, discussions) and comments. By default, bots are skipped.
