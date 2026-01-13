@@ -18,7 +18,7 @@ inputs:
     description: GitHub token (PAT) with repo and workflow permissions.
     required: false
   include-associations:
-    default: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER"
+    default: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR"
     description: "Comma-separated list of GitHub author associations to include for rule checking. NONE is always included. Default: FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER."
     required: false
   include-bots:
