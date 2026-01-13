@@ -3,6 +3,8 @@ import type * as github from "@actions/github";
 import * as core from "@actions/core";
 
 import { parseCommentId, parseEntityUrl } from "../actors/parseEntity.js";
+import { parseIncludeAssociations } from "../execution/parseIncludeAssociations.js";
+import { parseRulesConfig } from "../execution/parseRulesConfig.js";
 import { runOctoGuideRules } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
 import { allRules } from "../rules/all.js";
@@ -75,6 +77,12 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	}, {});
 
 	const settings = {
+		baseOptions: {
+			includeAssociations: parseIncludeAssociations(
+				core.getInput("include-associations"),
+			),
+			includeBots: core.getInput("include-bots") === "true",
+		},
 		comments: {
 			footer:
 				core.getInput("comment-footer") ||
@@ -123,66 +131,33 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		entityType,
 	);
 
-	/**
-	 * Determines if an entity was created by a bot based on the user.type field.
-	 * @param entity The entity to check
-	 * @returns true if the entity was created by a bot (user.type === "Bot"), false otherwise
-	 */
-	const isEntityFromBot = (entity: Entity): boolean => {
-		return (
-			"user" in entity.data &&
-			!!entity.data.user &&
-			"type" in entity.data.user &&
-			entity.data.user.type === "Bot"
-		);
-	};
+	// TODO: can we still get fast-fail?
+	// what if the user hasn't provided any options?
 
-	const includeBots = core.getInput("include-bots") === "true";
-	if (!includeBots && isEntityFromBot(entityInput)) {
-		core.info(`Skipping OctoGuide rules for bot-created ${entityType}: ${url}`);
-		return;
-	}
+	// // TODO: move down to rule-level
 
-	/**
-	 * Determines if an entity should be included based on its author association.
-	 * Uses the author_association field from GitHub's webhook payload.
-	 * @param entity The entity to check
-	 * @param includeAssociations Set of allowed author associations
-	 * @returns true if the entity should be included, false if it should be skipped
-	 */
-	const shouldIncludeEntity = (
-		entity: Entity,
-		includeAssociations: Set<string>,
-	): boolean => {
-		if ("author_association" in entity.data) {
-			const association = entity.data.author_association;
-			return includeAssociations.has(association);
-		}
+	// if (!settings.baseOptions.includeBots && isEntityFromBot(entityInput)) {
+	// 	core.info(`Skipping OctoGuide rules for bot-created ${entityType}: ${url}`);
+	// 	return;
+	// }
 
-		return true;
-	};
+	// // TODO: move associations down to rule-level
 
-	const includeAssociationsInput = core.getInput("include-associations");
-
-	const includeAssociations = new Set(
-		includeAssociationsInput
-			.split(",")
-			.map((a) => a.trim())
-			.filter((a) => a.length > 0),
-	);
-
-	includeAssociations.add("NONE");
-
-	if (!shouldIncludeEntity(entityInput, includeAssociations)) {
-		const association =
-			"author_association" in entityInput.data
-				? entityInput.data.author_association
-				: "UNKNOWN";
-		core.info(
-			`Skipping OctoGuide rules for ${association} created ${entityType}: ${url}`,
-		);
-		return;
-	}
+	// if (
+	// 	!isEntityAssociationIncluded(
+	// 		entityInput,
+	// 		settings.baseOptions.includeAssociations,
+	// 	)
+	// ) {
+	// 	const association =
+	// 		"author_association" in entityInput.data
+	// 			? entityInput.data.author_association
+	// 			: "UNKNOWN";
+	// 	core.info(
+	// 		`Skipping OctoGuide rules for ${association} created ${entityType}: ${url}`,
+	// 	);
+	// 	return;
+	// }
 
 	const { actor, entity, reports } = await runOctoGuideRules({
 		auth,
@@ -425,16 +400,4 @@ function isIssueLikeData(
 		"html_url" in data &&
 		typeof data.html_url === "string"
 	);
-}
-
-function parseRulesConfig(input: string) {
-	if (input === "") {
-		return {};
-	}
-
-	try {
-		return JSON.parse(input) as Record<string, boolean | undefined>;
-	} catch (error) {
-		return error as Error;
-	}
 }

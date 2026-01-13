@@ -89,6 +89,29 @@ export interface RuleContext {
 	 * Registers a new violation.
 	 */
 	report: RuleReporter;
+
+	/**
+	 * Processed options for any rule that may be provided by the user.
+	 */
+	options?: RuleOptions;
+}
+
+/**
+ * Options for any rule that as provided by the user.
+ */
+export interface RuleOptionsRaw {
+	[i: string]: unknown;
+	"include-associations"?: string;
+	"include-bots"?: boolean;
+}
+
+/**
+ * Processed options for any rule that may be provided by the user.
+ */
+export interface RuleOptions {
+	[i: string]: unknown;
+	"include-associations"?: Set<string>;
+	"include-bots"?: boolean;
 }
 
 /**
