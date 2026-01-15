@@ -8,6 +8,8 @@ import type { RuleContext } from "./types/rules.js";
 import type { Settings } from "./types/settings.js";
 
 import { createActor } from "./actors/createActor.js";
+import { isRuleSkippedForEntity } from "./execution/isRuleSkippedForEntity.js";
+import { mergeRuleOptions } from "./execution/mergeRuleOptions.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
 import { allRules } from "./rules/all.js";
 import { configs } from "./rules/configs.js";
@@ -31,7 +33,7 @@ export interface RunOctoGuideRulesOptions {
 	/**
 	 * Settings for the run, including rules to enable.
 	 */
-	settings?: Settings;
+	settings: Settings;
 }
 
 /**
@@ -102,11 +104,11 @@ export async function runOctoGuideRules({
 
 	const reports: RuleReport[] = [];
 
-	const config = settings?.config ?? "recommended";
+	const config = settings.config ?? "recommended";
 	const configRuleNames = Object.values(configs[config]).map(
 		(rule) => rule.about.name,
 	);
-	const ruleOverrides = settings?.rules ?? {};
+	const ruleOverrides = settings.rules ?? {};
 
 	const enabledRules = allRules.filter((rule) => {
 		const ruleName = rule.about.name;
@@ -120,9 +122,16 @@ export async function runOctoGuideRules({
 
 	await Promise.all(
 		enabledRules.map(async (rule) => {
+			// TODO: merge with parent options
+			const options = mergeRuleOptions(
+				settings.baseOptions,
+				ruleOverrides[rule.about.name],
+			);
+
 			const context: RuleContext = {
 				locator,
 				octokit,
+				options: typeof options === "object" ? options : undefined,
 				report(data) {
 					reports.push({
 						about: rule.about,
@@ -131,7 +140,9 @@ export async function runOctoGuideRules({
 				},
 			};
 
-			await runRuleOnEntity(context, rule, entity);
+			if (!isRuleSkippedForEntity(entity, options, rule)) {
+				await runRuleOnEntity(context, rule, entity);
+			}
 		}),
 	);
 
