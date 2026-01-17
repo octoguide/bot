@@ -9,10 +9,11 @@ export function parseEntityUrl(url: string) {
 
 /**
  * Parses a GitHub comment URL to extract the comment ID.
- * Matches both issue comments (#issuecomment-123) and discussion comments (#discussioncomment-456).
+ * Matches issue comments (#issuecomment-123), discussion comments (#discussioncomment-456),
+ * and pull request review comments (#discussion_r123).
  * @param url The GitHub comment URL
  * @returns The comment ID as a string, or undefined if URL doesn't contain a comment
  */
 export function parseCommentId(url: string): string | undefined {
-	return /#(?:discussion|issue)comment-(\d+)/.exec(url)?.[1];
+	return /#(?:(?:discussion|issue)comment-|discussion_r)(\d+)/.exec(url)?.[1];
 }
