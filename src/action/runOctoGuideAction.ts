@@ -90,7 +90,8 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		throw new Error(`Could not determine entity type from URL: ${url}`);
 	}
 
-	const [urlType] = matches;
+	const [urlType, urlNumberStr] = matches;
+	const urlNumber = parseInt(urlNumberStr, 10);
 
 	const commentId = parseCommentId(url);
 	const isCommentEntity = !!commentId;
@@ -110,8 +111,8 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	const entityOrParentNumber = getEntityNumber(
 		isCommentEntity,
-		target,
 		payload,
+		urlNumber,
 	);
 
 	const entityInput = createEntityInput(
@@ -202,33 +203,36 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 /**
  * Extracts the entity number from the payload.
- * For comments, gets the number from the parent entity (issue/PR/discussion).
- * For non-comments, gets the number directly from the target entity.
+ * For non-comment entities, uses the URL number.
+ * For comment entities, prefers the parent entity number from the payload, but falls back
+ * to the URL number for PR review comments (which lack a parent in the payload).
+ * @remarks
+ * Issue comments, PR conversation comments, and discussion comments will have
+ * payload.issue, payload.pull_request, or payload.discussion with a number property.
+ * PR review comments do not include a parent entity in the payload.
  * @param isComment Whether this is a comment entity
- * @param target The target entity data from the payload
  * @param payload The GitHub webhook payload
+ * @param urlNumber The number extracted from the URL
  * @returns The entity or parent number
- * @throws Error if no valid number can be found
  */
 function getEntityNumber(
 	isComment: boolean,
-	target: EntityData,
 	payload: typeof github.context.payload,
+	urlNumber: number,
 ): number {
-	const entity: EntityData | undefined = isComment
-		? ((payload.discussion ?? payload.issue ?? payload.pull_request) as
-				| EntityData
-				| undefined)
-		: target;
-
-	if (hasValidNumber(entity)) {
-		return entity.number;
+	if (!isComment) {
+		return urlNumber;
 	}
 
-	const errorContext = isComment ? " in parent entity" : "";
-	throw new Error(
-		`Entity payload missing valid number property${errorContext}`,
-	);
+	const parentEntity = (payload.discussion ??
+		payload.issue ??
+		payload.pull_request) as unknown;
+
+	if (hasValidNumber(parentEntity)) {
+		return parentEntity.number;
+	}
+
+	return urlNumber;
 }
 
 /**
