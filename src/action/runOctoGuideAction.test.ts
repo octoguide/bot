@@ -646,6 +646,47 @@ describe("runOctoGuideAction", () => {
 				),
 			).resolves.not.toThrow();
 		});
+
+		it("should handle discussion entity", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					data: {
+						html_url: "https://github.com/owner/repo/discussions/999",
+					} as Entity["data"],
+					number: 999,
+					type: "discussion" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						comment: undefined,
+						discussion: {
+							html_url: "https://github.com/owner/repo/discussions/999",
+							number: 999,
+						},
+						issue: undefined,
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						number: 999,
+						type: "discussion",
+					}),
+				}),
+			);
+		});
 	});
 
 	describe("comment entity handling", () => {
@@ -1368,6 +1409,31 @@ describe("runOctoGuideAction", () => {
 
 				expect(mockRunOctoGuideRules).toHaveBeenCalled();
 			});
+		});
+	});
+
+	describe("rules input parsing", () => {
+		it("should throw error when rules input contains invalid JSON", async () => {
+			createMockActionInputs({ rules: "{invalid json}" });
+
+			await expect(
+				runOctoGuideAction(createMockContext(createMockPayload())),
+			).rejects.toThrow('Could not parse "rules" input:');
+		});
+
+		it("should handle empty rules input", async () => {
+			createMockActionInputs({ rules: "" });
+			createMinimalRuleExecution();
+
+			await runOctoGuideAction(createMockContext(createMockPayload()));
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					settings: expect.objectContaining({
+						rules: {},
+					}),
+				}),
+			);
 		});
 	});
 });
