@@ -553,57 +553,7 @@ describe("runOctoGuideAction", () => {
 		);
 	});
 
-	describe("entity payload validation", () => {
-		it("should throw error when entity payload is missing number property", async () => {
-			createMockActionInputs();
-
-			await expect(
-				runOctoGuideAction(
-					createMockContext(
-						createMockPayload({
-							issue: {
-								html_url: "https://github.com/test/repo/issues/1",
-							} as unknown as typeof github.context.payload.issue,
-						}),
-					),
-				),
-			).rejects.toThrow("Entity payload missing valid number property");
-		});
-
-		it("should throw error when entity payload has invalid number property", async () => {
-			createMockActionInputs();
-
-			await expect(
-				runOctoGuideAction(
-					createMockContext(
-						createMockPayload({
-							issue: {
-								html_url: "https://github.com/test/repo/issues/1",
-								number: "invalid" as unknown as number,
-							},
-						}),
-					),
-				),
-			).rejects.toThrow("Entity payload missing valid number property");
-		});
-
-		it("should throw error when entity payload has negative number", async () => {
-			createMockActionInputs();
-
-			await expect(
-				runOctoGuideAction(
-					createMockContext(
-						createMockPayload({
-							issue: {
-								html_url: "https://github.com/test/repo/issues/1",
-								number: -1,
-							},
-						}),
-					),
-				),
-			).rejects.toThrow("Entity payload missing valid number property");
-		});
-
+	describe("URL parsing and entity creation", () => {
 		it("should throw error when entity payload is missing html_url", async () => {
 			createMockActionInputs();
 
@@ -618,151 +568,6 @@ describe("runOctoGuideAction", () => {
 					),
 				),
 			).rejects.toThrow("Target entity's html_url is not a string.");
-		});
-
-		it("should not throw error when entity payload has null body and user properties", async () => {
-			createMockActionInputs();
-			createMinimalRuleExecution();
-
-			// Should not throw with null values for optional properties
-			await expect(
-				runOctoGuideAction(
-					createMockContext(
-						createMockPayload({
-							issue: {
-								body: null as unknown as string,
-								html_url: "https://github.com/test/repo/issues/1",
-								number: 1,
-								user: null as unknown as object,
-							},
-						}),
-					),
-				),
-			).resolves.not.toThrow();
-		});
-	});
-
-	describe("entity type detection from URL", () => {
-		it("should detect issue entity type when URL contains /issues/", async () => {
-			createMockActionInputs();
-			const actor = createMockActor();
-			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
-
-			const mockResult = {
-				actor,
-				entity: {
-					data: {
-						html_url: "https://github.com/owner/repo/issues/123",
-						number: 123,
-					} as Entity["data"],
-					number: 123,
-					type: "issue" as const,
-				},
-				reports: [],
-			};
-			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
-
-			await runOctoGuideAction(
-				createMockContext(
-					createMockPayload({
-						issue: {
-							html_url: "https://github.com/owner/repo/issues/123",
-							number: 123,
-						},
-					}),
-				),
-			);
-
-			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
-				expect.objectContaining({
-					entity: expect.objectContaining({
-						number: 123,
-						type: "issue",
-					}),
-				}),
-			);
-		});
-
-		it("should detect pull request entity type when URL contains /pull/", async () => {
-			createMockActionInputs();
-			const actor = createMockActor();
-			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
-
-			const mockResult = {
-				actor,
-				entity: {
-					data: {
-						html_url: "https://github.com/owner/repo/pull/456",
-						number: 456,
-					} as Entity["data"],
-					number: 456,
-					type: "pull_request" as const,
-				},
-				reports: [],
-			};
-			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
-
-			await runOctoGuideAction(
-				createMockContext(
-					createMockPayload({
-						issue: undefined,
-						pull_request: {
-							html_url: "https://github.com/owner/repo/pull/456",
-							number: 456,
-						},
-					}),
-				),
-			);
-
-			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
-				expect.objectContaining({
-					entity: expect.objectContaining({
-						number: 456,
-						type: "pull_request",
-					}),
-				}),
-			);
-		});
-
-		it("should detect discussion entity type when URL contains /discussions/", async () => {
-			createMockActionInputs();
-			const actor = createMockActor();
-			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
-
-			const mockResult = {
-				actor,
-				entity: {
-					data: {
-						html_url: "https://github.com/owner/repo/discussions/789",
-						number: 789,
-					} as Entity["data"],
-					number: 789,
-					type: "discussion" as const,
-				},
-				reports: [],
-			};
-			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
-
-			await runOctoGuideAction(
-				createMockContext(
-					createMockPayload({
-						discussion: {
-							html_url: "https://github.com/owner/repo/discussions/789",
-							number: 789,
-						},
-						issue: undefined,
-					}),
-				),
-			);
-
-			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
-				expect.objectContaining({
-					entity: expect.objectContaining({
-						number: 789,
-						type: "discussion",
-					}),
-				}),
-			);
 		});
 
 		it("should throw error when URL contains invalid path patterns", async () => {
@@ -822,32 +627,27 @@ describe("runOctoGuideAction", () => {
 			);
 		});
 
-		it("should detect entity type when URL contains additional path segments", async () => {
+		it("should handle entity payload with null body and user properties", async () => {
 			createMockActionInputs();
 			createMinimalRuleExecution();
 
-			await runOctoGuideAction(
-				createMockContext(
-					createMockPayload({
-						issue: {
-							html_url: "https://github.com/owner/repo/issues/123#comment-456",
-							number: 123,
-						},
-					}),
+			await expect(
+				runOctoGuideAction(
+					createMockContext(
+						createMockPayload({
+							issue: {
+								body: null as unknown as string,
+								html_url: "https://github.com/test/repo/issues/1",
+								number: 1,
+								user: null as unknown as object,
+							},
+						}),
+					),
 				),
-			);
-
-			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
-				expect.objectContaining({
-					entity: expect.objectContaining({
-						number: 123,
-						type: "issue",
-					}),
-				}),
-			);
+			).resolves.not.toThrow();
 		});
 
-		it("should detect entity type when URL contains query parameters", async () => {
+		it("should handle discussion entity", async () => {
 			createMockActionInputs();
 			const actor = createMockActor();
 			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
@@ -856,11 +656,10 @@ describe("runOctoGuideAction", () => {
 				actor,
 				entity: {
 					data: {
-						html_url: "https://github.com/owner/repo/pull/789?tab=files",
-						number: 789,
+						html_url: "https://github.com/owner/repo/discussions/999",
 					} as Entity["data"],
-					number: 789,
-					type: "pull_request" as const,
+					number: 999,
+					type: "discussion" as const,
 				},
 				reports: [],
 			};
@@ -869,11 +668,12 @@ describe("runOctoGuideAction", () => {
 			await runOctoGuideAction(
 				createMockContext(
 					createMockPayload({
-						issue: undefined,
-						pull_request: {
-							html_url: "https://github.com/owner/repo/pull/789?tab=files",
-							number: 789,
+						comment: undefined,
+						discussion: {
+							html_url: "https://github.com/owner/repo/discussions/999",
+							number: 999,
 						},
+						issue: undefined,
 					}),
 				),
 			);
@@ -881,8 +681,8 @@ describe("runOctoGuideAction", () => {
 			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
 				expect.objectContaining({
 					entity: expect.objectContaining({
-						number: 789,
-						type: "pull_request",
+						number: 999,
+						type: "discussion",
 					}),
 				}),
 			);
@@ -987,47 +787,81 @@ describe("runOctoGuideAction", () => {
 			);
 		});
 
-		it("should throw error when comment has no parent entity with number", async () => {
+		it("should extract parent number from URL when PR review comment payload lacks pull_request object", async () => {
 			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
 
-			await expect(
-				runOctoGuideAction(
-					createMockContext(
-						createMockPayload({
-							comment: {
-								html_url:
-									"https://github.com/owner/repo/issues/123#issuecomment-456",
-								id: 456,
-							},
-							issue: undefined,
-						}),
-					),
+			const mockResult = {
+				actor,
+				entity: {
+					commentId: 456,
+					data: {
+						html_url:
+							"https://github.com/owner/repo/issues/123#issuecomment-456",
+						id: 456,
+					} as Entity["data"],
+					parentNumber: 123,
+					parentType: "issue" as const,
+					type: "comment" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						comment: {
+							html_url:
+								"https://github.com/owner/repo/issues/123#issuecomment-456",
+							id: 456,
+						},
+						issue: undefined,
+					}),
 				),
-			).rejects.toThrow(
-				"Entity payload missing valid number property in parent entity",
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						commentId: 456,
+						parentNumber: 123,
+						parentType: "issue",
+						type: "comment",
+					}),
+				}),
 			);
 		});
 
-		it("should throw error when comment parent has invalid number", async () => {
+		it("should use URL number when comment parent has invalid number", async () => {
 			createMockActionInputs();
+			createMinimalRuleExecution();
 
-			await expect(
-				runOctoGuideAction(
-					createMockContext(
-						createMockPayload({
-							comment: {
-								html_url:
-									"https://github.com/owner/repo/issues/123#issuecomment-456",
-								id: 456,
-							},
-							issue: {
-								number: "invalid" as unknown as number,
-							},
-						}),
-					),
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						comment: {
+							html_url:
+								"https://github.com/owner/repo/issues/123#issuecomment-456",
+							id: 456,
+						},
+						issue: {
+							number: "invalid" as unknown as number,
+						},
+					}),
 				),
-			).rejects.toThrow(
-				"Entity payload missing valid number property in parent entity",
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						commentId: 456,
+						parentNumber: 123,
+						parentType: "issue",
+						type: "comment",
+					}),
+				}),
 			);
 		});
 
@@ -1079,6 +913,57 @@ describe("runOctoGuideAction", () => {
 						commentId: 3720278438,
 						parentNumber: 1332,
 						parentType: "issue",
+						type: "comment",
+					}),
+				}),
+			);
+		});
+
+		it("should handle pull request review comment where parent number comes from URL", async () => {
+			createMockActionInputs();
+			const actor = createMockActor();
+			(actor.listComments as ReturnType<typeof vi.fn>).mockResolvedValue([]);
+
+			const mockResult = {
+				actor,
+				entity: {
+					commentId: 2699746747,
+					data: {
+						body: "Very tiny nit for the future",
+						html_url:
+							"https://github.com/flint-fyi/flint/pull/1513#discussion_r2699746747",
+						id: 2699746747,
+					} as Entity["data"],
+					parentNumber: 1513,
+					parentType: "pull_request" as const,
+					type: "comment" as const,
+				},
+				reports: [],
+			};
+			mockRunOctoGuideRules.mockResolvedValueOnce(mockResult);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createMockPayload({
+						comment: {
+							body: "Very tiny nit for the future",
+							html_url:
+								"https://github.com/flint-fyi/flint/pull/1513#discussion_r2699746747",
+							id: 2699746747,
+						},
+						// Note: PR review comment payloads don't have pull_request with number
+						issue: undefined,
+						pull_request: undefined,
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					entity: expect.objectContaining({
+						commentId: 2699746747,
+						parentNumber: 1513,
+						parentType: "pull_request",
 						type: "comment",
 					}),
 				}),
@@ -1524,6 +1409,31 @@ describe("runOctoGuideAction", () => {
 
 				expect(mockRunOctoGuideRules).toHaveBeenCalled();
 			});
+		});
+	});
+
+	describe("rules input parsing", () => {
+		it("should throw error when rules input contains invalid JSON", async () => {
+			createMockActionInputs({ rules: "{invalid json}" });
+
+			await expect(
+				runOctoGuideAction(createMockContext(createMockPayload())),
+			).rejects.toThrow('Could not parse "rules" input:');
+		});
+
+		it("should handle empty rules input", async () => {
+			createMockActionInputs({ rules: "" });
+			createMinimalRuleExecution();
+
+			await runOctoGuideAction(createMockContext(createMockPayload()));
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({
+					settings: expect.objectContaining({
+						rules: {},
+					}),
+				}),
+			);
 		});
 	});
 });

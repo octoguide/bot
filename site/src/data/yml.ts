@@ -136,7 +136,7 @@ export const getStartedIncludeAssociationsDefault = `jobs:
       - uses: OctoGuide/bot${atVersion}
         with:
           github-token: \${{ secrets.GITHUB_TOKEN }}
-+          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER"`;
++          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR"`;
 
 export const getStartedIncludeCollaborators = `jobs:
   octoguide:
@@ -146,7 +146,7 @@ export const getStartedIncludeCollaborators = `jobs:
       - uses: OctoGuide/bot${atVersion}
         with:
           github-token: \${{ secrets.GITHUB_TOKEN }}
-+          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,MEMBER,COLLABORATOR,OWNER"`;
++          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,COLLABORATOR,MEMBER,OWNER"`;
 
 export const getStartedIncludeFirstTimers = `jobs:
   octoguide:

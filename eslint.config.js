@@ -57,6 +57,11 @@ export default defineConfig(
 				"error",
 				{ allowNumber: true },
 			],
+			"jsdoc/check-tag-names": [
+				"error",
+				// https://tsdoc.org/pages/tags/remarks/
+				{ definedTags: ["remarks"], typed: true },
+			],
 			"n/no-missing-import": "off",
 			// no-unpublished-bin rule is no longer necessary and will be removed from eslint-plugin-n recommended in v18
 			"n/no-unpublished-bin": "off",

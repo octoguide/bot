@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.21.3](https://github.com/octoguide/bot/compare/0.21.2...0.21.3) (2026-01-18)
+
+### Bug Fixes
+
+- entity number for pr review comments ([#444](https://github.com/octoguide/bot/issues/444)) ([dc8ab60](https://github.com/octoguide/bot/commit/dc8ab601f58adab64e0429d00902a5a9f4904291)), closes [#443](https://github.com/octoguide/bot/issues/443)
+
+## [0.21.2](https://github.com/octoguide/bot/compare/0.21.1...0.21.2) (2026-01-13)
+
+### Bug Fixes
+
+- associations in orgs ([#438](https://github.com/octoguide/bot/issues/438)) ([f360a27](https://github.com/octoguide/bot/commit/f360a27061827ff61b3772fa7cdaa80b969cc672)), closes [#439](https://github.com/octoguide/bot/issues/439)
+
 ## [0.21.1](https://github.com/octoguide/bot/compare/0.21.0...0.21.1) (2026-01-13)
 
 ### Bug Fixes

@@ -1,6 +1,6 @@
 {
 	"name": "octoguide",
-	"version": "0.21.1",
+	"version": "0.21.3",
 	"description": "A friendly bot that helps contributors adhere to best practices for your repository on GitHub. 🗺️",
 	"repository": {
 		"type": "git",
