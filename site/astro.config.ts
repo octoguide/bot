@@ -2,6 +2,7 @@ import starlight from "@astrojs/starlight";
 import { konamiEmojiBlast } from "@konami-emoji-blast/astro";
 import { defineConfig, fontProviders } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
+import starlightTypeDoc from "starlight-typedoc";
 
 export default defineConfig({
 	experimental: {
@@ -31,6 +32,28 @@ export default defineConfig({
 			logo: {
 				src: "./src/assets/favicon.png",
 			},
+			plugins: [
+				starlightTypeDoc({
+					entryPoints: ["../src/index.ts"],
+					output: "generated/api",
+					sidebar: {
+						label: "API",
+					},
+					tsconfig: "../tsconfig.json",
+					typeDoc: {
+						cleanOutputDir: true,
+						disableSources: true,
+						entryFileName: "index",
+						excludeInternal: true,
+						excludePrivate: true,
+						groupOrder: ["Functions", "Interfaces", "*"],
+						indexFormat: "table",
+						name: "API",
+						readme: "none",
+						sort: ["source-order"],
+					},
+				}),
+			],
 			sidebar: [
 				{
 					label: "Get Started",
@@ -51,10 +74,16 @@ export default defineConfig({
 					link: "cli",
 				},
 				{
-					autogenerate: {
-						directory: "docs",
-					},
 					collapsed: true,
+					items: [
+						{
+							autogenerate: {
+								directory: "docs",
+							},
+							label: "Guides",
+						},
+						{ label: "API", link: "generated/api" },
+					],
 					label: "Technical Docs",
 				},
 			],
@@ -73,5 +102,5 @@ export default defineConfig({
 	],
 	outDir: "../dist-site",
 	site: "https://octo.guide",
-	trailingSlash: "never",
+	trailingSlash: "ignore",
 });
