@@ -2,7 +2,7 @@
 editUrl: false
 next: false
 prev: false
-title: "API"
+title: "Package API"
 ---
 
 The [octoguide](https://www.npmjs.com/package/octoguide) package

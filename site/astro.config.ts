@@ -37,7 +37,7 @@ export default defineConfig({
 					entryPoints: ["../src/index.ts"],
 					output: "generated/api",
 					sidebar: {
-						label: "API",
+						label: "Package API",
 					},
 					tsconfig: "../tsconfig.json",
 					typeDoc: {
@@ -48,7 +48,7 @@ export default defineConfig({
 						excludePrivate: true,
 						groupOrder: ["Functions", "Interfaces", "*"],
 						indexFormat: "table",
-						name: "API",
+						name: "Package API",
 						readme: "none",
 						sort: ["source-order"],
 					},
@@ -76,13 +76,14 @@ export default defineConfig({
 				{
 					collapsed: true,
 					items: [
+						{ label: "Installation", link: "installation" },
+						{ label: "Package API", link: "generated/api" },
 						{
 							autogenerate: {
-								directory: "docs",
+								directory: "docs/guides",
 							},
 							label: "Guides",
 						},
-						{ label: "API", link: "generated/api" },
 					],
 					label: "Technical Docs",
 				},
