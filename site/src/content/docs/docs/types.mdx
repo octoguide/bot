@@ -3,7 +3,7 @@ description: Types used in OctoGuide's API and rules.
 title: Types
 ---
 
-These type shapes are shared between OctoGuide's [API](./api) and [Building Rules](./building-rules).
+These type shapes are shared between OctoGuide's [API](/docs/api) and [Building Rules](/docs/building-rules).
 
 ## `Entity`
 
@@ -37,7 +37,7 @@ Shared context provided to rules when they run on an entity.
 
 - `locator`: Contains the `owner` and `repository` strings of the entity.
 - `octokit`: [`Octokit`](https://octokit.github.io/rest.js): instance that can send GitHub API calls.
-- `report`: [`RuleReporter`](#rulereporter): receives [`RuleReportData`](#rulerpeportdata) to register a new violation.
+- `report`: [`RuleReporter`](#rulereporter): receives [`RuleReportData`](#rulereportdata) to register a new violation.
 
 See [`rules.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/rules.ts) for the specifics of the `RuleContext` interface.
 
@@ -46,7 +46,7 @@ See [`rules.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/rules.ts) 
 Shared context function that a rule can use to register a new violation.
 Receives a [`RuleReportData`](#rulereportdata) object.
 
-See [Building Rules](./building-rules) for how these are used.
+See [Building Rules](/docs/building-rules) for how these are used.
 
 See [`rules.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/rules.ts) for the specifics of the `RuleReporter` interface.
 
@@ -69,6 +69,6 @@ Contains:
 - `secondary?: string[]`: Any additional sentences detailing the violation.
 - `suggestion: string[]`: Steps the user can take to resolve the violation.
 
-See [Building Rules](./building-rules) for how these are used.
+See [Building Rules](/docs/building-rules) for how these are used.
 
 See [`reports.ts`](https://github.com/OctoGuide/bot/blob/main/src/types/reports.ts) for the specifics of the `RuleReportData` interface.
