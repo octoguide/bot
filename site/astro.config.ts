@@ -19,7 +19,6 @@ export default defineConfig({
 	},
 	integrations: [
 		konamiEmojiBlast(),
-		starlightLinksValidator(),
 		starlight({
 			components: {
 				Footer: "./src/components/Footer.astro",
@@ -33,6 +32,7 @@ export default defineConfig({
 				src: "./src/assets/favicon.png",
 			},
 			plugins: [
+				starlightLinksValidator(),
 				starlightTypeDoc({
 					entryPoints: ["../src/index.ts"],
 					output: "generated/api",

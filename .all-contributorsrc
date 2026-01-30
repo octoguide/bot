@@ -84,6 +84,24 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "lennonnikolas",
+      "name": "Nikolas Lennon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22141194?v=4",
+      "profile": "https://github.com/lennonnikolas",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "lishaduck",
+      "name": "Eli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88557639?v=4",
+      "profile": "http://lishaduck.github.io",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -91,8 +109,8 @@
   "files": [
     "README.md"
   ],
-  "projectName": "OctoGuide",
-  "projectOwner": "JoshuaKGoldberg",
+  "projectName": "bot",
+  "projectOwner": "octoguide",
   "repoType": "github",
   "commitConvention": "angular"
 }
