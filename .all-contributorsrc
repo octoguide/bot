@@ -84,6 +84,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "lennonnikolas",
+      "name": "Nikolas Lennon",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22141194?v=4",
+      "profile": "https://github.com/lennonnikolas",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -91,8 +100,8 @@
   "files": [
     "README.md"
   ],
-  "projectName": "OctoGuide",
-  "projectOwner": "JoshuaKGoldberg",
+  "projectName": "bot",
+  "projectOwner": "octoguide",
   "repoType": "github",
   "commitConvention": "angular"
 }
