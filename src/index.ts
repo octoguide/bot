@@ -4,7 +4,7 @@
  * and its code is directly used by the {@link https://octo.guide/get-started#installation | GitHub Action}.
  *
  * For installation instruction see
- * {@link https://octo.guide/docs/installing-octoguide-package | Installing the OctoGuide Package}.
+ * {@link https://octo.guide/docs/installation | Installing the OctoGuide Package}.
  * @module
  */
 

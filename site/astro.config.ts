@@ -76,7 +76,7 @@ export default defineConfig({
 				{
 					collapsed: true,
 					items: [
-						{ label: "Installation", link: "installation" },
+						{ label: "Installation", link: "docs/installation" },
 						{ label: "Package API", link: "generated/api" },
 						{
 							autogenerate: {

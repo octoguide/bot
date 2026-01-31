@@ -10,7 +10,7 @@ to use the API is the same as the [standalone CLI](https://octo.guide/cli)
 and its code is directly used by the [GitHub Action](https://octo.guide/get-started#installation).
 
 For installation instruction see
-[Installing the OctoGuide Package](https://octo.guide/docs/installing-octoguide-package).
+[Installing the OctoGuide Package](https://octo.guide/docs/installation).
 
 ## Functions
 
