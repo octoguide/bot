@@ -10,7 +10,7 @@ If this feature is important to you, please do send a pull request! 😉
 OctoGuide rules each define how to analyze entities for a single best practice.
 Each rule is defined as an object containing:
 
-- `about`: [`RuleAbout`](/docs/types#ruleabout): Metadata about the rule.
+- `about`: [`RuleAbout`](/generated/api/interfaces/ruleabout/): Metadata about the rule.
 - Any number of _listener_ properties defining how the rule interacts with GitHub entities:
   - [`comment`](#comment)
   - [`issue`](#issue)
@@ -45,9 +45,9 @@ export const textRequireEmoji = defineRule({
 ### `about`
 
 Metadata about the rule.
-This will be included in any [rule reports](/docs/types#rulereport).
+This will be included in any [rule reports](/generated/api/interfaces/rulereport/).
 
-At least the properties in [`RuleAbout`](/docs/types#ruleabout) are required.
+At least the properties in [`RuleAbout`](/generated/api/interfaces/ruleabout/) are required.
 
 ```ts
 export const issueRequireEmoji = defineRule({
@@ -72,8 +72,8 @@ A rule may define multiple of these if it is able to analyze multiple types of e
 These properties may be asynchronous.
 They each define two parameters:
 
-- `context`: [`RuleContext`](/docs/types#rulecontext)
-- `entity`: [`Entity`](/docs/types#entity)
+- `context`: [`RuleContext`](/generated/api/interfaces/rulecontext/)
+- `entity`: [`Entity`](/generated/api/type-aliases/entity/)
 
 #### `comment`
 
