@@ -23,4 +23,4 @@ jobs:
 name: 🏚 Renovate
 on:
   schedule:
-    - cron: "0/15 * * * *" # every 15 minutes
+    - cron: "0 */4 * * *" # every 4 hours
