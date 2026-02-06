@@ -24,6 +24,7 @@ export default defineConfig(
 			"pnpm-lock.yaml",
 			"site/.astro",
 			"site/node_modules",
+			"site/src/content/docs/generated",
 		],
 	},
 	{ linterOptions: { reportUnusedDisableDirectives: "error" } },

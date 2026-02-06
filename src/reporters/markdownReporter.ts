@@ -4,8 +4,29 @@ import { groupBy } from "../action/groupBy.js";
 import { RESOLVED_BY_OCTOGUIDE } from "../constants.js";
 import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
 
+/**
+ * Message displayed when all reports are resolved.
+ * @internal
+ */
 export const markdownReportPassMessage = `All reports are resolved now. Thanks! ✅\n\n${RESOLVED_BY_OCTOGUIDE}`;
 
+/**
+ * Formats a rule report as used by the GitHub Actions Workflow.
+ *
+ * If reports is empty, it will return a happy message.
+ * Otherwise it will pretty-print the reports, grouped by rule.
+ * @param headline Headline text for the report (typically entity information)
+ * @param reports Rule reports as returned by `runOctoGuideRules`
+ * @returns Formatted markdown string for GitHub comment
+ * @example
+ * import { markdownReporter, runOctoGuideRules } from "octoguide";
+ *
+ * const { entity, reports } = await runOctoGuideRules({
+ *   entity: "https://github.com/OctoGuide/bot/issues/19",
+ * });
+ *
+ * console.log(markdownReporter(entity.data.html_url, reports));
+ */
 export function markdownReporter(headline: string, reports: RuleReport[]) {
 	if (!reports.length) {
 		return markdownReportPassMessage;

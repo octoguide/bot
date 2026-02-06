@@ -5,6 +5,22 @@ import type { RuleReport } from "../types/reports.js";
 import { groupBy } from "../action/groupBy.js";
 import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
 
+/**
+ * Formats a rule report as used by the standalone CLI.
+ *
+ * If reports is empty, it will log a happy message.
+ * Otherwise it will pretty-print the reports, grouped by rule.
+ * @param reports Rule reports as returned by `runOctoGuideRules`
+ * @returns Formatted string for CLI output
+ * @example
+ * import { cliReporter, runOctoGuideRules } from "octoguide";
+ *
+ * const { reports } = await runOctoGuideRules({
+ *   entity: "https://github.com/OctoGuide/bot/issues/19",
+ * });
+ *
+ * console.log(cliReporter(reports));
+ */
 export function cliReporter(reports: RuleReport[]) {
 	if (!reports.length) {
 		return `Found ${chalk.green("0")} reports. Great! ✅`;
