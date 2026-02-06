@@ -3,7 +3,7 @@ import * as core from "@actions/core";
 import { mergeRuleOptions } from "../../execution/mergeRuleOptions.js";
 import { allRules } from "../../rules/all.js";
 import { isKnownConfig } from "../../rules/configs.js";
-import { Rule, RuleOptions, RuleOptionsRaw } from "../../types/rules.js";
+import { RuleOptionsRaw } from "../../types/rules.js";
 import { parseIncludeAssociations } from "./parseIncludeAssociations.js";
 import { parseRuleOptions } from "./parseRuleOptions.js";
 
@@ -28,7 +28,7 @@ export function collectSettings() {
 	const rules = Object.fromEntries(
 		allRules.map((rule) => {
 			const ruleOptionOverrides = ruleOptions[rule.about.name] as
-				| boolean
+				| false
 				| null
 				| RuleOptionsRaw
 				| undefined;
@@ -38,7 +38,7 @@ export function collectSettings() {
 				{
 					options: mergeRuleOptions(baseOptions, {
 						...rule.about.defaultOptions,
-						...(ruleOptionOverrides || {}),
+						...(ruleOptionOverrides ?? {}),
 					}),
 					rule,
 				},

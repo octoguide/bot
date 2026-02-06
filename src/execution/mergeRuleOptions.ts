@@ -1,6 +1,10 @@
 import { defaultIncludeAssociations } from "../action/collection/parseIncludeAssociations";
 import { RuleOptions, RuleOptionsRaw } from "../types/rules";
-import { BaseOptions } from "../types/settings";
+
+export interface BaseOptions {
+	includeAssociations?: Set<string>;
+	includeBots?: boolean;
+}
 
 export function mergeRuleOptions(
 	baseOptions: BaseOptions = {},

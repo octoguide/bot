@@ -10,12 +10,9 @@ import type {
 } from "./entities.js";
 import type { RuleReportData } from "./reports.js";
 
-import { BaseOptions } from "./settings.js";
-
 /**
  * Defines how to analyze entities for a single best practice.
  */
-
 export interface Rule<About extends RuleAbout = RuleAbout> {
 	/**
 	 * Metadata about the rule.
