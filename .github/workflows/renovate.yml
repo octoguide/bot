@@ -1,0 +1,26 @@
+jobs:
+  renovate:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - id: get_token
+        name: 🪙 Get token
+        uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2
+        with:
+          app-id: ${{ vars.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_PRIVATE_KEY }}
+
+      - name: ✅ Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: 🏚 Self-hosted Renovate
+        uses: renovatebot/github-action@f7fad228a053c69a98e24f8e4f6cf40db8f61e08 # v44.2.1
+        with:
+          configurationFile: .github/renovate.json
+          token: "${{ steps.get_token.outputs.token }}"
+name: 🏚 Renovate
+on:
+  schedule:
+    - cron: "0 */4 * * *" # every 4 hours
