@@ -1,5 +1,5 @@
 import type { ConfigName } from "./core.js";
-import type { RuleOptions, RuleOptionsRaw } from "./rules.js";
+import type { RuleOptionsRaw } from "./rules.js";
 
 export interface BaseOptions {
 	includeAssociations?: Set<string>;

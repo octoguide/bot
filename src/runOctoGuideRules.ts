@@ -50,7 +50,7 @@ export interface RunOctoGuideRulesOptions {
 	 * - A string URL (e.g., `"https://github.com/owner/repo/issues/123"`) - will fetch entity data via GitHub API
 	 * - An `Entity` object with pre-fetched data - avoids additional API calls when data is already available
 	 */
-	entity: Entity | string;
+	entityInput: Entity | string;
 
 	/**
 	 * Settings for the run, including rules to enable.
@@ -107,7 +107,7 @@ export interface RunOctoGuideRulesResult {
  */
 export async function runOctoGuideRules({
 	auth,
-	entity: entityInput,
+	entityInput,
 	settings,
 }: RunOctoGuideRulesOptions): Promise<RunOctoGuideRulesResult> {
 	// TODO: There's no need to create a full *writing* actor here;
@@ -163,15 +163,10 @@ export async function runOctoGuideRules({
 
 	await Promise.all(
 		enabledRules.map(async (rule) => {
-			// TODO: merge with parent options
-			const options = mergeRuleOptions(
-				settings.baseOptions,
-				ruleOverrides[rule.about.name],
-			);
-
 			const context: RuleContext = {
 				locator,
 				octokit,
+				// todo: wat
 				options: typeof options === "object" ? options : undefined,
 				report(data) {
 					reports.push({

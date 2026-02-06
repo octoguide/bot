@@ -10,6 +10,8 @@ import type {
 } from "./entities.js";
 import type { RuleReportData } from "./reports.js";
 
+import { BaseOptions } from "./settings.js";
+
 /**
  * Defines how to analyze entities for a single best practice.
  */
@@ -45,6 +47,9 @@ export interface Rule<About extends RuleAbout = RuleAbout> {
  * Metadata about a rule, as used to define the rule.
  */
 export interface RuleAbout {
+	// TODO: make a type? describe?
+	defaultOptions?: RuleOptionsRaw;
+
 	/**
 	 * Single sentence description of the rule.
 	 */
@@ -101,7 +106,7 @@ export interface RuleContext {
  */
 export interface RuleOptionsRaw {
 	[i: string]: unknown;
-	"include-associations"?: string;
+	"include-associations"?: string[];
 	"include-bots"?: boolean;
 }
 

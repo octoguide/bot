@@ -15,6 +15,16 @@ import { defineRule } from "./defineRule.js";
 export const textImageAltText = defineRule({
 	about: {
 		config: "recommended",
+		defaultOptions: {
+			"include-associations": [
+				"COLLABORATOR",
+				"CONTRIBUTOR",
+				"FIRST_TIME_CONTRIBUTOR",
+				"FIRST_TIMER",
+				"MEMBER",
+				"OWNER",
+			],
+		},
 		description: "Images should have descriptive alt text.",
 		explanation: [
 			`Alternative text, or "alt text", is a description attached to an image.`,

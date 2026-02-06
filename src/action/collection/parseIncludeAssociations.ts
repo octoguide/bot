@@ -1,4 +1,4 @@
-const defaultIncludeAssociations = new Set([
+export const defaultIncludeAssociations = new Set([
 	"CONTRIBUTOR",
 	"FIRST_TIME_CONTRIBUTOR",
 	"FIRST_TIMER",

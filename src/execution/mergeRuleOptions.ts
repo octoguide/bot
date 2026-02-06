@@ -1,23 +1,21 @@
+import { defaultIncludeAssociations } from "../action/collection/parseIncludeAssociations";
 import { RuleOptions, RuleOptionsRaw } from "../types/rules";
 import { BaseOptions } from "../types/settings";
 
 export function mergeRuleOptions(
-	baseOptions: BaseOptions,
-	overrides: boolean | RuleOptionsRaw | undefined,
+	baseOptions: BaseOptions = {},
+	ruleOptions: boolean | null | RuleOptionsRaw | undefined,
 ): RuleOptions {
-	if (!overrides || typeof overrides === "boolean") {
-		return {
-			includeAssociations: baseOptions.includeAssociations,
-			includeBots: baseOptions.includeBots,
-		};
+	if (!ruleOptions || typeof ruleOptions === "boolean") {
+		ruleOptions = {};
 	}
 
 	return {
 		...baseOptions,
-		...overrides,
-		"include-associations": overrides["include-associations"]
-			? new Set(overrides["include-associations"])
-			: baseOptions.includeAssociations,
-		"include-bots": overrides["include-bots"] ?? baseOptions.includeBots,
+		...ruleOptions,
+		"include-associations": ruleOptions["include-associations"]
+			? new Set(ruleOptions["include-associations"])
+			: (baseOptions.includeAssociations ?? defaultIncludeAssociations),
+		"include-bots": ruleOptions["include-bots"] ?? baseOptions.includeBots,
 	};
 }
