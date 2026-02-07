@@ -18,7 +18,10 @@ jobs:
       - name: 🏚 Self-hosted Renovate
         uses: renovatebot/github-action@f7fad228a053c69a98e24f8e4f6cf40db8f61e08 # v44.2.1
         with:
-          configurationFile: .github/renovate.json
+          # This configuration file is for self hosted configuration.
+          # This is separate from Renovate configuration which should be placed in .github/renovate.json
+          # See https://docs.renovatebot.com/self-hosted-configuration/
+          configurationFile: .github/self-host-renovate.json
           token: "${{ steps.get_token.outputs.token }}"
 name: 🏚 Renovate
 on:
