@@ -2,6 +2,7 @@
 	"$schema": "https://unpkg.com/knip@5/schema.json",
 	"treatConfigHintsAsErrors": true,
 	"ignoreExportsUsedInFile": { "interface": true, "type": true },
+	"ignore": [".github/self-host-renovate.js"],
 	"workspaces": {
 		".": {
 			"entry": ["src/action/index.ts", "src/cli.ts", "src/**/*.test.*"],

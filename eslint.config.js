@@ -48,7 +48,12 @@ export default defineConfig(
 		languageOptions: {
 			parserOptions: {
 				projectService: {
-					allowDefaultProject: ["*.config.*s", "bin/index.js", "postbuild.js"],
+					allowDefaultProject: [
+						"*.config.*s",
+						".github/self-host-renovate.js",
+						"bin/index.js",
+						"postbuild.js",
+					],
 				},
 				tsconfigRootDir: import.meta.dirname,
 			},
