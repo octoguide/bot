@@ -182,7 +182,7 @@ importers:
         version: 0.11.0(@astrojs/starlight@0.37.1(astro@5.16.0(@types/node@24.10.0)(jiti@2.6.1)(rollup@4.39.0)(typescript@5.9.2)(yaml@2.8.2)))
     devDependencies:
       starlight-typedoc:
-        specifier: ^0.21.5
+        specifier: 0.21.5
         version: 0.21.5(@astrojs/starlight@0.37.1(astro@5.16.0(@types/node@24.10.0)(jiti@2.6.1)(rollup@4.39.0)(typescript@5.9.2)(yaml@2.8.2)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.16(typescript@5.9.2)))(typedoc@0.28.16(typescript@5.9.2))
 
 packages:
