@@ -13,7 +13,7 @@ import type { RuleReportData } from "./reports.js";
 /**
  * Defines how to analyze entities for a single best practice.
  */
-export interface Rule<About extends RuleAbout = RuleAbout> {
+export interface Rule<About extends RuleAboutWithUrl = RuleAboutWithUrl> {
 	/**
 	 * Metadata about the rule.
 	 */

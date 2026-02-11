@@ -9,10 +9,7 @@ import type { Settings } from "./types/settings.js";
 
 import { createActor } from "./actors/createActor.js";
 import { isRuleSkippedForEntity } from "./execution/isRuleSkippedForEntity.js";
-import { mergeRuleOptions } from "./execution/mergeRuleOptions.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
-import { allRules } from "./rules/all.js";
-import { configs } from "./rules/configs.js";
 
 /**
  * Settings for running {@link runOctoGuideRules}.
@@ -99,10 +96,6 @@ export interface RunOctoGuideRulesResult {
  * });
  *
  * console.log("Received reports:", reports);
- * @param options Configuration object
- * @param options.auth GitHub authentication token or Octokit instance
- * @param options.entity Entity input (URL string or entity data object)
- * @param options.settings OctoGuide configuration settings including rules and comments
  * @returns Promise resolving to results with actor, entity data, and rule reports
  */
 export async function runOctoGuideRules({
@@ -145,29 +138,12 @@ export async function runOctoGuideRules({
 
 	const reports: RuleReport[] = [];
 
-	const config = settings.config ?? "recommended";
-	const configRuleNames = Object.values(configs[config]).map(
-		(rule) => rule.about.name,
-	);
-	const ruleOverrides = settings.rules ?? {};
-
-	const enabledRules = allRules.filter((rule) => {
-		const ruleName = rule.about.name;
-
-		if (ruleName in ruleOverrides) {
-			return ruleOverrides[ruleName];
-		}
-
-		return configRuleNames.includes(ruleName);
-	});
-
 	await Promise.all(
-		enabledRules.map(async (rule) => {
+		Object.values(settings.rules).map(async ({ options, rule }) => {
 			const context: RuleContext = {
 				locator,
 				octokit,
-				// todo: wat
-				options: typeof options === "object" ? options : undefined,
+				options,
 				report(data) {
 					reports.push({
 						about: rule.about,
@@ -176,7 +152,7 @@ export async function runOctoGuideRules({
 				},
 			};
 
-			if (!isRuleSkippedForEntity(entity, options, rule)) {
+			if (!isRuleSkippedForEntity(entity, options)) {
 				await runRuleOnEntity(context, rule, entity);
 			}
 		}),

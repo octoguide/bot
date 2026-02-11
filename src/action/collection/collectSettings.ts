@@ -4,10 +4,11 @@ import { mergeRuleOptions } from "../../execution/mergeRuleOptions.js";
 import { allRules } from "../../rules/all.js";
 import { isKnownConfig } from "../../rules/configs.js";
 import { RuleOptionsRaw } from "../../types/rules.js";
+import { Settings } from "../../types/settings.js";
 import { parseIncludeAssociations } from "./parseIncludeAssociations.js";
 import { parseRuleOptions } from "./parseRuleOptions.js";
 
-export function collectSettings() {
+export function collectSettings(): Settings {
 	const config = core.getInput("config") || "recommended";
 	if (!isKnownConfig(config)) {
 		throw new Error(`Unknown config provided: ${config}`);
@@ -25,26 +26,21 @@ export function collectSettings() {
 		includeBots: core.getInput("include-bots") === "true",
 	};
 
-	const rules = Object.fromEntries(
-		allRules.map((rule) => {
-			const ruleOptionOverrides = ruleOptions[rule.about.name] as
-				| false
-				| null
-				| RuleOptionsRaw
-				| undefined;
+	const rules = allRules.map((rule) => {
+		const ruleOptionOverrides = ruleOptions[rule.about.name] as
+			| false
+			| null
+			| RuleOptionsRaw
+			| undefined;
 
-			return [
-				rule.about.name,
-				{
-					options: mergeRuleOptions(baseOptions, {
-						...rule.about.defaultOptions,
-						...(ruleOptionOverrides ?? {}),
-					}),
-					rule,
-				},
-			];
-		}),
-	);
+		return {
+			options: mergeRuleOptions(baseOptions, {
+				...rule.about.defaultOptions,
+				...(ruleOptionOverrides ?? {}),
+			}),
+			rule,
+		};
+	});
 
 	return {
 		comments: {

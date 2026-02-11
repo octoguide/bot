@@ -1,16 +1,9 @@
 import { isEntityFromBot } from "../action/isEntityFromBot";
 import { Entity } from "../types/entities";
-import { Rule, RuleOptions } from "../types/rules";
+import { RuleOptions } from "../types/rules";
 
-export function isRuleSkippedForEntity(
-	entity: Entity,
-	options: RuleOptions,
-	rule: Rule,
-) {
-	const includeAssociations = options["include-associations"]?.split(",");
-	if (!includeAssociations) {
-		// return false;
-	}
+export function isRuleSkippedForEntity(entity: Entity, options: RuleOptions) {
+	// TODO: include-associations?
 
 	const includeBots = options["include-bots"];
 	if (isEntityFromBot(entity) && !includeBots) {
