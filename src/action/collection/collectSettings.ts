@@ -49,7 +49,6 @@ export function collectSettings(): Settings {
 				"🗺️ This message was posted automatically by [OctoGuide](https://octo.guide): a bot for GitHub repository best practices.",
 			header: core.getInput("comment-header"),
 		},
-		config,
 		rules,
 	};
 }
