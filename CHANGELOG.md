@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.4](https://github.com/octoguide/bot/compare/0.21.3...0.21.4) (2026-02-13)
+
+### Bug Fixes
+
+- **deps:** update dependency @konami-emoji-blast/astro to v0.2.0 ([#476](https://github.com/octoguide/bot/issues/476)) ([16e3c22](https://github.com/octoguide/bot/commit/16e3c22cb9343c03af1b2fef45ce1c585a171b0e))
+
 ## [0.21.3](https://github.com/octoguide/bot/compare/0.21.2...0.21.3) (2026-01-18)
 
 ### Bug Fixes
