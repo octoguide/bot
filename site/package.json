@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@astrojs/starlight": "0.37.1",
-		"@konami-emoji-blast/astro": "0.1.1",
+		"@konami-emoji-blast/astro": "0.2.0",
 		"astro": "5.16.0",
 		"konami-emoji-blast": "0.6.0",
 		"sharp": "0.34.1",
