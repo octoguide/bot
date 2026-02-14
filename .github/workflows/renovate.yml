@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: 🏚 Self-hosted Renovate
-        uses: renovatebot/github-action@f7fad228a053c69a98e24f8e4f6cf40db8f61e08 # v44.2.1
+        uses: renovatebot/github-action@3c68caaa9db5ff24332596591dc7c4fed8de16ce # v46.0.1
         with:
           # This configuration file is for self hosted configuration.
           # This is separate from Renovate configuration which should be placed in .github/renovate.json
