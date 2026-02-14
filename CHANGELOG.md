@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.5](https://github.com/octoguide/bot/compare/0.21.4...0.21.5) (2026-02-14)
+
+### Bug Fixes
+
+- **deps:** update dependency astro to v5.17.1 ([#477](https://github.com/octoguide/bot/issues/477)) ([9e15a28](https://github.com/octoguide/bot/commit/9e15a288e68d3781a6149c822ec062c23bcc5902))
+
 ## [0.21.4](https://github.com/octoguide/bot/compare/0.21.3...0.21.4) (2026-02-13)
 
 ### Bug Fixes
