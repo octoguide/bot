@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.7](https://github.com/octoguide/bot/compare/0.21.6...0.21.7) (2026-02-15)
+
+### Bug Fixes
+
+- **deps:** update dependency @actions/core to v3 ([#486](https://github.com/octoguide/bot/issues/486)) ([5d8067b](https://github.com/octoguide/bot/commit/5d8067bd13aaee8efc886f8124c774dcdff16a1f))
+
 ## [0.21.6](https://github.com/octoguide/bot/compare/0.21.5...0.21.6) (2026-02-14)
 
 ### Bug Fixes
