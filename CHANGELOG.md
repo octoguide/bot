@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.8](https://github.com/octoguide/bot/compare/0.21.7...0.21.8) (2026-02-15)
+
+### Bug Fixes
+
+- **deps:** update dependency @actions/github to v9 ([#487](https://github.com/octoguide/bot/issues/487)) ([0111bdb](https://github.com/octoguide/bot/commit/0111bdb5e8ca0b9fe6c57373244d80812b5643ac))
+
 ## [0.21.7](https://github.com/octoguide/bot/compare/0.21.6...0.21.7) (2026-02-15)
 
 ### Bug Fixes
