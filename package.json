@@ -31,7 +31,7 @@
 		"tsc": "tsc"
 	},
 	"dependencies": {
-		"@actions/core": "^2.0.0",
+		"@actions/core": "^3.0.0",
 		"@actions/github": "^6.0.0",
 		"@github/markdownlint-github": "^0.8.0",
 		"@octokit/plugin-rest-endpoint-methods": "^16.0.0",
