@@ -38,7 +38,6 @@ function checkEntity(context: RuleContext, entity: Entity) {
 
 	// Factory function for creating markdown-it instances
 	const createMarkdownIt = (): MarkdownIt => {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- MarkdownItParser is callable and returns a valid MarkdownIt instance
 		return MarkdownItParser({ html: true });
 	};
 
