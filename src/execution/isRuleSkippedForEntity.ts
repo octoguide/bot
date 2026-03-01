@@ -5,10 +5,7 @@ import { RuleOptions } from "../types/rules";
 
 export function isRuleSkippedForEntity(entity: Entity, options: RuleOptions) {
 	const includeAssociations = options["include-associations"];
-	if (
-		includeAssociations &&
-		!isEntityAssociationIncluded(entity, includeAssociations)
-	) {
+	if (!isEntityAssociationIncluded(entity, includeAssociations)) {
 		return true;
 	}
 

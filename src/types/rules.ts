@@ -112,8 +112,8 @@ export interface RuleOptionsRaw {
  */
 export interface RuleOptions {
 	[i: string]: unknown;
-	"include-associations"?: Set<string>;
-	"include-bots"?: boolean;
+	"include-associations": Set<string>;
+	"include-bots": boolean;
 }
 
 /**
