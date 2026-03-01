@@ -1,12 +1,16 @@
-import type { ConfigName } from "./core.js";
+import type { Rule, RuleOptions } from "./rules.js";
+
+export interface Comments {
+	footer: string;
+	header: string;
+}
+
+export interface RuleAndOptions {
+	options: RuleOptions;
+	rule: Rule;
+}
 
 export interface Settings {
 	comments?: Comments;
-	config?: ConfigName;
-	rules?: Record<string, boolean>;
-}
-
-interface Comments {
-	footer: string;
-	header: string;
+	rules: RuleAndOptions[];
 }

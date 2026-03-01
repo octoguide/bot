@@ -8,9 +8,8 @@ import type { RuleContext } from "./types/rules.js";
 import type { Settings } from "./types/settings.js";
 
 import { createActor } from "./actors/createActor.js";
+import { isRuleSkippedForEntity } from "./execution/isRuleSkippedForEntity.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
-import { allRules } from "./rules/all.js";
-import { configs } from "./rules/configs.js";
 
 /**
  * Settings for running {@link runOctoGuideRules}.
@@ -48,12 +47,12 @@ export interface RunOctoGuideRulesOptions {
 	 * - A string URL (e.g., `"https://github.com/owner/repo/issues/123"`) - will fetch entity data via GitHub API
 	 * - An `Entity` object with pre-fetched data - avoids additional API calls when data is already available
 	 */
-	entity: Entity | string;
+	entityInput: Entity | string;
 
 	/**
 	 * Settings for the run, including rules to enable.
 	 */
-	settings?: Settings;
+	settings: Settings;
 }
 
 /**
@@ -97,15 +96,11 @@ export interface RunOctoGuideRulesResult {
  * });
  *
  * console.log("Received reports:", reports);
- * @param options Configuration object
- * @param options.auth GitHub authentication token or Octokit instance
- * @param options.entity Entity input (URL string or entity data object)
- * @param options.settings OctoGuide configuration settings including rules and comments
  * @returns Promise resolving to results with actor, entity data, and rule reports
  */
 export async function runOctoGuideRules({
 	auth,
-	entity: entityInput,
+	entityInput,
 	settings,
 }: RunOctoGuideRulesOptions): Promise<RunOctoGuideRulesResult> {
 	// TODO: There's no need to create a full *writing* actor here;
@@ -143,27 +138,12 @@ export async function runOctoGuideRules({
 
 	const reports: RuleReport[] = [];
 
-	const config = settings?.config ?? "recommended";
-	const configRuleNames = Object.values(configs[config]).map(
-		(rule) => rule.about.name,
-	);
-	const ruleOverrides = settings?.rules ?? {};
-
-	const enabledRules = allRules.filter((rule) => {
-		const ruleName = rule.about.name;
-
-		if (ruleName in ruleOverrides) {
-			return ruleOverrides[ruleName];
-		}
-
-		return configRuleNames.includes(ruleName);
-	});
-
 	await Promise.all(
-		enabledRules.map(async (rule) => {
+		Object.values(settings.rules).map(async ({ options, rule }) => {
 			const context: RuleContext = {
 				locator,
 				octokit,
+				options,
 				report(data) {
 					reports.push({
 						about: rule.about,
@@ -172,7 +152,9 @@ export async function runOctoGuideRules({
 				},
 			};
 
-			await runRuleOnEntity(context, rule, entity);
+			if (!isRuleSkippedForEntity(entity, options)) {
+				await runRuleOnEntity(context, rule, entity);
+			}
 		}),
 	);
 
