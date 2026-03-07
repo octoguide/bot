@@ -2634,9 +2634,9 @@ packages:
     peerDependencies:
       eslint: '>=6.0.0'
 
-  eslint-fix-utils@0.4.0:
-    resolution: {integrity: sha512-nCEciwqByGxsKiWqZjqK7xfL+7dUX9Pi0UL3J0tOwfxVN9e6Y59UxEt1ZYsc3XH0ce6T1WQM/QU2DbKK/6IG7g==}
-    engines: {node: ^20.19.0 || >=22.12.0}
+  eslint-fix-utils@0.4.1:
+    resolution: {integrity: sha512-1xPtnB7RYRHKrFGll3kRv5gOodHm3/jkk76jrKMZ2yk/G8HU9XoN1I9iHgh1ToAqmGG0/FFrybZMqmqUWp4asA==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
     peerDependencies:
       '@types/estree': '>=1'
       eslint: '>=8'
@@ -7410,7 +7410,7 @@ snapshots:
       eslint: 10.0.0(jiti@2.6.1)
       semver: 7.7.4
 
-  eslint-fix-utils@0.4.0(@types/estree@1.0.8)(eslint@10.0.0(jiti@2.6.1)):
+  eslint-fix-utils@0.4.1(@types/estree@1.0.8)(eslint@10.0.0(jiti@2.6.1)):
     dependencies:
       eslint: 10.0.0(jiti@2.6.1)
     optionalDependencies:
@@ -7493,7 +7493,7 @@ snapshots:
       detect-indent: 7.0.2
       detect-newline: 4.0.1
       eslint: 10.0.0(jiti@2.6.1)
-      eslint-fix-utils: 0.4.0(@types/estree@1.0.8)(eslint@10.0.0(jiti@2.6.1))
+      eslint-fix-utils: 0.4.1(@types/estree@1.0.8)(eslint@10.0.0(jiti@2.6.1))
       jsonc-eslint-parser: 3.1.0
       package-json-validator: 0.60.0
       semver: 7.7.4
