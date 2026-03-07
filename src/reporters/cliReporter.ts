@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import { styleText } from "node:util";
 
 import type { RuleReport } from "../types/reports.js";
 
@@ -23,7 +23,7 @@ import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
  */
 export function cliReporter(reports: RuleReport[]) {
 	if (!reports.length) {
-		return `Found ${chalk.green("0")} reports. Great! ✅`;
+		return `Found ${styleText("green", "0")} reports. Great! ✅`;
 	}
 
 	const byRule = groupBy(reports, (report) => report.about.name);
@@ -33,10 +33,10 @@ export function cliReporter(reports: RuleReport[]) {
 		const { about } = ruleReports[0];
 		lines.push(
 			[
-				chalk.blue("["),
-				chalk.cyanBright(about.name),
-				chalk.blue("] "),
-				chalk.yellow(about.description),
+				styleText("blue", "["),
+				styleText("cyanBright", about.name),
+				styleText("blue", "] "),
+				styleText("yellow", about.description),
 			].join(""),
 		);
 
@@ -64,7 +64,7 @@ export function cliReporter(reports: RuleReport[]) {
 	}
 
 	lines.push(
-		`Found ${chalk.red(reports.length)} issue${reports.length > 1 ? "s" : ""}.\n`,
+		`Found ${styleText("red", String(reports.length))} issue${reports.length > 1 ? "s" : ""}.\n`,
 	);
 
 	return lines.join("\n");
