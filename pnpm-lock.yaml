@@ -20,9 +20,6 @@ importers:
       '@octokit/plugin-rest-endpoint-methods':
         specifier: ^16.0.0
         version: 16.0.0(@octokit/core@7.0.6)
-      chalk:
-        specifier: ^5.4.1
-        version: 5.6.2
       conventional-commit-types:
         specifier: ^3.0.0
         version: 3.0.0
