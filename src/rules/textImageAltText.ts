@@ -36,7 +36,6 @@ function checkEntity(context: RuleContext, entity: Entity) {
 		return undefined;
 	}
 
-	// Factory function for creating markdown-it instances
 	const createMarkdownIt = (): MarkdownIt => {
 		return MarkdownItParser({ html: true });
 	};
