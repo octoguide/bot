@@ -2,8 +2,7 @@
 // https://github.com/github/accessibility-alt-text-bot/blob/14f7f7a37ea03b99b1ee9af234564ea4a18a2af9/src/validate.js
 // TODO: see if we can extract a version that doesn't rely on markdownlint?
 // https://github.com/OctoGuide/bot/issues/33
-import type MarkdownIt from "markdown-it";
-import type { LintError, Options } from "markdownlint";
+import type { LintError } from "markdownlint";
 
 import markdownlintGitHub from "@github/markdownlint-github";
 import MarkdownItParser from "markdown-it";
@@ -36,11 +35,7 @@ function checkEntity(context: RuleContext, entity: Entity) {
 		return undefined;
 	}
 
-	const createMarkdownIt = (): MarkdownIt => {
-		return MarkdownItParser({ html: true });
-	};
-
-	const options: Options = {
+	const { content: lintErrors } = lint({
 		config: {
 			default: false,
 			"no-alt-text": true,
@@ -49,11 +44,9 @@ function checkEntity(context: RuleContext, entity: Entity) {
 		},
 		customRules: markdownlintGitHub,
 		handleRuleFailures: true,
-		markdownItFactory: createMarkdownIt,
+		markdownItFactory: () => MarkdownItParser({ html: true }),
 		strings: { content: body },
-	};
-
-	const { content: lintErrors } = lint(options);
+	});
 
 	if (!lintErrors.length) {
 		return;
