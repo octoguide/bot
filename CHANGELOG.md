@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.21.10](https://github.com/octoguide/bot/compare/0.21.9...0.21.10) (2026-03-07)
+
+### Bug Fixes
+
+- **deps:** update dependency markdownlint to v0.40.0 ([#263](https://github.com/octoguide/bot/issues/263)) ([91e2b2c](https://github.com/octoguide/bot/commit/91e2b2ca96c92662f00cd94ead5b250f7daa3590))
+
 ## [0.21.9](https://github.com/octoguide/bot/compare/0.21.8...0.21.9) (2026-03-05)
 
 ### Bug Fixes
