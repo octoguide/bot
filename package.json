@@ -48,7 +48,7 @@
 		"parse-github-url": "^1.0.3"
 	},
 	"devDependencies": {
-		"@eslint-community/eslint-plugin-eslint-comments": "4.6.0",
+		"@eslint-community/eslint-plugin-eslint-comments": "4.7.0",
 		"@eslint/js": "10.0.1",
 		"@release-it/conventional-changelog": "10.0.4",
 		"@types/eslint-plugin-markdown": "2.0.2",
