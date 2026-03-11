@@ -1,5 +1,47 @@
 # Changelog
 
+## [0.21.10](https://github.com/octoguide/bot/compare/0.21.9...0.21.10) (2026-03-07)
+
+### Bug Fixes
+
+- **deps:** update dependency markdownlint to v0.40.0 ([#263](https://github.com/octoguide/bot/issues/263)) ([91e2b2c](https://github.com/octoguide/bot/commit/91e2b2ca96c92662f00cd94ead5b250f7daa3590))
+
+## [0.21.9](https://github.com/octoguide/bot/compare/0.21.8...0.21.9) (2026-03-05)
+
+### Bug Fixes
+
+- **deps:** update dependency astro to v5.18.0 ([#511](https://github.com/octoguide/bot/issues/511)) ([09923fb](https://github.com/octoguide/bot/commit/09923fbbf59d628fdc64532c6bb5708c5ed5ac85))
+
+## [0.21.8](https://github.com/octoguide/bot/compare/0.21.7...0.21.8) (2026-02-15)
+
+### Bug Fixes
+
+- **deps:** update dependency @actions/github to v9 ([#487](https://github.com/octoguide/bot/issues/487)) ([0111bdb](https://github.com/octoguide/bot/commit/0111bdb5e8ca0b9fe6c57373244d80812b5643ac))
+
+## [0.21.7](https://github.com/octoguide/bot/compare/0.21.6...0.21.7) (2026-02-15)
+
+### Bug Fixes
+
+- **deps:** update dependency @actions/core to v3 ([#486](https://github.com/octoguide/bot/issues/486)) ([5d8067b](https://github.com/octoguide/bot/commit/5d8067bd13aaee8efc886f8124c774dcdff16a1f))
+
+## [0.21.6](https://github.com/octoguide/bot/compare/0.21.5...0.21.6) (2026-02-14)
+
+### Bug Fixes
+
+- **deps:** update dependency starlight-package-managers to v0.12.0 ([#478](https://github.com/octoguide/bot/issues/478)) ([444ed8e](https://github.com/octoguide/bot/commit/444ed8e448504d7a254263cc53f984da6cc71916))
+
+## [0.21.5](https://github.com/octoguide/bot/compare/0.21.4...0.21.5) (2026-02-14)
+
+### Bug Fixes
+
+- **deps:** update dependency astro to v5.17.1 ([#477](https://github.com/octoguide/bot/issues/477)) ([9e15a28](https://github.com/octoguide/bot/commit/9e15a288e68d3781a6149c822ec062c23bcc5902))
+
+## [0.21.4](https://github.com/octoguide/bot/compare/0.21.3...0.21.4) (2026-02-13)
+
+### Bug Fixes
+
+- **deps:** update dependency @konami-emoji-blast/astro to v0.2.0 ([#476](https://github.com/octoguide/bot/issues/476)) ([16e3c22](https://github.com/octoguide/bot/commit/16e3c22cb9343c03af1b2fef45ce1c585a171b0e))
+
 ## [0.21.3](https://github.com/octoguide/bot/compare/0.21.2...0.21.3) (2026-01-18)
 
 ### Bug Fixes

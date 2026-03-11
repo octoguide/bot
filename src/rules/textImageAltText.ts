@@ -5,6 +5,7 @@
 import type { LintError } from "markdownlint";
 
 import markdownlintGitHub from "@github/markdownlint-github";
+import MarkdownItParser from "markdown-it";
 import { lint } from "markdownlint/sync";
 
 import type { Entity } from "../types/entities.js";
@@ -53,6 +54,7 @@ function checkEntity(context: RuleContext, entity: Entity) {
 		},
 		customRules: markdownlintGitHub,
 		handleRuleFailures: true,
+		markdownItFactory: () => MarkdownItParser({ html: true }),
 		strings: { content: body },
 	});
 

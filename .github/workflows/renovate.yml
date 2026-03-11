@@ -1,0 +1,29 @@
+jobs:
+  renovate:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - id: get_token
+        name: 🪙 Get token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2
+        with:
+          app-id: ${{ vars.RENOVATE_APP_ID }}
+          private-key: ${{ secrets.RENOVATE_PRIVATE_KEY }}
+
+      - name: ✅ Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: 🏚 Self-hosted Renovate
+        uses: renovatebot/github-action@44f24283a60f64273f1294932f16ba61193cccca # v46.1.0
+        with:
+          # This configuration file is for self hosted configuration.
+          # This is separate from Renovate configuration which should be placed in .github/renovate.json
+          # See https://docs.renovatebot.com/self-hosted-configuration/
+          configurationFile: .github/self-host-renovate.json
+          token: "${{ steps.get_token.outputs.token }}"
+name: 🏚 Renovate
+on:
+  schedule:
+    - cron: "0 */4 * * *" # every 4 hours
