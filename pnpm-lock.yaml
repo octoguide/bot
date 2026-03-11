@@ -70,7 +70,7 @@ importers:
         specifier: 4.17.16
         version: 4.17.16
       '@types/markdown-it':
-        specifier: ^14.1.2
+        specifier: 14.1.2
         version: 14.1.2
       '@types/node':
         specifier: 24.11.0
