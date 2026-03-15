@@ -6,7 +6,7 @@
 		"CHANGELOG.md",
 		"coverage",
 		"dist",
-		"dist-site",
+		"site/dist",
 		"lib",
 		"node_modules",
 		"pnpm-lock.yaml",
