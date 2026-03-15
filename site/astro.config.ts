@@ -99,7 +99,6 @@ export default defineConfig({
 			title: "OctoGuide",
 		}),
 	],
-	outDir: "../dist-site",
 	site: "https://octo.guide",
 	trailingSlash: "ignore",
 });

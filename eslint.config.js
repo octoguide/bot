@@ -17,7 +17,7 @@ export default defineConfig(
 		ignores: [
 			"**/*.snap",
 			"coverage",
-			"dist-site",
+			"site/dist",
 			"dist",
 			"lib",
 			"node_modules",
