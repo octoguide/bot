@@ -283,11 +283,11 @@ Format: uri
 
 #### type?
 
-> `optional` **type**: \{ `id`: `number`; `node_id`: `string`; `name`: `string`; `description`: `string` \| `null`; `color?`: `"gray"` \| `"blue"` \| `"green"` \| `"yellow"` \| `"orange"` \| `"red"` \| `"pink"` \| `"purple"` \| `null`; `created_at?`: `string`; `updated_at?`: `string`; `is_enabled?`: `boolean`; \} \| `null`
+> `optional` **type**: \{ `id`: `number`; `node_id`: `string`; `name`: `string`; `description`: `string` \| `null`; `color?`: `"blue"` \| `"gray"` \| `"green"` \| `"red"` \| `"yellow"` \| `"orange"` \| `"pink"` \| `"purple"` \| `null`; `created_at?`: `string`; `updated_at?`: `string`; `is_enabled?`: `boolean`; \} \| `null`
 
 ##### Type Declaration
 
-\{ `id`: `number`; `node_id`: `string`; `name`: `string`; `description`: `string` \| `null`; `color?`: `"gray"` \| `"blue"` \| `"green"` \| `"yellow"` \| `"orange"` \| `"red"` \| `"pink"` \| `"purple"` \| `null`; `created_at?`: `string`; `updated_at?`: `string`; `is_enabled?`: `boolean`; \}
+\{ `id`: `number`; `node_id`: `string`; `name`: `string`; `description`: `string` \| `null`; `color?`: `"blue"` \| `"gray"` \| `"green"` \| `"red"` \| `"yellow"` \| `"orange"` \| `"pink"` \| `"purple"` \| `null`; `created_at?`: `string`; `updated_at?`: `string`; `is_enabled?`: `boolean`; \}
 
 `null`
 
