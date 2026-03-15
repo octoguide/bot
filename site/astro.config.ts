@@ -5,15 +5,13 @@ import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc from "starlight-typedoc";
 
 export default defineConfig({
-	experimental: {
-		fonts: [
-			{
-				cssVariable: "--font-varela-round",
-				name: "Varela Round",
-				provider: fontProviders.google(),
-			},
-		],
-	},
+	fonts: [
+		{
+			cssVariable: "--font-varela-round",
+			name: "Varela Round",
+			provider: fontProviders.google(),
+		},
+	],
 	image: {
 		responsiveStyles: true,
 	},
