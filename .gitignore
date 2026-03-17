@@ -1,7 +1,7 @@
 /coverage
 /dist/**/*.d.ts
 /dist/**/*.map
-/dist-site
+/site/dist
 /lib
 /node_modules
 /site/.astro

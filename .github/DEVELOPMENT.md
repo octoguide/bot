@@ -108,4 +108,4 @@ This repository also includes the source code for [octo.guide](https://octo.guid
 You can run [Astro CLI commands](https://docs.astro.build/en/reference/cli-reference) with `pnpm astro`.
 
 - `pnpm astro dev`: starts a local dev server
-- `pnpm astro build`: creates a built production website in `dist-site/`
+- `pnpm astro build`: creates a built production website in `site/dist/`
