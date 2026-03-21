@@ -10,7 +10,7 @@
 		"sync": "astro sync"
 	},
 	"dependencies": {
-		"@astrojs/starlight": "0.37.1",
+		"@astrojs/starlight": "0.38.1",
 		"@konami-emoji-blast/astro": "0.2.0",
 		"astro": "5.18.0",
 		"konami-emoji-blast": "0.6.0",
