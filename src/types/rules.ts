@@ -13,8 +13,7 @@ import type { RuleReportData } from "./reports.js";
 /**
  * Defines how to analyze entities for a single best practice.
  */
-
-export interface Rule<About extends RuleAbout = RuleAbout> {
+export interface Rule<About extends RuleAboutWithUrl = RuleAboutWithUrl> {
 	/**
 	 * Metadata about the rule.
 	 */
@@ -45,6 +44,9 @@ export interface Rule<About extends RuleAbout = RuleAbout> {
  * Metadata about a rule, as used to define the rule.
  */
 export interface RuleAbout {
+	// TODO: make a type? describe?
+	defaultOptions?: RuleOptionsRaw;
+
 	/**
 	 * Single sentence description of the rule.
 	 */
@@ -89,6 +91,29 @@ export interface RuleContext {
 	 * Registers a new violation.
 	 */
 	report: RuleReporter;
+
+	/**
+	 * Processed options for any rule that may be provided by the user.
+	 */
+	options?: RuleOptions;
+}
+
+/**
+ * Options for any rule that as provided by the user.
+ */
+export interface RuleOptionsRaw {
+	[i: string]: unknown;
+	"include-associations"?: string[];
+	"include-bots"?: boolean;
+}
+
+/**
+ * Processed options for any rule that may be provided by the user.
+ */
+export interface RuleOptions {
+	[i: string]: unknown;
+	"include-associations": Set<string>;
+	"include-bots": boolean;
 }
 
 /**
