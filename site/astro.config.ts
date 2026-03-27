@@ -5,15 +5,13 @@ import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc from "starlight-typedoc";
 
 export default defineConfig({
-	experimental: {
-		fonts: [
-			{
-				cssVariable: "--font-varela-round",
-				name: "Varela Round",
-				provider: fontProviders.google(),
-			},
-		],
-	},
+	fonts: [
+		{
+			cssVariable: "--font-varela-round",
+			name: "Varela Round",
+			provider: fontProviders.google(),
+		},
+	],
 	image: {
 		responsiveStyles: true,
 	},
@@ -101,7 +99,6 @@ export default defineConfig({
 			title: "OctoGuide",
 		}),
 	],
-	outDir: "../dist-site",
 	site: "https://octo.guide",
 	trailingSlash: "ignore",
 });
