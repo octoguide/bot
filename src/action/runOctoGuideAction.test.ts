@@ -98,6 +98,7 @@ const createMockEntity = (
  */
 const createMockActor = (): EntityActor =>
 	({
+		closeEntity: vi.fn<() => Promise<void>>(),
 		createComment: vi.fn<(body: string) => Promise<string>>(),
 		getData: vi.fn<() => Promise<Entity["data"]>>(),
 		listComments: vi.fn<() => Promise<CommentData[]>>(),
