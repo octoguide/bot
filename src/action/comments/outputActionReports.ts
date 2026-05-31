@@ -20,7 +20,7 @@ export async function outputActionReports(
 	const headline = createHeadlineAsMarkdown(entity, reports);
 	const reported = markdownReporter(headline, reports);
 
-	let commentPosted = false;
+	let commentStepSucceeded = false;
 
 	try {
 		const comment = await setCommentForReports(
@@ -30,7 +30,7 @@ export async function outputActionReports(
 			settings,
 		);
 
-		commentPosted = true;
+		commentStepSucceeded = true;
 		core.info(
 			comment
 				? `Reports comment: ${comment.url} (${comment.status})`
@@ -57,7 +57,7 @@ export async function outputActionReports(
 	}
 
 	if (
-		commentPosted &&
+		commentStepSucceeded &&
 		reports.some((report) => report.data.action === "close")
 	) {
 		try {
