@@ -229,7 +229,22 @@ describe(outputActionReports, () => {
 			);
 
 			expect(mockCore.setFailed).toHaveBeenCalledWith(
-				expect.stringContaining("Permission denied"),
+				expect.stringContaining("Failed to close entity: Permission denied"),
+			);
+		});
+
+		it("calls setFailed when closeEntity throws a non-Error", async () => {
+			closeEntity.mockRejectedValue("string error");
+
+			await outputActionReports(
+				actorWithClose,
+				prEntity,
+				closeReport,
+				settings,
+			);
+
+			expect(mockCore.setFailed).toHaveBeenCalledWith(
+				expect.stringContaining("Failed to close entity: string error"),
 			);
 		});
 
