@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { EntityActor } from "../../actors/types.js";
-import type { IssueEntity } from "../../types/entities.js";
+import type { IssueEntity, PullRequestEntity } from "../../types/entities.js";
 import type { RuleReport, RuleReportData } from "../../types/reports.js";
 import type { RuleAboutWithUrl } from "../../types/rules.js";
 import type { Settings } from "../../types/settings.js";
@@ -171,5 +171,94 @@ describe(outputActionReports, () => {
 
 		expect(mockCore.summary.write).not.toHaveBeenCalled();
 		expect(mockCore.setFailed).not.toHaveBeenCalled();
+	});
+
+	describe("action: close", () => {
+		const closeEntity = vi.fn();
+
+		const actorWithClose = { closeEntity } as unknown as EntityActor;
+
+		const prEntity = {
+			data: {
+				html_url: "github.com/owner/repo/pull/456",
+			},
+			number: 456,
+			type: "pull_request",
+		} as PullRequestEntity;
+
+		const closeReport = [
+			{ about: fakeAbout, data: { ...fakeData, action: "close" as const } },
+		] satisfies RuleReport[];
+
+		beforeEach(() => {
+			closeEntity.mockReset();
+			mockSetCommentForReports.mockResolvedValue(fakeComment);
+		});
+
+		it("closes the PR when a report carries action: close on a pull_request entity", async () => {
+			await outputActionReports(
+				actorWithClose,
+				prEntity,
+				closeReport,
+				settings,
+			);
+
+			expect(closeEntity).toHaveBeenCalledOnce();
+		});
+
+		it("does not close when no report carries action: close on a pull_request entity", async () => {
+			await outputActionReports(actorWithClose, prEntity, reports, settings);
+
+			expect(closeEntity).not.toHaveBeenCalled();
+		});
+
+		it("closes a non-pull_request entity when a report carries action: close", async () => {
+			await outputActionReports(actorWithClose, entity, closeReport, settings);
+
+			expect(closeEntity).toHaveBeenCalledOnce();
+		});
+
+		it("calls setFailed when closeEntity throws", async () => {
+			closeEntity.mockRejectedValue(new Error("Permission denied"));
+
+			await outputActionReports(
+				actorWithClose,
+				prEntity,
+				closeReport,
+				settings,
+			);
+
+			expect(mockCore.setFailed).toHaveBeenCalledWith(
+				expect.stringContaining("Failed to close entity: Permission denied"),
+			);
+		});
+
+		it("calls setFailed when closeEntity throws a non-Error", async () => {
+			closeEntity.mockRejectedValue("string error");
+
+			await outputActionReports(
+				actorWithClose,
+				prEntity,
+				closeReport,
+				settings,
+			);
+
+			expect(mockCore.setFailed).toHaveBeenCalledWith(
+				expect.stringContaining("Failed to close entity: string error"),
+			);
+		});
+
+		it("does not close the entity when comment posting fails", async () => {
+			mockSetCommentForReports.mockRejectedValue(new Error("Network error"));
+
+			await outputActionReports(
+				actorWithClose,
+				prEntity,
+				closeReport,
+				settings,
+			);
+
+			expect(closeEntity).not.toHaveBeenCalled();
+		});
 	});
 });

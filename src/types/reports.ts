@@ -19,6 +19,8 @@ export interface RuleReport {
  * Report data for a specific {@link RuleReport} violation.
  */
 export interface RuleReportData {
+	// Comment content
+
 	/**
 	 * Single sentence description of the reported violation.
 	 * @example "The following image is missing alt text:"
@@ -36,4 +38,12 @@ export interface RuleReportData {
 	 * @example "To resolve this report, add descriptive alt text to the image."
 	 */
 	suggestion: string[];
+
+	// Post-comment actions
+
+	/**
+	 * Optional action to take on the entity after the report comment is posted.
+	 * @example "close"
+	 */
+	action?: "close";
 }

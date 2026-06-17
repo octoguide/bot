@@ -48,3 +48,17 @@ Steps the user can take to resolve the violation.
 ```ts
 "To resolve this report, add descriptive alt text to the image."
 ```
+
+***
+
+### action?
+
+> `optional` **action**: `"close"`
+
+Optional action to take on the entity after the report comment is posted.
+
+#### Example
+
+```ts
+"close"
+```

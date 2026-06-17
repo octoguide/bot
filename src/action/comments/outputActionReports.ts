@@ -20,6 +20,8 @@ export async function outputActionReports(
 	const headline = createHeadlineAsMarkdown(entity, reports);
 	const reported = markdownReporter(headline, reports);
 
+	let commentStepSucceeded = false;
+
 	try {
 		const comment = await setCommentForReports(
 			actor,
@@ -28,6 +30,7 @@ export async function outputActionReports(
 			settings,
 		);
 
+		commentStepSucceeded = true;
 		core.info(
 			comment
 				? `Reports comment: ${comment.url} (${comment.status})`
@@ -51,5 +54,18 @@ export async function outputActionReports(
 		await actionReporter(headline, reports, core.summary);
 		await core.summary.write();
 		core.setFailed(headline);
+	}
+
+	if (
+		commentStepSucceeded &&
+		reports.some((report) => report.data.action === "close")
+	) {
+		try {
+			await actor.closeEntity();
+		} catch (error) {
+			core.setFailed(
+				`Failed to close entity: ${error instanceof Error ? error.message : String(error)}`,
+			);
+		}
 	}
 }

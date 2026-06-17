@@ -1,0 +1,32 @@
+---
+description: "PRs labeled as automated or AI-generated should be closed"
+title: "pr-automation-detected"
+---
+
+import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
+import IncludedIn from "../../../components/IncludedIn.astro";
+
+<IncludedIn rule="pr-automation-detected" />
+
+Pull requests labeled as automated (e.g. `automation-signal`) or AI-generated (e.g. `ai slop`) indicate contributions that were not meaningfully authored by a human.
+These contributions are often low-quality, miss project context, and create unnecessary review burden for maintainers.
+
+When a matching label is detected on an open PR, OctoGuide will post a comment explaining the closure and then close the pull request.
+
+## Matched Labels
+
+At this time, the following label names are matched case-insensitively:
+
+- `automation-signal` or `automation signal`
+- `ai-slop` or `ai slop`
+
+## Example
+
+<OctoGuideGitHubComment rule="pr-automation-detected">
+This pull request has been labeled as automated or AI-generated and will be closed.
+These types of automated contributions often lack the understanding and context
+that maintainers need to review and maintain code.
+
+Please review the repository's [contributing guidelines](https://github.com/octoguide/bot/blob/HEAD/.github/CONTRIBUTING.md) before submitting.
+
+</OctoGuideGitHubComment>
