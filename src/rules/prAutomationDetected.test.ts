@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { testRule } from "../tests/testRule.js";
-import { prAiGenerated } from "./prAiGenerated.js";
+import { prAutomationDetected } from "./prAutomationDetected.js";
 
 const makeLabel = (name: string) => ({
 	color: "",
@@ -13,12 +13,12 @@ const makeLabel = (name: string) => ({
 	url: "",
 });
 
-describe(prAiGenerated.about.name, () => {
+describe(prAutomationDetected.about.name, () => {
 	it("does not report when the pull request has no target labels", async () => {
 		const report = vi.fn();
 
 		await testRule(
-			prAiGenerated,
+			prAutomationDetected,
 			{
 				data: {
 					labels: [makeLabel("bug")],
@@ -36,7 +36,7 @@ describe(prAiGenerated.about.name, () => {
 		const report = vi.fn();
 
 		await testRule(
-			prAiGenerated,
+			prAutomationDetected,
 			{
 				data: {
 					labels: [makeLabel("ai slop")],
@@ -54,7 +54,7 @@ describe(prAiGenerated.about.name, () => {
 		const report = vi.fn();
 
 		await testRule(
-			prAiGenerated,
+			prAutomationDetected,
 			{
 				data: {
 					labels: [makeLabel("ai slop")],
@@ -73,7 +73,7 @@ describe(prAiGenerated.about.name, () => {
 		const report = vi.fn();
 
 		await testRule(
-			prAiGenerated,
+			prAutomationDetected,
 			{
 				data: {
 					labels: [makeLabel("automation-signal")],
@@ -92,7 +92,7 @@ describe(prAiGenerated.about.name, () => {
 		const report = vi.fn();
 
 		await testRule(
-			prAiGenerated,
+			prAutomationDetected,
 			{
 				data: {
 					labels: [makeLabel("AI Slop")],

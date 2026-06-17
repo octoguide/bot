@@ -1,5 +1,5 @@
 import { commentMeaningful } from "./commentMeaningful.js";
-import { prAiGenerated } from "./prAiGenerated.js";
+import { prAutomationDetected } from "./prAutomationDetected.js";
 import { prBodyDescriptive } from "./prBodyDescriptive.js";
 import { prBranchNonDefault } from "./prBranchNonDefault.js";
 import { prLinkedIssue } from "./prLinkedIssue.js";
@@ -9,7 +9,7 @@ import { textImageAltText } from "./textImageAltText.js";
 
 export const allRules = [
 	commentMeaningful,
-	prAiGenerated,
+	prAutomationDetected,
 	prBranchNonDefault,
 	prBodyDescriptive,
 	prLinkedIssue,
