@@ -27,7 +27,7 @@ export async function cli(...args: string[]) {
 	}
 
 	const { reports } = await runOctoGuideRules({
-		entity,
+		entityInput: entity,
 		settings: { config },
 	});
 

@@ -159,7 +159,7 @@ describe("runOctoGuideRules", () => {
 
 		await expect(
 			runOctoGuideRules({
-				entity: invalidEntity,
+				entityInput: invalidEntity,
 			}),
 		).rejects.toThrow("Entity data's html_url is not a string.");
 	});
@@ -172,7 +172,7 @@ describe("runOctoGuideRules", () => {
 
 		await expect(
 			runOctoGuideRules({
-				entity: "https://github.com/test-owner/test-repo/issues/1",
+				entityInput: "https://github.com/test-owner/test-repo/issues/1",
 			}),
 		).rejects.toThrow("Could not resolve GitHub entity actor.");
 
@@ -195,7 +195,7 @@ describe("runOctoGuideRules", () => {
 
 		await runOctoGuideRules({
 			auth: "test-token",
-			entity: "https://github.com/test-owner/test-repo/issues/1",
+			entityInput: "https://github.com/test-owner/test-repo/issues/1",
 		});
 
 		expect(mockOctokitFromAuth).toHaveBeenCalledWith({ auth: "test-token" });
@@ -221,7 +221,7 @@ describe("runOctoGuideRules", () => {
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
-			entity: "https://github.com/test-owner/test-repo/issues/1",
+			entityInput: "https://github.com/test-owner/test-repo/issues/1",
 			settings: {
 				config: "recommended",
 				rules: {
@@ -265,7 +265,7 @@ describe("runOctoGuideRules", () => {
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
-			entity: "https://github.com/test-owner/test-repo/issues/1",
+			entityInput: "https://github.com/test-owner/test-repo/issues/1",
 			settings: {
 				config: "recommended",
 			},
@@ -319,7 +319,7 @@ describe("runOctoGuideRules", () => {
 		});
 
 		const result = await runOctoGuideRules({
-			entity: "https://github.com/test-owner/test-repo/issues/1",
+			entityInput: "https://github.com/test-owner/test-repo/issues/1",
 			settings: {
 				config: "recommended",
 			},
@@ -359,7 +359,7 @@ describe("runOctoGuideRules", () => {
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
-			entity: "https://github.com/test-owner/test-repo/issues/1",
+			entityInput: "https://github.com/test-owner/test-repo/issues/1",
 		});
 
 		expect(result).toEqual({
@@ -402,7 +402,7 @@ describe("runOctoGuideRules", () => {
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
-			entity: "https://github.com/test-owner/test-repo/pull/1",
+			entityInput: "https://github.com/test-owner/test-repo/pull/1",
 			settings: {
 				config: "recommended",
 				rules: {
@@ -468,7 +468,7 @@ describe("runOctoGuideRules", () => {
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
-			entity: entityInput,
+			entityInput: entityInput,
 			settings: {
 				config: "recommended",
 			},
