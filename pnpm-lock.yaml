@@ -59,7 +59,7 @@ importers:
         version: 10.0.1(eslint@10.5.0(jiti@2.7.0))
       '@release-it/conventional-changelog':
         specifier: 10.0.4
-        version: 10.0.4(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)(release-it@20.2.0(@types/node@24.12.0)(magicast@0.5.2))
+        version: 10.0.4(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)(release-it@20.2.0(@types/node@24.13.2)(magicast@0.5.2))
       '@types/eslint-plugin-markdown':
         specifier: 2.0.2
         version: 2.0.2
@@ -70,8 +70,8 @@ importers:
         specifier: 14.1.2
         version: 14.1.2
       '@types/node':
-        specifier: 24.12.0
-        version: 24.12.0
+        specifier: 24.13.2
+        version: 24.13.2
       '@types/parse-github-url':
         specifier: 1.0.3
         version: 1.0.3
@@ -80,10 +80,10 @@ importers:
         version: 0.44.0
       '@vitest/coverage-v8':
         specifier: 4.1.0
-        version: 4.1.0(vitest@4.1.0(@types/node@24.12.0)(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)))
+        version: 4.1.0(vitest@4.1.0(@types/node@24.13.2)(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)))
       '@vitest/eslint-plugin':
         specifier: 1.6.1
-        version: 1.6.1(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.2)(vitest@4.1.0(@types/node@24.12.0)(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)))
+        version: 1.6.1(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.2)(vitest@4.1.0(@types/node@24.13.2)(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)))
       console-fail-test:
         specifier: 0.6.0
         version: 0.6.0
@@ -146,7 +146,7 @@ importers:
         version: 0.18.0(prettier@3.8.1)
       release-it:
         specifier: 20.2.0
-        version: 20.2.0(@types/node@24.12.0)(magicast@0.5.2)
+        version: 20.2.0(@types/node@24.13.2)(magicast@0.5.2)
       type-fest:
         specifier: 5.7.0
         version: 5.7.0
@@ -158,19 +158,19 @@ importers:
         version: 8.58.0(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.2)
       vitest:
         specifier: 4.1.0
-        version: 4.1.0(@types/node@24.12.0)(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0))
+        version: 4.1.0(@types/node@24.13.2)(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0))
 
   site:
     dependencies:
       '@astrojs/starlight':
         specifier: 0.37.1
-        version: 0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
+        version: 0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
       '@konami-emoji-blast/astro':
         specifier: 0.2.0
-        version: 0.2.0(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))(konami-emoji-blast@0.6.0)
+        version: 0.2.0(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))(konami-emoji-blast@0.6.0)
       astro:
         specifier: 5.18.0
-        version: 5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
+        version: 5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
       konami-emoji-blast:
         specifier: 0.6.0
         version: 0.6.0
@@ -179,14 +179,14 @@ importers:
         version: 0.34.1
       starlight-links-validator:
         specifier: 0.19.0
-        version: 0.19.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)))
+        version: 0.19.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)))
       starlight-package-managers:
         specifier: 0.12.0
-        version: 0.12.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)))
+        version: 0.12.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)))
     devDependencies:
       starlight-typedoc:
         specifier: 0.23.0
-        version: 0.23.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.16(typescript@5.9.2)))(typedoc@0.28.16(typescript@5.9.2))
+        version: 0.23.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.16(typescript@5.9.2)))(typedoc@0.28.16(typescript@5.9.2))
 
 packages:
 
@@ -2012,8 +2012,8 @@ packages:
   '@types/node@22.19.3':
     resolution: {integrity: sha512-1N9SBnWYOJTrNZCdh/yJE+t910Y128BoyY+zBLWhL3r0TYzlTmFdXrPwHL9DyFZmlEXNQQolTZh3KHV31QDhyA==}
 
-  '@types/node@24.12.0':
-    resolution: {integrity: sha512-GYDxsZi3ChgmckRT9HPU0WEhKLP08ev/Yfcq2AstjrDASOYCSXeyjDsHg4v5t4jOj7cyDX3vmprafKlWIG9MXQ==}
+  '@types/node@24.13.2':
+    resolution: {integrity: sha512-fRa09kZTgu8o71KFcDjUFuc7F+dEbZYZmkI0mg5YBTRs0yMKjYHsq/c0urDKeDb+D5qVgXOdFcuu+DZPKOITwA==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -4605,8 +4605,8 @@ packages:
   undici-types@6.21.0:
     resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
 
-  undici-types@7.16.0:
-    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+  undici-types@7.18.2:
+    resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
   undici@6.23.0:
     resolution: {integrity: sha512-VfQPToRA5FZs/qJxLIinmU59u0r7LXqoJkCzinq3ckNJp3vKEh7jTWN589YQ5+aoAC/TGRLyJLCPKcLQbM8r9g==}
@@ -5078,12 +5078,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.2.5(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))':
+  '@astrojs/mdx@4.2.5(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.1
       '@mdx-js/mdx': 3.1.0(acorn@8.16.0)
       acorn: 8.16.0
-      astro: 5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
+      astro: 5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -5111,17 +5111,17 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.25.76
 
-  '@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))':
+  '@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.10
-      '@astrojs/mdx': 4.2.5(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
+      '@astrojs/mdx': 4.2.5(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
       '@astrojs/sitemap': 3.3.1
       '@pagefind/default-ui': 1.3.0
       '@types/hast': 3.0.4
       '@types/js-yaml': 4.0.9
       '@types/mdast': 4.0.4
-      astro: 5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
-      astro-expressive-code: 0.41.2(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
+      astro: 5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
+      astro-expressive-code: 0.41.2(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.3
       hast-util-select: 6.0.4
@@ -5765,122 +5765,122 @@ snapshots:
 
   '@inquirer/ansi@2.0.7': {}
 
-  '@inquirer/checkbox@5.2.1(@types/node@24.12.0)':
+  '@inquirer/checkbox@5.2.1(@types/node@24.13.2)':
     dependencies:
       '@inquirer/ansi': 2.0.7
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
       '@inquirer/figures': 2.0.7
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
-  '@inquirer/confirm@6.1.1(@types/node@24.12.0)':
+  '@inquirer/confirm@6.1.1(@types/node@24.13.2)':
     dependencies:
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
-  '@inquirer/core@11.2.1(@types/node@24.12.0)':
+  '@inquirer/core@11.2.1(@types/node@24.13.2)':
     dependencies:
       '@inquirer/ansi': 2.0.7
       '@inquirer/figures': 2.0.7
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
       cli-width: 4.1.0
       fast-wrap-ansi: 0.2.0
       mute-stream: 3.0.0
       signal-exit: 4.1.0
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
-  '@inquirer/editor@5.2.2(@types/node@24.12.0)':
+  '@inquirer/editor@5.2.2(@types/node@24.13.2)':
     dependencies:
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/external-editor': 3.0.3(@types/node@24.12.0)
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/external-editor': 3.0.3(@types/node@24.13.2)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
-  '@inquirer/expand@5.1.1(@types/node@24.12.0)':
+  '@inquirer/expand@5.1.1(@types/node@24.13.2)':
     dependencies:
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
-  '@inquirer/external-editor@3.0.3(@types/node@24.12.0)':
+  '@inquirer/external-editor@3.0.3(@types/node@24.13.2)':
     dependencies:
       chardet: 2.1.1
       iconv-lite: 0.7.2
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
   '@inquirer/figures@2.0.7': {}
 
-  '@inquirer/input@5.1.2(@types/node@24.12.0)':
+  '@inquirer/input@5.1.2(@types/node@24.13.2)':
     dependencies:
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
-  '@inquirer/number@4.1.1(@types/node@24.12.0)':
+  '@inquirer/number@4.1.1(@types/node@24.13.2)':
     dependencies:
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
-  '@inquirer/password@5.1.1(@types/node@24.12.0)':
-    dependencies:
-      '@inquirer/ansi': 2.0.7
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
-    optionalDependencies:
-      '@types/node': 24.12.0
-
-  '@inquirer/prompts@8.4.2(@types/node@24.12.0)':
-    dependencies:
-      '@inquirer/checkbox': 5.2.1(@types/node@24.12.0)
-      '@inquirer/confirm': 6.1.1(@types/node@24.12.0)
-      '@inquirer/editor': 5.2.2(@types/node@24.12.0)
-      '@inquirer/expand': 5.1.1(@types/node@24.12.0)
-      '@inquirer/input': 5.1.2(@types/node@24.12.0)
-      '@inquirer/number': 4.1.1(@types/node@24.12.0)
-      '@inquirer/password': 5.1.1(@types/node@24.12.0)
-      '@inquirer/rawlist': 5.3.1(@types/node@24.12.0)
-      '@inquirer/search': 4.2.1(@types/node@24.12.0)
-      '@inquirer/select': 5.2.1(@types/node@24.12.0)
-    optionalDependencies:
-      '@types/node': 24.12.0
-
-  '@inquirer/rawlist@5.3.1(@types/node@24.12.0)':
-    dependencies:
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
-    optionalDependencies:
-      '@types/node': 24.12.0
-
-  '@inquirer/search@4.2.1(@types/node@24.12.0)':
-    dependencies:
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/figures': 2.0.7
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
-    optionalDependencies:
-      '@types/node': 24.12.0
-
-  '@inquirer/select@5.2.1(@types/node@24.12.0)':
+  '@inquirer/password@5.1.1(@types/node@24.13.2)':
     dependencies:
       '@inquirer/ansi': 2.0.7
-      '@inquirer/core': 11.2.1(@types/node@24.12.0)
-      '@inquirer/figures': 2.0.7
-      '@inquirer/type': 4.0.7(@types/node@24.12.0)
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
-  '@inquirer/type@4.0.7(@types/node@24.12.0)':
+  '@inquirer/prompts@8.4.2(@types/node@24.13.2)':
+    dependencies:
+      '@inquirer/checkbox': 5.2.1(@types/node@24.13.2)
+      '@inquirer/confirm': 6.1.1(@types/node@24.13.2)
+      '@inquirer/editor': 5.2.2(@types/node@24.13.2)
+      '@inquirer/expand': 5.1.1(@types/node@24.13.2)
+      '@inquirer/input': 5.1.2(@types/node@24.13.2)
+      '@inquirer/number': 4.1.1(@types/node@24.13.2)
+      '@inquirer/password': 5.1.1(@types/node@24.13.2)
+      '@inquirer/rawlist': 5.3.1(@types/node@24.13.2)
+      '@inquirer/search': 4.2.1(@types/node@24.13.2)
+      '@inquirer/select': 5.2.1(@types/node@24.13.2)
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
+
+  '@inquirer/rawlist@5.3.1(@types/node@24.13.2)':
+    dependencies:
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
+    optionalDependencies:
+      '@types/node': 24.13.2
+
+  '@inquirer/search@4.2.1(@types/node@24.13.2)':
+    dependencies:
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/figures': 2.0.7
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
+    optionalDependencies:
+      '@types/node': 24.13.2
+
+  '@inquirer/select@5.2.1(@types/node@24.13.2)':
+    dependencies:
+      '@inquirer/ansi': 2.0.7
+      '@inquirer/core': 11.2.1(@types/node@24.13.2)
+      '@inquirer/figures': 2.0.7
+      '@inquirer/type': 4.0.7(@types/node@24.13.2)
+    optionalDependencies:
+      '@types/node': 24.13.2
+
+  '@inquirer/type@4.0.7(@types/node@24.13.2)':
+    optionalDependencies:
+      '@types/node': 24.13.2
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
@@ -5891,9 +5891,9 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  '@konami-emoji-blast/astro@0.2.0(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))(konami-emoji-blast@0.6.0)':
+  '@konami-emoji-blast/astro@0.2.0(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))(konami-emoji-blast@0.6.0)':
     dependencies:
-      astro: 5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
+      astro: 5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
       konami-emoji-blast: 0.6.0
 
   '@mdx-js/mdx@3.1.0(acorn@8.16.0)':
@@ -6405,7 +6405,7 @@ snapshots:
 
   '@pkgr/core@0.2.9': {}
 
-  '@release-it/conventional-changelog@10.0.4(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)(release-it@20.2.0(@types/node@24.12.0)(magicast@0.5.2))':
+  '@release-it/conventional-changelog@10.0.4(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)(release-it@20.2.0(@types/node@24.13.2)(magicast@0.5.2))':
     dependencies:
       '@conventional-changelog/git-client': 2.5.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)
       concat-stream: 2.0.0
@@ -6413,7 +6413,7 @@ snapshots:
       conventional-changelog-angular: 8.1.0
       conventional-changelog-conventionalcommits: 9.1.0
       conventional-recommended-bump: 11.2.0
-      release-it: 20.2.0(@types/node@24.12.0)(magicast@0.5.2)
+      release-it: 20.2.0(@types/node@24.13.2)(magicast@0.5.2)
       semver: 7.7.4
     transitivePeerDependencies:
       - conventional-commits-filter
@@ -6628,15 +6628,15 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@24.12.0':
+  '@types/node@24.13.2':
     dependencies:
-      undici-types: 7.16.0
+      undici-types: 7.18.2
 
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/parse-github-url@1.0.3':
     dependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
   '@types/parse-path@7.0.3': {}
 
@@ -6644,7 +6644,7 @@ snapshots:
 
   '@types/sax@1.2.7':
     dependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
 
   '@types/unist@2.0.11': {}
 
@@ -6796,7 +6796,7 @@ snapshots:
 
   '@vercel/ncc@0.44.0': {}
 
-  '@vitest/coverage-v8@4.1.0(vitest@4.1.0(@types/node@24.12.0)(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)))':
+  '@vitest/coverage-v8@4.1.0(vitest@4.1.0(@types/node@24.13.2)(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)))':
     dependencies:
       '@bcoe/v8-coverage': 1.0.2
       '@vitest/utils': 4.1.0
@@ -6808,16 +6808,16 @@ snapshots:
       obug: 2.1.1
       std-env: 4.0.0
       tinyrainbow: 3.0.3
-      vitest: 4.1.0(@types/node@24.12.0)(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0))
+      vitest: 4.1.0(@types/node@24.13.2)(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0))
 
-  '@vitest/eslint-plugin@1.6.1(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.2)(vitest@4.1.0(@types/node@24.12.0)(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)))':
+  '@vitest/eslint-plugin@1.6.1(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.2)(vitest@4.1.0(@types/node@24.13.2)(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)))':
     dependencies:
       '@typescript-eslint/scope-manager': 8.58.2
       '@typescript-eslint/utils': 8.58.2(eslint@10.5.0(jiti@2.7.0))(typescript@5.9.2)
       eslint: 10.5.0(jiti@2.7.0)
     optionalDependencies:
       typescript: 5.9.2
-      vitest: 4.1.0(@types/node@24.12.0)(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0))
+      vitest: 4.1.0(@types/node@24.13.2)(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0))
     transitivePeerDependencies:
       - supports-color
 
@@ -6830,13 +6830,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.1.0(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0))':
+  '@vitest/mocker@4.1.0(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0))':
     dependencies:
       '@vitest/spy': 4.1.0
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)
+      vite: 7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)
 
   '@vitest/pretty-format@4.1.0':
     dependencies:
@@ -6922,12 +6922,12 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-expressive-code@0.41.2(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)):
+  astro-expressive-code@0.41.2(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)):
     dependencies:
-      astro: 5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
+      astro: 5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)
       rehype-expressive-code: 0.41.2
 
-  astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0):
+  astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler': 2.13.0
       '@astrojs/internal-helpers': 0.7.5
@@ -6984,8 +6984,8 @@ snapshots:
       unist-util-visit: 5.1.0
       unstorage: 1.17.4
       vfile: 6.0.3
-      vite: 6.4.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)
-      vitefu: 1.1.3(vite@6.4.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0))
+      vite: 6.4.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)
+      vitefu: 1.1.3(vite@6.4.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0))
       xxhash-wasm: 1.1.0
       yargs-parser: 21.1.1
       yocto-spinner: 0.2.3
@@ -9555,9 +9555,9 @@ snapshots:
       rehype-stringify: 10.0.1
       unified: 11.0.5
 
-  release-it@20.2.0(@types/node@24.12.0)(magicast@0.5.2):
+  release-it@20.2.0(@types/node@24.13.2)(magicast@0.5.2):
     dependencies:
-      '@inquirer/prompts': 8.4.2(@types/node@24.12.0)
+      '@inquirer/prompts': 8.4.2(@types/node@24.13.2)
       '@octokit/rest': 22.0.1
       '@phun-ky/typeof': 2.0.3
       async-retry: 1.3.3
@@ -9867,9 +9867,9 @@ snapshots:
 
   stackback@0.0.2: {}
 
-  starlight-links-validator@0.19.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))):
+  starlight-links-validator@0.19.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))):
     dependencies:
-      '@astrojs/starlight': 0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
+      '@astrojs/starlight': 0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
       '@types/picomatch': 3.0.2
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.3
@@ -9884,13 +9884,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  starlight-package-managers@0.12.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))):
+  starlight-package-managers@0.12.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))):
     dependencies:
-      '@astrojs/starlight': 0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
+      '@astrojs/starlight': 0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
 
-  starlight-typedoc@0.23.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.16(typescript@5.9.2)))(typedoc@0.28.16(typescript@5.9.2)):
+  starlight-typedoc@0.23.0(@astrojs/starlight@0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0)))(typedoc-plugin-markdown@4.9.0(typedoc@0.28.16(typescript@5.9.2)))(typedoc@0.28.16(typescript@5.9.2)):
     dependencies:
-      '@astrojs/starlight': 0.37.1(astro@5.18.0(@types/node@24.12.0)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
+      '@astrojs/starlight': 0.37.1(astro@5.18.0(@types/node@24.13.2)(jiti@2.7.0)(rollup@4.60.2)(typescript@5.9.2)(yaml@2.9.0))
       github-slugger: 2.0.0
       typedoc: 0.28.16(typescript@5.9.2)
       typedoc-plugin-markdown: 4.9.0(typedoc@0.28.16(typescript@5.9.2))
@@ -10088,7 +10088,7 @@ snapshots:
 
   undici-types@6.21.0: {}
 
-  undici-types@7.16.0: {}
+  undici-types@7.18.2: {}
 
   undici@6.23.0: {}
 
@@ -10205,7 +10205,7 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite@6.4.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0):
+  vite@6.4.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0):
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.4)
@@ -10214,12 +10214,12 @@ snapshots:
       rollup: 4.60.2
       tinyglobby: 0.2.16
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
       fsevents: 2.3.3
       jiti: 2.7.0
       yaml: 2.9.0
 
-  vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0):
+  vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0):
     dependencies:
       esbuild: 0.27.3
       fdir: 6.5.0(picomatch@4.0.4)
@@ -10228,19 +10228,19 @@ snapshots:
       rollup: 4.60.2
       tinyglobby: 0.2.16
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
       fsevents: 2.3.3
       jiti: 2.7.0
       yaml: 2.9.0
 
-  vitefu@1.1.3(vite@6.4.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)):
+  vitefu@1.1.3(vite@6.4.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)):
     optionalDependencies:
-      vite: 6.4.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)
+      vite: 6.4.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)
 
-  vitest@4.1.0(@types/node@24.12.0)(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)):
+  vitest@4.1.0(@types/node@24.13.2)(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.0
-      '@vitest/mocker': 4.1.0(vite@7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0))
+      '@vitest/mocker': 4.1.0(vite@7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0))
       '@vitest/pretty-format': 4.1.0
       '@vitest/runner': 4.1.0
       '@vitest/snapshot': 4.1.0
@@ -10257,10 +10257,10 @@ snapshots:
       tinyexec: 1.1.1
       tinyglobby: 0.2.16
       tinyrainbow: 3.0.3
-      vite: 7.3.2(@types/node@24.12.0)(jiti@2.7.0)(yaml@2.9.0)
+      vite: 7.3.2(@types/node@24.13.2)(jiti@2.7.0)(yaml@2.9.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 24.12.0
+      '@types/node': 24.13.2
     transitivePeerDependencies:
       - msw
 
