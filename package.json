@@ -43,7 +43,7 @@
 		"is-comment-meaningless": "^0.2.0",
 		"lodash": "^4.17.21",
 		"markdown-it": "^14.1.1",
-		"markdownlint": "0.40.0",
+		"markdownlint": "0.41.0",
 		"marked": "^18.0.0",
 		"octokit": "^5.0.0",
 		"octokit-from-auth": "^0.3.1",
