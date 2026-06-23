@@ -14,7 +14,7 @@
 		"@konami-emoji-blast/astro": "0.3.0",
 		"astro": "5.18.0",
 		"konami-emoji-blast": "0.7.0",
-		"sharp": "0.34.1",
+		"sharp": "0.35.1",
 		"starlight-links-validator": "0.19.0",
 		"starlight-package-managers": "0.12.0"
 	},
