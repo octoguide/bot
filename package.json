@@ -74,7 +74,7 @@
 		"eslint-plugin-yml": "3.4.0",
 		"knip": "6.17.1",
 		"lefthook": "2.1.0",
-		"markdownlint-cli": "0.48.0",
+		"markdownlint-cli": "0.49.0",
 		"markdownlint-sentences-per-line": "0.1.1",
 		"prettier": "3.8.1",
 		"prettier-plugin-astro": "0.14.1",
