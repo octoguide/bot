@@ -84,7 +84,7 @@
 		"release-it": "20.2.0",
 		"type-fest": "5.7.0",
 		"typescript": "5.9.2",
-		"typescript-eslint": "8.58.0",
+		"typescript-eslint": "8.61.1",
 		"vitest": "4.1.0"
 	},
 	"packageManager": "pnpm@10.34.3",
