@@ -2,6 +2,16 @@ import { version } from "./package.js";
 
 const atVersion = `@${version}`;
 
+// TODO: move somewhere better???
+export const allAssociations = [
+	"FIRST_TIMER",
+	"FIRST_TIME_CONTRIBUTOR",
+	"CONTRIBUTOR",
+	"COLLABORATOR",
+	"MEMBER",
+	"OWNER",
+];
+
 export const getStartedBase = `jobs:
   octoguide:
     if: \${{ !endsWith(github.actor, '[bot]') }}
@@ -146,7 +156,7 @@ export const getStartedIncludeCollaborators = `jobs:
       - uses: OctoGuide/bot${atVersion}
         with:
           github-token: \${{ secrets.GITHUB_TOKEN }}
-+          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,COLLABORATOR,MEMBER,OWNER"`;
++          include-associations: "${allAssociations.join(",")}"`;
 
 export const getStartedIncludeFirstTimers = `jobs:
   octoguide:
