@@ -52,7 +52,7 @@ describe(actionReporter, () => {
 					data: fakeData,
 				},
 			],
-			summary as typeof core.summary,
+			summary,
 		);
 
 		expect(summary.addHeading.mock.calls).toMatchInlineSnapshot(`
@@ -107,7 +107,7 @@ describe(actionReporter, () => {
 					data: fakeData,
 				},
 			],
-			summary as typeof core.summary,
+			summary,
 		);
 
 		expect(summary.addHeading.mock.calls).toMatchInlineSnapshot(`
@@ -176,7 +176,7 @@ describe(actionReporter, () => {
 					data: fakeData,
 				},
 			],
-			summary as typeof core.summary,
+			summary,
 		);
 
 		expect(summary.addHeading.mock.calls).toMatchInlineSnapshot(`
@@ -267,7 +267,7 @@ describe(actionReporter, () => {
 					data: fakeData,
 				},
 			],
-			summary as typeof core.summary,
+			summary,
 		);
 
 		expect(summary.addHeading.mock.calls).toMatchInlineSnapshot(`

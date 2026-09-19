@@ -3,7 +3,6 @@ import type * as github from "@actions/github";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { EntityActor } from "../actors/types.js";
-import type { RunOctoGuideRulesResult } from "../runOctoGuideRules.js";
 import type { CommentData, Entity, IssueEntity } from "../types/entities.js";
 import type { RuleReport } from "../types/reports.js";
 
@@ -20,9 +19,7 @@ const mockCore = {
 };
 
 // Mock functions used directly in test assertions
-const mockRunOctoGuideRules = vi
-	.fn()
-	.mockResolvedValue({} as RunOctoGuideRulesResult);
+const mockRunOctoGuideRules = vi.fn().mockResolvedValue({});
 const mockCliReporter = vi.fn().mockReturnValue("");
 const mockRunCommentCleanup = vi.fn().mockResolvedValue(undefined);
 const mockOutputActionReports = vi.fn().mockResolvedValue(undefined);
@@ -652,7 +649,7 @@ describe("runOctoGuideAction", () => {
 								body: null as unknown as string,
 								html_url: "https://github.com/test/repo/issues/1",
 								number: 1,
-								user: null as unknown as object,
+								user: null,
 							},
 						}),
 					),

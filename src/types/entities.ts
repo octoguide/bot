@@ -1,9 +1,7 @@
 import { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods";
 
 export type CommentAbleEntity =
-	| DiscussionEntity
-	| IssueEntity
-	| PullRequestEntity;
+	DiscussionEntity | IssueEntity | PullRequestEntity;
 
 export type CommentAbleEntityType = CommentAbleEntity["type"];
 
@@ -63,10 +61,7 @@ export interface DiscussionEntity {
  *   - `"pull_request"`: {@link https://docs.github.com/en/rest/pulls/pulls#get-a-pull-request | pull request data}
  */
 export type Entity =
-	| CommentEntity
-	| DiscussionEntity
-	| IssueEntity
-	| PullRequestEntity;
+	CommentEntity | DiscussionEntity | IssueEntity | PullRequestEntity;
 
 export type EntityType = Entity["type"];
 

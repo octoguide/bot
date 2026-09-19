@@ -13,17 +13,16 @@ const { full, rule } = Astro.props;
 	<GitHubComment full={full}>
 		👋 Hi <strong>@YourUsername</strong>, thanks for the issue! A scan flagged a
 		concern with it. Could you please take a look?
-
 		<br />
-		<br />
-
-		[<strong><a href={`/rules/${rule}`}>{rule}</a></strong>]
-
+		<br />[
+		<strong>
+			<a href={`/rules/${rule}`}>{rule}</a>
+		</strong>
+		]
 		<slot />
-
 		<blockquote class="octoguide-github-comment-footer">
-			<em class="octoguide-github-comment-footer-emoji">🗺️</em> This message was posted
-			automatically by
+			<em class="octoguide-github-comment-footer-emoji">🗺️</em> This message was
+			posted automatically by
 			<a href="/">OctoGuide</a>: a bot for GitHub repository best practices.
 		</blockquote>
 	</GitHubComment>
