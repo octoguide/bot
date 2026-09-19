@@ -16,7 +16,9 @@
 	"exports": {
 		".": "./lib/index.js"
 	},
-	"bin": "bin/index.js",
+	"bin": {
+		"octoguide": "bin/index.js"
+	},
 	"files": [
 		"lib/"
 	],
