@@ -27,12 +27,10 @@ const configs = getRuleConfigs(rule.about.config);
 
 <blockquote>
 	Included in {configs.length === 1 ? "config:" : "configs:"}
-	{
-		configs.map((config, i) => (
-			<>
-				{configEmojis[config]}&nbsp;{config}
-				{i < configs.length - 1 ? ", " : ""}
-			</>
-		))
-	}
+	{configs.map((config, i) => (
+		<>
+			{configEmojis[config]}&nbsp;{config}
+			{i < configs.length - 1 ? ", " : ""}
+		</>
+	))}
 </blockquote>

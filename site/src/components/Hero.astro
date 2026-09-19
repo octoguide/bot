@@ -32,15 +32,15 @@ import Title from "./Title.astro";
 		<div class="comment-area">
 			<OctoGuideGitHubComment full rule="text-image-alt-text">
 				The following image is missing alt text:
-
 				<blockquote>
 					<code>
-						![](<u
-							>https://github.com/user-attachments/assets/bea565ea-7741-475a-a40b-f300e5d2090a</u
-						>)
+						![](
+						<u>
+							https://github.com/user-attachments/assets/bea565ea-7741-475a-a40b-f300e5d2090a
+						</u>
+						)
 					</code>
 				</blockquote>
-
 				Alternative text, or <em>"alt text"</em>, is a description attached to
 				an image. It allows non-sighted users and tools to understand the image
 				despite not being able to visually see it. To resolve this report, add
@@ -50,12 +50,12 @@ import Title from "./Title.astro";
 
 		<div class="hero-description hero-description-secondary">
 			<p>
-				Tired of drive-by <em>"+1"</em> comments? Inaccessible images? Having to bug
-				contributors to complete issue and PR tasks?
+				Tired of drive-by <em>"+1"</em> comments? Inaccessible images? Having to
+				bug contributors to complete issue and PR tasks?
 			</p>
 			<p>
-				Let <strong>OctoGuide</strong> gently explain best practices and nudge contributors
-				to do them for you.
+				Let <strong>OctoGuide</strong> gently explain best practices and nudge
+				contributors to do them for you.
 			</p>
 		</div>
 	</div>

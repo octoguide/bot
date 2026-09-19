@@ -12,13 +12,11 @@ interface Props {
 		Astro.props.full ? "github-comment-full" : "github-comment-compact",
 	]}
 >
-	{
-		Astro.props.full && (
-			<div class="github-photo-area">
-				<GitHubLogo class="github-photo" />
-			</div>
-		)
-	}
+	{Astro.props.full && (
+		<div class="github-photo-area">
+			<GitHubLogo class="github-photo" />
+		</div>
+	)}
 	<div class="github-comment-area">
 		<div class="github-comment-user">
 			github-actions
@@ -30,10 +28,9 @@ interface Props {
 				height="16"
 				fill="var(--color-grayscale-4)"
 				display="inline-block"
-				><path
-					d="M8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"
-				></path></svg
 			>
+				<path d="M8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+			</svg>
 		</div>
 		<div class="github-comment-body">
 			<slot />

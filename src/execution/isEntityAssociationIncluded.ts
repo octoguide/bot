@@ -4,9 +4,14 @@ export function isEntityAssociationIncluded(
 	entity: Entity,
 	includeAssociations: Set<string> | undefined,
 ) {
-	if (!includeAssociations || !("author_association" in entity.data)) {
+	if (!includeAssociations) {
 		return true;
 	}
 
-	return includeAssociations.has(entity.data.author_association);
+	const association =
+		"author_association" in entity.data
+			? entity.data.author_association
+			: undefined;
+
+	return !association || includeAssociations.has(association);
 }
