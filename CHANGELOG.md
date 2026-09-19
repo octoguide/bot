@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.2](https://github.com/octoguide/bot/compare/0.23.1...0.23.2) (2026-09-19)
+
+### Bug Fixes
+
+- declare bin as an object ([1cebe4a](https://github.com/octoguide/bot/commit/1cebe4a5c92a92ae8e5ca55d223e41302124902a))
+
 ## [0.23.1](https://github.com/octoguide/bot/compare/0.23.0...0.23.1) (2026-09-19)
 
 ### Bug Fixes
