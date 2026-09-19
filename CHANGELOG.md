@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.1](https://github.com/octoguide/bot/compare/0.23.0...0.23.1) (2026-09-19)
+
+### Bug Fixes
+
+- empty commit to trigger release ([97601f5](https://github.com/octoguide/bot/commit/97601f58a43a514cee23c8b02d9ca66c591b629c))
+
 # [0.23.0](https://github.com/octoguide/bot/compare/0.22.0...0.23.0) (2026-09-06)
 
 ### Bug Fixes
