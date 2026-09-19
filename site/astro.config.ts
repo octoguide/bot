@@ -5,15 +5,13 @@ import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc from "starlight-typedoc";
 
 export default defineConfig({
-	experimental: {
-		fonts: [
-			{
-				cssVariable: "--font-varela-round",
-				name: "Varela Round",
-				provider: fontProviders.google(),
-			},
-		],
-	},
+	fonts: [
+		{
+			cssVariable: "--font-varela-round",
+			name: "Varela Round",
+			provider: fontProviders.google(),
+		},
+	],
 	image: {
 		responsiveStyles: true,
 	},
@@ -64,9 +62,7 @@ export default defineConfig({
 					link: "configs",
 				},
 				{
-					autogenerate: {
-						directory: "rules",
-					},
+					items: [{ autogenerate: { directory: "rules" } }],
 					label: "Rules",
 				},
 				{
@@ -79,9 +75,7 @@ export default defineConfig({
 						{ label: "Installation", link: "docs/installation" },
 						{ label: "Package API", link: "generated/api" },
 						{
-							autogenerate: {
-								directory: "docs/guides",
-							},
+							items: [{ autogenerate: { directory: "docs/guides" } }],
 							label: "Guides",
 						},
 					],
