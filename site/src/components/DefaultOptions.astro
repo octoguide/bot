@@ -1,0 +1,60 @@
+---
+import { Code } from "@astrojs/starlight/components";
+
+import { allRules } from "../../../src/rules/all.js";
+import { getRuleDefaultOptions } from "../data/yml.js";
+
+interface Props {
+	rule: string;
+}
+
+const { rule: ruleName } = Astro.props;
+const rule = allRules.find((r) => r.about.name === ruleName);
+
+if (!rule) {
+	throw new Error(`Rule ${ruleName} not found`);
+}
+
+const defaultOptions = rule.about.defaultOptions ?? {};
+const entries = Object.entries(defaultOptions);
+---
+
+{
+	!!entries.length && (
+		<>
+			<p>
+				This rule declares its own default options. They take precedence over
+				the top-level <code>include-associations</code> and{" "}
+				<code>include-bots</code> inputs:
+			</p>
+			<ul>
+				{entries.map(([key, value]) => (
+					<li>
+						<code>{key}</code>:{" "}
+						{Array.isArray(value) ? (
+							value.map((entry, i) => (
+								<>
+									<code>{String(entry)}</code>
+									{i < value.length - 1 ? ", " : ""}
+								</>
+							))
+						) : (
+							<code>{JSON.stringify(value)}</code>
+						)}
+					</li>
+				))}
+			</ul>
+			<p>
+				Those defaults are equivalent to the following{" "}
+				<a href="/get-started#rule-options">rule options</a>. Changing a value
+				runs the rule with yours instead:
+			</p>
+			<Code
+				code={getRuleDefaultOptions(ruleName, defaultOptions)}
+				meta="lang=yml"
+				lang="diff"
+				title=".github/workflows/octoguide.yml"
+			/>
+		</>
+	)
+}

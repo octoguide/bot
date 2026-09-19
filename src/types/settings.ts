@@ -1,9 +1,11 @@
 import type { ConfigName } from "./core.js";
+import type { RuleOptionsRaw } from "./rules.js";
 
 export interface Settings {
 	comments?: Comments;
 	config?: ConfigName;
-	rules?: Record<string, boolean>;
+	options?: RuleOptionsRaw;
+	rules?: Record<string, boolean | RuleOptionsRaw>;
 }
 
 interface Comments {

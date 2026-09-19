@@ -5,6 +5,22 @@ import { EntityActorBase } from "./EntityActorBase.js";
 export abstract class IssueLikeActorBase<
 	Data extends CommentData | IssueLikeData,
 > extends EntityActorBase<Data> {
+	/**
+	 * @remarks `state_reason` is intentionally omitted at this time. The closed
+	 * entity may still represent planned work. It is being closed because the
+	 * contribution itself is not acceptable (e.g. AI-generated) as stated in the
+	 * corresponding report comment, not because the underlying task is unplanned
+	 * or irrelevant.
+	 */
+	async closeEntity() {
+		await this.octokit.rest.issues.update({
+			issue_number: this.entityNumber,
+			owner: this.locator.owner,
+			repo: this.locator.repository,
+			state: "closed",
+		});
+	}
+
 	async createComment(body: string) {
 		const response = await this.octokit.rest.issues.createComment({
 			body,

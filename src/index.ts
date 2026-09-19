@@ -25,5 +25,8 @@ export type {
 	RuleAbout,
 	RuleContext,
 	RuleListener,
+	RuleOptions,
+	RuleOptionsRaw,
 	RuleReporter,
 } from "./types/rules.js";
+export type { Settings } from "./types/settings.js";

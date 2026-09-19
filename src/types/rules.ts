@@ -13,7 +13,6 @@ import type { RuleReportData } from "./reports.js";
 /**
  * Defines how to analyze entities for a single best practice.
  */
-
 export interface Rule<About extends RuleAbout = RuleAbout> {
 	/**
 	 * Metadata about the rule.
@@ -45,6 +44,12 @@ export interface Rule<About extends RuleAbout = RuleAbout> {
  * Metadata about a rule, as used to define the rule.
  */
 export interface RuleAbout {
+	/**
+	 * Options the rule should run with unless overridden per-rule by users.
+	 * These take precedence over any options users set globally for all rules.
+	 */
+	defaultOptions?: RuleOptionsRaw;
+
 	/**
 	 * Single sentence description of the rule.
 	 */
@@ -86,9 +91,49 @@ export interface RuleContext {
 	octokit: Octokit;
 
 	/**
+	 * Options the rule is running with, resolved from rule and user settings.
+	 */
+	options: RuleOptions;
+
+	/**
 	 * Registers a new violation.
 	 */
 	report: RuleReporter;
+}
+
+/**
+ * Options for a rule, as resolved for a run.
+ */
+export interface RuleOptions {
+	[key: string]: unknown;
+
+	/**
+	 * Author associations of entities the rule runs on, or `undefined` for all.
+	 */
+	"include-associations"?: Set<string>;
+
+	/**
+	 * Whether the rule runs on entities created by bots.
+	 */
+	"include-bots": boolean;
+}
+
+/**
+ * Options for a rule, as provided in rule and user settings.
+ */
+export interface RuleOptionsRaw {
+	[key: string]: unknown;
+
+	/**
+	 * Author associations of entities the rule runs on.
+	 * `"NONE"` is always included.
+	 */
+	"include-associations"?: string[];
+
+	/**
+	 * Whether the rule runs on entities created by bots.
+	 */
+	"include-bots"?: boolean;
 }
 
 /**

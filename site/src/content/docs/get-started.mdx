@@ -13,6 +13,7 @@ import {
 	getStartedRuleDisable,
 	getStartedRuleEnable,
 	getStartedRuleNone,
+	getStartedRuleOptions,
 	getStartedIncludeBots,
 	getStartedIncludeAssociationsDefault,
 	getStartedIncludeCollaborators,
@@ -104,6 +105,11 @@ enable this by setting `include-bots` to `"true"`:
 	title=".github/workflows/octoguide.yml"
 />
 
+:::note
+Every rule supports the `include-associations` and `include-bots` options,
+which override the equivalent top-level inputs for that one rule.
+:::
+
 ### `include-associations`
 
 OctoGuide allows you to control which types of contributors have rules enforced on their
@@ -121,6 +127,11 @@ to include for rule checking. The default value excludes collaborators, organiza
 	lang="diff"
 	title=".github/workflows/octoguide.yml"
 />
+
+:::note
+Every rule supports the `include-associations` and `include-bots` options,
+which override the equivalent top-level inputs for that one rule.
+:::
 
 #### GitHub Author Associations
 
@@ -194,8 +205,9 @@ If no custom footer is provided, OctoGuide uses its default message.
 
 ### `rules`
 
-You can enable or disable specific rules by providing a `rule` input set to a string equivalent to a JSON object.
-Its keys should be the kebab-case rule names and values of booleans to enable or disable those rules.
+You can enable, disable, and configure specific rules by providing a `rules` input set to a string equivalent to a JSON object.
+Its keys should be the kebab-case rule names.
+Its values should be booleans to enable or disable those rules, or objects of options to run those rules with.
 This allows you to customize which rules are active beyond the preset configs.
 
 **Examples:**
@@ -229,3 +241,24 @@ To use only specific rules without any preset config:
 
 Rule names use kebab-case and correspond to the rule names shown in the [Rules](/configs#rules-table) documentation.
 When a rule is explicitly set via input, it takes precedence over the preset config settings.
+
+#### Rule Options
+
+Setting a rule to an object both enables the rule and gives it options to run with.
+Every rule supports the `include-associations` and `include-bots` options,
+which override the equivalent top-level inputs for that one rule.
+`include-associations` is provided per-rule as an array rather than a comma-separated string.
+
+**Example:**
+
+<Code
+	code={getStartedRuleOptions}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+Some rules declare their own default options.
+Those defaults take precedence over the top-level `include-associations` and `include-bots` inputs,
+so a rule such as [`text-image-alt-text`](/rules/text-image-alt-text) that applies to all author associations
+keeps doing so until you give it options of your own.

@@ -25,7 +25,7 @@ inputs:
     description: Run OctoGuide rules on bot-created entities (issues, PRs, discussions) and comments. By default, bots are skipped.
     required: false
   rules:
-    description: JSON object to configure rule settings
+    description: JSON object keyed by rule name, with values of booleans to enable or disable rules or objects of options to run them with.
     required: false
 name: OctoGuide Action
 runs:

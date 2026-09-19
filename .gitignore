@@ -1,9 +1,10 @@
 /coverage
 /dist/**/*.d.ts
 /dist/**/*.map
-/site/dist
+/dist-site
 /lib
 /node_modules
 /site/.astro
 /site/node_modules
+/site/src/content/docs/generated
 *.tsbuildinfo

@@ -7,8 +7,6 @@
 			"entry": ["src/action/index.ts", "src/cli.ts", "src/**/*.test.*"],
 			"ignore": ["dist/index.js"]
 		},
-		"site": {
-			"ignoreDependencies": ["sharp"]
-		}
+		"site": {}
 	}
 }

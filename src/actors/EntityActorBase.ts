@@ -41,6 +41,12 @@ export abstract class EntityActorBase<
 		this.octokit = octokit;
 	}
 
+	closeEntity(): Promise<void> {
+		return Promise.reject(
+			new Error("closeEntity is not yet implemented for this actor type."),
+		);
+	}
+
 	abstract createComment(body: string): Promise<string>;
 	abstract listComments(): Promise<CommentData[]>;
 	abstract updateComment(number: number, newBody: string): Promise<void>;

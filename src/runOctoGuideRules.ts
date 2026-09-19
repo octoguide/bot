@@ -8,9 +8,9 @@ import type { RuleContext } from "./types/rules.js";
 import type { Settings } from "./types/settings.js";
 
 import { createActor } from "./actors/createActor.js";
+import { isRuleSkippedForEntity } from "./execution/isRuleSkippedForEntity.js";
+import { resolveRules } from "./execution/resolveRules.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
-import { allRules } from "./rules/all.js";
-import { configs } from "./rules/configs.js";
 
 /**
  * Settings for running {@link runOctoGuideRules}.
@@ -51,7 +51,7 @@ export interface RunOctoGuideRulesOptions {
 	entity: Entity | string;
 
 	/**
-	 * Settings for the run, including rules to enable.
+	 * Settings for the run, including which rules to run and their options.
 	 */
 	settings?: Settings;
 }
@@ -97,10 +97,6 @@ export interface RunOctoGuideRulesResult {
  * });
  *
  * console.log("Received reports:", reports);
- * @param options Configuration object
- * @param options.auth GitHub authentication token or Octokit instance
- * @param options.entity Entity input (URL string or entity data object)
- * @param options.settings OctoGuide configuration settings including rules and comments
  * @returns Promise resolving to results with actor, entity data, and rule reports
  */
 export async function runOctoGuideRules({
@@ -143,27 +139,17 @@ export async function runOctoGuideRules({
 
 	const reports: RuleReport[] = [];
 
-	const config = settings?.config ?? "recommended";
-	const configRuleNames = Object.values(configs[config]).map(
-		(rule) => rule.about.name,
-	);
-	const ruleOverrides = settings?.rules ?? {};
-
-	const enabledRules = allRules.filter((rule) => {
-		const ruleName = rule.about.name;
-
-		if (ruleName in ruleOverrides) {
-			return ruleOverrides[ruleName];
-		}
-
-		return configRuleNames.includes(ruleName);
-	});
-
 	await Promise.all(
-		enabledRules.map(async (rule) => {
+		resolveRules(settings).map(async ({ options, rule }) => {
+			if (isRuleSkippedForEntity(entity, options)) {
+				core.debug(`Skipping rule for entity: ${rule.about.name}`);
+				return;
+			}
+
 			const context: RuleContext = {
 				locator,
 				octokit,
+				options,
 				report(data) {
 					reports.push({
 						about: rule.about,

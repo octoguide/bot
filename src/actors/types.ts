@@ -4,6 +4,7 @@ export interface EntityActor<Data extends EntityData = EntityData> {
 	readonly metadata: Omit<Entity, "data">;
 
 	// These should all be abstract in implementing classes...
+	closeEntity(): Promise<void>;
 	createComment(body: string): Promise<string>;
 	getData(): Promise<Data>;
 	listComments(): Promise<CommentData[]>;

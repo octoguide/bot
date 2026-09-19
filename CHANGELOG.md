@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.23.1](https://github.com/octoguide/bot/compare/0.23.0...0.23.1) (2026-09-19)
+
+### Bug Fixes
+
+- empty commit to trigger release ([97601f5](https://github.com/octoguide/bot/commit/97601f58a43a514cee23c8b02d9ca66c591b629c))
+
+# [0.23.0](https://github.com/octoguide/bot/compare/0.22.0...0.23.0) (2026-09-06)
+
+### Bug Fixes
+
+- **deps:** update dependency @konami-emoji-blast/astro to v0.3.0 ([#579](https://github.com/octoguide/bot/issues/579)) ([6276c0e](https://github.com/octoguide/bot/commit/6276c0e3dbd68db9ba7c42799129fac527dbe2f5))
+- **deps:** update dependency conventional-commits-parser to v7 ([#611](https://github.com/octoguide/bot/issues/611)) ([2a449ee](https://github.com/octoguide/bot/commit/2a449ee8b14eb00949389003c42e4793decbbbba))
+- **deps:** update dependency konami-emoji-blast to v0.7.0 ([#580](https://github.com/octoguide/bot/issues/580)) ([f988bbd](https://github.com/octoguide/bot/commit/f988bbd911c2d988fa5c3a0cc9b9396722151ee5))
+- **deps:** update dependency markdownlint to v0.41.0 ([#589](https://github.com/octoguide/bot/issues/589)) ([6b21189](https://github.com/octoguide/bot/commit/6b21189c5a721a5caf70432686862090ca8a7e94))
+- **deps:** update dependency marked to v18 ([#559](https://github.com/octoguide/bot/issues/559)) ([5210403](https://github.com/octoguide/bot/commit/5210403b2e53591d1cdbab58f54711fe71631841))
+- **deps:** update dependency sharp to v0.35.1 ([#590](https://github.com/octoguide/bot/issues/590)) ([137ec39](https://github.com/octoguide/bot/commit/137ec391e169bd0390ed5ae78c789754d894627b))
+
+### Features
+
+- add rule pr-automation-detected ([#573](https://github.com/octoguide/bot/issues/573)) ([569da1a](https://github.com/octoguide/bot/commit/569da1a1b44c609d902d9aac48d9d8cf97a5ed00)), closes [#521](https://github.com/octoguide/bot/issues/521)
+- replace chalk with node styleText ([#516](https://github.com/octoguide/bot/issues/516)) ([ff7bf61](https://github.com/octoguide/bot/commit/ff7bf61ca8caf69725e22d09137a97f28a8ade0d)), closes [#515](https://github.com/octoguide/bot/issues/515)
+- rule options ([#441](https://github.com/octoguide/bot/issues/441)) ([191c94c](https://github.com/octoguide/bot/commit/191c94cbbba9a92932861ca6ca05a765a82921f5)), closes [#20](https://github.com/octoguide/bot/issues/20)
+
+## [0.22.0](https://github.com/octoguide/bot/compare/0.21.10...0.22.0) (2026-03-11)
+
 ## [0.21.10](https://github.com/octoguide/bot/compare/0.21.9...0.21.10) (2026-03-07)
 
 ### Bug Fixes

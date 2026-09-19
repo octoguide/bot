@@ -62,9 +62,7 @@ export default defineConfig({
 					link: "configs",
 				},
 				{
-					autogenerate: {
-						directory: "rules",
-					},
+					items: [{ autogenerate: { directory: "rules" } }],
 					label: "Rules",
 				},
 				{
@@ -77,9 +75,7 @@ export default defineConfig({
 						{ label: "Installation", link: "docs/installation" },
 						{ label: "Package API", link: "generated/api" },
 						{
-							autogenerate: {
-								directory: "docs/guides",
-							},
+							items: [{ autogenerate: { directory: "docs/guides" } }],
 							label: "Guides",
 						},
 					],
@@ -99,6 +95,7 @@ export default defineConfig({
 			title: "OctoGuide",
 		}),
 	],
+	outDir: "../dist-site",
 	site: "https://octo.guide",
 	trailingSlash: "ignore",
 });

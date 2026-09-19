@@ -4,7 +4,8 @@
 		"requireCommits": true
 	},
 	"github": { "release": true, "releaseName": "v${version}" },
-	"npm": { "skipChecks": true },
+	"hooks": { "after:git:release": "npm publish" },
+	"npm": { "publish": false },
 	"plugins": {
 		"@release-it/conventional-changelog": {
 			"infile": "CHANGELOG.md",

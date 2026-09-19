@@ -21,6 +21,7 @@ const mockGraphql = vi.fn();
 const mockRestIssues = {
 	createComment: vi.fn(),
 	listComments: vi.fn(),
+	update: vi.fn(),
 	updateComment: vi.fn(),
 };
 const mockRestPulls = {
@@ -146,6 +147,19 @@ describe("PullRequestActor", () => {
 				repo: locator.repository,
 			});
 			expect(result).toBe(mockComments);
+		});
+	});
+
+	describe("closeEntity", () => {
+		it("closes the pull request", async () => {
+			await actor.closeEntity();
+
+			expect(mockRestIssues.update).toHaveBeenCalledWith({
+				issue_number: pullNumber,
+				owner: locator.owner,
+				repo: locator.repository,
+				state: "closed",
+			});
 		});
 	});
 

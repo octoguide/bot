@@ -47,6 +47,7 @@ vi.mock("./execution/runRuleOnEntity.js", () => ({
 
 vi.mock("./rules/configs.js", () => ({
 	configs: {
+		none: [],
 		recommended: [
 			{
 				about: {
@@ -485,6 +486,67 @@ describe("runOctoGuideRules", () => {
 		expect(mockCreateActor).toHaveBeenCalledWith(
 			mockOctokit,
 			"https://github.com/test-owner/test-repo/issues/42",
+		);
+	});
+	it("should skip rules when the entity is excluded by their options", async () => {
+		const mockOctokit = createMockOctokit();
+		const mockEntityData = {
+			author_association: "OWNER",
+			html_url: "https://github.com/test-owner/test-repo/issues/1",
+			number: 1,
+			title: "Test Issue",
+		};
+		const mockActor = {
+			getData: vi.fn().mockResolvedValue(mockEntityData),
+			metadata: { number: 1, type: "issue" as const },
+		};
+
+		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
+		mockCreateActor.mockReturnValue({
+			actor: mockActor,
+			locator: { owner: "test-owner", repository: "test-repo" },
+		});
+
+		const result = await runOctoGuideRules({
+			auth: "test-token",
+			entity: "https://github.com/test-owner/test-repo/issues/1",
+			settings: {
+				config: "recommended",
+				options: { "include-associations": ["CONTRIBUTOR"] },
+			},
+		});
+
+		expect(result.reports).toEqual([]);
+		expect(mockRunRuleOnEntity).not.toHaveBeenCalled();
+	});
+
+	it("should debug log the entity when debugging is enabled", async () => {
+		const mockOctokit = createMockOctokit();
+		const mockEntityData = {
+			html_url: "https://github.com/test-owner/test-repo/issues/1",
+			number: 1,
+			title: "Test Issue",
+		};
+		const mockActor = {
+			getData: vi.fn().mockResolvedValue(mockEntityData),
+			metadata: { number: 1, type: "issue" as const },
+		};
+
+		mockCore.isDebug.mockReturnValue(true);
+		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
+		mockCreateActor.mockReturnValue({
+			actor: mockActor,
+			locator: { owner: "test-owner", repository: "test-repo" },
+		});
+
+		await runOctoGuideRules({
+			auth: "test-token",
+			entity: "https://github.com/test-owner/test-repo/issues/1",
+			settings: { config: "none" },
+		});
+
+		expect(mockCore.debug).toHaveBeenCalledWith(
+			expect.stringContaining("Full entity:"),
 		);
 	});
 });
