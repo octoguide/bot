@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.3](https://github.com/octoguide/bot/compare/0.23.2...0.23.3) (2026-09-19)
+
+### Bug Fixes
+
+- **deps:** update all dependencies, action digests, and lockfile ([#632](https://github.com/octoguide/bot/issues/632)) ([329753f](https://github.com/octoguide/bot/commit/329753fb3c42fa5284900a2d1ae9210be598813e)), closes [#615](https://github.com/octoguide/bot/issues/615) [#615](https://github.com/octoguide/bot/issues/615)
+
 ## [0.23.2](https://github.com/octoguide/bot/compare/0.23.1...0.23.2) (2026-09-19)
 
 ### Bug Fixes
