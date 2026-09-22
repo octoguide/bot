@@ -16,7 +16,7 @@ export default defineConfig({
 		responsiveStyles: true,
 	},
 	integrations: [
-		konamiEmojiBlast(),
+		konamiEmojiBlast({ emojis: ["🐙", "🗺️"] }),
 		starlight({
 			components: {
 				Footer: "./src/components/Footer.astro",
