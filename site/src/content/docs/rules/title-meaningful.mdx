@@ -1,15 +1,16 @@
 ---
-description: "Titles should describe the issue or PR, not be left as a template's default"
-title: "text-title-meaningful"
+description: "Titles should describe their entity, not be left as a template's default"
+title: "title-meaningful"
 ---
 
 import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
 import IncludedIn from "../../../components/IncludedIn.astro";
 
-<IncludedIn rule="text-title-meaningful" />
+<IncludedIn rule="title-meaningful" />
 
-A title is the first -- and often only -- part of an issue or pull request that other contributors read.
+A title is the first part of a discussion, issue, or pull request that other contributors read.
 Titles left as a template's default, or that don't say anything beyond it, make the work harder to find and triage.
+This can easily happen if a contributor forgets to fill out the field.
 
 This rule reports two kinds of unhelpful titles:
 
@@ -18,7 +19,7 @@ This rule reports two kinds of unhelpful titles:
 
 ## Default Template Titles
 
-Issue templates can pre-fill a title for issues created from them.
+Issue templates and discussion category forms can pre-fill a title for entities created from them.
 For example, an [issue form](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms) might contain:
 
 ```yml title=".github/ISSUE_TEMPLATE/01-bug.yml"
@@ -29,7 +30,7 @@ title: "🐛 Bug: <short description of the bug>"
 An issue created from that template starts out titled `🐛 Bug: <short description of the bug>`.
 This rule reports if that title is left as-is, or cut down to just its `🐛 Bug:` prefix.
 
-Pull request templates can't pre-fill a title, so only the informativeness check runs on pull requests.
+[Discussion category forms](https://docs.github.com/en/discussions/managing-discussions-for-your-community/creating-discussion-category-forms) in `.github/DISCUSSION_TEMPLATE/` use the same `title:` syntax, and are checked the same way.
 
 ## Informative Titles
 
@@ -38,8 +39,8 @@ The informativeness check uses [`are-docs-informative`](https://github.com/Joshu
 For a repository named `octoguide` using the template above:
 
 ```plaintext
-🐛 Bug: the bug          ❌ adds nothing beyond "bug" from the template title
-octoguide                ❌ adds nothing beyond the repository name
+🐛 Bug: the bug                          ❌ adds nothing beyond "bug" from the template title
+octoguide                                ❌ adds nothing beyond the repository name
 🐛 Bug: reports posted twice on re-runs  ✅
 ```
 
@@ -47,26 +48,28 @@ octoguide                ❌ adds nothing beyond the repository name
 
 Issue whose title is still its template's default title:
 
-<OctoGuideGitHubComment rule="text-title-meaningful">
+<OctoGuideGitHubComment rule="title-meaningful">
 This issue's title still looks like the default title from its template.
 
 <blockquote>🐛 Bug: &lt;short description of the bug&gt;</blockquote>
 
-A title is the first -- and often only -- part of an issue or pull request that other contributors read.
+A title is the first part of a discussion, issue, or pull request that other contributors read.
 Titles left as a template's default, or that don't say anything beyond it, make the work harder to find and triage.
+This can easily happen if a contributor forgets to fill out the field.
 To resolve this report, edit the title to describe this specific issue.
 
 </OctoGuideGitHubComment>
 
 Pull request whose title doesn't describe it:
 
-<OctoGuideGitHubComment rule="text-title-meaningful">
+<OctoGuideGitHubComment rule="title-meaningful">
 This PR's title doesn't contain any words describing what it's about.
 
 <blockquote>octoguide</blockquote>
 
-A title is the first -- and often only -- part of an issue or pull request that other contributors read.
+A title is the first part of a discussion, issue, or pull request that other contributors read.
 Titles left as a template's default, or that don't say anything beyond it, make the work harder to find and triage.
+This can easily happen if a contributor forgets to fill out the field.
 To resolve this report, edit the title to summarize what this PR is about.
 
 </OctoGuideGitHubComment>
@@ -74,6 +77,7 @@ To resolve this report, edit the title to summarize what this PR is about.
 ## See More
 
 - [GitHub Docs: About issue and pull request templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/about-issue-and-pull-request-templates)
+- [GitHub Docs: Creating discussion category forms](https://docs.github.com/en/discussions/managing-discussions-for-your-community/creating-discussion-category-forms)
 - [are-docs-informative](https://github.com/JoshuaKGoldberg/are-docs-informative)
-- [Rule source](https://github.com/OctoGuide/bot/blob/main/src/rules/textTitleMeaningful.ts)
-- [Rule tests](https://github.com/OctoGuide/bot/blob/main/src/rules/textTitleMeaningful.test.ts)
+- [Rule source](https://github.com/OctoGuide/bot/blob/main/src/rules/titleMeaningful.ts)
+- [Rule tests](https://github.com/OctoGuide/bot/blob/main/src/rules/titleMeaningful.test.ts)

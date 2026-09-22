@@ -3,7 +3,7 @@ import type { Octokit } from "octokit";
 import { describe, expect, it, vi } from "vitest";
 
 import { testRule } from "../tests/testRule.js";
-import { textTitleMeaningful } from "./textTitleMeaningful.js";
+import { titleMeaningful } from "./titleMeaningful.js";
 
 function createGraphql(templateContents: string[]) {
 	return vi.fn().mockResolvedValue({
@@ -23,13 +23,15 @@ const bugTemplate = `name: 🐛 Bug\ntitle: "🐛 Bug: <short description of the
 
 const featureTemplate = `name: 🚀 Feature\ntitle: "🚀 Feature: <short description of the feature>"\nbody: []\n`;
 
-describe(textTitleMeaningful.about.name, () => {
+const ideaTemplate = `title: "💡 Idea: <short description of the idea>"\nbody: []\n`;
+
+describe(titleMeaningful.about.name, () => {
 	describe("issue", () => {
 		it("does not report when the title describes the issue", async () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{
 					data: { title: "🐛 Bug: Reports are posted twice on re-runs" },
 					type: "issue",
@@ -47,7 +49,7 @@ describe(textTitleMeaningful.about.name, () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{
 					data: { title: "Reports are posted twice on re-runs" },
 					type: "issue",
@@ -62,7 +64,7 @@ describe(textTitleMeaningful.about.name, () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{
 					data: { title: "🐛 Bug: <short description of the bug>" },
 					type: "issue",
@@ -86,7 +88,7 @@ describe(textTitleMeaningful.about.name, () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{ data: { title: "🐛 Bug:" }, type: "issue" },
 				{
 					octokit: { graphql: createGraphql([bugTemplate, featureTemplate]) },
@@ -107,7 +109,7 @@ describe(textTitleMeaningful.about.name, () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{ data: { title: "🐛 Bug: the bug" }, type: "issue" },
 				{
 					octokit: { graphql: createGraphql([bugTemplate, featureTemplate]) },
@@ -128,7 +130,7 @@ describe(textTitleMeaningful.about.name, () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{ data: { title: "test repo" }, type: "issue" },
 				{ octokit: { graphql: createGraphql([]) }, report },
 			);
@@ -146,7 +148,7 @@ describe(textTitleMeaningful.about.name, () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{ data: { title: "   " }, type: "issue" },
 				{ octokit: { graphql: createGraphql([]) }, report },
 			);
@@ -160,7 +162,7 @@ describe(textTitleMeaningful.about.name, () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{
 					data: { title: "fix: stop posting reports twice on re-runs" },
 					type: "pull_request",
@@ -175,7 +177,7 @@ describe(textTitleMeaningful.about.name, () => {
 			const report = vi.fn();
 
 			await testRule(
-				textTitleMeaningful,
+				titleMeaningful,
 				{ data: { title: "test-repo" }, type: "pull_request" },
 				{ report },
 			);
@@ -185,6 +187,58 @@ describe(textTitleMeaningful.about.name, () => {
 				secondary: ["> test-repo"],
 				suggestion: [
 					`To resolve this report, edit the title to summarize what this PR is about.`,
+				],
+			});
+		});
+	});
+	describe("discussion", () => {
+		it("does not report when the title describes the discussion", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				titleMeaningful,
+				{
+					data: { title: "💡 Idea: report on stale branches" },
+					type: "discussion",
+				},
+				{ octokit: { graphql: createGraphql([ideaTemplate]) }, report },
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it("reports when the title is still its category form's title", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				titleMeaningful,
+				{ data: { title: "💡 Idea:" }, type: "discussion" },
+				{ octokit: { graphql: createGraphql([ideaTemplate]) }, report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `This discussion's title still looks like the default title from its template.`,
+				secondary: ["> 💡 Idea: <short description of the idea>"],
+				suggestion: [
+					`To resolve this report, edit the title to describe this specific discussion.`,
+				],
+			});
+		});
+
+		it("reports when the title adds no words beyond the repository name", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				titleMeaningful,
+				{ data: { title: "test-repo" }, type: "discussion" },
+				{ octokit: { graphql: createGraphql([]) }, report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `This discussion's title doesn't contain any words describing what it's about.`,
+				secondary: ["> test-repo"],
+				suggestion: [
+					`To resolve this report, edit the title to summarize what this discussion is about.`,
 				],
 			});
 		});

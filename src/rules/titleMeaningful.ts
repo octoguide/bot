@@ -1,9 +1,14 @@
 import { areDocsInformative } from "are-docs-informative";
 
-import type { IssueLikeEntity } from "../types/entities.js";
+import type { TemplatedEntityType } from "../action/findTemplateTitles.js";
+import type {
+	DiscussionEntity,
+	IssueEntity,
+	PullRequestEntity,
+} from "../types/entities.js";
 import type { RuleContext } from "../types/rules.js";
 
-import { findIssueTemplateTitles } from "../action/findIssueTemplateTitles.js";
+import { findTemplateTitles } from "../action/findTemplateTitles.js";
 import { defineRule } from "./defineRule.js";
 
 /**
@@ -12,50 +17,60 @@ import { defineRule } from "./defineRule.js";
  */
 const MINIMUM_SHARED_PREFIX = 3;
 
-export const textTitleMeaningful = defineRule({
+const entityLabels = {
+	discussion: "discussion",
+	issue: "issue",
+	pull_request: "PR",
+};
+
+export const titleMeaningful = defineRule({
 	about: {
 		config: "recommended",
 		description:
-			"Titles should describe the issue or PR, not be left as a template's default.",
+			"Titles should describe their entity, not be left as a template's default.",
 		explanation: [
-			`A title is the first -- and often only -- part of an issue or pull request that other contributors read.`,
+			`A title is the first part of a discussion, issue, or pull request that other contributors read.`,
 			`Titles left as a template's default, or that don't say anything beyond it, make the work harder to find and triage.`,
+			`This can easily happen if a contributor forgets to fill out the field.`,
 		],
-		name: "text-title-meaningful",
+		name: "title-meaningful",
 	},
-	async issue(context, entity) {
-		const title = entity.data.title.trim();
-		if (!title) {
-			return;
-		}
-
-		const templateTitle = findNearestTemplateTitle(
-			title,
-			await findIssueTemplateTitles(context.octokit, context.locator),
-		);
-
-		if (templateTitle && isUnchangedFromTemplate(title, templateTitle)) {
-			context.report({
-				primary: `This issue's title still looks like the default title from its template.`,
-				secondary: [`> ${templateTitle}`],
-				suggestion: [
-					`To resolve this report, edit the title to describe this specific issue.`,
-				],
-			});
-			return;
-		}
-
-		reportIfUninformative(context, entity, templateTitle);
-	},
+	discussion: createTemplatedListener("discussion"),
+	issue: createTemplatedListener("issue"),
 	pullRequest(context, entity) {
-		// Pull request templates can't pre-fill a title, so there's none to compare to.
-		reportIfUninformative(context, entity, undefined);
+		reportOnTitle(context, entity, undefined);
 	},
 });
 
-function reportIfUninformative(
+/**
+ * Creates a listener for an entity type whose templates can pre-fill a title.
+ */
+function createTemplatedListener(entityType: TemplatedEntityType) {
+	return async (
+		context: RuleContext,
+		entity: DiscussionEntity | IssueEntity,
+	) => {
+		if (!entity.data.title.trim()) {
+			return;
+		}
+
+		const templateTitles = await findTemplateTitles(
+			context.octokit,
+			context.locator,
+			entityType,
+		);
+
+		reportOnTitle(
+			context,
+			entity,
+			findNearestTemplateTitle(entity.data.title.trim(), templateTitles),
+		);
+	};
+}
+
+function reportOnTitle(
 	context: RuleContext,
-	entity: IssueLikeEntity,
+	entity: DiscussionEntity | IssueEntity | PullRequestEntity,
 	templateTitle: string | undefined,
 ) {
 	const title = entity.data.title.trim();
@@ -63,14 +78,24 @@ function reportIfUninformative(
 		return;
 	}
 
-	// The title has to contribute a word that isn't already implied by the
-	// repository it's filed in or the template it was created from.
-	const known = [context.locator.repository, templateTitle ?? ""];
-	if (areDocsInformative(title, known)) {
+	const label = entityLabels[entity.type];
+
+	if (templateTitle && isUnchangedFromTemplate(title, templateTitle)) {
+		context.report({
+			primary: `This ${label}'s title still looks like the default title from its template.`,
+			secondary: [`> ${templateTitle}`],
+			suggestion: [
+				`To resolve this report, edit the title to describe this specific ${label}.`,
+			],
+		});
 		return;
 	}
 
-	const label = entity.type === "issue" ? "issue" : "PR";
+	if (
+		areDocsInformative(title, [context.locator.repository, templateTitle ?? ""])
+	) {
+		return;
+	}
 
 	context.report({
 		primary: `This ${label}'s title doesn't contain any words describing what it's about.`,

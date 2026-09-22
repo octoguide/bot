@@ -15,9 +15,23 @@ export const ISSUE_TEMPLATE_PATHS = [
 	"issue_template.md",
 ];
 
-const ISSUE_TEMPLATE_DIR = ".github/ISSUE_TEMPLATE";
+/**
+ * Where each kind of entity's templates live.
+ * Discussions only support category forms in a directory, not a single root file.
+ * @see https://docs.github.com/en/discussions/managing-discussions-for-your-community/creating-discussion-category-forms
+ */
+export const TEMPLATE_LOCATIONS = {
+	discussion: {
+		directory: ".github/DISCUSSION_TEMPLATE",
+		paths: [],
+	},
+	issue: {
+		directory: ".github/ISSUE_TEMPLATE",
+		paths: ISSUE_TEMPLATE_PATHS,
+	},
+} satisfies Record<string, TemplateLocation>;
 
-const TEMPLATE_EXTENSIONS = [".md", ".yaml", ".yml"];
+export type TemplatedEntityType = keyof typeof TEMPLATE_LOCATIONS;
 
 interface GraphQLBlobObject {
 	text?: string;
@@ -42,30 +56,41 @@ interface GraphQLTreeObject {
 	entries?: GraphQLEntry[];
 }
 
+interface TemplateLocation {
+	directory: string;
+	paths: readonly string[];
+}
+
+const TEMPLATE_EXTENSIONS = [".md", ".yaml", ".yml"];
+
 /**
- * Collects the default (pre-filled) titles of a repository's issue templates.
+ * Collects the default (pre-filled) titles of a repository's templates.
  * @returns Each template's `title:`, for templates that specify one.
  */
-export async function findIssueTemplateTitles(
+export async function findTemplateTitles(
 	octokit: Octokit,
 	locator: RepositoryLocator,
+	entityType: TemplatedEntityType,
 ): Promise<string[]> {
 	const { owner, repository } = locator;
+	const { directory, paths } = TEMPLATE_LOCATIONS[entityType];
 
-	const fileQueries = ISSUE_TEMPLATE_PATHS.map(
-		(path, index) => `
+	const fileQueries = paths
+		.map(
+			(path, index) => `
 		file${index}: object(expression: "HEAD:${path}") {
 			... on Blob {
 				text
 			}
 		}`,
-	).join("\n");
+		)
+		.join("\n");
 
 	const fullQuery = `
 		query($owner: String!, $repo: String!) {
 			repository(owner: $owner, name: $repo) {
 				${fileQueries}
-				templateDir: object(expression: "HEAD:${ISSUE_TEMPLATE_DIR}") {
+				templateDir: object(expression: "HEAD:${directory}") {
 					... on Tree {
 						entries {
 							name
@@ -89,7 +114,10 @@ export async function findIssueTemplateTitles(
 			repo: repository,
 		});
 	} catch (error) {
-		console.error("Error fetching issue templates with GraphQL:", error);
+		console.error(
+			`Error fetching ${entityType} templates with GraphQL:`,
+			error,
+		);
 		return [];
 	}
 
@@ -99,7 +127,7 @@ export async function findIssueTemplateTitles(
 
 	const contents: string[] = [];
 
-	for (let i = 0; i < ISSUE_TEMPLATE_PATHS.length; i += 1) {
+	for (let i = 0; i < paths.length; i += 1) {
 		const fileData = graphqlResponse.repository[`file${i}`];
 		if (typeof fileData?.text === "string") {
 			contents.push(fileData.text);
@@ -122,8 +150,8 @@ export async function findIssueTemplateTitles(
 }
 
 /**
- * Reads the `title:` a template pre-fills issues with.
- * Markdown templates declare it in front matter; issue forms declare it at the top level.
+ * Reads the `title:` a template pre-fills entities with.
+ * Markdown templates declare it in front matter; forms declare it at the top level.
  * @see https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms
  */
 function parseTemplateTitle(contents: string) {
