@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.23.4](https://github.com/octoguide/bot/compare/0.23.3...0.23.4) (2026-09-22)
+
+### Bug Fixes
+
+- **deps:** update dependency starlight-package-managers to v0.13.0 ([#638](https://github.com/octoguide/bot/issues/638)) ([05a6946](https://github.com/octoguide/bot/commit/05a6946502bf4f9341f82eef02a9eeb64c21b1cf))
+
 ## [0.23.3](https://github.com/octoguide/bot/compare/0.23.2...0.23.3) (2026-09-19)
 
 ### Bug Fixes
