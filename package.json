@@ -40,6 +40,7 @@
 		"@actions/github": "^9.1.1",
 		"@github/markdownlint-github": "^0.8.3",
 		"@octokit/plugin-rest-endpoint-methods": "^17.0.0",
+		"are-docs-informative": "^0.1.1",
 		"conventional-commit-types": "^3.0.0",
 		"conventional-commits-parser": "^7.1.2",
 		"is-comment-meaningless": "^0.2.0",
