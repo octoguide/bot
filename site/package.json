@@ -16,7 +16,7 @@
 		"konami-emoji-blast": "0.7.0",
 		"sharp": "0.35.4",
 		"starlight-links-validator": "0.26.0",
-		"starlight-package-managers": "0.12.0"
+		"starlight-package-managers": "0.13.0"
 	},
 	"devDependencies": {
 		"starlight-typedoc": "0.23.1"
