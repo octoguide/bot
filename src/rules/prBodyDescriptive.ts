@@ -22,7 +22,7 @@ export const prBodyDescriptive = defineRule({
 			return;
 		}
 
-		const template = await findPrTemplate(context.octokit, context.locator);
+		const template = await findPrTemplate(context.octokit);
 
 		if (!template) {
 			if (

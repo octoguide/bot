@@ -1,6 +1,6 @@
-import { Octokit } from "octokit";
 import { describe, expect, it } from "vitest";
 
+import { createMockOctokit } from "../tests/createMockOctokit.js";
 import { createActor } from "./createActor";
 import { DiscussionActor } from "./DiscussionActor";
 import { DiscussionCommentActor } from "./DiscussionCommentActor";
@@ -8,7 +8,7 @@ import { IssueActor } from "./IssueActor";
 import { IssueLikeCommentActor } from "./IssueLikeCommentActor";
 import { PullRequestActor } from "./PullRequestActor";
 
-const mockOctokit = {} as Octokit;
+const mockOctokit = createMockOctokit();
 
 describe(createActor, () => {
 	it("returns no actor when given a URL with no reasonable locator", () => {

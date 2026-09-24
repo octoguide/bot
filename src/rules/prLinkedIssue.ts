@@ -25,8 +25,8 @@ export const prLinkedIssue = defineRule({
 	async pullRequest(context, entity) {
 		const response = await context.octokit.graphql<ClosingIssuesResponse>(
 			`
-				query closingIssues($id: Int!, $owner: String!, $repository: String!) {
-					repository(owner: $owner, name: $repository) {
+				query closingIssues($id: Int!, $owner: String!, $repo: String!) {
+					repository(owner: $owner, name: $repo) {
 						pullRequest(number: $id) {
 							closingIssuesReferences(first: 1) {
 								nodes {
@@ -37,11 +37,7 @@ export const prLinkedIssue = defineRule({
 					}
 				}
 			`,
-			{
-				id: entity.number,
-				owner: context.locator.owner,
-				repository: context.locator.repository,
-			},
+			{ id: entity.number },
 		);
 
 		if (response.repository.pullRequest.closingIssuesReferences.nodes.length) {

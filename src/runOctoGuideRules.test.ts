@@ -1,11 +1,11 @@
-import type { Octokit } from "octokit";
-
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { Entity } from "./types/entities.js";
 import type { RuleContext } from "./types/rules.js";
 
 import { runOctoGuideRules } from "./runOctoGuideRules.js";
+import { createMockOctokit } from "./tests/createMockOctokit.js";
+import { testLocator } from "./tests/testLocator.js";
 
 const mockCore = {
 	debug: vi.fn(),
@@ -30,6 +30,10 @@ vi.mock("octokit-from-auth", () => ({
 }));
 
 const mockCreateActor = vi.fn();
+
+function mockCreatedActor(actor: unknown, octokit: unknown) {
+	mockCreateActor.mockReturnValue({ actor, locator: testLocator, octokit });
+}
 
 vi.mock("./actors/createActor.js", () => ({
 	get createActor() {
@@ -114,34 +118,6 @@ vi.mock("./rules/all.js", () => ({
 	],
 }));
 
-/**
- * Creates a mock Octokit instance with minimal required properties.
- * @returns Minimal Octokit mock that satisfies basic test requirements
- * @example
- * ```typescript
- * const octokit = createMockOctokit();
- * ```
- */
-const createMockOctokit = () =>
-	({
-		auth: vi.fn(),
-		graphql: vi.fn(),
-		hook: {
-			after: vi.fn(),
-			before: vi.fn(),
-			error: vi.fn(),
-			wrap: vi.fn(),
-		},
-		log: {
-			debug: vi.fn(),
-			error: vi.fn(),
-			info: vi.fn(),
-			warn: vi.fn(),
-		},
-		request: vi.fn(),
-		rest: { issues: { get: vi.fn() } },
-	}) as unknown as Octokit;
-
 describe("runOctoGuideRules", () => {
 	afterEach(() => {
 		vi.clearAllMocks();
@@ -189,10 +165,7 @@ describe("runOctoGuideRules", () => {
 
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 
-		mockCreateActor.mockReturnValue({
-			actor: { getData: vi.fn() },
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor({ getData: vi.fn() }, mockOctokit);
 
 		await runOctoGuideRules({
 			auth: "test-token",
@@ -215,10 +188,7 @@ describe("runOctoGuideRules", () => {
 		};
 
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({
-			actor: mockActor,
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
@@ -258,11 +228,10 @@ describe("runOctoGuideRules", () => {
 			metadata: { number: 1, type: "issue" as const },
 		};
 
+		const mockLocatedOctokit = createMockOctokit();
+
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({
-			actor: mockActor,
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor(mockActor, mockLocatedOctokit);
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
@@ -291,6 +260,11 @@ describe("runOctoGuideRules", () => {
 			"pr-body-descriptive",
 			"pr-branch-non-default",
 		]);
+
+		expect(mockRunRuleOnEntity.mock.calls[0][0]).toMatchObject({
+			locator: testLocator,
+			octokit: mockLocatedOctokit,
+		});
 	});
 
 	it("should collect reports when rules call the report function", async () => {
@@ -306,10 +280,7 @@ describe("runOctoGuideRules", () => {
 		};
 
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({
-			actor: mockActor,
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor(mockActor, mockOctokit);
 
 		mockRunRuleOnEntity.mockImplementation((context: RuleContext) => {
 			context.report({
@@ -353,10 +324,7 @@ describe("runOctoGuideRules", () => {
 		};
 
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({
-			actor: mockActor,
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
@@ -396,10 +364,7 @@ describe("runOctoGuideRules", () => {
 		};
 
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({
-			actor: mockActor,
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
@@ -456,10 +421,7 @@ describe("runOctoGuideRules", () => {
 		};
 
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({
-			actor: mockActor,
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor(mockActor, mockOctokit);
 
 		const entityInput = {
 			data: mockEntityData,
@@ -502,10 +464,7 @@ describe("runOctoGuideRules", () => {
 		};
 
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({
-			actor: mockActor,
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
@@ -534,10 +493,7 @@ describe("runOctoGuideRules", () => {
 
 		mockCore.isDebug.mockReturnValue(true);
 		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({
-			actor: mockActor,
-			locator: { owner: "test-owner", repository: "test-repo" },
-		});
+		mockCreatedActor(mockActor, mockOctokit);
 
 		await runOctoGuideRules({
 			auth: "test-token",

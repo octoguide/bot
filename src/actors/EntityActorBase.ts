@@ -1,9 +1,7 @@
-import type { Octokit } from "octokit";
-
 import * as core from "@actions/core";
 
-import type { RepositoryLocator } from "../types/data.js";
 import type { CommentData, Entity, EntityData } from "../types/entities.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 import type { EntityActor } from "./types.js";
 
 interface MinimizeCommentResponse {
@@ -28,16 +26,10 @@ export abstract class EntityActorBase<
 	abstract readonly metadata: Omit<Entity, "data">;
 
 	protected entityNumber: number;
-	protected locator: RepositoryLocator;
-	protected octokit: Octokit;
+	protected octokit: LocatedOctokit;
 
-	constructor(
-		entityNumber: number,
-		locator: RepositoryLocator,
-		octokit: Octokit,
-	) {
+	constructor(entityNumber: number, octokit: LocatedOctokit) {
 		this.entityNumber = entityNumber;
-		this.locator = locator;
 		this.octokit = octokit;
 	}
 

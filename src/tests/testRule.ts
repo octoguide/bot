@@ -1,24 +1,20 @@
-import type { Octokit } from "octokit";
 import type { PartialDeep } from "type-fest";
 
 import type { RepositoryLocator } from "../types/data.js";
 import type { Entity, EntityType } from "../types/entities.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 import type { Rule, RuleOptions, RuleReporter } from "../types/rules.js";
 
 import { runRuleOnEntity } from "../execution/runRuleOnEntity.js";
 import { createProxiedObject } from "./createProxiedObject.js";
+import { testLocator } from "./testLocator.js";
 
 export interface TestRuleContext {
 	locator?: RepositoryLocator;
-	octokit?: PartialDeep<Octokit>;
+	octokit?: PartialDeep<LocatedOctokit>;
 	options?: RuleOptions;
 	report: RuleReporter;
 }
-
-const defaultLocator = {
-	owner: "test-owner",
-	repository: "test-repo",
-};
 
 const defaultOptions: RuleOptions = {
 	"include-bots": true,
@@ -29,7 +25,7 @@ export async function testRule(
 	providedEntity: PartialDeep<Entity> & { type: EntityType },
 	context: TestRuleContext,
 ) {
-	const octokit = createProxiedObject<Octokit>(
+	const octokit = createProxiedObject<LocatedOctokit>(
 		"context.octokit",
 		context.octokit,
 	);
@@ -38,7 +34,7 @@ export async function testRule(
 
 	await runRuleOnEntity(
 		{
-			locator: defaultLocator,
+			locator: testLocator,
 			options: defaultOptions,
 			...context,
 			octokit,

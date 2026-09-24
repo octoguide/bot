@@ -104,15 +104,6 @@ export async function runOctoGuideRules({
 	entity: entityInput,
 	settings,
 }: RunOctoGuideRulesOptions): Promise<RunOctoGuideRulesResult> {
-	// TODO: There's no need to create a full *writing* actor here;
-	// runOctoGuide only reads entities and runs rules on them.
-	// This area of authentication and actor resolution should split into:
-	// 1. Entity data & type resolution: read-only allowed
-	// 2. Using that to create the equivalent actor: requires writing
-	// ...where only 1. is needed for runOctoGuide.
-	// https://github.com/OctoGuide/bot/issues/56
-	const octokit = await octokitFromAuth({ auth });
-
 	const url =
 		typeof entityInput === "string" ? entityInput : entityInput.data.html_url;
 
@@ -120,7 +111,17 @@ export async function runOctoGuideRules({
 		throw new Error("Entity data's html_url is not a string.");
 	}
 
-	const { actor, locator } = createActor(octokit, url);
+	// TODO: There's no need to create a full *writing* actor here;
+	// runOctoGuide only reads entities and runs rules on them.
+	// This area of authentication and actor resolution should split into:
+	// 1. Entity data & type resolution: read-only allowed
+	// 2. Using that to create the equivalent actor: requires writing
+	// ...where only 1. is needed for runOctoGuide.
+	// https://github.com/OctoGuide/bot/issues/56
+	const { actor, locator, octokit } = createActor(
+		await octokitFromAuth({ auth }),
+		url,
+	);
 	if (!actor) {
 		throw new Error("Could not resolve GitHub entity actor.");
 	}

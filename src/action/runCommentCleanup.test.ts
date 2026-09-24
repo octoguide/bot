@@ -39,7 +39,6 @@ vi.mock("./comments/getExistingComment.js", () => ({
 }));
 
 const auth = "gho_...";
-const locator = { owner: "owner", repository: "repo" };
 const url = "/repos/owner/repo/issues/1";
 
 describe(runCommentCleanup, () => {
@@ -70,7 +69,7 @@ describe(runCommentCleanup, () => {
 			comment: {},
 		} as typeof github.context.payload;
 
-		mockCreateActor.mockReturnValueOnce({ actor: {}, locator });
+		mockCreateActor.mockReturnValueOnce({ actor: {}, octokit: {} });
 		mockGetExistingComment.mockResolvedValueOnce(undefined);
 
 		await runCommentCleanup({ auth, payload, url });
@@ -86,10 +85,10 @@ describe(runCommentCleanup, () => {
 		} as typeof github.context.payload;
 		const nodeId = "abc123";
 
-		mockOctokitFromAuth.mockResolvedValueOnce({
-			graphql: vi.fn(),
+		mockCreateActor.mockReturnValueOnce({
+			actor: {},
+			octokit: { graphql: vi.fn() },
 		});
-		mockCreateActor.mockReturnValueOnce({ actor: {}, locator });
 		mockGetExistingComment.mockResolvedValueOnce({
 			node_id: nodeId,
 		});
@@ -107,14 +106,10 @@ describe(runCommentCleanup, () => {
 			issue: {},
 		} as typeof github.context.payload;
 
-		mockOctokitFromAuth.mockResolvedValueOnce({
-			rest: {
-				issues: {
-					deleteComment: vi.fn(),
-				},
-			},
+		mockCreateActor.mockReturnValueOnce({
+			actor: {},
+			octokit: { rest: { issues: { deleteComment: vi.fn() } } },
 		});
-		mockCreateActor.mockReturnValueOnce({ actor: {}, locator });
 		mockGetExistingComment.mockResolvedValueOnce({ id });
 
 		await runCommentCleanup({ auth, payload, url });

@@ -1,6 +1,4 @@
-import type { Octokit } from "octokit";
-
-import type { RepositoryLocator } from "../types/data.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 
 /**
  * Paths where GitHub PR templates might be located according to GitHub documentation.
@@ -40,11 +38,8 @@ interface GraphQLTreeObject {
 }
 
 export async function findPrTemplate(
-	octokit: Octokit,
-	locator: RepositoryLocator,
+	octokit: LocatedOctokit,
 ): Promise<string | undefined> {
-	const { owner, repository } = locator;
-
 	const fileQueries = PR_TEMPLATE_PATHS.map(
 		(path, index) => `
 		file${index}: object(expression: "HEAD:${path}") {
@@ -74,10 +69,7 @@ export async function findPrTemplate(
 		}`;
 
 	try {
-		const graphqlResponse = await octokit.graphql<GraphQLResponse>(fullQuery, {
-			owner,
-			repo: repository,
-		});
+		const graphqlResponse = await octokit.graphql<GraphQLResponse>(fullQuery);
 
 		if (graphqlResponse.repository) {
 			for (let i = 0; i < PR_TEMPLATE_PATHS.length; i++) {
@@ -110,9 +102,7 @@ export async function findPrTemplate(
 							object: null | { text?: string };
 						};
 					}>(fileContentQuery, {
-						owner,
 						path: `HEAD:${firstMarkdownFile.path}`,
-						repo: repository,
 					});
 
 					if (

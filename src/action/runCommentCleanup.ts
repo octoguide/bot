@@ -21,8 +21,7 @@ export async function runCommentCleanup({
 		return;
 	}
 
-	const octokit = await octokitFromAuth({ auth });
-	const { actor, locator } = createActor(octokit, url);
+	const { actor, octokit } = createActor(await octokitFromAuth({ auth }), url);
 	if (!actor) {
 		throw new Error("Could not resolve GitHub entity actor.");
 	}
@@ -58,8 +57,6 @@ export async function runCommentCleanup({
 		core.info(`Deleting issue-like comment with id: ${existingComment.id}`);
 		await octokit.rest.issues.deleteComment({
 			comment_id: existingComment.id,
-			owner: locator.owner,
-			repo: locator.repository,
 		});
 	}
 }

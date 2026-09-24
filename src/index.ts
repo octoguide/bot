@@ -12,6 +12,7 @@ export * from "./createDefineRule.js";
 export * from "./reporters/cliReporter.js";
 export * from "./reporters/markdownReporter.js";
 export * from "./runOctoGuideRules.js";
+export type { RepositoryLocator } from "./types/data.js";
 export type {
 	CommentEntity,
 	DiscussionEntity,
@@ -19,6 +20,7 @@ export type {
 	IssueEntity,
 	PullRequestEntity,
 } from "./types/entities.js";
+export type { LocatedOctokit } from "./types/octokit.js";
 export type { RuleReport, RuleReportData } from "./types/reports.js";
 export type {
 	Rule,
