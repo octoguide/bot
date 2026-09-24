@@ -4,7 +4,6 @@ import { vi } from "vitest";
 
 /**
  * Creates a mock Octokit instance with minimal required properties.
- * @returns Minimal Octokit mock that satisfies basic test requirements.
  */
 export const createMockOctokit = () =>
 	({
