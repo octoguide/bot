@@ -1,7 +1,6 @@
 import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
-import { octokitFromAuth } from "octokit-from-auth";
 
 import { createActor } from "../actors/createActor.js";
 import { getExistingComment } from "./comments/getExistingComment.js";
@@ -21,7 +20,7 @@ export async function runCommentCleanup({
 		return;
 	}
 
-	const { actor, octokit } = createActor(await octokitFromAuth({ auth }), url);
+	const { actor, octokit } = await createActor({ auth, url });
 	if (!actor) {
 		throw new Error("Could not resolve GitHub entity actor.");
 	}

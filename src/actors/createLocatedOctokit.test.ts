@@ -1,10 +1,9 @@
-import { Octokit } from "octokit";
 import { describe, expect, it, vi } from "vitest";
 
 import { testLocator } from "../tests/testLocator.js";
-import { locateOctokit } from "./locateOctokit.js";
+import { createLocatedOctokit } from "./createLocatedOctokit.js";
 
-function createTestOctokit(baseUrl?: string) {
+async function createTestOctokit(baseUrl?: string) {
 	const fetch =
 		vi.fn<(url: string, options: { body?: string }) => Promise<Response>>();
 
@@ -15,13 +14,11 @@ function createTestOctokit(baseUrl?: string) {
 		}),
 	);
 
-	const octokit = new Octokit({
+	const octokit = await createLocatedOctokit(testLocator, {
 		auth: "test-token",
 		baseUrl,
 		request: { fetch },
 	});
-
-	locateOctokit(octokit, testLocator);
 
 	return {
 		octokit,
@@ -34,9 +31,9 @@ function createTestOctokit(baseUrl?: string) {
 	};
 }
 
-describe(locateOctokit, () => {
+describe(createLocatedOctokit, () => {
 	it("adds owner and repo to a route declaring their placeholders", async () => {
-		const { octokit, requestedUrl } = createTestOctokit();
+		const { octokit, requestedUrl } = await createTestOctokit();
 
 		await octokit.rest.issues.get({ issue_number: 1 });
 
@@ -46,7 +43,7 @@ describe(locateOctokit, () => {
 	});
 
 	it("keeps an explicit owner and repo on a route declaring their placeholders", async () => {
-		const { octokit, requestedUrl } = createTestOctokit();
+		const { octokit, requestedUrl } = await createTestOctokit();
 
 		await octokit.rest.issues.get({
 			issue_number: 1,
@@ -60,7 +57,7 @@ describe(locateOctokit, () => {
 	});
 
 	it("does not add owner and repo to a route omitting their placeholders", async () => {
-		const { octokit, requestedUrl } = createTestOctokit();
+		const { octokit, requestedUrl } = await createTestOctokit();
 
 		await octokit.rest.users.getAuthenticated();
 
@@ -68,7 +65,7 @@ describe(locateOctokit, () => {
 	});
 
 	it("adds owner and repo variables to a GraphQL query", async () => {
-		const { octokit, requestedBody } = createTestOctokit();
+		const { octokit, requestedBody } = await createTestOctokit();
 
 		await octokit.graphql("query { viewer { login } }", { first: 10 });
 
@@ -80,7 +77,7 @@ describe(locateOctokit, () => {
 	});
 
 	it("keeps explicit owner and repo variables on a GraphQL query", async () => {
-		const { octokit, requestedBody } = createTestOctokit();
+		const { octokit, requestedBody } = await createTestOctokit();
 
 		await octokit.graphql("query { viewer { login } }", {
 			owner: "other-owner",
@@ -94,7 +91,7 @@ describe(locateOctokit, () => {
 	});
 
 	it("adds owner and repo variables to a GraphQL query on a custom host", async () => {
-		const { octokit, requestedBody, requestedUrl } = createTestOctokit(
+		const { octokit, requestedBody, requestedUrl } = await createTestOctokit(
 			"https://github.example.com/api/v3",
 		);
 

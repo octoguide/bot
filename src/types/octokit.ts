@@ -43,7 +43,7 @@ type WithOptionalLocators<Methods> = {
 
 /**
  * Octokit whose `owner` and `repo` parameters default to a repository locator.
- * @see `locateOctokit` to create one.
+ * @see `createLocatedOctokit` to create one.
  */
 export type LocatedOctokit = Omit<Octokit, "rest"> & {
 	rest: WithOptionalLocators<Octokit["rest"]>;

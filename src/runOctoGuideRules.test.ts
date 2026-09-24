@@ -21,18 +21,10 @@ vi.mock("@actions/core", () => ({
 	},
 }));
 
-const mockOctokitFromAuth = vi.fn();
-
-vi.mock("octokit-from-auth", () => ({
-	get octokitFromAuth() {
-		return mockOctokitFromAuth;
-	},
-}));
-
 const mockCreateActor = vi.fn();
 
 function mockCreatedActor(actor: unknown, octokit: unknown) {
-	mockCreateActor.mockReturnValue({ actor, locator: testLocator, octokit });
+	mockCreateActor.mockResolvedValue({ actor, locator: testLocator, octokit });
 }
 
 vi.mock("./actors/createActor.js", () => ({
@@ -125,9 +117,6 @@ describe("runOctoGuideRules", () => {
 	});
 
 	it("should throw error when entity data's html_url is not a string", async () => {
-		const mockOctokit = createMockOctokit();
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-
 		const invalidEntity = {
 			data: { html_url: null },
 			number: 1,
@@ -142,10 +131,7 @@ describe("runOctoGuideRules", () => {
 	});
 
 	it("should throw error when actor cannot be resolved", async () => {
-		const mockOctokit = createMockOctokit();
-
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreateActor.mockReturnValue({ actor: undefined, locator: undefined });
+		mockCreateActor.mockResolvedValue({ actor: undefined, locator: undefined });
 
 		await expect(
 			runOctoGuideRules({
@@ -153,17 +139,14 @@ describe("runOctoGuideRules", () => {
 			}),
 		).rejects.toThrow("Could not resolve GitHub entity actor.");
 
-		expect(mockOctokitFromAuth).toHaveBeenCalledWith({ auth: undefined });
-		expect(mockCreateActor).toHaveBeenCalledWith(
-			mockOctokit,
-			"https://github.com/test-owner/test-repo/issues/1",
-		);
+		expect(mockCreateActor).toHaveBeenCalledWith({
+			auth: undefined,
+			url: "https://github.com/test-owner/test-repo/issues/1",
+		});
 	});
 
 	it("should use the authentication token when provided", async () => {
 		const mockOctokit = createMockOctokit();
-
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 
 		mockCreatedActor({ getData: vi.fn() }, mockOctokit);
 
@@ -172,7 +155,10 @@ describe("runOctoGuideRules", () => {
 			entity: "https://github.com/test-owner/test-repo/issues/1",
 		});
 
-		expect(mockOctokitFromAuth).toHaveBeenCalledWith({ auth: "test-token" });
+		expect(mockCreateActor).toHaveBeenCalledWith({
+			auth: "test-token",
+			url: "https://github.com/test-owner/test-repo/issues/1",
+		});
 	});
 
 	it("should not run any rules when all are explicitly disabled", async () => {
@@ -187,7 +173,6 @@ describe("runOctoGuideRules", () => {
 			metadata: { number: 1, type: "issue" as const },
 		};
 
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
@@ -228,10 +213,7 @@ describe("runOctoGuideRules", () => {
 			metadata: { number: 1, type: "issue" as const },
 		};
 
-		const mockLocatedOctokit = createMockOctokit();
-
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
-		mockCreatedActor(mockActor, mockLocatedOctokit);
+		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
 			auth: "test-token",
@@ -263,7 +245,7 @@ describe("runOctoGuideRules", () => {
 
 		expect(mockRunRuleOnEntity.mock.calls[0][0]).toMatchObject({
 			locator: testLocator,
-			octokit: mockLocatedOctokit,
+			octokit: mockOctokit,
 		});
 	});
 
@@ -279,7 +261,6 @@ describe("runOctoGuideRules", () => {
 			metadata: { number: 1, type: "issue" as const },
 		};
 
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 		mockCreatedActor(mockActor, mockOctokit);
 
 		mockRunRuleOnEntity.mockImplementation((context: RuleContext) => {
@@ -323,7 +304,6 @@ describe("runOctoGuideRules", () => {
 			metadata: { number: 1, type: "issue" as const },
 		};
 
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
@@ -363,7 +343,6 @@ describe("runOctoGuideRules", () => {
 			metadata: { number: 1, type: "pr" as const },
 		};
 
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
@@ -400,11 +379,10 @@ describe("runOctoGuideRules", () => {
 			"pr-linked-issue",
 		]);
 
-		expect(mockOctokitFromAuth).toHaveBeenCalledWith({ auth: "test-token" });
-		expect(mockCreateActor).toHaveBeenCalledWith(
-			mockOctokit,
-			"https://github.com/test-owner/test-repo/pull/1",
-		);
+		expect(mockCreateActor).toHaveBeenCalledWith({
+			auth: "test-token",
+			url: "https://github.com/test-owner/test-repo/pull/1",
+		});
 		expect(mockActor.getData).toHaveBeenCalled();
 	});
 
@@ -420,7 +398,6 @@ describe("runOctoGuideRules", () => {
 			metadata: { number: 42, type: "issue" as const },
 		};
 
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 		mockCreatedActor(mockActor, mockOctokit);
 
 		const entityInput = {
@@ -444,11 +421,10 @@ describe("runOctoGuideRules", () => {
 		});
 
 		expect(mockActor.getData).not.toHaveBeenCalled();
-		expect(mockOctokitFromAuth).toHaveBeenCalledWith({ auth: "test-token" });
-		expect(mockCreateActor).toHaveBeenCalledWith(
-			mockOctokit,
-			"https://github.com/test-owner/test-repo/issues/42",
-		);
+		expect(mockCreateActor).toHaveBeenCalledWith({
+			auth: "test-token",
+			url: "https://github.com/test-owner/test-repo/issues/42",
+		});
 	});
 	it("should skip rules when the entity is excluded by their options", async () => {
 		const mockOctokit = createMockOctokit();
@@ -463,7 +439,6 @@ describe("runOctoGuideRules", () => {
 			metadata: { number: 1, type: "issue" as const },
 		};
 
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 		mockCreatedActor(mockActor, mockOctokit);
 
 		const result = await runOctoGuideRules({
@@ -492,7 +467,6 @@ describe("runOctoGuideRules", () => {
 		};
 
 		mockCore.isDebug.mockReturnValue(true);
-		mockOctokitFromAuth.mockResolvedValue(mockOctokit);
 		mockCreatedActor(mockActor, mockOctokit);
 
 		await runOctoGuideRules({

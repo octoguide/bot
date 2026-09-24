@@ -1,5 +1,4 @@
 import * as core from "@actions/core";
-import { octokitFromAuth } from "octokit-from-auth";
 
 import type { EntityActor } from "./actors/types.js";
 import type { Entity } from "./types/entities.js";
@@ -118,10 +117,7 @@ export async function runOctoGuideRules({
 	// 2. Using that to create the equivalent actor: requires writing
 	// ...where only 1. is needed for runOctoGuide.
 	// https://github.com/OctoGuide/bot/issues/56
-	const { actor, locator, octokit } = createActor(
-		await octokitFromAuth({ auth }),
-		url,
-	);
+	const { actor, locator, octokit } = await createActor({ auth, url });
 	if (!actor) {
 		throw new Error("Could not resolve GitHub entity actor.");
 	}

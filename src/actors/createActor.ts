@@ -1,33 +1,31 @@
-import type { Octokit } from "octokit";
-
-import type { LocatedOctokit } from "../types/octokit.js";
-
+import { createLocatedOctokit } from "./createLocatedOctokit.js";
 import { DiscussionActor } from "./DiscussionActor.js";
 import { DiscussionCommentActor } from "./DiscussionCommentActor.js";
 import { IssueActor } from "./IssueActor.js";
 import { IssueLikeCommentActor } from "./IssueLikeCommentActor.js";
-import { locateOctokit } from "./locateOctokit.js";
 import { parseCommentId, parseEntityUrl } from "./parseEntity.js";
 import { parseLocator } from "./parseLocator.js";
 import { PullRequestActor } from "./PullRequestActor.js";
 
+export interface CreateActorSettings {
+	auth?: string;
+	url: string;
+}
+
 /**
  * Resolves the actor, repository locator, and repository-scoped Octokit for a URL.
- * @remarks Repository-scopes the provided Octokit in place, per {@link locateOctokit}.
  */
-export function createActor(octokit: Octokit, url: string) {
+export async function createActor({ auth, url }: CreateActorSettings) {
 	const locator = parseLocator(url);
 	if (!locator) {
 		return {};
 	}
 
-	locateOctokit(octokit, locator);
-
-	const locatedOctokit: LocatedOctokit = octokit;
+	const octokit = await createLocatedOctokit(locator, { auth });
 
 	const matches = parseEntityUrl(url);
 	if (!matches) {
-		return { locator, octokit: locatedOctokit };
+		return { locator, octokit };
 	}
 
 	const [urlType, parentNumber] = matches;
@@ -39,7 +37,7 @@ export function createActor(octokit: Octokit, url: string) {
 			case "discussions":
 				return commentId
 					? new DiscussionCommentActor(+commentId, +parentNumber, octokit)
-					: new DiscussionActor(+parentNumber, locatedOctokit);
+					: new DiscussionActor(+parentNumber, octokit);
 
 			case "issues":
 			case "pull": {
@@ -47,18 +45,18 @@ export function createActor(octokit: Octokit, url: string) {
 				if (commentId) {
 					return new IssueLikeCommentActor(
 						+commentId,
-						locatedOctokit,
+						octokit,
 						+parentNumber,
 						parentType,
 					);
 				}
 
 				return parentType === "issue"
-					? new IssueActor(+parentNumber, parentType, locatedOctokit)
-					: new PullRequestActor(+parentNumber, parentType, locatedOctokit);
+					? new IssueActor(+parentNumber, parentType, octokit)
+					: new PullRequestActor(+parentNumber, parentType, octokit);
 			}
 		}
 	})();
 
-	return { actor, locator, octokit: locatedOctokit };
+	return { actor, locator, octokit };
 }
