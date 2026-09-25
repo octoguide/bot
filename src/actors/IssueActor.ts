@@ -1,11 +1,9 @@
-import type { Octokit } from "octokit";
-
-import type { RepositoryLocator } from "../types/data.js";
 import type {
 	IssueLikeData,
 	IssueLikeEntity,
 	IssueLikeEntityType,
 } from "../types/entities.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 
 import { IssueLikeActorBase } from "./IssueLikeActorBase.js";
 
@@ -15,10 +13,9 @@ export class IssueActor extends IssueLikeActorBase<IssueLikeData> {
 	constructor(
 		entityNumber: number,
 		entityType: IssueLikeEntityType,
-		locator: RepositoryLocator,
-		octokit: Octokit,
+		octokit: LocatedOctokit,
 	) {
-		super(entityNumber, locator, octokit);
+		super(entityNumber, octokit);
 
 		this.metadata = {
 			number: entityNumber,
@@ -29,8 +26,6 @@ export class IssueActor extends IssueLikeActorBase<IssueLikeData> {
 	async getData() {
 		const { data } = await this.octokit.rest.issues.get({
 			issue_number: this.entityNumber,
-			owner: this.locator.owner,
-			repo: this.locator.repository,
 		});
 
 		return data;

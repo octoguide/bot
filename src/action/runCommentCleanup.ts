@@ -1,7 +1,6 @@
 import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
-import { octokitFromAuth } from "octokit-from-auth";
 
 import { createActor } from "../actors/createActor.js";
 import { getExistingComment } from "./comments/getExistingComment.js";
@@ -21,8 +20,7 @@ export async function runCommentCleanup({
 		return;
 	}
 
-	const octokit = await octokitFromAuth({ auth });
-	const { actor, locator } = createActor(octokit, url);
+	const { actor, octokit } = await createActor({ auth, url });
 	if (!actor) {
 		throw new Error("Could not resolve GitHub entity actor.");
 	}
@@ -58,8 +56,6 @@ export async function runCommentCleanup({
 		core.info(`Deleting issue-like comment with id: ${existingComment.id}`);
 		await octokit.rest.issues.deleteComment({
 			comment_id: existingComment.id,
-			owner: locator.owner,
-			repo: locator.repository,
 		});
 	}
 }

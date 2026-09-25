@@ -31,11 +31,7 @@ export abstract class DiscussionActorBase<
 		// https://github.com/OctoGuide/bot/issues/34
 		const response = await this.octokit.request(
 			"GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments",
-			{
-				discussion_number: this.entityNumber,
-				owner: this.locator.owner,
-				repo: this.locator.repository,
-			},
+			{ discussion_number: this.entityNumber },
 		);
 
 		return response.data as DiscussionCommentData[];
@@ -82,11 +78,7 @@ export abstract class DiscussionActorBase<
 					}
 				}
 			`,
-			{
-				number: this.entityNumber,
-				owner: this.locator.owner,
-				repo: this.locator.repository,
-			},
+			{ number: this.entityNumber },
 		);
 
 		const discussionId = repository.discussion.id;

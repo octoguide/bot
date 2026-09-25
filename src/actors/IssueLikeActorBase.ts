@@ -15,8 +15,6 @@ export abstract class IssueLikeActorBase<
 	async closeEntity() {
 		await this.octokit.rest.issues.update({
 			issue_number: this.entityNumber,
-			owner: this.locator.owner,
-			repo: this.locator.repository,
 			state: "closed",
 		});
 	}
@@ -25,8 +23,6 @@ export abstract class IssueLikeActorBase<
 		const response = await this.octokit.rest.issues.createComment({
 			body,
 			issue_number: this.entityNumber,
-			owner: this.locator.owner,
-			repo: this.locator.repository,
 		});
 
 		return response.data.html_url;
@@ -39,9 +35,7 @@ export abstract class IssueLikeActorBase<
 		// https://github.com/OctoGuide/bot/issues/34
 		const comments = await this.octokit.rest.issues.listComments({
 			issue_number: this.entityNumber,
-			owner: this.locator.owner,
 			per_page: 100,
-			repo: this.locator.repository,
 		});
 
 		return comments.data;
@@ -51,8 +45,6 @@ export abstract class IssueLikeActorBase<
 		await this.octokit.rest.issues.updateComment({
 			body: newBody,
 			comment_id: number,
-			owner: this.locator.owner,
-			repo: this.locator.repository,
 		});
 	}
 }
