@@ -104,6 +104,76 @@ describe(prBodyDescriptive.about.name, () => {
 		});
 	});
 
+	it.each([
+		"fixes #123",
+		"fixes owner/repo#123",
+		"fixes https://github.com/owner/repo/issues/123",
+		"fixes https://github.com/owner/repo/pull/123",
+	])(
+		"reports when the pull request only adds an issue reference beyond the template: %s",
+		async (reference) => {
+			const report = vi.fn();
+			const templateContent = "## Overview\n\nfixes #000";
+			const body = `## Overview\n\n${reference}`;
+
+			await testRule(
+				prBodyDescriptive,
+				{
+					data: {
+						body,
+					},
+					type: "pull_request",
+				},
+				{
+					octokit: {
+						graphql: vi.fn().mockResolvedValue({
+							repository: {
+								file0: { text: templateContent },
+							},
+						}) as unknown as Octokit["graphql"],
+					},
+					report,
+				},
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary:
+					"This PR's description doesn't contain any content beyond the template.",
+				suggestion: [
+					"Please add a description explaining the purpose and changes in this PR.",
+				],
+			});
+		},
+	);
+
+	it("does not report when the pull request has content beyond the template and an issue reference", async () => {
+		const report = vi.fn();
+		const templateContent = "## Overview\n\nfixes #000";
+		const body = "## Overview\n\nfixes #123\n\nUpdates the login logic.";
+
+		await testRule(
+			prBodyDescriptive,
+			{
+				data: {
+					body,
+				},
+				type: "pull_request",
+			},
+			{
+				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: templateContent },
+						},
+					}) as unknown as Octokit["graphql"],
+				},
+				report,
+			},
+		);
+
+		expect(report).not.toHaveBeenCalled();
+	});
+
 	it("does not report when the pull request has content without a template", async () => {
 		const report = vi.fn();
 

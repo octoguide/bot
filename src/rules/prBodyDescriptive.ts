@@ -1,6 +1,13 @@
 import { findPrTemplate } from "../action/findPrTemplate.js";
 import { defineRule } from "./defineRule.js";
 
+/**
+ * Issue and pull request references, such as `#123`, `owner/repo#123`,
+ * or `https://github.com/owner/repo/issues/123`.
+ */
+const issueReferences =
+	/(?:https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/(?:issues|pull)\/|(?:[\w.-]+\/[\w.-]+)?#)\d+/g;
+
 export const prBodyDescriptive = defineRule({
 	about: {
 		config: "recommended",
@@ -46,7 +53,10 @@ export const prBodyDescriptive = defineRule({
 		);
 
 		const bodyWords =
-			entity.data.body.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+			entity.data.body
+				.replaceAll(issueReferences, "")
+				.toLowerCase()
+				.match(/[\p{L}\p{N}]+/gu) ?? [];
 
 		const uniqueWords = bodyWords.filter((word) => !templateWords.has(word));
 
