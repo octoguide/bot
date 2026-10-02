@@ -190,6 +190,18 @@ describe(titleMeaningful.about.name, () => {
 				],
 			});
 		});
+
+		it("does not report when the title is only whitespace", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				titleMeaningful,
+				{ data: { title: "   " }, type: "pull_request" },
+				{ report },
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
 	});
 	describe("discussion", () => {
 		it("does not report when the title describes the discussion", async () => {
