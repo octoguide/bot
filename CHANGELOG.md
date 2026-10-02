@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.26.0](https://github.com/octoguide/bot/compare/0.25.0...0.26.0) (2026-10-02)
+
+### Features
+
+- default octokit owner and repo to locator ([#648](https://github.com/octoguide/bot/issues/648)) ([f89e428](https://github.com/octoguide/bot/commit/f89e42868f16ab02d7f176d0bf9871cf63108102)), closes [#60](https://github.com/octoguide/bot/issues/60)
+
 # [0.25.0](https://github.com/octoguide/bot/compare/0.24.0...0.25.0) (2026-10-02)
 
 ### Bug Fixes
