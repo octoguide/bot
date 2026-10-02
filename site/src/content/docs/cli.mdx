@@ -24,6 +24,10 @@ It does not create comments or otherwise post any data to GitHub.
 :::
 
 The `octoguide` CLI takes in one required positional argument for the activity to be scanned.
+That activity may also be provided as a shorthand locator:
+
+- Omitting the `https://github.com`: `npx octoguide OctoGuide/bot/issues/19`
+- Omitting the owner, which defaults to your logged in user: `npx octoguide bot/issues/19`
 
 ## Flags
 

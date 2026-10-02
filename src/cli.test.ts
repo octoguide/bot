@@ -10,6 +10,14 @@ vi.mock("./runOctoGuideRules.js", () => ({
 	},
 }));
 
+const mockResolveEntityUrl = vi.fn();
+
+vi.mock("./resolveEntityUrl.js", () => ({
+	get resolveEntityUrl() {
+		return mockResolveEntityUrl;
+	},
+}));
+
 const mockCliReporter = vi.fn();
 
 vi.mock("./reporters/cliReporter.js", () => ({
@@ -31,11 +39,13 @@ describe(cli, () => {
 		).rejects.toThrow("Unknown config provided: 'other'");
 	});
 
-	it("runs runOctoGuideRules when a config and entity url are provided", async () => {
+	it("runs runOctoGuideRules with the resolved entity url when a config and entity url are provided", async () => {
 		const config = "strict";
-		const entity = "github.com/...";
+		const entity = "https://github.com/...";
 
-		await cli(entity, "--config", config);
+		mockResolveEntityUrl.mockResolvedValueOnce(entity);
+
+		await cli("...", "--config", config);
 
 		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
 			entity,
