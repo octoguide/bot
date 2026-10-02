@@ -1,0 +1,50 @@
+---
+description: "PRs should not be force-pushed after they've been reviewed"
+title: "pr-force-push-avoided"
+---
+
+import { Code } from "@astrojs/starlight/components";
+
+import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
+import IncludedIn from "../../../components/IncludedIn.astro";
+import { getStartedSynchronize } from "../../../data/yml.js";
+
+<IncludedIn rule="pr-force-push-avoided" />
+
+Force-pushing a pull request rewrites its history.
+Once a pull request has been reviewed, rewritten history makes it harder for reviewers to see what changed since their last review.
+
+Many repositories squash merge pull requests, so there's no need to keep a pull request's commits clean.
+Pushing new commits on top of existing ones keeps each review's changes easy to find.
+
+This rule reports when a pull request's latest commit was force-pushed after the pull request received its first review.
+The report is resolved once new changes are pushed without force-pushing.
+
+## Running on Pushes
+
+Pushes to a pull request fire the `synchronize` event.
+OctoGuide's [default workflow](/get-started#installation) doesn't run on `synchronize`, so this rule only checks pull requests when they're opened or edited.
+To check every push, add `synchronize` to the workflow's `pull_request_target` types:
+
+<Code
+	code={getStartedSynchronize}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+## Example
+
+<OctoGuideGitHubComment rule="pr-force-push-avoided">
+	This pull request's latest changes were force-pushed after it was reviewed.
+	This repository asks that pull requests not be force-pushed after they've been
+	reviewed. Rewriting a pull request's history makes it harder for reviewers to
+	see what changed between reviews. To resolve this report, push any further
+	changes as new commits rather than force-pushing. There's no need to rewrite
+	existing commits to keep them clean.
+</OctoGuideGitHubComment>
+
+## See More
+
+- [Rule source](https://github.com/OctoGuide/bot/blob/main/src/rules/prForcePushAvoided.ts)
+- [Rule tests](https://github.com/OctoGuide/bot/blob/main/src/rules/prForcePushAvoided.test.ts)
