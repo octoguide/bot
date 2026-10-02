@@ -59,6 +59,7 @@ describe("resolveRules", () => {
 		});
 
 		expect(actual).toEqual({
+			"include-ais": false,
 			"include-associations": new Set(["MEMBER", "NONE"]),
 			"include-bots": false,
 		});

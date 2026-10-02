@@ -14,6 +14,7 @@ import {
 	getStartedRuleEnable,
 	getStartedRuleNone,
 	getStartedRuleOptions,
+	getStartedIncludeAIs,
 	getStartedIncludeBots,
 	getStartedIncludeAssociationsDefault,
 	getStartedIncludeCollaborators,
@@ -106,9 +107,24 @@ enable this by setting `include-bots` to `"true"`:
 />
 
 :::note
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 :::
+
+### `include-ais`
+
+Known AI agents, such as GitHub Copilot, Claude, Cursor, and Devin, are also bots.
+`include-ais` controls whether OctoGuide runs rules on entities and comments they create,
+separately from other bots. It defaults to the value of `include-bots`.
+
+For example, to hold AI agents to the same contribution guidelines as humans while still skipping other bots such as Dependabot and Renovate:
+
+<Code
+	code={getStartedIncludeAIs}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
 
 ### `include-associations`
 
@@ -129,7 +145,7 @@ to include for rule checking. The default value excludes collaborators, organiza
 />
 
 :::note
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 :::
 
@@ -245,7 +261,7 @@ When a rule is explicitly set via input, it takes precedence over the preset con
 #### Rule Options
 
 Setting a rule to an object both enables the rule and gives it options to run with.
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 `include-associations` is provided per-rule as an array rather than a comma-separated string.
 
@@ -259,6 +275,6 @@ which override the equivalent top-level inputs for that one rule.
 />
 
 Some rules declare their own default options.
-Those defaults take precedence over the top-level `include-associations` and `include-bots` inputs,
+Those defaults take precedence over the top-level `include-ais`, `include-associations`, and `include-bots` inputs,
 so a rule such as [`text-image-alt-text`](/rules/text-image-alt-text) that applies to all author associations
 keeps doing so until you give it options of your own.

@@ -29,6 +29,7 @@ describe("collectSettings", () => {
 			comments: { footer: defaultFooter, header: "" },
 			config: "recommended",
 			options: {
+				"include-ais": undefined,
 				"include-associations": [],
 				"include-bots": false,
 			},
@@ -55,6 +56,7 @@ describe("collectSettings", () => {
 			"comment-footer": "Custom footer!",
 			"comment-header": "Custom header!",
 			config: "strict",
+			"include-ais": "false",
 			"include-associations": "MEMBER, OWNER",
 			"include-bots": "true",
 			rules: `{"comment-meaningful": false}`,
@@ -66,6 +68,7 @@ describe("collectSettings", () => {
 			comments: { footer: "Custom footer!", header: "Custom header!" },
 			config: "strict",
 			options: {
+				"include-ais": false,
 				"include-associations": ["MEMBER", "OWNER"],
 				"include-bots": true,
 			},
