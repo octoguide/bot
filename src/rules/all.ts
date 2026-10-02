@@ -6,6 +6,7 @@ import { prLinkedIssue } from "./prLinkedIssue.js";
 import { prTaskCompletion } from "./prTaskCompletion.js";
 import { prTitleConventional } from "./prTitleConventional.js";
 import { textImageAltText } from "./textImageAltText.js";
+import { titleMeaningful } from "./titleMeaningful.js";
 
 export const allRules = [
 	commentMeaningful,
@@ -16,4 +17,5 @@ export const allRules = [
 	prTaskCompletion,
 	prTitleConventional,
 	textImageAltText,
+	titleMeaningful,
 ];
