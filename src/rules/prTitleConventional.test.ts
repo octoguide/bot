@@ -61,6 +61,29 @@ describe(prTitleConventional.about.name, () => {
 		},
 	);
 
+	it("reports a missing type when the pull request title does not start with a word", async () => {
+		const report = vi.fn();
+		const title = "[docs] update readme";
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title,
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
+			suggestion: [
+				`To resolve this report, add a conventional commit type in front of the title, like _"feat: [docs] update readme"_.`,
+			],
+		});
+	});
+
 	it("reports when the pull request title has a known type with incorrect syntax and no subject", async () => {
 		const report = vi.fn();
 
