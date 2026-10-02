@@ -27,6 +27,62 @@ describe(prTitleConventional.about.name, () => {
 		});
 	});
 
+	it.each([
+		[
+			"fix(md) [headingIncrements]: fill in suggestions TODO md",
+			"fix(md): [headingIncrements] fill in suggestions TODO md",
+		],
+		["fix(md) fill in suggestions", "fix(md): fill in suggestions"],
+		["fix:fill in suggestions", "fix: fill in suggestions"],
+		["fix : fill in suggestions", "fix: fill in suggestions"],
+		["feat(api)! drop old option", "feat(api)!: drop old option"],
+	])(
+		"reports with a corrected title when the pull request title %j has a known type with incorrect syntax",
+		async (title, corrected) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
+				suggestion: [
+					`To resolve this report, follow conventional commit syntax, like _"${corrected}"_.`,
+				],
+			});
+		},
+	);
+
+	it("reports when the pull request title has a known type with incorrect syntax and no subject", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title: "fix(md)",
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `PR title is missing a subject after its type.`,
+			suggestion: [
+				`To resolve this report, add text after the type, like _"fix(md): etc."_`,
+			],
+		});
+	});
+
 	it("reports when the pull request title has an unknown type", async () => {
 		const report = vi.fn();
 		const title = "other: add this new feature";

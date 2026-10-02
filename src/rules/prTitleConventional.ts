@@ -15,6 +15,37 @@ const commitParser = new CommitParser({
 	breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
 });
 
+/**
+ * Attempts to fix a title that starts with a known type, but doesn't follow it
+ * with a colon and space, such as `fix(md) [headingIncrements]: subject`.
+ * @returns The title's type header and subject, if it could be fixed.
+ */
+function fixTitleSyntax(title: string) {
+	const match = /^(\w+)(\([^)]*\))?(!)?(\W.*)?$/.exec(title);
+	if (!match) {
+		return undefined;
+	}
+
+	const [, type, scope = "", breaking = "", rest = ""] = match;
+	const leadingColon = /^\s*:/;
+
+	if (
+		!Object.hasOwn(conventionalTypes.types, type) ||
+		(!scope && !breaking && !leadingColon.test(rest))
+	) {
+		return undefined;
+	}
+
+	const subject = leadingColon.test(rest)
+		? rest.replace(leadingColon, "")
+		: rest.replace(/:(?=\s)/, "");
+
+	return {
+		header: type + scope + breaking,
+		subject: subject.trim(),
+	};
+}
+
 export const prTitleConventional = defineRule({
 	about: {
 		config: "strict",
@@ -28,6 +59,27 @@ export const prTitleConventional = defineRule({
 	pullRequest(context, entity) {
 		const parsed = commitParser.parse(entity.data.title);
 		if (!parsed.type) {
+			const fixed = fixTitleSyntax(entity.data.title);
+			if (fixed && !fixed.subject) {
+				context.report({
+					primary: `PR title is missing a subject after its type.`,
+					suggestion: [
+						`To resolve this report, add text after the type, like _"${fixed.header}: etc."_`,
+					],
+				});
+				return;
+			}
+
+			if (fixed) {
+				context.report({
+					primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
+					suggestion: [
+						`To resolve this report, follow conventional commit syntax, like _"${fixed.header}: ${fixed.subject}"_.`,
+					],
+				});
+				return;
+			}
+
 			context.report({
 				primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
 				suggestion: [
