@@ -1,3 +1,5 @@
+import type { PullRequestEntity } from "../types/entities.js";
+
 import { defineRule } from "./defineRule.js";
 
 interface ClosingIssuesResponse {
@@ -10,6 +12,22 @@ interface ClosingIssuesResponse {
 			};
 		};
 	};
+}
+
+/**
+ * Checks whether a body uses a closing keyword on an issue, such as `fixes #123`.
+ * @remarks GitHub only records closing issue references for pull requests
+ * into the default branch, so others (such as stacked PRs) need this instead.
+ * @see https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue
+ */
+function hasClosingKeyword(body: string) {
+	return /\b(?:close[ds]?|fix(?:e[ds])?|resolve[ds]?):?\s+(?:(?:[\w.-]+\/[\w.-]+)?#|https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/issues\/)\d+/i.test(
+		body,
+	);
+}
+
+function targetsDefaultBranch(entity: PullRequestEntity) {
+	return entity.data.base.ref === entity.data.base.repo.default_branch;
 }
 
 export const prLinkedIssue = defineRule({
@@ -48,6 +66,10 @@ export const prLinkedIssue = defineRule({
 		const dependabotAlertPattern =
 			/https:\/\/github\.com\/[^/]+\/[^/]+\/security\/dependabot\/\d+/;
 		if (dependabotAlertPattern.test(body)) {
+			return;
+		}
+
+		if (!targetsDefaultBranch(entity) && hasClosingKeyword(body)) {
 			return;
 		}
 

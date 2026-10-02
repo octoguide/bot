@@ -46,6 +46,10 @@ describe(prLinkedIssue.about.name, () => {
 			prLinkedIssue,
 			{
 				data: {
+					base: {
+						ref: "main",
+						repo: { default_branch: "main" },
+					},
 					head: {
 						ref: "main",
 					},
@@ -113,5 +117,117 @@ describe(prLinkedIssue.about.name, () => {
 		);
 
 		expect(report).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		"fixes #1",
+		"Closes owner/repo#1",
+		"resolved: https://github.com/owner/repo/issues/1",
+	])(
+		"does not report when a pull request into a non-default branch has a closing keyword in its body: %s",
+		async (body) => {
+			const report = vi.fn();
+
+			await testRule(
+				prLinkedIssue,
+				{
+					data: {
+						base: {
+							ref: "stacked-base",
+							repo: { default_branch: "main" },
+						},
+						body,
+					},
+					number: 2,
+					type: "pull_request",
+				},
+				{
+					octokit: {
+						graphql: vi.fn().mockResolvedValue({
+							repository: {
+								pullRequest: {
+									closingIssuesReferences: {
+										nodes: [],
+									},
+								},
+							},
+						}) as unknown as Octokit["graphql"],
+					},
+					report,
+				},
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		},
+	);
+
+	it("reports when a pull request into a non-default branch references an issue without a closing keyword", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prLinkedIssue,
+			{
+				data: {
+					base: {
+						ref: "stacked-base",
+						repo: { default_branch: "main" },
+					},
+					body: "Builds on #1.",
+				},
+				number: 2,
+				type: "pull_request",
+			},
+			{
+				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							pullRequest: {
+								closingIssuesReferences: {
+									nodes: [],
+								},
+							},
+						},
+					}) as unknown as Octokit["graphql"],
+				},
+				report,
+			},
+		);
+
+		expect(report).toHaveBeenCalledOnce();
+	});
+
+	it("reports when a pull request into the default branch has a closing keyword in its body that GitHub did not link", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prLinkedIssue,
+			{
+				data: {
+					base: {
+						ref: "main",
+						repo: { default_branch: "main" },
+					},
+					body: "fixes #1",
+				},
+				number: 2,
+				type: "pull_request",
+			},
+			{
+				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							pullRequest: {
+								closingIssuesReferences: {
+									nodes: [],
+								},
+							},
+						},
+					}) as unknown as Octokit["graphql"],
+				},
+				report,
+			},
+		);
+
+		expect(report).toHaveBeenCalledOnce();
 	});
 });
