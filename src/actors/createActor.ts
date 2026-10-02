@@ -1,5 +1,4 @@
-import type { Octokit } from "octokit";
-
+import { createLocatedOctokit } from "./createLocatedOctokit.js";
 import { DiscussionActor } from "./DiscussionActor.js";
 import { DiscussionCommentActor } from "./DiscussionCommentActor.js";
 import { IssueActor } from "./IssueActor.js";
@@ -8,15 +7,25 @@ import { parseCommentId, parseEntityUrl } from "./parseEntity.js";
 import { parseLocator } from "./parseLocator.js";
 import { PullRequestActor } from "./PullRequestActor.js";
 
-export function createActor(octokit: Octokit, url: string) {
+export interface CreateActorSettings {
+	auth?: string;
+	url: string;
+}
+
+/**
+ * Resolves the actor, repository locator, and repository-scoped Octokit for a URL.
+ */
+export async function createActor({ auth, url }: CreateActorSettings) {
 	const locator = parseLocator(url);
 	if (!locator) {
 		return {};
 	}
 
+	const octokit = await createLocatedOctokit(locator, { auth });
+
 	const matches = parseEntityUrl(url);
 	if (!matches) {
-		return { locator };
+		return { locator, octokit };
 	}
 
 	const [urlType, parentNumber] = matches;
@@ -27,13 +36,8 @@ export function createActor(octokit: Octokit, url: string) {
 		switch (urlType) {
 			case "discussions":
 				return commentId
-					? new DiscussionCommentActor(
-							+commentId,
-							+parentNumber,
-							locator,
-							octokit,
-						)
-					: new DiscussionActor(+parentNumber, locator, octokit);
+					? new DiscussionCommentActor(+commentId, +parentNumber, octokit)
+					: new DiscussionActor(+parentNumber, octokit);
 
 			case "issues":
 			case "pull": {
@@ -41,7 +45,6 @@ export function createActor(octokit: Octokit, url: string) {
 				if (commentId) {
 					return new IssueLikeCommentActor(
 						+commentId,
-						locator,
 						octokit,
 						+parentNumber,
 						parentType,
@@ -49,11 +52,11 @@ export function createActor(octokit: Octokit, url: string) {
 				}
 
 				return parentType === "issue"
-					? new IssueActor(+parentNumber, parentType, locator, octokit)
-					: new PullRequestActor(+parentNumber, parentType, locator, octokit);
+					? new IssueActor(+parentNumber, parentType, octokit)
+					: new PullRequestActor(+parentNumber, parentType, octokit);
 			}
 		}
 	})();
 
-	return { actor, locator };
+	return { actor, locator, octokit };
 }

@@ -1,11 +1,9 @@
-import type { Octokit } from "octokit";
-
-import type { RepositoryLocator } from "../types/data.js";
 import type {
 	CommentData,
 	CommentEntity,
 	IssueLikeEntityType,
 } from "../types/entities.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 
 import { IssueLikeActorBase } from "./IssueLikeActorBase.js";
 
@@ -14,12 +12,11 @@ export class IssueLikeCommentActor extends IssueLikeActorBase<CommentData> {
 
 	constructor(
 		commentId: number,
-		locator: RepositoryLocator,
-		octokit: Octokit,
+		octokit: LocatedOctokit,
 		parentNumber: number,
 		parentType: IssueLikeEntityType,
 	) {
-		super(parentNumber, locator, octokit);
+		super(parentNumber, octokit);
 
 		this.metadata = {
 			commentId,
@@ -32,8 +29,6 @@ export class IssueLikeCommentActor extends IssueLikeActorBase<CommentData> {
 	async getData() {
 		const { data } = await this.octokit.rest.issues.getComment({
 			comment_id: this.metadata.commentId,
-			owner: this.locator.owner,
-			repo: this.locator.repository,
 		});
 
 		return data;

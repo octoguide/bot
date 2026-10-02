@@ -1,7 +1,5 @@
-import type { Octokit } from "octokit";
-
-import type { RepositoryLocator } from "../types/data.js";
 import type { CommentData, CommentEntity } from "../types/entities.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 
 import { DiscussionActorBase } from "./DiscussionActorBase.js";
 
@@ -11,10 +9,9 @@ export class DiscussionCommentActor extends DiscussionActorBase<CommentData> {
 	constructor(
 		commentId: number,
 		discussionNumber: number,
-		locator: RepositoryLocator,
-		octokit: Octokit,
+		octokit: LocatedOctokit,
 	) {
-		super(discussionNumber, locator, octokit);
+		super(discussionNumber, octokit);
 
 		this.metadata = {
 			commentId,

@@ -29,12 +29,7 @@ export abstract class DiscussionActorBase<
 	async listComments() {
 		const comments = await this.octokit.paginate(
 			"GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments",
-			{
-				discussion_number: this.entityNumber,
-				owner: this.locator.owner,
-				per_page: 100,
-				repo: this.locator.repository,
-			},
+			{ discussion_number: this.entityNumber, per_page: 100 },
 		);
 
 		return comments as DiscussionCommentData[];
@@ -81,11 +76,7 @@ export abstract class DiscussionActorBase<
 					}
 				}
 			`,
-			{
-				number: this.entityNumber,
-				owner: this.locator.owner,
-				repo: this.locator.repository,
-			},
+			{ number: this.entityNumber },
 		);
 
 		const discussionId = repository.discussion.id;

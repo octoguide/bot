@@ -1,9 +1,7 @@
-import type { Octokit } from "octokit";
-
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { RepositoryLocator } from "../types/data.js";
 import type { IssueLikeData } from "../types/entities.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 
 import { PullRequestActor } from "./PullRequestActor.js";
 
@@ -37,12 +35,7 @@ const mockOctokit = {
 		issues: mockRestIssues,
 		pulls: mockRestPulls,
 	},
-} as unknown as Octokit;
-
-const locator: RepositoryLocator = {
-	owner: "test-owner",
-	repository: "test-repo",
-};
+} as unknown as LocatedOctokit;
 
 const pullNumber = 456;
 
@@ -51,12 +44,7 @@ describe("PullRequestActor", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks();
-		actor = new PullRequestActor(
-			pullNumber,
-			"pull_request",
-			locator,
-			mockOctokit,
-		);
+		actor = new PullRequestActor(pullNumber, "pull_request", mockOctokit);
 	});
 
 	describe("metadata", () => {
@@ -90,9 +78,7 @@ describe("PullRequestActor", () => {
 			const result = await actor.getData();
 
 			expect(mockRestPulls.get).toHaveBeenCalledWith({
-				owner: locator.owner,
 				pull_number: pullNumber,
-				repo: locator.repository,
 			});
 			expect(result).toBe(mockPullRequestData);
 		});
@@ -113,8 +99,6 @@ describe("PullRequestActor", () => {
 			expect(mockRestIssues.createComment).toHaveBeenCalledWith({
 				body: commentBody,
 				issue_number: pullNumber,
-				owner: locator.owner,
-				repo: locator.repository,
 			});
 			expect(result).toBe(mockCommentUrl);
 		});
@@ -143,9 +127,7 @@ describe("PullRequestActor", () => {
 
 			expect(mockPaginate).toHaveBeenCalledWith(mockRestIssues.listComments, {
 				issue_number: pullNumber,
-				owner: locator.owner,
 				per_page: 100,
-				repo: locator.repository,
 			});
 			expect(result).toBe(mockComments);
 		});
@@ -157,8 +139,6 @@ describe("PullRequestActor", () => {
 
 			expect(mockRestIssues.update).toHaveBeenCalledWith({
 				issue_number: pullNumber,
-				owner: locator.owner,
-				repo: locator.repository,
 				state: "closed",
 			});
 		});
@@ -176,8 +156,6 @@ describe("PullRequestActor", () => {
 			expect(mockRestIssues.updateComment).toHaveBeenCalledWith({
 				body: newBody,
 				comment_id: commentId,
-				owner: locator.owner,
-				repo: locator.repository,
 			});
 		});
 	});

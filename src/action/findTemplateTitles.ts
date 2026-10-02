@@ -1,6 +1,4 @@
-import type { Octokit } from "octokit";
-
-import type { RepositoryLocator } from "../types/data.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 
 /**
  * Paths where a single GitHub issue template might be located according to GitHub documentation.
@@ -68,11 +66,9 @@ const TEMPLATE_EXTENSIONS = [".md", ".yaml", ".yml"];
  * @returns Each template's `title:`, for templates that specify one.
  */
 export async function findTemplateTitles(
-	octokit: Octokit,
-	locator: RepositoryLocator,
+	octokit: LocatedOctokit,
 	entityType: TemplatedEntityType,
 ): Promise<string[]> {
-	const { owner, repository } = locator;
 	const { directory, paths } = TEMPLATE_LOCATIONS[entityType];
 
 	const fileQueries = paths
@@ -109,10 +105,7 @@ export async function findTemplateTitles(
 	let graphqlResponse: GraphQLResponse;
 
 	try {
-		graphqlResponse = await octokit.graphql<GraphQLResponse>(fullQuery, {
-			owner,
-			repo: repository,
-		});
+		graphqlResponse = await octokit.graphql<GraphQLResponse>(fullQuery);
 	} catch (error) {
 		console.error(
 			`Error fetching ${entityType} templates with GraphQL:`,

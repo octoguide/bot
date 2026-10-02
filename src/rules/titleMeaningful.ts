@@ -56,7 +56,6 @@ function createTemplatedListener(entityType: TemplatedEntityType) {
 
 		const templateTitles = await findTemplateTitles(
 			context.octokit,
-			context.locator,
 			entityType,
 		);
 

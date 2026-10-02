@@ -1,5 +1,3 @@
-import type { Octokit } from "octokit";
-
 import type { RepositoryLocator } from "./data.js";
 import type {
 	CommentEntity,
@@ -8,6 +6,7 @@ import type {
 	IssueEntity,
 	PullRequestEntity,
 } from "./entities.js";
+import type { LocatedOctokit } from "./octokit.js";
 import type { RuleReportData } from "./reports.js";
 
 /**
@@ -87,8 +86,9 @@ export interface RuleContext {
 
 	/**
 	 * Octokit instance that can send GitHub API calls.
+	 * Its `owner` and `repo` parameters default to {@link RuleContext.locator}.
 	 */
-	octokit: Octokit;
+	octokit: LocatedOctokit;
 
 	/**
 	 * Options the rule is running with, resolved from rule and user settings.

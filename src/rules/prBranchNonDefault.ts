@@ -11,10 +11,7 @@ export const prBranchNonDefault = defineRule({
 		name: "pr-branch-non-default",
 	},
 	async pullRequest(context, entity) {
-		const { data } = await context.octokit.rest.repos.get({
-			owner: context.locator.owner,
-			repo: context.locator.repository,
-		});
+		const { data } = await context.octokit.rest.repos.get();
 
 		if (entity.data.head.ref === data.default_branch) {
 			context.report({

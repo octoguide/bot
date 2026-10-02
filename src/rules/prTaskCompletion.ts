@@ -12,7 +12,7 @@ export const prTaskCompletion = defineRule({
 		name: "pr-task-completion",
 	},
 	async pullRequest(context, entity) {
-		const template = await findPrTemplate(context.octokit, context.locator);
+		const template = await findPrTemplate(context.octokit);
 
 		if (!template) {
 			return;

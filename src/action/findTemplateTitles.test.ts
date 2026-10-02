@@ -1,8 +1,6 @@
-import type { Octokit } from "octokit";
-
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { RepositoryLocator } from "../types/data.js";
+import type { LocatedOctokit } from "../types/octokit.js";
 
 import {
 	findTemplateTitles,
@@ -10,14 +8,9 @@ import {
 	TEMPLATE_LOCATIONS,
 } from "./findTemplateTitles.js";
 
-const locator: RepositoryLocator = {
-	owner: "test-owner",
-	repository: "test-repo",
-};
-
 const graphqlMock = vi.fn();
 
-const octokit = { graphql: graphqlMock } as unknown as Octokit;
+const octokit = { graphql: graphqlMock } as unknown as LocatedOctokit;
 
 describe("findTemplateTitles", () => {
 	beforeEach(() => {
@@ -29,19 +22,19 @@ describe("findTemplateTitles", () => {
 	it("returns an empty array when the repository doesn't exist", async () => {
 		graphqlMock.mockResolvedValue({ repository: null });
 
-		expect(await findTemplateTitles(octokit, locator, "issue")).toEqual([]);
+		expect(await findTemplateTitles(octokit, "issue")).toEqual([]);
 	});
 
 	it("returns an empty array when the GraphQL request rejects", async () => {
 		graphqlMock.mockRejectedValue(new Error("Oh no!"));
 
-		expect(await findTemplateTitles(octokit, locator, "issue")).toEqual([]);
+		expect(await findTemplateTitles(octokit, "issue")).toEqual([]);
 	});
 
 	it("returns an empty array when no templates exist", async () => {
 		graphqlMock.mockResolvedValue({ repository: { templateDir: null } });
 
-		expect(await findTemplateTitles(octokit, locator, "issue")).toEqual([]);
+		expect(await findTemplateTitles(octokit, "issue")).toEqual([]);
 	});
 
 	ISSUE_TEMPLATE_PATHS.forEach((path, index) => {
@@ -54,14 +47,11 @@ describe("findTemplateTitles", () => {
 				},
 			});
 
-			expect(await findTemplateTitles(octokit, locator, "issue")).toEqual([
-				"🐛 Bug: ",
-			]);
+			expect(await findTemplateTitles(octokit, "issue")).toEqual(["🐛 Bug: "]);
 			expect(graphqlMock).toHaveBeenCalledWith(
 				expect.stringContaining(
 					`file${index}: object(expression: "HEAD:${path}")`,
 				),
-				{ owner: locator.owner, repo: locator.repository },
 			);
 		});
 	});
@@ -86,7 +76,7 @@ describe("findTemplateTitles", () => {
 			},
 		});
 
-		expect(await findTemplateTitles(octokit, locator, "issue")).toEqual([
+		expect(await findTemplateTitles(octokit, "issue")).toEqual([
 			"🐛 Bug: ",
 			"🚀 Feature:",
 		]);
@@ -94,7 +84,6 @@ describe("findTemplateTitles", () => {
 			expect.stringContaining(
 				`templateDir: object(expression: "HEAD:${TEMPLATE_LOCATIONS.issue.directory}")`,
 			),
-			{ owner: locator.owner, repo: locator.repository },
 		);
 	});
 
@@ -113,25 +102,23 @@ describe("findTemplateTitles", () => {
 			},
 		});
 
-		expect(await findTemplateTitles(octokit, locator, "discussion")).toEqual([
+		expect(await findTemplateTitles(octokit, "discussion")).toEqual([
 			"💡 Idea: ",
 		]);
 		expect(graphqlMock).toHaveBeenCalledWith(
 			expect.stringContaining(
 				`templateDir: object(expression: "HEAD:${TEMPLATE_LOCATIONS.discussion.directory}")`,
 			),
-			{ owner: locator.owner, repo: locator.repository },
 		);
 	});
 
 	it("doesn't query single-file paths for discussions", async () => {
 		graphqlMock.mockResolvedValue({ repository: { templateDir: null } });
 
-		await findTemplateTitles(octokit, locator, "discussion");
+		await findTemplateTitles(octokit, "discussion");
 
 		expect(graphqlMock).toHaveBeenCalledWith(
 			expect.not.stringContaining("file0:"),
-			{ owner: locator.owner, repo: locator.repository },
 		);
 	});
 
@@ -148,7 +135,7 @@ describe("findTemplateTitles", () => {
 			},
 		});
 
-		expect(await findTemplateTitles(octokit, locator, "issue")).toEqual([]);
+		expect(await findTemplateTitles(octokit, "issue")).toEqual([]);
 	});
 
 	it("skips templates that don't declare a title", async () => {
@@ -166,7 +153,7 @@ describe("findTemplateTitles", () => {
 			},
 		});
 
-		expect(await findTemplateTitles(octokit, locator, "issue")).toEqual([]);
+		expect(await findTemplateTitles(octokit, "issue")).toEqual([]);
 	});
 
 	it("ignores indented title keys inside a form's body", async () => {
@@ -186,6 +173,6 @@ describe("findTemplateTitles", () => {
 			},
 		});
 
-		expect(await findTemplateTitles(octokit, locator, "issue")).toEqual([]);
+		expect(await findTemplateTitles(octokit, "issue")).toEqual([]);
 	});
 });

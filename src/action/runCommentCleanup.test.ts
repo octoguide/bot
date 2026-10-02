@@ -14,14 +14,6 @@ vi.mock("@actions/core", () => ({
 	},
 }));
 
-const mockOctokitFromAuth = vi.fn();
-
-vi.mock("octokit-from-auth", () => ({
-	get octokitFromAuth() {
-		return mockOctokitFromAuth;
-	},
-}));
-
 const mockCreateActor = vi.fn();
 
 vi.mock("../actors/createActor.js", () => ({
@@ -39,7 +31,6 @@ vi.mock("./comments/getExistingComment.js", () => ({
 }));
 
 const auth = "gho_...";
-const locator = { owner: "owner", repository: "repo" };
 const url = "/repos/owner/repo/issues/1";
 
 describe(runCommentCleanup, () => {
@@ -50,7 +41,7 @@ describe(runCommentCleanup, () => {
 
 		await runCommentCleanup({ auth, payload, url });
 
-		expect(mockOctokitFromAuth).not.toHaveBeenCalled();
+		expect(mockCreateActor).not.toHaveBeenCalled();
 	});
 
 	it("throws an error when the actor cannot be resolved", async () => {
@@ -58,7 +49,7 @@ describe(runCommentCleanup, () => {
 			comment: {},
 		} as typeof github.context.payload;
 
-		mockCreateActor.mockReturnValueOnce({});
+		mockCreateActor.mockResolvedValueOnce({});
 
 		await expect(runCommentCleanup({ auth, payload, url })).rejects.toThrow(
 			"Could not resolve GitHub entity actor.",
@@ -70,7 +61,7 @@ describe(runCommentCleanup, () => {
 			comment: {},
 		} as typeof github.context.payload;
 
-		mockCreateActor.mockReturnValueOnce({ actor: {}, locator });
+		mockCreateActor.mockResolvedValueOnce({ actor: {}, octokit: {} });
 		mockGetExistingComment.mockResolvedValueOnce(undefined);
 
 		await runCommentCleanup({ auth, payload, url });
@@ -86,10 +77,10 @@ describe(runCommentCleanup, () => {
 		} as typeof github.context.payload;
 		const nodeId = "abc123";
 
-		mockOctokitFromAuth.mockResolvedValueOnce({
-			graphql: vi.fn(),
+		mockCreateActor.mockResolvedValueOnce({
+			actor: {},
+			octokit: { graphql: vi.fn() },
 		});
-		mockCreateActor.mockReturnValueOnce({ actor: {}, locator });
 		mockGetExistingComment.mockResolvedValueOnce({
 			node_id: nodeId,
 		});
@@ -107,14 +98,10 @@ describe(runCommentCleanup, () => {
 			issue: {},
 		} as typeof github.context.payload;
 
-		mockOctokitFromAuth.mockResolvedValueOnce({
-			rest: {
-				issues: {
-					deleteComment: vi.fn(),
-				},
-			},
+		mockCreateActor.mockResolvedValueOnce({
+			actor: {},
+			octokit: { rest: { issues: { deleteComment: vi.fn() } } },
 		});
-		mockCreateActor.mockReturnValueOnce({ actor: {}, locator });
 		mockGetExistingComment.mockResolvedValueOnce({ id });
 
 		await runCommentCleanup({ auth, payload, url });
