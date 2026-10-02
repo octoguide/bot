@@ -1,15 +1,15 @@
 import * as core from "@actions/core";
 
-import type { EntityActor } from "./actors/types.js";
-import type { Entity } from "./types/entities.js";
-import type { RuleReport } from "./types/reports.js";
-import type { RuleContext } from "./types/rules.js";
-import type { Settings } from "./types/settings.js";
+import type { EntityActor } from "./actors/types.ts";
+import type { Entity } from "./types/entities.ts";
+import type { RuleReport } from "./types/reports.ts";
+import type { RuleContext } from "./types/rules.ts";
+import type { Settings } from "./types/settings.ts";
 
-import { createActor } from "./actors/createActor.js";
-import { isRuleSkippedForEntity } from "./execution/isRuleSkippedForEntity.js";
-import { resolveRules } from "./execution/resolveRules.js";
-import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
+import { createActor } from "./actors/createActor.ts";
+import { isRuleSkippedForEntity } from "./execution/isRuleSkippedForEntity.ts";
+import { resolveRules } from "./execution/resolveRules.ts";
+import { runRuleOnEntity } from "./execution/runRuleOnEntity.ts";
 
 /**
  * Settings for running {@link runOctoGuideRules}.

@@ -4,7 +4,7 @@
 import conventionalTypes from "conventional-commit-types" with { type: "json" };
 import { CommitParser } from "conventional-commits-parser";
 
-import { defineRule } from "./defineRule.js";
+import { defineRule } from "./defineRule.ts";
 
 // Configuring the parser to recognize breaking-change headers that
 // include a `!` before the colon (e.g., `fix!: ...` or `fix(scope)!: ...`).

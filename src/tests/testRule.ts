@@ -1,13 +1,13 @@
 import type { PartialDeep } from "type-fest";
 
-import type { RepositoryLocator } from "../types/data.js";
-import type { Entity, EntityType } from "../types/entities.js";
-import type { LocatedOctokit } from "../types/octokit.js";
-import type { Rule, RuleOptions, RuleReporter } from "../types/rules.js";
+import type { RepositoryLocator } from "../types/data.ts";
+import type { Entity, EntityType } from "../types/entities.ts";
+import type { LocatedOctokit } from "../types/octokit.ts";
+import type { Rule, RuleOptions, RuleReporter } from "../types/rules.ts";
 
-import { runRuleOnEntity } from "../execution/runRuleOnEntity.js";
-import { createProxiedObject } from "./createProxiedObject.js";
-import { testLocator } from "./testLocator.js";
+import { runRuleOnEntity } from "../execution/runRuleOnEntity.ts";
+import { createProxiedObject } from "./createProxiedObject.ts";
+import { testLocator } from "./testLocator.ts";
 
 export interface TestRuleContext {
 	locator?: RepositoryLocator;

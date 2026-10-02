@@ -2,7 +2,7 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
-import { EntityData } from "../../types/entities.js";
+import { EntityData } from "../../types/entities.ts";
 
 export function collectTarget(
 	payload: Partial<(typeof github.context)["payload"]>,

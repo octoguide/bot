@@ -1,9 +1,9 @@
 import { parseArgs } from "node:util";
 
-import { cliReporter } from "./reporters/cliReporter.js";
-import { resolveEntityUrl } from "./resolveEntityUrl.js";
-import { isKnownConfig } from "./rules/configs.js";
-import { runOctoGuideRules } from "./runOctoGuideRules.js";
+import { cliReporter } from "./reporters/cliReporter.ts";
+import { resolveEntityUrl } from "./resolveEntityUrl.ts";
+import { isKnownConfig } from "./rules/configs.ts";
+import { runOctoGuideRules } from "./runOctoGuideRules.ts";
 
 export async function cli(...args: string[]) {
 	const { positionals, values } = parseArgs({

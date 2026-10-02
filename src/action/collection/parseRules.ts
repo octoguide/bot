@@ -1,4 +1,4 @@
-import type { Settings } from "../../types/settings.js";
+import type { Settings } from "../../types/settings.ts";
 
 export function parseRules(input: string) {
 	if (input === "") {

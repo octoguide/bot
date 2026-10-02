@@ -1,4 +1,4 @@
-import { CommentData, Entity, EntityData } from "../types/entities.js";
+import { CommentData, Entity, EntityData } from "../types/entities.ts";
 
 export interface EntityActor<Data extends EntityData = EntityData> {
 	readonly metadata: Omit<Entity, "data">;

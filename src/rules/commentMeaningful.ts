@@ -1,6 +1,6 @@
 import { isCommentMeaningless } from "is-comment-meaningless";
 
-import { defineRule } from "./defineRule.js";
+import { defineRule } from "./defineRule.ts";
 
 export const commentMeaningful = defineRule({
 	about: {

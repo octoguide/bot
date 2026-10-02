@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import type { Entity } from "./types/entities.js";
-import type { RuleContext } from "./types/rules.js";
+import type { Entity } from "./types/entities.ts";
+import type { RuleContext } from "./types/rules.ts";
 
-import { runOctoGuideRules } from "./runOctoGuideRules.js";
-import { createMockOctokit } from "./tests/createMockOctokit.js";
-import { testLocator } from "./tests/testLocator.js";
+import { runOctoGuideRules } from "./runOctoGuideRules.ts";
+import { createMockOctokit } from "./tests/createMockOctokit.ts";
+import { testLocator } from "./tests/testLocator.ts";
 
 const mockCore = {
 	debug: vi.fn(),
@@ -27,7 +27,7 @@ function mockCreatedActor(actor: unknown, octokit: unknown) {
 	mockCreateActor.mockResolvedValue({ actor, locator: testLocator, octokit });
 }
 
-vi.mock("./actors/createActor.js", () => ({
+vi.mock("./actors/createActor.ts", () => ({
 	get createActor() {
 		return mockCreateActor;
 	},
@@ -35,13 +35,13 @@ vi.mock("./actors/createActor.js", () => ({
 
 const mockRunRuleOnEntity = vi.fn();
 
-vi.mock("./execution/runRuleOnEntity.js", () => ({
+vi.mock("./execution/runRuleOnEntity.ts", () => ({
 	get runRuleOnEntity() {
 		return mockRunRuleOnEntity;
 	},
 }));
 
-vi.mock("./rules/configs.js", () => ({
+vi.mock("./rules/configs.ts", () => ({
 	configs: {
 		none: [],
 		recommended: [
@@ -70,7 +70,7 @@ vi.mock("./rules/configs.js", () => ({
 	},
 }));
 
-vi.mock("./rules/all.js", () => ({
+vi.mock("./rules/all.ts", () => ({
 	allRules: [
 		{
 			about: {

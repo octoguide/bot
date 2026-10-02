@@ -2,8 +2,8 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
-import { createActor } from "../actors/createActor.js";
-import { getExistingComment } from "./comments/getExistingComment.js";
+import { createActor } from "../actors/createActor.ts";
+import { getExistingComment } from "./comments/getExistingComment.ts";
 
 export interface RunCommentCleanupSettings {
 	auth: string;

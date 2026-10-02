@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { commentMeaningful } from "./commentMeaningful.js";
+import { testRule } from "../tests/testRule.ts";
+import { commentMeaningful } from "./commentMeaningful.ts";
 
 describe(commentMeaningful.about.name, () => {
 	it("does not report when the comment has no body text", async () => {

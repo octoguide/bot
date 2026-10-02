@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
 import {
 	findTemplateTitles,
 	ISSUE_TEMPLATE_PATHS,
 	TEMPLATE_LOCATIONS,
-} from "./findTemplateTitles.js";
+} from "./findTemplateTitles.ts";
 
 const graphqlMock = vi.fn();
 

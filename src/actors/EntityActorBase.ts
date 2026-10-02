@@ -1,8 +1,8 @@
 import * as core from "@actions/core";
 
-import type { CommentData, Entity, EntityData } from "../types/entities.js";
-import type { LocatedOctokit } from "../types/octokit.js";
-import type { EntityActor } from "./types.js";
+import type { CommentData, Entity, EntityData } from "../types/entities.ts";
+import type { LocatedOctokit } from "../types/octokit.ts";
+import type { EntityActor } from "./types.ts";
 
 interface MinimizeCommentResponse {
 	minimizeComment: {

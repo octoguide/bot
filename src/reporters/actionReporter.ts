@@ -2,9 +2,9 @@ import type * as core from "@actions/core";
 
 import { marked } from "marked";
 
-import type { RuleReport } from "../types/reports.js";
+import type { RuleReport } from "../types/reports.ts";
 
-import { groupBy } from "../action/groupBy.js";
+import { groupBy } from "../action/groupBy.ts";
 
 export async function actionReporter(
 	headline: string,

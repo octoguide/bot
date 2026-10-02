@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { testLocator } from "../tests/testLocator.js";
-import { createLocatedOctokit } from "./createLocatedOctokit.js";
+import { testLocator } from "../tests/testLocator.ts";
+import { createLocatedOctokit } from "./createLocatedOctokit.ts";
 
 async function createTestOctokit(baseUrl?: string) {
 	const fetch =

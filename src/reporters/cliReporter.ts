@@ -1,9 +1,9 @@
 import { styleText } from "node:util";
 
-import type { RuleReport } from "../types/reports.js";
+import type { RuleReport } from "../types/reports.ts";
 
-import { groupBy } from "../action/groupBy.js";
-import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
+import { groupBy } from "../action/groupBy.ts";
+import { formatReportAsMarkdown } from "./formatReportAsMarkdown.ts";
 
 /**
  * Formats a rule report as used by the standalone CLI.

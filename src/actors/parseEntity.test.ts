@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseCommentId, parseEntityUrl } from "./parseEntity.js";
+import { parseCommentId, parseEntityUrl } from "./parseEntity.ts";
 
 describe("parseEntityUrl", () => {
 	it("should parse issue URL", () => {

@@ -2,8 +2,8 @@ import type { Octokit } from "octokit";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { prLinkedIssue } from "./prLinkedIssue.js";
+import { testRule } from "../tests/testRule.ts";
+import { prLinkedIssue } from "./prLinkedIssue.ts";
 
 describe(prLinkedIssue.about.name, () => {
 	it("does not report when the pull request has a closing issue reference", async () => {
