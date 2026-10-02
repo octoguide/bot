@@ -15,6 +15,33 @@ const commitParser = new CommitParser({
 	breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
 });
 
+/**
+ * Common alternate names for known types, keyed by their lowercase form.
+ */
+const typeAliases = new Map([
+	["bug", "fix"],
+	["bugfix", "fix"],
+	["doc", "docs"],
+	["documentation", "docs"],
+	["feature", "feat"],
+	["hotfix", "fix"],
+	["performance", "perf"],
+	["refactoring", "refactor"],
+	["tests", "test"],
+]);
+
+/**
+ * Finds the known type an unknown type was likely meant to be, if any.
+ * @example "Feature" -> "feat"
+ */
+function findIntendedType(type: string) {
+	const lowercase = type.toLowerCase();
+
+	return Object.hasOwn(conventionalTypes.types, lowercase)
+		? lowercase
+		: typeAliases.get(lowercase);
+}
+
 export const prTitleConventional = defineRule({
 	about: {
 		config: "strict",
@@ -40,6 +67,24 @@ export const prTitleConventional = defineRule({
 		}
 
 		if (!Object.hasOwn(conventionalTypes.types, parsed.type)) {
+			const intendedType = findIntendedType(parsed.type);
+			if (intendedType && parsed.subject) {
+				const scope = parsed.scope ? `(${parsed.scope})` : "";
+				const breaking = parsed.notes.some(
+					(note) => note.title === "BREAKING CHANGE",
+				)
+					? "!"
+					: "";
+
+				context.report({
+					primary: `The PR title has an unknown type: '${parsed.type}'.`,
+					suggestion: [
+						`To resolve this report, replace the current type with its known equivalent, like _"${intendedType}${scope}${breaking}: ${parsed.subject}"_.`,
+					],
+				});
+				return;
+			}
+
 			context.report({
 				primary: `The PR title has an unknown type: '${parsed.type}'.`,
 				secondary: [

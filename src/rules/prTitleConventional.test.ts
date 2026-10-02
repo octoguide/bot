@@ -105,6 +105,41 @@ describe(prTitleConventional.about.name, () => {
 		});
 	});
 
+	it.each([
+		["Feature: Abc Def", "Feature", "feat: Abc Def"],
+		["Feat: add this new feature", "Feat", "feat: add this new feature"],
+		["FIX(parser): handle semicolons", "FIX", "fix(parser): handle semicolons"],
+		[
+			"bugfix(parser)!: change parser API",
+			"bugfix",
+			"fix(parser)!: change parser API",
+		],
+		["Documentation: mention option", "Documentation", "docs: mention option"],
+	])(
+		"reports with a corrected title when the pull request title %j has a near-miss type",
+		async (title, type, corrected) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title has an unknown type: '${type}'.`,
+				suggestion: [
+					`To resolve this report, replace the current type with its known equivalent, like _"${corrected}"_.`,
+				],
+			});
+		},
+	);
+
 	it("reports when the pull request title is missing a subject", async () => {
 		const report = vi.fn();
 		const title = "feat: ";
