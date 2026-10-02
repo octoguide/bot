@@ -27,5 +27,37 @@ export async function createLocatedOctokit(
 		}
 	});
 
+	const { paginate } = octokit;
+
+	/**
+	 * Pagination expands a route's URL before requesting it, so the request
+	 * hook never sees its placeholders. They have to be filled in beforehand.
+	 */
+	function locateParameters(route: unknown, parameters?: object) {
+		const url =
+			typeof route === "function"
+				? (route as typeof octokit.request).endpoint.DEFAULTS.url
+				: route;
+
+		return typeof url === "string" && url.includes("{owner}")
+			? { owner: locator.owner, repo: locator.repository, ...parameters }
+			: parameters;
+	}
+
+	octokit.paginate = Object.assign(
+		(route: never, parameters?: object, mapFn?: object) =>
+			typeof parameters === "function"
+				? paginate(route, locateParameters(route) as never, parameters as never)
+				: paginate(
+						route,
+						locateParameters(route, parameters) as never,
+						mapFn as never,
+					),
+		{
+			iterator: (route: never, parameters?: object) =>
+				paginate.iterator(route, locateParameters(route, parameters) as never),
+		},
+	) as typeof paginate;
+
 	return octokit as LocatedOctokit;
 }

@@ -1,5 +1,21 @@
 # Changelog
 
+# [0.25.0](https://github.com/octoguide/bot/compare/0.24.0...0.25.0) (2026-10-02)
+
+### Bug Fixes
+
+- paginate comment retrieval ([#642](https://github.com/octoguide/bot/issues/642)) ([2c4bb9e](https://github.com/octoguide/bot/commit/2c4bb9efed1097eaf8c7769a9bf896e570537ec0)), closes [#34](https://github.com/octoguide/bot/issues/34)
+
+### Features
+
+- add title-meaningful rule ([#640](https://github.com/octoguide/bot/issues/640)) ([2047428](https://github.com/octoguide/bot/commit/20474281c17d17a43f3bcb413375e926b224b96e)), closes [#24](https://github.com/octoguide/bot/issues/24)
+
+# [0.24.0](https://github.com/octoguide/bot/compare/0.23.4...0.24.0) (2026-10-02)
+
+### Features
+
+- allow shorthand locators in the CLI ([#644](https://github.com/octoguide/bot/issues/644)) ([5b7f54d](https://github.com/octoguide/bot/commit/5b7f54d1a2c8dd971da4761a5d75694e353fe333)), closes [#61](https://github.com/octoguide/bot/issues/61)
+
 ## [0.23.4](https://github.com/octoguide/bot/compare/0.23.3...0.23.4) (2026-09-22)
 
 ### Bug Fixes

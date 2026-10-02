@@ -64,6 +64,80 @@ describe(createLocatedOctokit, () => {
 		expect(requestedUrl()).toBe("https://api.github.com/user");
 	});
 
+	it("adds owner and repo when paginating a method declaring their placeholders", async () => {
+		const { octokit, requestedUrl } = await createTestOctokit();
+
+		await octokit.paginate(octokit.rest.issues.listComments, {
+			issue_number: 1,
+		});
+
+		expect(requestedUrl()).toBe(
+			"https://api.github.com/repos/test-owner/test-repo/issues/1/comments",
+		);
+	});
+
+	it("adds owner and repo when paginating a route declaring their placeholders", async () => {
+		const { octokit, requestedUrl } = await createTestOctokit();
+
+		await octokit.paginate(
+			"GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments",
+			{ discussion_number: 1 },
+		);
+
+		expect(requestedUrl()).toBe(
+			"https://api.github.com/repos/test-owner/test-repo/discussions/1/comments",
+		);
+	});
+
+	it("adds owner and repo when paginating with only a map function", async () => {
+		const { octokit, requestedUrl } = await createTestOctokit();
+		const mapFn = vi.fn(() => []);
+
+		await octokit.paginate("GET /repos/{owner}/{repo}/issues", mapFn);
+
+		expect(requestedUrl()).toBe(
+			"https://api.github.com/repos/test-owner/test-repo/issues",
+		);
+		expect(mapFn).toHaveBeenCalled();
+	});
+
+	it("keeps an explicit owner and repo when paginating", async () => {
+		const { octokit, requestedUrl } = await createTestOctokit();
+
+		await octokit.paginate(octokit.rest.issues.listComments, {
+			issue_number: 1,
+			owner: "other-owner",
+			repo: "other-repo",
+		});
+
+		expect(requestedUrl()).toBe(
+			"https://api.github.com/repos/other-owner/other-repo/issues/1/comments",
+		);
+	});
+
+	it("does not add owner and repo when paginating a route omitting their placeholders", async () => {
+		const { octokit, requestedUrl } = await createTestOctokit();
+
+		await octokit.paginate("GET /user/repos");
+
+		expect(requestedUrl()).toBe("https://api.github.com/user/repos");
+	});
+
+	it("adds owner and repo when iterating over a paginated route", async () => {
+		const { octokit, requestedUrl } = await createTestOctokit();
+
+		const iterator = octokit.paginate.iterator(
+			octokit.rest.issues.listComments,
+			{ issue_number: 1 },
+		);
+
+		await iterator[Symbol.asyncIterator]().next();
+
+		expect(requestedUrl()).toBe(
+			"https://api.github.com/repos/test-owner/test-repo/issues/1/comments",
+		);
+	});
+
 	it("adds owner and repo variables to a GraphQL query", async () => {
 		const { octokit, requestedBody } = await createTestOctokit();
 

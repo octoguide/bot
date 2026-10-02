@@ -27,14 +27,12 @@ export abstract class DiscussionActorBase<
 	Data extends CommentData | DiscussionData,
 > extends EntityActorBase<Data> {
 	async listComments() {
-		// TODO: Retrieve all comments, not just the first page
-		// https://github.com/OctoGuide/bot/issues/34
-		const response = await this.octokit.request(
+		const comments = await this.octokit.paginate(
 			"GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments",
-			{ discussion_number: this.entityNumber },
+			{ discussion_number: this.entityNumber, per_page: 100 },
 		);
 
-		return response.data as DiscussionCommentData[];
+		return comments as DiscussionCommentData[];
 	}
 
 	async updateComment(number: number, newBody: string) {

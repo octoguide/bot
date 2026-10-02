@@ -1,6 +1,7 @@
 import { parseArgs } from "node:util";
 
 import { cliReporter } from "./reporters/cliReporter.js";
+import { resolveEntityUrl } from "./resolveEntityUrl.js";
 import { isKnownConfig } from "./rules/configs.js";
 import { runOctoGuideRules } from "./runOctoGuideRules.js";
 
@@ -27,7 +28,7 @@ export async function cli(...args: string[]) {
 	}
 
 	const { reports } = await runOctoGuideRules({
-		entity,
+		entity: await resolveEntityUrl(entity),
 		settings: { config },
 	});
 

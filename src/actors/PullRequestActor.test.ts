@@ -26,8 +26,11 @@ const mockRestPulls = {
 	get: vi.fn(),
 };
 
+const mockPaginate = vi.fn();
+
 const mockOctokit = {
 	graphql: mockGraphql,
+	paginate: mockPaginate,
 	rest: {
 		issues: mockRestIssues,
 		pulls: mockRestPulls,
@@ -118,13 +121,11 @@ describe("PullRequestActor", () => {
 				},
 			];
 
-			mockRestIssues.listComments.mockResolvedValueOnce({
-				data: mockComments,
-			});
+			mockPaginate.mockResolvedValueOnce(mockComments);
 
 			const result = await actor.listComments();
 
-			expect(mockRestIssues.listComments).toHaveBeenCalledWith({
+			expect(mockPaginate).toHaveBeenCalledWith(mockRestIssues.listComments, {
 				issue_number: pullNumber,
 				per_page: 100,
 			});

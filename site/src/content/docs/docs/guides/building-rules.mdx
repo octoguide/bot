@@ -20,6 +20,7 @@ Each rule is defined as an object containing:
 Rules are generally titled in the format of `<entity>-<area>(-<concern>)`:
 
 - `<entity>`: one of `comment`, `discussion`, `issue`, `pr`, or the catch-all `text`
+  - It's omitted if every entity with that `<area>` is checked, as in `title-meaningful`
 - `<area>`: the part of the entity, such as an issue's `required-fields` or a PR's `linked-issue`
 - `<concern>`: if the rule checks a part of the area, such as an issue's required fields `content`
 

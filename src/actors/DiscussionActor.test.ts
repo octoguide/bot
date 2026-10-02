@@ -1,10 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import type { LocatedOctokit } from "../types/octokit.js";
 
 import { DiscussionActor } from "./DiscussionActor.js";
 
-const mockOctokit = {} as unknown as LocatedOctokit;
+const mockPaginate = vi.fn();
+
+const mockOctokit = {
+	paginate: mockPaginate,
+} as unknown as LocatedOctokit;
 
 describe("DiscussionActor", () => {
 	describe("closeEntity", () => {
@@ -14,6 +18,24 @@ describe("DiscussionActor", () => {
 			await expect(actor.closeEntity()).rejects.toThrow(
 				"closeEntity is not yet implemented for this actor type.",
 			);
+		});
+	});
+
+	describe("listComments", () => {
+		it("paginates through all comments for the discussion", async () => {
+			const comments = [{ id: 111 }, { id: 222 }];
+
+			mockPaginate.mockResolvedValueOnce(comments);
+
+			const actor = new DiscussionActor(1, mockOctokit);
+
+			const result = await actor.listComments();
+
+			expect(mockPaginate).toHaveBeenCalledWith(
+				"GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments",
+				{ discussion_number: 1, per_page: 100 },
+			);
+			expect(result).toBe(comments);
 		});
 	});
 });

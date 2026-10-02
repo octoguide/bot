@@ -24,12 +24,15 @@ type WithOptionalLocator<MethodParameters> = Partial<LocatorParameters> & {
 
 /**
  * Additional call signature for a method that takes `owner` and `repo`.
+ * @remarks Keeps the method's properties, such as `endpoint`, so it can still
+ * be passed to `octokit.paginate`.
  */
 type WithOptionalLocatorMethod<Method extends (...args: never[]) => unknown> =
 	NonNullable<Parameters<Method>[0]> extends LocatorParameters
-		? (
-				parameters?: WithOptionalLocator<NonNullable<Parameters<Method>[0]>>,
-			) => ReturnType<Method>
+		? Pick<Method, keyof Method> &
+				((
+					parameters?: WithOptionalLocator<NonNullable<Parameters<Method>[0]>>,
+				) => ReturnType<Method>)
 		: Method;
 
 /**

@@ -31,14 +31,10 @@ export abstract class IssueLikeActorBase<
 	abstract getData(): Promise<Data>;
 
 	async listComments() {
-		// TODO: Retrieve all pages, not just the first one
-		// https://github.com/OctoGuide/bot/issues/34
-		const comments = await this.octokit.rest.issues.listComments({
+		return await this.octokit.paginate(this.octokit.rest.issues.listComments, {
 			issue_number: this.entityNumber,
 			per_page: 100,
 		});
-
-		return comments.data;
 	}
 
 	async updateComment(number: number, newBody: string) {
