@@ -162,6 +162,19 @@ export const getStartedIncludeFirstTimers = `jobs:
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR"`;
 
+export const getRuleStandalone = (ruleName: string) => `jobs:
+  octoguide:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: OctoGuide/bot${atVersion}
+        with:
++          config: none
+          github-token: \${{ secrets.GITHUB_TOKEN }}
++          rules: |
++            {
++              "${ruleName}": true
++            }`;
+
 export const getRuleDefaultOptions = (
 	ruleName: string,
 	defaultOptions: object,

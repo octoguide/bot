@@ -1,0 +1,50 @@
+---
+import { Code } from "@astrojs/starlight/components";
+
+import { allRules } from "../../../src/rules/all.js";
+import { getRuleStandalone, getStartedStrict } from "../data/yml.js";
+
+interface Props {
+	rule: string;
+}
+
+const { rule: ruleName } = Astro.props;
+const rule = allRules.find((r) => r.about.name === ruleName);
+
+if (!rule) {
+	throw new Error(`Rule ${ruleName} not found`);
+}
+---
+
+{rule.about.config === "recommended" ? (
+	<p>
+		This rule is enabled by default as part of the{" "}
+		<a href="/configs">recommended config</a>. No configuration is needed to use
+		it.
+	</p>
+) : (
+	<>
+		<p>
+			This rule is enabled in the <a href="/configs">strict config</a>:
+		</p>
+		<Code
+			code={getStartedStrict}
+			meta="lang=yml"
+			lang="diff"
+			title=".github/workflows/octoguide.yml"
+		/>
+	</>
+)}
+<p>
+	To use this rule on its own, enable it in{" "}
+	<a href="/get-started#rules">
+		<code>rules</code>
+	</a>{" "}
+	with the <code>none</code> config:
+</p>
+<Code
+	code={getRuleStandalone(ruleName)}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
