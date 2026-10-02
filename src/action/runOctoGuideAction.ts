@@ -5,10 +5,12 @@ import * as core from "@actions/core";
 import { runOctoGuideRules } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
 import { collectAuth } from "./collection/collectAuth.js";
+import { collectEditor } from "./collection/collectEditor.js";
 import { collectEntityInput } from "./collection/collectEntityInput.js";
 import { collectSettings } from "./collection/collectSettings.js";
 import { collectTarget } from "./collection/collectTarget.js";
 import { outputActionReports } from "./comments/outputActionReports.js";
+import { isEditorIncluded } from "./isEditorIncluded.js";
 import { runCommentCleanup } from "./runCommentCleanup.js";
 
 export async function runOctoGuideAction(context: typeof github.context) {
@@ -27,6 +29,17 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	const entityInput = collectEntityInput(payload, target, url);
 	const settings = collectSettings();
+	const editor = collectEditor(payload, entityInput);
+
+	if (
+		editor &&
+		!isEditorIncluded(editor, context.repo.owner, settings.options)
+	) {
+		core.info(
+			`Skipping edit by ${editor.login}, who is not included by settings.`,
+		);
+		return;
+	}
 
 	const { actor, entity, reports } = await runOctoGuideRules({
 		auth,
@@ -41,5 +54,5 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		core.info("Found 0 reports. Great! ✅");
 	}
 
-	await outputActionReports(actor, entity, reports, settings);
+	await outputActionReports(actor, entity, reports, settings, editor?.login);
 }

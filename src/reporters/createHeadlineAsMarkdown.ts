@@ -1,6 +1,10 @@
 import type { Entity } from "../types/entities.js";
 
-export function createHeadlineAsMarkdown(entity: Entity, reports: unknown[]) {
+export function createHeadlineAsMarkdown(
+	entity: Entity,
+	reports: unknown[],
+	mention = entity.data.user?.login,
+) {
 	const entityAlias = entity.type.replace("_", " ");
 	const entityText =
 		entity.type === "comment"
@@ -9,7 +13,7 @@ export function createHeadlineAsMarkdown(entity: Entity, reports: unknown[]) {
 
 	return [
 		"👋 Hi",
-		entity.data.user ? ` @${entity.data.user.login}` : "",
+		mention ? ` @${mention}` : "",
 		", thanks for the ",
 		entityText,
 		"! A scan flagged ",

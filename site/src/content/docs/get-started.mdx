@@ -148,6 +148,12 @@ OctoGuide allows filtering on [GitHub's author associations](https://docs.github
 The `NONE` association is always included automatically, even if you don't specify it,
 ensuring that users with no association still have rules enforced.
 
+#### Edits by other users
+
+When someone edits another user's entity or comment, OctoGuide treats that edit as coming from the editor.
+Editing someone else's content requires write access, so the editor is considered to be an `OWNER` if they own the repository, or a `COLLABORATOR` or `MEMBER` otherwise.
+OctoGuide skips running on the edit unless `include-associations` includes the editor, and mentions the editor rather than the original author in any reports.
+
 #### Including collaborators and owners
 
 If you want OctoGuide to run rules on everyone, including collaborators and owners,

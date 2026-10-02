@@ -72,4 +72,12 @@ describe(createHeadlineAsMarkdown, () => {
 			`"👋 Hi, thanks for the discussion! A scan flagged some concerns with it. Could you please take a look?"`,
 		);
 	});
+
+	test("named comment with a different mention", () => {
+		const actual = createHeadlineAsMarkdown(commentEntity, [{}], "editor");
+
+		expect(actual).toMatchInlineSnapshot(
+			`"👋 Hi @editor, thanks for the [comment](github.com/owner/repo/discussions/123#discussioncomment-456 "comment 123 reported by OctoGuide")! A scan flagged a concern with it. Could you please take a look?"`,
+		);
+	});
 });

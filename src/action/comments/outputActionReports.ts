@@ -16,8 +16,9 @@ export async function outputActionReports(
 	entity: Entity,
 	reports: RuleReport[],
 	settings: Settings,
+	mention?: string,
 ) {
-	const headline = createHeadlineAsMarkdown(entity, reports);
+	const headline = createHeadlineAsMarkdown(entity, reports, mention);
 	const reported = markdownReporter(headline, reports);
 
 	let commentStepSucceeded = false;

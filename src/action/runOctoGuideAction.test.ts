@@ -302,6 +302,7 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 			}),
+			undefined,
 		);
 	});
 
@@ -324,6 +325,7 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 			}),
+			undefined,
 		);
 	});
 
@@ -368,6 +370,56 @@ describe("runOctoGuideAction", () => {
 			payload,
 			url: "https://github.com/test/repo/issues/1",
 		});
+	});
+
+	it("should skip running rules when the entity is edited by someone settings exclude", async () => {
+		createMockActionInputs({
+			"include-associations": "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR",
+		});
+		const payload = createMockPayload({
+			action: "edited",
+			issue: {
+				html_url: TEST_GITHUB_URL,
+				number: 1,
+				user: { login: "author" },
+			},
+			sender: { login: "collaborator", type: "User" },
+		});
+
+		await runOctoGuideAction(createMockContext(payload));
+
+		expect(mockCore.info).toHaveBeenCalledWith(
+			"Skipping edit by collaborator, who is not included by settings.",
+		);
+		expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
+		expect(mockOutputActionReports).not.toHaveBeenCalled();
+	});
+
+	it("should mention the editor when the entity is edited by someone settings include", async () => {
+		createMockActionInputs({
+			"include-associations":
+				"FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR,COLLABORATOR,MEMBER,OWNER",
+		});
+		const { reports } = mockRuleExecutionWithReports(1);
+		const payload = createMockPayload({
+			action: "edited",
+			issue: {
+				html_url: TEST_GITHUB_URL,
+				number: 1,
+				user: { login: "author" },
+			},
+			sender: { login: "collaborator", type: "User" },
+		});
+
+		await runOctoGuideAction(createMockContext(payload));
+
+		expect(mockOutputActionReports).toHaveBeenCalledWith(
+			expect.anything(),
+			expect.anything(),
+			reports,
+			expect.anything(),
+			"collaborator",
+		);
 	});
 
 	it("should throw error when unknown config is provided", async () => {
@@ -483,6 +535,7 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 			}),
+			undefined,
 		);
 	});
 
@@ -504,6 +557,7 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 			}),
+			undefined,
 		);
 	});
 
@@ -528,6 +582,7 @@ describe("runOctoGuideAction", () => {
 				config: "recommended",
 				rules: {},
 			}),
+			undefined,
 		);
 	});
 
@@ -560,6 +615,7 @@ describe("runOctoGuideAction", () => {
 					"pr-title-conventional": false,
 				},
 			}),
+			undefined,
 		);
 	});
 
