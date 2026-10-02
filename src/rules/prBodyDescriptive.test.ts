@@ -146,6 +146,39 @@ describe(prBodyDescriptive.about.name, () => {
 		},
 	);
 
+	it("reports when the pull request body is only an issue reference", async () => {
+		const report = vi.fn();
+		const templateContent = "## Overview\n\nfixes #000";
+
+		await testRule(
+			prBodyDescriptive,
+			{
+				data: {
+					body: "#123",
+				},
+				type: "pull_request",
+			},
+			{
+				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: templateContent },
+						},
+					}) as unknown as Octokit["graphql"],
+				},
+				report,
+			},
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary:
+				"This PR's description doesn't contain any content beyond the template.",
+			suggestion: [
+				"Please add a description explaining the purpose and changes in this PR.",
+			],
+		});
+	});
+
 	it("does not report when the pull request has content beyond the template and an issue reference", async () => {
 		const report = vi.fn();
 		const templateContent = "## Overview\n\nfixes #000";
