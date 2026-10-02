@@ -26,7 +26,8 @@ const configs = getRuleConfigs(rule.about.config);
 ---
 
 <blockquote>
-	Included in {configs.length === 1 ? "config:" : "configs:"}
+	Included in{" "}
+	<a href="/configs">{configs.length === 1 ? "config" : "configs"}</a>:{" "}
 	{configs.map((config, i) => (
 		<>
 			{configEmojis[config]}&nbsp;{config}
