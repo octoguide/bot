@@ -29,6 +29,9 @@ fixes https://github.com/owner/repo/security/dependabot/123
 
 This recognizes that security vulnerability fixes often don't need the same discussion process as other changes.
 
+If GitHub reports that the linked alert doesn't exist, this rule will still report.
+Alerts that OctoGuide's token doesn't have permission to read are assumed to exist.
+
 ## Why Require Issues?
 
 Requiring all contributor pull requests address an open issue adds process to a repository.

@@ -1,3 +1,6 @@
+import type { LocatedOctokit } from "../types/octokit.js";
+
+import { isRequestError } from "../action/comments/isRequestError.js";
 import { defineRule } from "./defineRule.js";
 
 interface ClosingIssuesResponse {
@@ -10,6 +13,30 @@ interface ClosingIssuesResponse {
 			};
 		};
 	};
+}
+
+/**
+ * Checks whether a linked Dependabot alert might exist.
+ * @remarks Tokens without access to the alert's repository, and repositories
+ * with alerts disabled, receive a 403 from GitHub. Only a 404 definitively
+ * means the alert doesn't exist.
+ */
+async function dependabotAlertMightExist(
+	octokit: LocatedOctokit,
+	owner: string,
+	repo: string,
+	alertNumber: number,
+) {
+	try {
+		await octokit.rest.dependabot.getAlert({
+			alert_number: alertNumber,
+			owner,
+			repo,
+		});
+		return true;
+	} catch (error) {
+		return !isRequestError(error) || error.status !== 404;
+	}
 }
 
 export const prLinkedIssue = defineRule({
@@ -45,14 +72,29 @@ export const prLinkedIssue = defineRule({
 		}
 
 		const body = entity.data.body?.trim() ?? "";
-		const dependabotAlertPattern =
-			/https:\/\/github\.com\/[^/]+\/[^/]+\/security\/dependabot\/\d+/;
-		if (dependabotAlertPattern.test(body)) {
+		const dependabotAlert =
+			/https:\/\/github\.com\/([^/]+)\/([^/]+)\/security\/dependabot\/(\d+)/.exec(
+				body,
+			);
+		if (
+			dependabotAlert &&
+			(await dependabotAlertMightExist(
+				context.octokit,
+				dependabotAlert[1],
+				dependabotAlert[2],
+				Number(dependabotAlert[3]),
+			))
+		) {
 			return;
 		}
 
 		context.report({
 			primary: "This pull request is not linked as closing any issues.",
+			...(dependabotAlert && {
+				secondary: [
+					`The linked Dependabot alert, ${dependabotAlert[0]}, could not be found.`,
+				],
+			}),
 			suggestion: [
 				"To resolve this report:",
 				"* If this is a straightforward documentation change that doesn't need an issue, you can ignore this report",
