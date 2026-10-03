@@ -1,3 +1,5 @@
+import type { ConfigName } from "../../../src/types/core.js";
+
 import { version } from "./package.js";
 
 const atVersion = `@${version}`;
@@ -31,6 +33,11 @@ permissions:
   issues: write
   pull-requests: write`;
 
+export const getStartedLabeled = `on:
+  pull_request_target:
+-    types: [edited, opened]
++    types: [edited, labeled, opened]`;
+
 export const getStartedStrict = `
 jobs:
   octoguide:
@@ -50,7 +57,10 @@ jobs:
         with:
 +          config: none
           github-token: \${{ secrets.GITHUB_TOKEN }}
-          pr-linked-issue: "true"`;
++          rules: |
++            {
++              "pr-linked-issue": true
++            }`;
 
 export const getStartedHeader = `jobs:
   octoguide:
@@ -65,7 +75,7 @@ export const getStartedFooter = `jobs:
   octoguide:
     runs-on: ubuntu-latest
     steps:
-      - uses: OctoGuide/bot@v0
+      - uses: OctoGuide/bot${atVersion}
         with:
 +          comment-footer: "🗺️ This message was posted automatically by [OctoGuide](https://octo.guide): a bot for GitHub repository best practices."
           github-token: \${{ secrets.GITHUB_TOKEN }}`;
@@ -82,18 +92,22 @@ export const getStartedRuleDisable = `jobs:
 +              "comment-meaningful": false
 +            }`;
 
-export const getStartedRuleEnable = `jobs:
+export const getRuleEnabled = (ruleName: string, config?: ConfigName) => `jobs:
   octoguide:
     runs-on: ubuntu-latest
     steps:
       - uses: OctoGuide/bot${atVersion}
-        with:
-+          config: recommended
+        with:${config ? `\n+          config: ${config}` : ""}
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          rules: |
 +            {
-+              "pr-title-conventional": true
++              "${ruleName}": true
 +            }`;
+
+export const getStartedRuleEnable = getRuleEnabled(
+	"pr-title-conventional",
+	"recommended",
+);
 
 export const getStartedRuleNone = `jobs:
   octoguide:
@@ -107,7 +121,7 @@ export const getStartedRuleNone = `jobs:
 +            {
 +              "comment-meaningful": true,
 +              "pr-linked-issue": true,
-+              "text-image-alt-text": true,
++              "text-image-alt-text": true
 +            }`;
 
 export const getStartedRuleOptions = `jobs:
