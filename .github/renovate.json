@@ -20,6 +20,12 @@
 			"matchDatasources": ["npm"],
 			"matchUpdateTypes": ["replacement"],
 			"minimumReleaseAge": null
+		},
+		{
+			"automerge": false,
+			"description": "Codecov action majors have changed defaults, so require manual review",
+			"matchPackageNames": ["codecov/codecov-action"],
+			"matchUpdateTypes": ["major"]
 		}
 	]
 }
