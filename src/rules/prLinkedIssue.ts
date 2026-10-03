@@ -1,4 +1,4 @@
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { RuleContext } from "../types/rules.js";
 
 import { isRequestError } from "../action/comments/isRequestError.js";
 import { defineRule } from "./defineRule.js";
@@ -15,28 +15,62 @@ interface ClosingIssuesResponse {
 	};
 }
 
+interface DependabotAlertLink {
+	alertNumber: number;
+	owner: string;
+	repo: string;
+	url: string;
+}
+
 /**
  * Checks whether a linked Dependabot alert might exist.
- * @remarks Tokens without access to the alert's repository, and repositories
- * with alerts disabled, receive a 403 from GitHub. Only a 404 definitively
- * means the alert doesn't exist.
+ * @remarks GitHub responds with a 403 when the token can't read alerts or the
+ * repository has alerts disabled, and a 404 "Not Found" when the token can't
+ * see the repository at all. Only a 404 saying no alert was found, or a 404
+ * for this repository, definitively means the alert doesn't exist.
  */
 async function dependabotAlertMightExist(
-	octokit: LocatedOctokit,
-	owner: string,
-	repo: string,
-	alertNumber: number,
+	context: RuleContext,
+	{ alertNumber, owner, repo }: DependabotAlertLink,
 ) {
 	try {
-		await octokit.rest.dependabot.getAlert({
+		await context.octokit.rest.dependabot.getAlert({
 			alert_number: alertNumber,
 			owner,
 			repo,
 		});
 		return true;
 	} catch (error) {
-		return !isRequestError(error) || error.status !== 404;
+		if (!isRequestError(error) || error.status !== 404) {
+			return true;
+		}
+
+		return (
+			!/no alert found/i.test(error.message) &&
+			`${owner}/${repo}`.toLowerCase() !==
+				`${context.locator.owner}/${context.locator.repository}`.toLowerCase()
+		);
 	}
+}
+
+/**
+ * Finds unique links to Dependabot alerts in a body.
+ */
+function findDependabotAlertLinks(body: string) {
+	const links = new Map<string, DependabotAlertLink>();
+
+	for (const [url, owner, repo, alertNumber] of body.matchAll(
+		/https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)\/security\/dependabot\/(\d+)/g,
+	)) {
+		links.set(url.toLowerCase(), {
+			alertNumber: Number(alertNumber),
+			owner,
+			repo,
+			url,
+		});
+	}
+
+	return Array.from(links.values());
 }
 
 export const prLinkedIssue = defineRule({
@@ -72,28 +106,21 @@ export const prLinkedIssue = defineRule({
 		}
 
 		const body = entity.data.body?.trim() ?? "";
-		const dependabotAlert =
-			/https:\/\/github\.com\/([^/]+)\/([^/]+)\/security\/dependabot\/(\d+)/.exec(
-				body,
-			);
-		if (
-			dependabotAlert &&
-			(await dependabotAlertMightExist(
-				context.octokit,
-				dependabotAlert[1],
-				dependabotAlert[2],
-				Number(dependabotAlert[3]),
-			))
-		) {
-			return;
+		const dependabotAlertLinks = findDependabotAlertLinks(body);
+
+		for (const link of dependabotAlertLinks) {
+			if (await dependabotAlertMightExist(context, link)) {
+				return;
+			}
 		}
 
 		context.report({
 			primary: "This pull request is not linked as closing any issues.",
-			...(dependabotAlert && {
-				secondary: [
-					`The linked Dependabot alert, ${dependabotAlert[0]}, could not be found.`,
-				],
+			...(dependabotAlertLinks.length > 0 && {
+				secondary: dependabotAlertLinks.map(
+					(link) =>
+						`The linked Dependabot alert, ${link.url}, could not be found.`,
+				),
 			}),
 			suggestion: [
 				"To resolve this report:",
