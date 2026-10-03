@@ -11,7 +11,7 @@ import { isRuleSkippedForUser } from "./isRuleSkippedForUser.js";
  * editor's association is either `OWNER` or else `COLLABORATOR` or `MEMBER`.
  * GitHub doesn't provide editors' associations, so the latter two are
  * treated as equivalent.
- * Bot editors are only checked by their account type.
+ * Bot editors aren't checked against `include-associations`.
  */
 export function isRuleSkippedForEditor(
 	editor: EntityEditor,

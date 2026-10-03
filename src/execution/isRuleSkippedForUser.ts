@@ -1,7 +1,7 @@
 import type { RuleOptions } from "../types/rules.js";
 
 /**
- * Checks whether a rule's options exclude a user based on their account type.
+ * Checks whether a rule's options exclude a user for being a bot.
  * @remarks This applies to both entities' authors and other users who edit
  * them, so that bots are excluded the same way for each.
  */
