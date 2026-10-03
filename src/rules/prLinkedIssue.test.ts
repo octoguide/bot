@@ -173,6 +173,12 @@ describe(prLinkedIssue.about.name, () => {
 			"- [x] Addresses an existing open issue: fixes #1",
 			"See:\n\n> fixes #1.",
 			"Fixes [#1](https://github.com/test-owner/test-repo/issues/1)",
+			"Fixes [the crash](https://github.com/test-owner/test-repo/issues/1)",
+			"Fixes [1](https://github.com/test-owner/test-repo/issues/1)",
+			"Fixes https://github.com/test-owner/test-repo/pull/1",
+			"Fixes : #1",
+			"Closes GH-1",
+			"fixes test-owner#1",
 		])(
 			"does not report when the body has a closing keyword on an existing issue: %s",
 			async (body) => {
@@ -188,6 +194,8 @@ describe(prLinkedIssue.about.name, () => {
 		it.each([
 			"Closes owner/repo#1",
 			"resolved: https://github.com/owner/repo/issues/1",
+			"Closes owner#1",
+			"fixes [#1](https://github.com/owner/repo/issues/1)",
 		])(
 			"does not report or look up a closing keyword on an issue in another repository: %s",
 			async (body) => {
@@ -311,6 +319,7 @@ describe(prLinkedIssue.about.name, () => {
 			"fixes **#1**",
 			"fixes _#1_",
 			"fixes ~~#1~~",
+			"closes [owner/repo#1](https://redirect.github.com/owner/repo/issues/1)",
 		])(
 			"reports when the body only has text GitHub wouldn't treat as a closing keyword: %s",
 			async (body) => {

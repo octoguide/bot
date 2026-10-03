@@ -28,7 +28,10 @@ interface ClosingReference {
 }
 
 const closingReferencePattern =
-	/(?<![\w-])(?:close[ds]?|fix(?:e[ds])?|resolve[ds]?):?[ \t]+(?:([\w.-]+\/[\w.-]+)?#|https:\/\/github\.com\/([\w.-]+\/[\w.-]+)\/issues\/)(\d+)\b/gi;
+	/(?<![\w-])(?:close[ds]?|fix(?:e[ds])?|resolve[ds]?)(?:[ \t]*:)?[ \t]+(?:(?:([\w.-]+\/[\w.-]+)|([\w.-]+))?#|gh-|https?:\/\/(?:www\.)?github\.com\/([\w.-]+\/[\w.-]+)\/(?:issues|pull)\/)(\d+)\b/gi;
+
+const issueUrlPattern =
+	/^https?:\/\/(?:www\.)?github\.com\/[\w.-]+\/[\w.-]+\/(?:issues|pull)\/\d+\b/i;
 
 const markdown = new MarkdownIt({ html: true });
 
@@ -44,9 +47,11 @@ function findClosingReferences(locator: RepositoryLocator, body: string) {
 	const text = getReferenceableText(body);
 
 	for (const match of text.matchAll(closingReferencePattern)) {
-		const [, shorthandRepository, urlRepository, issueNumber] = match;
+		const [, shorthandRepository, shorthandOwner, urlRepository, issueNumber] =
+			match;
 		const repository = (
 			shorthandRepository ||
+			(shorthandOwner && `${shorthandOwner}/${locator.repository}`) ||
 			urlRepository ||
 			ownRepository
 		).toLowerCase();
@@ -64,18 +69,42 @@ function findClosingReferences(locator: RepositoryLocator, body: string) {
 }
 
 /**
- * Gets the text of an inline Markdown token that may contain references.
- * @remarks The start of a link is skipped, so a reference inside a link still
- * follows its keyword. Other formatting and inline content such as code are
- * replaced with a line break, since GitHub doesn't treat a keyword as closing
- * when formatting such as emphasis separates it from a reference.
+ * Gets the text of inline Markdown tokens that may contain references.
+ * @remarks Like GitHub, a link counts as a reference by its URL rather than its
+ * text, if that URL is to an issue or pull request. Other formatting and inline
+ * content such as code are replaced with a line break, since GitHub doesn't
+ * treat a keyword as closing when formatting such as emphasis separates it
+ * from a reference.
  */
-function getInlineText(token: Token) {
-	if (token.type === "text") {
-		return token.content;
+function getInlineText(tokens: Token[]) {
+	let inLink = false;
+	let text = "";
+
+	for (const token of tokens) {
+		if (inLink) {
+			inLink = token.type !== "link_close";
+			continue;
+		}
+
+		switch (token.type) {
+			case "link_open": {
+				const [url = ""] =
+					issueUrlPattern.exec(String(token.attrGet("href"))) ?? [];
+				inLink = true;
+				text += `${url}\n`;
+				break;
+			}
+
+			case "text":
+				text += token.content;
+				break;
+
+			default:
+				text += "\n";
+		}
 	}
 
-	return token.type === "link_open" ? "" : "\n";
+	return text;
 }
 
 /**
@@ -91,7 +120,7 @@ function getReferenceableText(body: string) {
 				case "html_block":
 					return token.content.replaceAll(/<!--[\s\S]*?(?:-->|$)/g, "\n");
 				case "inline":
-					return token.children?.map(getInlineText).join("") ?? "";
+					return getInlineText(token.children ?? []);
 				default:
 					return "";
 			}
