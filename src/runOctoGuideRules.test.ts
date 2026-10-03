@@ -166,7 +166,7 @@ describe("runOctoGuideRules", () => {
 	it("should use the authentication token when provided", async () => {
 		const mockOctokit = createMockOctokit();
 
-		mockCreatedActor({ getData: vi.fn() }, mockOctokit);
+		mockCreatedActor({ getData: vi.fn().mockResolvedValue({}) }, mockOctokit);
 
 		await runOctoGuideRules({
 			auth: "test-token",
@@ -504,12 +504,15 @@ describe("runOctoGuideRules", () => {
 	});
 
 	describe("editor", () => {
-		const createEntity = (authorAssociation: string) =>
+		const createEntity = (
+			authorAssociation: string,
+			user = { login: "author", type: "User" },
+		) =>
 			({
 				data: {
 					author_association: authorAssociation,
 					html_url: "https://github.com/test-owner/test-repo/issues/1",
-					user: { login: "author", type: "User" },
+					user,
 				},
 				number: 1,
 				type: "issue",
@@ -612,6 +615,56 @@ describe("runOctoGuideRules", () => {
 				"pr-body-descriptive",
 				"pr-automation-detected",
 			]);
+			expect(getNames(result.excludedReports)).toEqual(["comment-meaningful"]);
+		});
+
+		it("skips rules that exclude the entity's bot author, even when they include the editor", async () => {
+			const result = await runOctoGuideRules({
+				editor: { login: "collaborator", type: "User" },
+				entity: createEntity("CONTRIBUTOR", {
+					login: "renovate[bot]",
+					type: "Bot",
+				}),
+				settings: {
+					config: "none",
+					options: { "include-bots": false },
+					rules: {
+						"comment-meaningful": true,
+						"text-image-alt-text": true,
+					},
+				},
+			});
+
+			expect(mockRunRuleOnEntity).not.toHaveBeenCalled();
+			expect(result.reports).toEqual([]);
+			expect(result.excludedReports).toEqual([]);
+		});
+
+		it("checks the editor for rules that include the entity's bot author", async () => {
+			const result = await runOctoGuideRules({
+				editor: { login: "collaborator", type: "User" },
+				entity: createEntity("CONTRIBUTOR", {
+					login: "renovate[bot]",
+					type: "Bot",
+				}),
+				settings: {
+					config: "none",
+					options: {
+						"include-associations": ["CONTRIBUTOR"],
+						"include-bots": false,
+					},
+					rules: {
+						"comment-meaningful": { "include-bots": true },
+						"pr-body-descriptive": {
+							"include-associations": ["COLLABORATOR"],
+							"include-bots": true,
+						},
+						"text-image-alt-text": true,
+					},
+				},
+			});
+
+			expect(getNames(result.reports)).toEqual(["pr-body-descriptive"]);
 			expect(getNames(result.excludedReports)).toEqual(["comment-meaningful"]);
 		});
 	});

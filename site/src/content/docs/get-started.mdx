@@ -157,6 +157,7 @@ Each rule checks the editor against its own `include-associations` and `include-
 
 - Editing someone else's content requires write access, so a user editor is considered to be an `OWNER` if they own the repository, or a `COLLABORATOR` or `MEMBER` otherwise.
 - A bot editor is only included by rules whose `include-bots` is enabled.
+- Content created by a bot stays skipped by rules whose `include-bots` is disabled, even when a user edits it.
 
 OctoGuide's comment for the edit lists only reports from rules that include the editor, and mentions the editor rather than the original author.
 If the only reports come from rules that exclude the editor but include the original author, OctoGuide leaves any existing comment as-is rather than updating or resolving it.

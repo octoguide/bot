@@ -57,4 +57,12 @@ describe("isRuleSkippedForEntity", () => {
 
 		expect(actual).toBe(false);
 	});
+
+	it("returns false when the entity has no user", () => {
+		const actual = isRuleSkippedForEntity(createIssueEntity({ user: null }), {
+			"include-bots": false,
+		});
+
+		expect(actual).toBe(false);
+	});
 });

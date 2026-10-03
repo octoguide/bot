@@ -87,6 +87,7 @@ function createFakeRule(
 		},
 		comment: listener,
 		issue: listener,
+		pullRequest: listener,
 	};
 }
 
@@ -298,6 +299,35 @@ describe("runOctoGuideAction on edits by other users", () => {
 		expect(body).not.toContain("alt-text");
 		expect(body).not.toContain("linked-issue");
 	});
+
+	it.each([bot, collaborator, owner])(
+		"does not report on an excluded bot's pull request when $login edits it",
+		async (sender) => {
+			const actor = setUp();
+			const payload: typeof github.context.payload = {
+				action: "edited",
+				changes: { body: { from: "- [ ] Rebase this PR." } },
+				pull_request: {
+					author_association: "CONTRIBUTOR",
+					body: "Updates a dependency. ![](badge.svg)\n\n- [x] Rebase this PR.",
+					html_url: "https://github.com/owner/repo/pull/2",
+					number: 2,
+					user: bot,
+				},
+				sender,
+			};
+
+			await runOctoGuideAction({
+				eventName: "pull_request",
+				payload,
+				repo: { owner: "owner", repo: "repo" },
+			} satisfies Partial<typeof github.context> as typeof github.context);
+
+			expect(actor.createComment).not.toHaveBeenCalled();
+			expect(actor.updateComment).not.toHaveBeenCalled();
+			expect(mockCore.setFailed).not.toHaveBeenCalled();
+		},
+	);
 
 	it("mentions the editor of another user's comment", async () => {
 		const actor = setUp();
