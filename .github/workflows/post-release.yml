@@ -6,6 +6,15 @@ jobs:
         with:
           fetch-depth: 0
       - run: echo "npm_version=$(npm pkg get version | tr -d '"')" >> "$GITHUB_ENV"
+      - run: |
+          for delay in 0 10 20 40 80 160; do
+            sleep "$delay"
+            if [ "$(npm view "octoguide@$npm_version" version --prefer-online)" = "$npm_version" ]; then
+              exit 0
+            fi
+          done
+          echo "::error::octoguide@$npm_version was not found on npm, so not commenting."
+          exit 1
       - uses: apexskier/github-release-commenter@e7813a9625eabd79a875b4bc4046cfcae377ab34 # v1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
