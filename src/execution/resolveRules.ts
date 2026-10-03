@@ -30,16 +30,36 @@ export function resolveRules(settings: Settings = {}): RuleAndOptions[] {
 				? configRuleNames.has(rule.about.name)
 				: !!override;
 		})
-		.map((rule) => ({
-			options: mergeRuleOptions(
-				settings.options,
-				rule.about.defaultOptions,
-				asRuleOptions(overrides[rule.about.name]),
-			),
-			rule,
-		}));
+		.map((rule) => {
+			const override = asRuleOptions(overrides[rule.about.name]);
+
+			return {
+				options: mergeRuleOptions(
+					settings.options,
+					getDefaultOptions(rule, override),
+					override,
+				),
+				rule,
+			};
+		});
 }
 
 function asRuleOptions(override: boolean | RuleOptionsRaw | undefined) {
 	return typeof override === "object" ? override : undefined;
+}
+
+/**
+ * Gets a rule's default options, without its default `include-ais` if the
+ * user's options for the rule set `include-bots` but not `include-ais`.
+ * @remarks This way, a user's `include-bots` for a rule still applies to AI
+ * agents, rather than being overridden by the rule's own defaults.
+ */
+function getDefaultOptions(
+	rule: Rule<RuleAboutWithUrl>,
+	override: RuleOptionsRaw | undefined,
+) {
+	return override?.["include-bots"] !== undefined &&
+		override["include-ais"] === undefined
+		? { ...rule.about.defaultOptions, "include-ais": undefined }
+		: rule.about.defaultOptions;
 }

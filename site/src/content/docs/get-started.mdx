@@ -139,6 +139,7 @@ If `include-ais` isn't set as a top-level input, in a rule's default options, or
 it takes the value of `include-bots` resolved for that rule.
 Otherwise, the most specific `include-ais` applies to AI agents regardless of `include-bots`.
 For example, a top-level `include-ais: "false"` keeps skipping AI agents even for a rule given `{ "include-bots": true }`.
+The one exception is a rule's own default `include-ais`, which doesn't apply if you give that rule an `include-bots` without an `include-ais`.
 
 ### `include-associations`
 

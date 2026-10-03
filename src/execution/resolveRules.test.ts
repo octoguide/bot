@@ -95,6 +95,29 @@ describe("resolveRules", () => {
 		expect(actual?.["include-ais"]).toBe(true);
 	});
 
+	it("applies a per-rule include-bots to AI agents over a rule's default include-ais", () => {
+		const actual = resolveRuleOptions("pr-automation-detected", {
+			options: { "include-bots": false },
+			rules: { "pr-automation-detected": { "include-bots": false } },
+		});
+
+		expect(actual?.["include-ais"]).toBe(false);
+	});
+
+	it("prefers a per-rule include-ais over a per-rule include-bots", () => {
+		const actual = resolveRuleOptions("pr-automation-detected", {
+			options: { "include-bots": false },
+			rules: {
+				"pr-automation-detected": {
+					"include-ais": true,
+					"include-bots": false,
+				},
+			},
+		});
+
+		expect(actual?.["include-ais"]).toBe(true);
+	});
+
 	it("prefers a global include-ais over a per-rule include-bots", () => {
 		const actual = resolveRuleOptions("comment-meaningful", {
 			options: { "include-ais": false, "include-bots": false },
