@@ -2,8 +2,12 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
+import type { CommentData } from "../types/entities.js";
+import type { LocatedOctokit } from "../types/octokit.js";
+
 import { createActor } from "../actors/createActor.js";
 import { getExistingComment } from "./comments/getExistingComment.js";
+import { isRequestError } from "./comments/isRequestError.js";
 
 export interface RunCommentCleanupSettings {
 	auth: string;
@@ -31,6 +35,22 @@ export async function runCommentCleanup({
 		return;
 	}
 
+	try {
+		await deleteExistingComment(existingComment, octokit, payload);
+	} catch (error) {
+		if (!isAlreadyDeletedError(error)) {
+			throw error;
+		}
+
+		core.info("Existing comment was already deleted. Nothing to clean up.");
+	}
+}
+
+async function deleteExistingComment(
+	existingComment: CommentData,
+	octokit: LocatedOctokit,
+	payload: typeof github.context.payload,
+) {
 	if (payload.discussion) {
 		core.info(
 			`Deleting discussion comment with node id: ${existingComment.node_id}`,
@@ -58,4 +78,19 @@ export async function runCommentCleanup({
 			comment_id: existingComment.id,
 		});
 	}
+}
+
+function isAlreadyDeletedError(error: unknown) {
+	if (isRequestError(error)) {
+		return error.status === 404;
+	}
+
+	return (
+		error instanceof Error &&
+		"errors" in error &&
+		Array.isArray(error.errors) &&
+		error.errors.some(
+			(graphqlError: { type?: string }) => graphqlError.type === "NOT_FOUND",
+		)
+	);
 }
