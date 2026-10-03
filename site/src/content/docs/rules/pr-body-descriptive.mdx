@@ -9,7 +9,7 @@ import IncludedIn from "../../../components/IncludedIn.astro";
 <IncludedIn rule="pr-body-descriptive" />
 
 This repository expects pull requests to include a description explaining the changes.
-The description should have at least one word not in the PR template, or any content if no template exists.
+The description should have at least one word not in the PR template, or any word if no template exists.
 
 Pull requests should include meaningful descriptions that explain the purpose and context of the changes.
 This helps reviewers understand what's being changed and why, making the review process more efficient.
@@ -18,7 +18,13 @@ This helps reviewers understand what's being changed and why, making the review 
 
 - If no PR template exists, the pull request must have at least one word in its description
 - If a PR template exists (in `.github/PULL_REQUEST_TEMPLATE.md`), the pull request must include at least one word that isn't part of the template
-  - Issue references such as `#123` don't count as words, since they don't describe the changes
+
+Issue, pull request, and discussion references don't count as words in either case, since they don't describe the changes.
+These include:
+
+- `#123`, `owner/repo#123`, and `GH-123`
+- GitHub URLs such as `https://github.com/owner/repo/issues/123`, `https://github.com/owner/repo/pull/123`, and `https://github.com/owner/repo/discussions/123`, including links to comments or files within them
+- A [closing keyword](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) directly before any of those references, such as `fixes #123` or `Resolves: owner/repo#123`
 
 ## Resolving Issues
 
@@ -56,7 +62,7 @@ Please describe your changes
 	This PR's description doesn't contain any content beyond the template. This
 	repository expects pull requests to include a description explaining the
 	changes. The description should have at least one word not in the PR template,
-	or any content if no template exists. Please add a description explaining the
+	or any word if no template exists. Please add a description explaining the
 	purpose and changes in this PR.
 </OctoGuideGitHubComment>
 

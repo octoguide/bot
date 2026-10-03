@@ -105,15 +105,31 @@ describe(prBodyDescriptive.about.name, () => {
 	});
 
 	it.each([
+		"#123",
+		"(#123).",
+		"owner/repo#123",
+		"GH-123",
 		"fixes #123",
-		"fixes owner/repo#123",
+		"Closes #123",
+		"Resolves: #123",
+		"Fixed #123",
+		"FIX owner/repo#123",
+		"closes GH-123",
+		"Fixes #1, fixes #2, #3",
 		"fixes https://github.com/owner/repo/issues/123",
 		"fixes https://github.com/owner/repo/pull/123",
+		"resolved https://github.com/owner/repo/discussions/123",
+		"https://github.com/owner/repo/issues/123#issuecomment-456",
+		"https://github.com/owner/repo/pull/123/files",
+		"http://github.com/owner/repo/issues/123",
+		"https://www.github.com/owner/repo/issues/123",
+		"HTTPS://GITHUB.COM/owner/repo/issues/123",
+		"[#123](https://github.com/owner/repo/pull/123)",
 	])(
 		"reports when the pull request only adds an issue reference beyond the template: %s",
 		async (reference) => {
 			const report = vi.fn();
-			const templateContent = "## Overview\n\nfixes #000";
+			const templateContent = "## Overview";
 			const body = `## Overview\n\n${reference}`;
 
 			await testRule(
@@ -198,6 +214,127 @@ describe(prBodyDescriptive.about.name, () => {
 						repository: {
 							file0: { text: templateContent },
 						},
+					}) as unknown as Octokit["graphql"],
+				},
+				report,
+			},
+		);
+
+		expect(report).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		"C#",
+		"#fff",
+		"## Heading",
+		"Like #12 but for X",
+		"#12 resolved",
+		"Resolved",
+		"fix#1es",
+	])(
+		"does not report when the pull request adds words that aren't issue references: %s",
+		async (text) => {
+			const report = vi.fn();
+			const templateContent = "## Overview\n\nfixes #000";
+			const body = `## Overview\n\n${text}`;
+
+			await testRule(
+				prBodyDescriptive,
+				{
+					data: {
+						body,
+					},
+					type: "pull_request",
+				},
+				{
+					octokit: {
+						graphql: vi.fn().mockResolvedValue({
+							repository: {
+								file0: { text: templateContent },
+							},
+						}) as unknown as Octokit["graphql"],
+					},
+					report,
+				},
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		},
+	);
+
+	it("handles a long run of word characters quickly", async () => {
+		const report = vi.fn();
+		const start = performance.now();
+
+		await testRule(
+			prBodyDescriptive,
+			{
+				data: {
+					body: "a".repeat(65_536),
+				},
+				type: "pull_request",
+			},
+			{
+				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: "## Overview" },
+						},
+					}) as unknown as Octokit["graphql"],
+				},
+				report,
+			},
+		);
+
+		expect(performance.now() - start).toBeLessThan(100);
+		expect(report).not.toHaveBeenCalled();
+	});
+
+	it.each(["#123", "fixes #123", "- Closes owner/repo#123."])(
+		"reports when the pull request body is only an issue reference and no template exists: %s",
+		async (body) => {
+			const report = vi.fn();
+
+			await testRule(
+				prBodyDescriptive,
+				{
+					data: {
+						body,
+					},
+					type: "pull_request",
+				},
+				{
+					octokit: {
+						graphql: vi.fn().mockResolvedValue({
+							repository: {},
+						}) as unknown as Octokit["graphql"],
+					},
+					report,
+				},
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: "This PR's description doesn't contain any words.",
+				suggestion: ["Please add at least a brief explanation of the changes."],
+			});
+		},
+	);
+
+	it("does not report when the pull request has content and an issue reference without a template", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prBodyDescriptive,
+			{
+				data: {
+					body: "Fixes #123 by updating the login logic.",
+				},
+				type: "pull_request",
+			},
+			{
+				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {},
 					}) as unknown as Octokit["graphql"],
 				},
 				report,
