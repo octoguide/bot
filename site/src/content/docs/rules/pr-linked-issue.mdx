@@ -29,6 +29,22 @@ fixes https://github.com/owner/repo/security/dependabot/123
 
 This recognizes that security vulnerability fixes often don't need the same discussion process as other changes.
 
+This rule looks up each linked alert, and is satisfied if at least one of them exists.
+Alerts that OctoGuide can't read are assumed to exist, including when:
+
+- OctoGuide's token doesn't have permission to read Dependabot alerts
+- The alert's repository has Dependabot alerts disabled
+- The alert is in another repository that OctoGuide's token can't see
+
+### Validating Dependabot Alerts
+
+The `permissions` in the [getting started workflow](/get-started#installation) don't include reading Dependabot alerts, so by default any linked alert is assumed to exist.
+To have OctoGuide validate that linked alerts exist, give its token read access to Dependabot alerts:
+
+- `GITHUB_TOKEN`: add `vulnerability-alerts: read` to the workflow's [`permissions`](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#permissions)
+- Fine-grained personal access token or GitHub App: the _Dependabot alerts_ repository permission, with read access
+- Personal access token (classic): the `repo` or `security_events` scope, or `public_repo` if only used with public repositories
+
 ## Why Require Issues?
 
 Requiring all contributor pull requests address an open issue adds process to a repository.
