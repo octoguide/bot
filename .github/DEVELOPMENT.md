@@ -33,7 +33,6 @@ Run [`@vercel/ncc`](https://github.com/vercel/ncc) to create an output `dist/` t
 pnpm build:release
 ```
 
-
 ## Formatting
 
 [Prettier](https://prettier.io) is used to format code.
