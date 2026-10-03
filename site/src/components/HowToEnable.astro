@@ -1,0 +1,76 @@
+---
+import { Code } from "@astrojs/starlight/components";
+
+import { getRule } from "../data/rules.js";
+import { getRuleEnabled, getStartedStrict } from "../data/yml.js";
+
+interface Props {
+	rule: string;
+}
+
+const { rule: ruleName } = Astro.props;
+const { config } = getRule(ruleName).about;
+---
+
+<p>
+	Each snippet in this section shows changes to the full{" "}
+	<code>.github/workflows/octoguide.yml</code> workflow from{" "}
+	<a href="/get-started#installation">Get Started</a>.
+</p>
+{config === "recommended" ? (
+	<p>
+		This rule is enabled by default as part of the{" "}
+		<a href="/configs">recommended config</a>.
+	</p>
+) : (
+	<>
+		<p>
+			{config === "strict" ? (
+				<>
+					This rule is included in the <a href="/configs">strict config</a>,
+					which isn't enabled by default.
+				</>
+			) : (
+				"This rule isn't included in any preset config."
+			)}{" "}
+			To add it to the rules your workflow already runs, enable it in{" "}
+			<a href="/get-started#rules">
+				<code>rules</code>
+			</a>
+			:
+		</p>
+		<Code
+			code={getRuleEnabled(ruleName)}
+			meta="lang=yml"
+			lang="diff"
+			title=".github/workflows/octoguide.yml"
+		/>
+		{config === "strict" && (
+			<>
+				<p>
+					Alternatively, switch to the strict config to enable this rule along
+					with every other strict rule:
+				</p>
+				<Code
+					code={getStartedStrict}
+					meta="lang=yml"
+					lang="diff"
+					title=".github/workflows/octoguide.yml"
+				/>
+			</>
+		)}
+	</>
+)}
+<p>
+	To use this rule on its own, enable it in{" "}
+	<a href="/get-started#rules">
+		<code>rules</code>
+	</a>{" "}
+	with the <code>none</code> config:
+</p>
+<Code
+	code={getRuleEnabled(ruleName, "none")}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>

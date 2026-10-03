@@ -76,10 +76,11 @@ describe(runCommentCleanup, () => {
 			discussion: {},
 		} as typeof github.context.payload;
 		const nodeId = "abc123";
+		const graphql = vi.fn();
 
 		mockCreateActor.mockResolvedValueOnce({
 			actor: {},
-			octokit: { graphql: vi.fn() },
+			octokit: { graphql },
 		});
 		mockGetExistingComment.mockResolvedValueOnce({
 			node_id: nodeId,
@@ -88,6 +89,10 @@ describe(runCommentCleanup, () => {
 		await runCommentCleanup({ auth, payload, url });
 		expect(mockCore.info).toHaveBeenCalledWith(
 			`Deleting discussion comment with node id: ${nodeId}`,
+		);
+		expect(graphql).toHaveBeenCalledWith(
+			expect.stringContaining("deleteDiscussionComment(input: { id: $id })"),
+			{ id: nodeId },
 		);
 	});
 
