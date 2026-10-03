@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { Entity } from "./types/entities.js";
 import type { RuleContext } from "./types/rules.js";
@@ -107,6 +107,24 @@ vi.mock("./rules/all.js", () => ({
 			},
 			pullRequest: vi.fn(),
 		},
+		{
+			about: {
+				defaultOptions: {
+					"include-associations": ["COLLABORATOR", "MEMBER", "OWNER"],
+				},
+				description: "Images should have descriptive alt text",
+				name: "text-image-alt-text",
+			},
+			issue: vi.fn(),
+		},
+		{
+			about: {
+				defaultOptions: { "include-bots": true },
+				description: "PRs labeled as automated should be closed",
+				name: "pr-automation-detected",
+			},
+			pullRequest: vi.fn(),
+		},
 	],
 }));
 
@@ -148,7 +166,7 @@ describe("runOctoGuideRules", () => {
 	it("should use the authentication token when provided", async () => {
 		const mockOctokit = createMockOctokit();
 
-		mockCreatedActor({ getData: vi.fn() }, mockOctokit);
+		mockCreatedActor({ getData: vi.fn().mockResolvedValue({}) }, mockOctokit);
 
 		await runOctoGuideRules({
 			auth: "test-token",
@@ -478,5 +496,172 @@ describe("runOctoGuideRules", () => {
 		expect(mockCore.debug).toHaveBeenCalledWith(
 			expect.stringContaining("Full entity:"),
 		);
+	});
+
+	describe("editor", () => {
+		const createEntity = (
+			authorAssociation: string,
+			user = { login: "author", type: "User" },
+		) =>
+			({
+				data: {
+					author_association: authorAssociation,
+					html_url: "https://github.com/test-owner/test-repo/issues/1",
+					user,
+				},
+				number: 1,
+				type: "issue",
+			}) as Entity;
+
+		const getNames = (reports: { about: { name: string } }[]) =>
+			reports.map((report) => report.about.name);
+
+		const getRunNames = () =>
+			mockRunRuleOnEntity.mock.calls.map(
+				(call) => (call[1] as { about: { name: string } }).about.name,
+			);
+
+		beforeEach(() => {
+			mockCreatedActor({ getData: vi.fn() }, createMockOctokit());
+			mockRunRuleOnEntity.mockImplementation((context: RuleContext) => {
+				context.report({ primary: "Test violation", suggestion: [] });
+			});
+		});
+
+		it("runs rules that include either the entity's author or the editor", async () => {
+			const result = await runOctoGuideRules({
+				editor: { login: "collaborator", type: "User" },
+				entity: createEntity("CONTRIBUTOR"),
+				settings: {
+					config: "none",
+					options: { "include-associations": ["CONTRIBUTOR"] },
+					rules: {
+						"comment-meaningful": true,
+						"pr-body-descriptive": { "include-associations": ["COLLABORATOR"] },
+						"pr-branch-non-default": {
+							"include-associations": ["FIRST_TIMER"],
+						},
+					},
+				},
+			});
+
+			expect(getRunNames()).toEqual([
+				"comment-meaningful",
+				"pr-body-descriptive",
+			]);
+			expect(getNames(result.reports)).toEqual([
+				"comment-meaningful",
+				"pr-body-descriptive",
+			]);
+		});
+
+		it("runs rules whose default options include the editor even when the author is excluded", async () => {
+			const result = await runOctoGuideRules({
+				editor: { login: "collaborator", type: "User" },
+				entity: createEntity("OWNER"),
+				settings: {
+					config: "none",
+					options: { "include-associations": ["CONTRIBUTOR"] },
+					rules: {
+						"comment-meaningful": true,
+						"text-image-alt-text": true,
+					},
+				},
+			});
+
+			expect(getRunNames()).toEqual(["text-image-alt-text"]);
+			expect(getNames(result.reports)).toEqual(["text-image-alt-text"]);
+		});
+
+		it("treats the repository owner as an OWNER editor", async () => {
+			await runOctoGuideRules({
+				editor: { login: "test-owner", type: "User" },
+				entity: createEntity("FIRST_TIMER"),
+				settings: {
+					config: "none",
+					options: { "include-associations": ["CONTRIBUTOR"] },
+					rules: {
+						"comment-meaningful": {
+							"include-associations": ["COLLABORATOR", "MEMBER"],
+						},
+						"pr-body-descriptive": { "include-associations": ["OWNER"] },
+					},
+				},
+			});
+
+			expect(getRunNames()).toEqual(["pr-body-descriptive"]);
+		});
+
+		it("includes bot editors based on each rule's include-bots", async () => {
+			await runOctoGuideRules({
+				editor: { login: "renovate[bot]", type: "Bot" },
+				entity: createEntity("OWNER"),
+				settings: {
+					config: "none",
+					options: {
+						"include-associations": ["CONTRIBUTOR"],
+						"include-bots": false,
+					},
+					rules: {
+						"comment-meaningful": true,
+						"pr-automation-detected": true,
+						"pr-body-descriptive": { "include-bots": true },
+					},
+				},
+			});
+
+			expect(getRunNames()).toEqual([
+				"pr-body-descriptive",
+				"pr-automation-detected",
+			]);
+		});
+
+		it("skips rules that exclude the entity's bot author, even when they include the editor", async () => {
+			const result = await runOctoGuideRules({
+				editor: { login: "collaborator", type: "User" },
+				entity: createEntity("CONTRIBUTOR", {
+					login: "renovate[bot]",
+					type: "Bot",
+				}),
+				settings: {
+					config: "none",
+					options: { "include-bots": false },
+					rules: {
+						"comment-meaningful": true,
+						"text-image-alt-text": true,
+					},
+				},
+			});
+
+			expect(mockRunRuleOnEntity).not.toHaveBeenCalled();
+			expect(result.reports).toEqual([]);
+		});
+
+		it("checks the editor for rules that include the entity's bot author", async () => {
+			await runOctoGuideRules({
+				editor: { login: "collaborator", type: "User" },
+				entity: createEntity("CONTRIBUTOR", {
+					login: "renovate[bot]",
+					type: "Bot",
+				}),
+				settings: {
+					config: "none",
+					options: {
+						"include-associations": ["FIRST_TIMER"],
+						"include-bots": false,
+					},
+					rules: {
+						"comment-meaningful": { "include-bots": true },
+						"pr-body-descriptive": {
+							"include-associations": ["COLLABORATOR"],
+							"include-bots": true,
+						},
+						"text-image-alt-text": true,
+					},
+				},
+			});
+
+			expect(getRunNames()).toEqual(["pr-body-descriptive"]);
+		});
 	});
 });

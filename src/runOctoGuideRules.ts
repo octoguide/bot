@@ -1,12 +1,13 @@
 import * as core from "@actions/core";
 
 import type { EntityActor } from "./actors/types.js";
-import type { Entity } from "./types/entities.js";
+import type { Entity, EntityEditor } from "./types/entities.js";
 import type { RuleReport } from "./types/reports.js";
 import type { RuleContext } from "./types/rules.js";
 import type { Settings } from "./types/settings.js";
 
 import { createActor } from "./actors/createActor.js";
+import { isRuleSkippedForEditor } from "./execution/isRuleSkippedForEditor.js";
 import { isRuleSkippedForEntity } from "./execution/isRuleSkippedForEntity.js";
 import { resolveRules } from "./execution/resolveRules.js";
 import { runRuleOnEntity } from "./execution/runRuleOnEntity.js";
@@ -41,6 +42,15 @@ export interface RunOctoGuideRulesOptions {
 	 * If not provided, retrieved with `get-github-auth-token`.
 	 */
 	auth?: string;
+
+	/**
+	 * User who edited the entity, if the run is for an edit by someone other than its author.
+	 * Rules then run if they include either the entity's author or the editor,
+	 * except that entities from bots excluded by a rule's bot options (such as `include-bots`) stay skipped by that rule.
+	 * Editing another user's entity requires write access, so a user editor is considered
+	 * an `OWNER` if they own the repository, and otherwise a `COLLABORATOR` or `MEMBER`.
+	 */
+	editor?: EntityEditor;
 
 	/**
 	 * GitHub entity to run rules on. Can be either:
@@ -100,6 +110,7 @@ export interface RunOctoGuideRulesResult {
  */
 export async function runOctoGuideRules({
 	auth,
+	editor,
 	entity: entityInput,
 	settings,
 }: RunOctoGuideRulesOptions): Promise<RunOctoGuideRulesResult> {
@@ -138,7 +149,11 @@ export async function runOctoGuideRules({
 
 	await Promise.all(
 		resolveRules(settings).map(async ({ options, rule }) => {
-			if (isRuleSkippedForEntity(entity, options)) {
+			if (
+				isRuleSkippedForEntity(entity, options) &&
+				(!editor ||
+					isRuleSkippedForEditor(editor, entity, locator.owner, options))
+			) {
 				core.debug(`Skipping rule for entity: ${rule.about.name}`);
 				return;
 			}
