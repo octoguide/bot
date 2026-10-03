@@ -19,6 +19,10 @@ To link a pull request to an issue:
 1. Make sure there's an issue describing what you want to happen
 2. Add text in the format `closes #...` or `fixes #...` in your PR, such as `fixes #123`
 
+GitHub only links issues from closing keywords in pull requests that target the repository's default branch.
+Pull requests that target other branches, such as stacked pull requests, can still have issues [manually linked from the pull request sidebar](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#manually-linking-a-pull-request-to-an-issue-using-the-pull-request-sidebar).
+Otherwise, this rule accepts a closing keyword that GitHub recognizes in their body, such as `fixes #123`, as long as it refers to an existing issue rather than a pull request.
+
 ## Dependabot Security Alerts
 
 Pull requests that address Dependabot security alerts don't need a separate issue.

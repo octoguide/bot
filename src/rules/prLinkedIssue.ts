@@ -1,8 +1,11 @@
+import type { PullRequestData } from "../types/entities.js";
+
 import { defineRule } from "./defineRule.js";
 
 interface ClosingIssuesResponse {
 	repository: {
 		pullRequest: {
+			bodyHTML: string;
 			closingIssuesReferences: {
 				nodes: {
 					number: number;
@@ -28,6 +31,7 @@ export const prLinkedIssue = defineRule({
 				query closingIssues($id: Int!, $owner: String!, $repo: String!) {
 					repository(owner: $owner, name: $repo) {
 						pullRequest(number: $id) {
+							bodyHTML
 							closingIssuesReferences(first: 1) {
 								nodes {
 									number
@@ -41,6 +45,13 @@ export const prLinkedIssue = defineRule({
 		);
 
 		if (response.repository.pullRequest.closingIssuesReferences.nodes.length) {
+			return;
+		}
+
+		if (
+			targetsNonDefaultBranch(entity.data) &&
+			hasClosingKeyword(response.repository.pullRequest.bodyHTML)
+		) {
 			return;
 		}
 
@@ -63,3 +74,28 @@ export const prLinkedIssue = defineRule({
 		});
 	},
 });
+
+/**
+ * Checks whether a pull request body's rendered HTML has a closing keyword on
+ * an issue, such as `fixes #123`.
+ * @remarks GitHub wraps each closing keyword it recognizes in an issue-keyword
+ * span, even in pull requests that don't target the default branch. The span
+ * is followed by a link with an issue hovercard only if GitHub resolved its
+ * reference to an issue, rather than a pull request or nothing.
+ */
+function hasClosingKeyword(bodyHTML: string) {
+	return /<span class="issue-keyword[^"]*"[^>]*>[^<]*<\/span>:?\s*<a\s[^>]*\bdata-hovercard-type="issue"/.test(
+		bodyHTML,
+	);
+}
+
+/**
+ * Checks whether a pull request targets a branch other than the default.
+ * @remarks GitHub only links issues from closing keywords in pull requests
+ * into the default branch. Pull request data without base branch information,
+ * such as partial data passed in by API consumers, is assumed to target the
+ * default branch.
+ */
+function targetsNonDefaultBranch({ base }: Partial<PullRequestData>) {
+	return !!base?.repo && base.ref !== base.repo.default_branch;
+}
