@@ -36,6 +36,14 @@ describe(prTitleConventional.about.name, () => {
 		["fix:fill in suggestions", "fix: fill in suggestions"],
 		["fix : fill in suggestions", "fix: fill in suggestions"],
 		["feat(api)! drop old option", "feat(api)!: drop old option"],
+		["feat(scope)!x", "feat(scope)!: x"],
+		["fix(api) handle error: timeout", "fix(api): handle error: timeout"],
+		["docs(readme) Note: something", "docs(readme): Note: something"],
+		["Feat:add x", "feat: add x"],
+		["FIX(md) x", "fix(md): x"],
+		["feat (scope): x", "feat(scope): x"],
+		["chore (deps): bump x", "chore(deps): bump x"],
+		["feat (scope)! x", "feat(scope)!: x"],
 	])(
 		"reports with a corrected title when the pull request title %j has a known type with incorrect syntax",
 		async (title, corrected) => {
@@ -56,6 +64,57 @@ describe(prTitleConventional.about.name, () => {
 				primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
 				suggestion: [
 					`To resolve this report, follow conventional commit syntax, like _"${corrected}"_.`,
+				],
+			});
+
+			const correctedReport = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: corrected,
+					},
+					type: "pull_request",
+				},
+				{ report: correctedReport },
+			);
+
+			expect(correctedReport).not.toHaveBeenCalled();
+		},
+	);
+
+	it.each([
+		"feat(a,b): x",
+		"feat(a, b): x",
+		"fix(café): x",
+		"fix(#12): x",
+		"fix(a+b): x",
+		"feat(a,b) x",
+		"fix(a: b) c",
+		"refactor(!) x",
+		"fix(a)!!: x",
+		"fix (windows) path handling",
+	])(
+		"reports a missing type without a corrected title when the pull request title %j has a known type but no valid correction",
+		async (title) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
+				suggestion: [
+					`To resolve this report, add a conventional commit type in front of the title, like _"feat: ${title}"_.`,
 				],
 			});
 		},

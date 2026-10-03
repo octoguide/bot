@@ -16,34 +16,57 @@ const commitParser = new CommitParser({
 });
 
 /**
+ * Whether a title would pass this rule: it parses with a known type and subject.
+ */
+function isConventionalTitle(title: string) {
+	const parsed = commitParser.parse(title);
+
+	return (
+		!!parsed.type &&
+		Object.hasOwn(conventionalTypes.types, parsed.type) &&
+		!!parsed.subject
+	);
+}
+
+/**
  * Attempts to fix a title that starts with a known type, but doesn't follow it
  * with a colon and space, such as `fix(md) [headingIncrements]: subject`.
- * @returns The title's type header and subject, if it could be fixed.
+ * @returns The title's type header and subject, if the fixed title would pass this rule.
  */
 function fixTitleSyntax(title: string) {
-	const match = /^(\w+)(\([^)]*\))?(!)?(\W.*)?$/.exec(title);
+	const match = /^(\w+)\b(\s*\([^)]*\))?(!)?(.*)$/.exec(title);
 	if (!match) {
 		return undefined;
 	}
 
-	const [, type, scope = "", breaking = "", rest = ""] = match;
+	const [, rawType, rawScope = "", breaking = "", rest] = match;
+	const type = rawType.toLowerCase();
+	const scope = rawScope.trimStart();
 	const leadingColon = /^\s*:/;
 
 	if (
 		!Object.hasOwn(conventionalTypes.types, type) ||
-		(!scope && !breaking && !leadingColon.test(rest))
+		rest.trimStart().startsWith("!")
 	) {
 		return undefined;
 	}
 
-	const subject = leadingColon.test(rest)
-		? rest.replace(leadingColon, "")
-		: rest.replace(/:(?=\s)/, "");
+	let subject: string;
 
-	return {
-		header: type + scope + breaking,
-		subject: subject.trim(),
-	};
+	if (leadingColon.test(rest)) {
+		subject = rest.replace(leadingColon, "");
+	} else if (breaking || (scope && scope === rawScope)) {
+		subject = rest.replace(/^\s*(\[[^\]]*\]):(?=\s|$)/, "$1");
+	} else {
+		return undefined;
+	}
+
+	const header = type + scope + breaking;
+	subject = subject.trim();
+
+	return isConventionalTitle(`${header}: ${subject || "etc."}`)
+		? { header, subject }
+		: undefined;
 }
 
 export const prTitleConventional = defineRule({
