@@ -22,11 +22,12 @@ GitHub only links issues from closing keywords like `fixes #123` in pull request
 Pull requests that target other branches, such as stacked pull requests, can still have issues [manually linked from the pull request sidebar](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#manually-linking-a-pull-request-to-an-issue-using-the-pull-request-sidebar) by anyone with write access.
 Otherwise, this rule checks their pull request bodies for closing keywords:
 
-- Issue references can be written as `#123`, `GH-123`, `owner#123`, `owner/repo#123`, or a URL to the issue
+- Issue references can be written as `#123`, `GH-123`, `owner/repo#123`, `owner#123` with this repository's owner, or a URL to the issue
 - Links count by their URL rather than their text, so `fixes [the crash](https://github.com/owner/repo/issues/123)` refers to issue 123, while links to anywhere other than an issue are ignored
 - Closing keywords in code or HTML comments, on a different line from their issue reference, or separated from it by formatting such as emphasis, are ignored
 - Closing keywords for this repository must refer to an existing issue, not a pull request
   - If GitHub responds with an error other than not found, such as from rate limiting, the issue is assumed to exist
+  - In forks, issues not found in the fork are assumed to be in its parent repository
 - Closing keywords left unchanged from the pull request template, such as `fixes #000`, are ignored
 - Closing keywords for issues in other repositories are assumed to refer to an existing issue
 

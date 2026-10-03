@@ -28,7 +28,7 @@ interface ClosingReference {
 }
 
 const closingReferencePattern =
-	/(?<![\w-])(?:close[ds]?|fix(?:e[ds])?|resolve[ds]?)(?:[ \t]*:)?[ \t]+(?:(?:([\w.-]+\/[\w.-]+)|([\w.-]+))?#|gh-|https?:\/\/(?:www\.)?github\.com\/([\w.-]+\/[\w.-]+)\/(?:issues|pull)\/)(\d+)\b/gi;
+	/(?<![\w-])(?:close[ds]?|fix(?:e[ds])?|resolve[ds]?)(?:[ \t]*:)?[ \t]+(?:(?:([\w.-]+\/[\w.-]+)|([\w.-]+))?#|gh-|https?:\/\/(?:www\.)?github\.com\/([\w.-]+\/[\w.-]+)\/(?:issues|(pull))\/)(\d+)\b/gi;
 
 const issueUrlPattern =
 	/^https?:\/\/(?:www\.)?github\.com\/[\w.-]+\/[\w.-]+\/(?:issues|pull)\/\d+\b/i;
@@ -38,7 +38,8 @@ const markdown = new MarkdownIt({ html: true });
 /**
  * Finds closing keywords on issues in a body, such as `fixes #123`.
  * @remarks Like GitHub, ignores references in code and HTML comments,
- * and references not on the same line as their keyword.
+ * references not on the same line as their keyword, `owner#123` references
+ * for other owners, and pull request URLs in other repositories.
  * @see https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue
  */
 function findClosingReferences(locator: RepositoryLocator, body: string) {
@@ -47,22 +48,35 @@ function findClosingReferences(locator: RepositoryLocator, body: string) {
 	const text = getReferenceableText(body);
 
 	for (const match of text.matchAll(closingReferencePattern)) {
-		const [, shorthandRepository, shorthandOwner, urlRepository, issueNumber] =
-			match;
+		const [
+			,
+			shorthandRepository,
+			shorthandOwner,
+			urlRepository,
+			urlPull,
+			issueNumber,
+		] = match;
+		if (
+			shorthandOwner &&
+			shorthandOwner.toLowerCase() !== locator.owner.toLowerCase()
+		) {
+			continue;
+		}
+
 		const repository = (
 			shorthandRepository ||
-			(shorthandOwner && `${shorthandOwner}/${locator.repository}`) ||
 			urlRepository ||
 			ownRepository
 		).toLowerCase();
+		const inRepository = repository === ownRepository;
+		if (urlPull && !inRepository) {
+			continue;
+		}
+
 		const number = Number(issueNumber);
 		const key = `${repository}#${number}`;
 
-		references.set(key, {
-			inRepository: repository === ownRepository,
-			key,
-			number,
-		});
+		references.set(key, { inRepository, key, number });
 	}
 
 	return Array.from(references.values());
@@ -136,7 +150,11 @@ function getReferenceableText(body: string) {
  * `fixes #000`, are ignored. References to this repository must be to an
  * existing issue, while references to other repositories are trusted.
  */
-async function hasClosingKeyword(context: RuleContext, body: string) {
+async function hasClosingKeyword(
+	context: RuleContext,
+	body: string,
+	inFork: boolean,
+) {
 	const references = findClosingReferences(context.locator, body);
 	if (!references.length) {
 		return false;
@@ -155,7 +173,7 @@ async function hasClosingKeyword(context: RuleContext, body: string) {
 		if (
 			!templateKeys.has(reference.key) &&
 			(!reference.inRepository ||
-				(await issueMightExist(context.octokit, reference.number)))
+				(await issueMightExist(context.octokit, reference.number, inFork)))
 		) {
 			return true;
 		}
@@ -166,28 +184,35 @@ async function hasClosingKeyword(context: RuleContext, body: string) {
 
 /**
  * Checks whether an issue, and not a pull request, might exist.
- * @remarks Only a 404 from GitHub definitively means the issue doesn't exist.
+ * @remarks Only a 404 from GitHub definitively means the issue doesn't exist,
+ * except in forks, where GitHub links missing issues to the parent repository's.
  * Other errors, such as from missing permissions or rate limits, are assumed
  * to be for an existing issue.
  */
-async function issueMightExist(octokit: LocatedOctokit, issueNumber: number) {
+async function issueMightExist(
+	octokit: LocatedOctokit,
+	issueNumber: number,
+	inFork: boolean,
+) {
 	try {
 		const { data } = await octokit.rest.issues.get({
 			issue_number: issueNumber,
 		});
 		return !data.pull_request;
 	} catch (error) {
-		return !isRequestError(error) || error.status !== 404;
+		return !isRequestError(error) || error.status !== 404 || inFork;
 	}
 }
 
 /**
- * Checks whether a pull request targets its repository's default branch.
+ * Gets a pull request's base repository, if it targets a non-default branch.
  * @remarks Pull request data without base branch information, such as partial
  * data passed in by API consumers, is assumed to target the default branch.
  */
-function targetsDefaultBranch({ base }: Partial<PullRequestData>) {
-	return !base?.repo || base.ref === base.repo.default_branch;
+function getNonDefaultBaseRepository({ base }: Partial<PullRequestData>) {
+	return base?.repo && base.ref !== base.repo.default_branch
+		? base.repo
+		: undefined;
 }
 
 export const prLinkedIssue = defineRule({
@@ -229,9 +254,10 @@ export const prLinkedIssue = defineRule({
 			return;
 		}
 
+		const nonDefaultBaseRepository = getNonDefaultBaseRepository(entity.data);
 		if (
-			!targetsDefaultBranch(entity.data) &&
-			(await hasClosingKeyword(context, body))
+			nonDefaultBaseRepository &&
+			(await hasClosingKeyword(context, body, nonDefaultBaseRepository.fork))
 		) {
 			return;
 		}

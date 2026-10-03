@@ -124,6 +124,7 @@ describe(prLinkedIssue.about.name, () => {
 			body: string,
 			getIssue: Mock,
 			template?: string,
+			fork = false,
 		) => {
 			const report = vi.fn();
 
@@ -133,7 +134,7 @@ describe(prLinkedIssue.about.name, () => {
 					data: {
 						base: {
 							ref: "stacked-base",
-							repo: { default_branch: "main" },
+							repo: { default_branch: "main", fork },
 						},
 						body,
 					},
@@ -179,6 +180,7 @@ describe(prLinkedIssue.about.name, () => {
 			"Fixes : #1",
 			"Closes GH-1",
 			"fixes test-owner#1",
+			"fixes Test-Owner#1",
 		])(
 			"does not report when the body has a closing keyword on an existing issue: %s",
 			async (body) => {
@@ -194,7 +196,6 @@ describe(prLinkedIssue.about.name, () => {
 		it.each([
 			"Closes owner/repo#1",
 			"resolved: https://github.com/owner/repo/issues/1",
-			"Closes owner#1",
 			"fixes [#1](https://github.com/owner/repo/issues/1)",
 		])(
 			"does not report or look up a closing keyword on an issue in another repository: %s",
@@ -228,6 +229,24 @@ describe(prLinkedIssue.about.name, () => {
 			const report = await testStackedPullRequest("fixes #1", getIssue);
 
 			expect(report).toHaveBeenCalledOnce();
+		});
+
+		it("does not report when the closing keyword is on an issue that does not exist in a fork", async () => {
+			const getIssue = vi
+				.fn()
+				.mockRejectedValue(
+					Object.assign(new Error("Not Found"), { status: 404 }),
+				);
+
+			const report = await testStackedPullRequest(
+				"fixes #1",
+				getIssue,
+				undefined,
+				true,
+			);
+
+			expect(getIssue).toHaveBeenCalledWith({ issue_number: 1 });
+			expect(report).not.toHaveBeenCalled();
 		});
 
 		it.each([
@@ -320,6 +339,11 @@ describe(prLinkedIssue.about.name, () => {
 			"fixes _#1_",
 			"fixes ~~#1~~",
 			"closes [owner/repo#1](https://redirect.github.com/owner/repo/issues/1)",
+			"Closes owner#1",
+			"Resolves GH#1",
+			"fixes gh-#1",
+			"fixes https://github.com/owner/repo/pull/1",
+			"fixes [the fix](https://github.com/owner/repo/pull/1)",
 		])(
 			"reports when the body only has text GitHub wouldn't treat as a closing keyword: %s",
 			async (body) => {
