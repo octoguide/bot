@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.26.1](https://github.com/octoguide/bot/compare/0.26.0...0.26.1) (2026-10-03)
+
+### Bug Fixes
+
+- use valid deleteDiscussionComment mutation in comment cleanup ([#664](https://github.com/octoguide/bot/issues/664)) ([577d91f](https://github.com/octoguide/bot/commit/577d91f0a217acac0c3488e947e69de628106604)), closes [#647](https://github.com/octoguide/bot/issues/647)
+
 # [0.26.0](https://github.com/octoguide/bot/compare/0.25.0...0.26.0) (2026-10-02)
 
 ### Features
