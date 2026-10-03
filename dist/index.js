@@ -48477,7 +48477,7 @@ module.exports = {
 
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5560);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(4413);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(6039);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__/* .context */ ._);
@@ -48487,7 +48487,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 4413:
+/***/ 6039:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -57050,15 +57050,52 @@ async function retrieveAuthSafe(provided) {
 
 
 
+;// CONCATENATED MODULE: ./src/actors/createLocatedOctokit.ts
+
+/**
+ * Creates an Octokit whose `owner` and `repo` API parameters default to a repository.
+ */
+async function createLocatedOctokit(locator, options) {
+    const octokit = await octokitFromAuth(options);
+    octokit.hook.before("request", (requestOptions) => {
+        if (requestOptions.url.endsWith("/graphql")) {
+            const variables = (requestOptions.variables ??= {});
+            variables.owner ??= locator.owner;
+            variables.repo ??= locator.repository;
+        }
+        else if (requestOptions.url.includes("{owner}")) {
+            requestOptions.owner ??= locator.owner;
+            requestOptions.repo ??= locator.repository;
+        }
+    });
+    const { paginate } = octokit;
+    /**
+     * Pagination expands a route's URL before requesting it, so the request
+     * hook never sees its placeholders. They have to be filled in beforehand.
+     */
+    function locateParameters(route, parameters) {
+        const url = typeof route === "function"
+            ? route.endpoint.DEFAULTS.url
+            : route;
+        return typeof url === "string" && url.includes("{owner}")
+            ? { owner: locator.owner, repo: locator.repository, ...parameters }
+            : parameters;
+    }
+    octokit.paginate = Object.assign((route, parameters, mapFn) => typeof parameters === "function"
+        ? paginate(route, locateParameters(route), parameters)
+        : paginate(route, locateParameters(route, parameters), mapFn), {
+        iterator: (route, parameters) => paginate.iterator(route, locateParameters(route, parameters)),
+    });
+    return octokit;
+}
+
 ;// CONCATENATED MODULE: ./src/actors/EntityActorBase.ts
 
 class EntityActorBase {
     entityNumber;
-    locator;
     octokit;
-    constructor(entityNumber, locator, octokit) {
+    constructor(entityNumber, octokit) {
         this.entityNumber = entityNumber;
-        this.locator = locator;
         this.octokit = octokit;
     }
     closeEntity() {
@@ -57116,14 +57153,8 @@ class EntityActorBase {
 
 class DiscussionActorBase extends EntityActorBase {
     async listComments() {
-        // TODO: Retrieve all comments, not just the first page
-        // https://github.com/OctoGuide/bot/issues/34
-        const response = await this.octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", {
-            discussion_number: this.entityNumber,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
-        });
-        return response.data;
+        const comments = await this.octokit.paginate("GET /repos/{owner}/{repo}/discussions/{discussion_number}/comments", { discussion_number: this.entityNumber, per_page: 100 });
+        return comments;
     }
     async updateComment(number, newBody) {
         const comments = await this.listComments();
@@ -57158,11 +57189,7 @@ class DiscussionActorBase extends EntityActorBase {
 						}
 					}
 				}
-			`, {
-            number: this.entityNumber,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
-        });
+			`, { number: this.entityNumber });
         const discussionId = repository.discussion.id;
         const commentResponse = await this.octokit.graphql(`
 				mutation($body: String!, $discussionId: ID!, $replyToId: ID) {
@@ -57186,8 +57213,8 @@ class DiscussionActorBase extends EntityActorBase {
 
 class DiscussionActor extends DiscussionActorBase {
     metadata;
-    constructor(entityNumber, locator, octokit) {
-        super(entityNumber, locator, octokit);
+    constructor(entityNumber, octokit) {
+        super(entityNumber, octokit);
         this.metadata = {
             number: entityNumber,
             type: "discussion",
@@ -57197,11 +57224,7 @@ class DiscussionActor extends DiscussionActorBase {
         return await this.createCommentResponse(body);
     }
     async getData() {
-        const response = await this.octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}", {
-            discussion_number: this.entityNumber,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
-        });
+        const response = await this.octokit.request("GET /repos/{owner}/{repo}/discussions/{discussion_number}", { discussion_number: this.entityNumber });
         // https://github.com/github/rest-api-description/issues/4702
         return response.data;
     }
@@ -57211,8 +57234,8 @@ class DiscussionActor extends DiscussionActorBase {
 
 class DiscussionCommentActor extends DiscussionActorBase {
     metadata;
-    constructor(commentId, discussionNumber, locator, octokit) {
-        super(discussionNumber, locator, octokit);
+    constructor(commentId, discussionNumber, octokit) {
+        super(discussionNumber, octokit);
         this.metadata = {
             commentId,
             parentNumber: discussionNumber,
@@ -57253,8 +57276,6 @@ class IssueLikeActorBase extends EntityActorBase {
     async closeEntity() {
         await this.octokit.rest.issues.update({
             issue_number: this.entityNumber,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
             state: "closed",
         });
     }
@@ -57262,28 +57283,19 @@ class IssueLikeActorBase extends EntityActorBase {
         const response = await this.octokit.rest.issues.createComment({
             body,
             issue_number: this.entityNumber,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
         });
         return response.data.html_url;
     }
     async listComments() {
-        // TODO: Retrieve all pages, not just the first one
-        // https://github.com/OctoGuide/bot/issues/34
-        const comments = await this.octokit.rest.issues.listComments({
+        return await this.octokit.paginate(this.octokit.rest.issues.listComments, {
             issue_number: this.entityNumber,
-            owner: this.locator.owner,
             per_page: 100,
-            repo: this.locator.repository,
         });
-        return comments.data;
     }
     async updateComment(number, newBody) {
         await this.octokit.rest.issues.updateComment({
             body: newBody,
             comment_id: number,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
         });
     }
 }
@@ -57292,8 +57304,8 @@ class IssueLikeActorBase extends EntityActorBase {
 
 class IssueActor extends IssueLikeActorBase {
     metadata;
-    constructor(entityNumber, entityType, locator, octokit) {
-        super(entityNumber, locator, octokit);
+    constructor(entityNumber, entityType, octokit) {
+        super(entityNumber, octokit);
         this.metadata = {
             number: entityNumber,
             type: entityType,
@@ -57302,8 +57314,6 @@ class IssueActor extends IssueLikeActorBase {
     async getData() {
         const { data } = await this.octokit.rest.issues.get({
             issue_number: this.entityNumber,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
         });
         return data;
     }
@@ -57313,8 +57323,8 @@ class IssueActor extends IssueLikeActorBase {
 
 class IssueLikeCommentActor extends IssueLikeActorBase {
     metadata;
-    constructor(commentId, locator, octokit, parentNumber, parentType) {
-        super(parentNumber, locator, octokit);
+    constructor(commentId, octokit, parentNumber, parentType) {
+        super(parentNumber, octokit);
         this.metadata = {
             commentId,
             parentNumber,
@@ -57325,8 +57335,6 @@ class IssueLikeCommentActor extends IssueLikeActorBase {
     async getData() {
         const { data } = await this.octokit.rest.issues.getComment({
             comment_id: this.metadata.commentId,
-            owner: this.locator.owner,
-            repo: this.locator.repository,
         });
         return data;
     }
@@ -57372,8 +57380,8 @@ function parseLocator(url) {
 
 class PullRequestActor extends IssueLikeActorBase {
     metadata;
-    constructor(entityNumber, entityType, locator, octokit) {
-        super(entityNumber, locator, octokit);
+    constructor(entityNumber, entityType, octokit) {
+        super(entityNumber, octokit);
         this.metadata = {
             number: entityNumber,
             type: entityType,
@@ -57381,9 +57389,7 @@ class PullRequestActor extends IssueLikeActorBase {
     }
     async getData() {
         const { data } = await this.octokit.rest.pulls.get({
-            owner: this.locator.owner,
             pull_number: this.entityNumber,
-            repo: this.locator.repository,
         });
         return data;
     }
@@ -57397,14 +57403,19 @@ class PullRequestActor extends IssueLikeActorBase {
 
 
 
-function createActor(octokit, url) {
+
+/**
+ * Resolves the actor, repository locator, and repository-scoped Octokit for a URL.
+ */
+async function createActor({ auth, url }) {
     const locator = parseLocator(url);
     if (!locator) {
         return {};
     }
+    const octokit = await createLocatedOctokit(locator, { auth });
     const matches = parseEntityUrl(url);
     if (!matches) {
-        return { locator };
+        return { locator, octokit };
     }
     const [urlType, parentNumber] = matches;
     const commentId = parseCommentId(url);
@@ -57412,21 +57423,21 @@ function createActor(octokit, url) {
         switch (urlType) {
             case "discussions":
                 return commentId
-                    ? new DiscussionCommentActor(+commentId, +parentNumber, locator, octokit)
-                    : new DiscussionActor(+parentNumber, locator, octokit);
+                    ? new DiscussionCommentActor(+commentId, +parentNumber, octokit)
+                    : new DiscussionActor(+parentNumber, octokit);
             case "issues":
             case "pull": {
                 const parentType = urlType === "issues" ? "issue" : "pull_request";
                 if (commentId) {
-                    return new IssueLikeCommentActor(+commentId, locator, octokit, +parentNumber, parentType);
+                    return new IssueLikeCommentActor(+commentId, octokit, +parentNumber, parentType);
                 }
                 return parentType === "issue"
-                    ? new IssueActor(+parentNumber, parentType, locator, octokit)
-                    : new PullRequestActor(+parentNumber, parentType, locator, octokit);
+                    ? new IssueActor(+parentNumber, parentType, octokit)
+                    : new PullRequestActor(+parentNumber, parentType, octokit);
             }
         }
     })();
-    return { actor, locator };
+    return { actor, locator, octokit };
 }
 
 ;// CONCATENATED MODULE: ./src/execution/isEntityAssociationIncluded.ts
@@ -57670,8 +57681,7 @@ const PR_TEMPLATE_PATHS = [
     "docs/pull_request_template.md",
 ];
 const PR_TEMPLATE_DIR = ".github/PULL_REQUEST_TEMPLATE";
-async function findPrTemplate(octokit, locator) {
-    const { owner, repository } = locator;
+async function findPrTemplate(octokit) {
     const fileQueries = PR_TEMPLATE_PATHS.map((path, index) => `
 		file${index}: object(expression: "HEAD:${path}") {
 			... on Blob {
@@ -57696,10 +57706,7 @@ async function findPrTemplate(octokit, locator) {
 			}
 		}`;
     try {
-        const graphqlResponse = await octokit.graphql(fullQuery, {
-            owner,
-            repo: repository,
-        });
+        const graphqlResponse = await octokit.graphql(fullQuery);
         if (graphqlResponse.repository) {
             for (let i = 0; i < PR_TEMPLATE_PATHS.length; i++) {
                 const fileData = graphqlResponse.repository[`file${i}`];
@@ -57722,9 +57729,7 @@ async function findPrTemplate(octokit, locator) {
 							}
 						}`;
                     const fileContentResponse = await octokit.graphql(fileContentQuery, {
-                        owner,
                         path: `HEAD:${firstMarkdownFile.path}`,
-                        repo: repository,
                     });
                     if (fileContentResponse.repository?.object &&
                         typeof fileContentResponse.repository.object.text === "string") {
@@ -57764,7 +57769,7 @@ const prBodyDescriptive = defineRule({
             });
             return;
         }
-        const template = await findPrTemplate(context.octokit, context.locator);
+        const template = await findPrTemplate(context.octokit);
         if (!template) {
             if (entity.data.body
                 .trim()
@@ -57806,10 +57811,7 @@ const prBranchNonDefault = defineRule({
         name: "pr-branch-non-default",
     },
     async pullRequest(context, entity) {
-        const { data } = await context.octokit.rest.repos.get({
-            owner: context.locator.owner,
-            repo: context.locator.repository,
-        });
+        const { data } = await context.octokit.rest.repos.get();
         if (entity.data.head.ref === data.default_branch) {
             context.report({
                 primary: "This PR is sent from the head repository's default branch",
@@ -57841,8 +57843,8 @@ const prLinkedIssue = defineRule({
     },
     async pullRequest(context, entity) {
         const response = await context.octokit.graphql(`
-				query closingIssues($id: Int!, $owner: String!, $repository: String!) {
-					repository(owner: $owner, name: $repository) {
+				query closingIssues($id: Int!, $owner: String!, $repo: String!) {
+					repository(owner: $owner, name: $repo) {
 						pullRequest(number: $id) {
 							closingIssuesReferences(first: 1) {
 								nodes {
@@ -57852,11 +57854,7 @@ const prLinkedIssue = defineRule({
 						}
 					}
 				}
-			`, {
-            id: entity.number,
-            owner: context.locator.owner,
-            repository: context.locator.repository,
-        });
+			`, { id: entity.number });
         if (response.repository.pullRequest.closingIssuesReferences.nodes.length) {
             return;
         }
@@ -57892,7 +57890,7 @@ const prTaskCompletion = defineRule({
         name: "pr-task-completion",
     },
     async pullRequest(context, entity) {
-        const template = await findPrTemplate(context.octokit, context.locator);
+        const template = await findPrTemplate(context.octokit);
         if (!template) {
             return;
         }
@@ -88373,7 +88371,246 @@ const ruleDescriptions = {
     "no-empty-alt-text": "The following image is missing alt text:",
 };
 
+;// CONCATENATED MODULE: ./node_modules/.pnpm/are-docs-informative@0.1.1/node_modules/are-docs-informative/lib/index.js
+
+const defaultAliases = {
+  a: ["an", "our"]
+};
+const defaultUselessWords = ["a", "an", "i", "in", "of", "re", "s", "the"];
+function areDocsInformative(docs, name, options = {}) {
+  const { aliases = defaultAliases, uselessWords = defaultUselessWords } = options;
+  const docsWords = new Set(splitTextIntoWords(docs));
+  const nameWords = splitTextIntoWords(name);
+  for (const nameWord of nameWords) {
+    docsWords.delete(nameWord);
+  }
+  for (const uselessWord of uselessWords) {
+    docsWords.delete(uselessWord);
+  }
+  return !!docsWords.size;
+  function normalizeWord(word) {
+    const wordLower = word.toLowerCase();
+    return aliases[wordLower] ?? wordLower;
+  }
+  function splitTextIntoWords(text) {
+    return (typeof text === "string" ? [text] : text).flatMap((name2) => {
+      return name2.replace(/[^\p{L}\p{N}_]+/gu, " ").replace(/(\p{Ll})(\p{Lu})/gu, "$1 $2").trim().split(" ");
+    }).flatMap(normalizeWord).filter(Boolean);
+  }
+}
+
+
+;// CONCATENATED MODULE: ./src/action/findTemplateTitles.ts
+/**
+ * Paths where a single GitHub issue template might be located according to GitHub documentation.
+ * @see https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/manually-creating-a-single-issue-template-for-your-repository
+ */
+const ISSUE_TEMPLATE_PATHS = [
+    ".github/ISSUE_TEMPLATE.md",
+    ".github/issue_template.md",
+    "docs/ISSUE_TEMPLATE.md",
+    "docs/issue_template.md",
+    "ISSUE_TEMPLATE.md",
+    "issue_template.md",
+];
+/**
+ * Where each kind of entity's templates live.
+ * Discussions only support category forms in a directory, not a single root file.
+ * @see https://docs.github.com/en/discussions/managing-discussions-for-your-community/creating-discussion-category-forms
+ */
+const TEMPLATE_LOCATIONS = {
+    discussion: {
+        directory: ".github/DISCUSSION_TEMPLATE",
+        paths: [],
+    },
+    issue: {
+        directory: ".github/ISSUE_TEMPLATE",
+        paths: ISSUE_TEMPLATE_PATHS,
+    },
+};
+const TEMPLATE_EXTENSIONS = [".md", ".yaml", ".yml"];
+/**
+ * Collects the default (pre-filled) titles of a repository's templates.
+ * @returns Each template's `title:`, for templates that specify one.
+ */
+async function findTemplateTitles(octokit, entityType) {
+    const { directory, paths } = TEMPLATE_LOCATIONS[entityType];
+    const fileQueries = paths
+        .map((path, index) => `
+		file${index}: object(expression: "HEAD:${path}") {
+			... on Blob {
+				text
+			}
+		}`)
+        .join("\n");
+    const fullQuery = `
+		query($owner: String!, $repo: String!) {
+			repository(owner: $owner, name: $repo) {
+				${fileQueries}
+				templateDir: object(expression: "HEAD:${directory}") {
+					... on Tree {
+						entries {
+							name
+							type
+							object {
+								... on Blob {
+									text
+								}
+							}
+						}
+					}
+				}
+			}
+		}`;
+    let graphqlResponse;
+    try {
+        graphqlResponse = await octokit.graphql(fullQuery);
+    }
+    catch (error) {
+        console.error(`Error fetching ${entityType} templates with GraphQL:`, error);
+        return [];
+    }
+    if (!graphqlResponse.repository) {
+        return [];
+    }
+    const contents = [];
+    for (let i = 0; i < paths.length; i += 1) {
+        const fileData = graphqlResponse.repository[`file${i}`];
+        if (typeof fileData?.text === "string") {
+            contents.push(fileData.text);
+        }
+    }
+    for (const entry of graphqlResponse.repository.templateDir?.entries ?? []) {
+        if (entry.type === "blob" &&
+            TEMPLATE_EXTENSIONS.some((extension) => entry.name.endsWith(extension)) &&
+            typeof entry.object?.text === "string") {
+            contents.push(entry.object.text);
+        }
+    }
+    return contents
+        .map(parseTemplateTitle)
+        .filter((title) => title !== undefined);
+}
+/**
+ * Reads the `title:` a template pre-fills entities with.
+ * Markdown templates declare it in front matter; forms declare it at the top level.
+ * @see https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms
+ */
+function parseTemplateTitle(contents) {
+    const frontMatter = /^---\r?\n([\s\S]*?)\r?\n---/.exec(contents);
+    const title = /^title:(.*)$/m.exec(frontMatter?.[1] ?? contents)?.[1].trim();
+    return title ? unquote(title) : undefined;
+}
+function unquote(text) {
+    return /^(["'])[\s\S]*\1$/.test(text) ? text.slice(1, -1) : text;
+}
+
+;// CONCATENATED MODULE: ./src/rules/titleMeaningful.ts
+
+
+
+/**
+ * How many characters a title and a template's title must share at their start
+ * for the template to be considered the one the entity was created from.
+ */
+const MINIMUM_SHARED_PREFIX = 3;
+const entityLabels = {
+    discussion: "discussion",
+    issue: "issue",
+    pull_request: "PR",
+};
+const titleMeaningful = defineRule({
+    about: {
+        config: "recommended",
+        description: "Titles should describe their entity, not be left as a template's default.",
+        explanation: [
+            `A title is the first part of a discussion, issue, or pull request that other contributors read.`,
+            `Titles left as a template's default, or that don't say anything beyond it, make the work harder to find and triage.`,
+            `This can easily happen if a contributor forgets to fill out the field.`,
+        ],
+        name: "title-meaningful",
+    },
+    discussion: createTemplatedListener("discussion"),
+    issue: createTemplatedListener("issue"),
+    pullRequest(context, entity) {
+        reportOnTitle(context, entity, undefined);
+    },
+});
+/**
+ * Creates a listener for an entity type whose templates can pre-fill a title.
+ */
+function createTemplatedListener(entityType) {
+    return async (context, entity) => {
+        if (!entity.data.title.trim()) {
+            return;
+        }
+        const templateTitles = await findTemplateTitles(context.octokit, entityType);
+        reportOnTitle(context, entity, findNearestTemplateTitle(entity.data.title.trim(), templateTitles));
+    };
+}
+function reportOnTitle(context, entity, templateTitle) {
+    const title = entity.data.title.trim();
+    if (!title) {
+        return;
+    }
+    const label = entityLabels[entity.type];
+    if (templateTitle && isUnchangedFromTemplate(title, templateTitle)) {
+        context.report({
+            primary: `This ${label}'s title still looks like the default title from its template.`,
+            secondary: [`> ${templateTitle}`],
+            suggestion: [
+                `To resolve this report, edit the title to describe this specific ${label}.`,
+            ],
+        });
+        return;
+    }
+    if (areDocsInformative(title, [context.locator.repository, templateTitle ?? ""])) {
+        return;
+    }
+    context.report({
+        primary: `This ${label}'s title doesn't contain any words describing what it's about.`,
+        secondary: [`> ${title}`],
+        suggestion: [
+            `To resolve this report, edit the title to summarize what this ${label} is about.`,
+        ],
+    });
+}
+/**
+ * @returns The template title the entity's title most looks like it came from.
+ */
+function findNearestTemplateTitle(title, templateTitles) {
+    let nearest;
+    let nearestLength = MINIMUM_SHARED_PREFIX - 1;
+    for (const templateTitle of templateTitles) {
+        const length = sharedPrefixLength(titleMeaningful_normalize(title), titleMeaningful_normalize(templateTitle));
+        if (length > nearestLength) {
+            nearest = templateTitle;
+            nearestLength = length;
+        }
+    }
+    return nearest;
+}
+/**
+ * @returns Whether the title is the template's title, or a cut-down version of it.
+ */
+function isUnchangedFromTemplate(title, templateTitle) {
+    return titleMeaningful_normalize(templateTitle).startsWith(titleMeaningful_normalize(title));
+}
+function titleMeaningful_normalize(text) {
+    return text.toLowerCase().replaceAll(/\s+/g, " ").trim();
+}
+function sharedPrefixLength(left, right) {
+    let length = 0;
+    while (length < left.length &&
+        length < right.length &&
+        left[length] === right[length]) {
+        length += 1;
+    }
+    return length;
+}
+
 ;// CONCATENATED MODULE: ./src/rules/all.ts
+
 
 
 
@@ -88391,6 +88628,7 @@ const allRules = [
     prTaskCompletion,
     prTitleConventional,
     textImageAltText,
+    titleMeaningful,
 ];
 
 ;// CONCATENATED MODULE: ./src/rules/configs.ts
@@ -88471,7 +88709,6 @@ async function runRuleOnEntity(context, rule, entity) {
 
 
 
-
 /**
  * Runs OctoGuide's rules to generate a list of reports for a GitHub entity.
  * The entity can be provided as either a URL string (which will be fetched from the GitHub API) or pre-existing entity data.
@@ -88489,6 +88726,10 @@ async function runRuleOnEntity(context, rule, entity) {
  * @returns Promise resolving to results with actor, entity data, and rule reports
  */
 async function runOctoGuideRules({ auth, entity: entityInput, settings, }) {
+    const url = typeof entityInput === "string" ? entityInput : entityInput.data.html_url;
+    if (typeof url !== "string") {
+        throw new Error("Entity data's html_url is not a string.");
+    }
     // TODO: There's no need to create a full *writing* actor here;
     // runOctoGuide only reads entities and runs rules on them.
     // This area of authentication and actor resolution should split into:
@@ -88496,12 +88737,7 @@ async function runOctoGuideRules({ auth, entity: entityInput, settings, }) {
     // 2. Using that to create the equivalent actor: requires writing
     // ...where only 1. is needed for runOctoGuide.
     // https://github.com/OctoGuide/bot/issues/56
-    const octokit = await octokitFromAuth({ auth });
-    const url = typeof entityInput === "string" ? entityInput : entityInput.data.html_url;
-    if (typeof url !== "string") {
-        throw new Error("Entity data's html_url is not a string.");
-    }
-    const { actor, locator } = createActor(octokit, url);
+    const { actor, locator, octokit } = await createActor({ auth, url });
     if (!actor) {
         throw new Error("Could not resolve GitHub entity actor.");
     }
@@ -89231,13 +89467,11 @@ async function outputActionReports(actor, entity, reports, settings) {
 
 
 
-
 async function runCommentCleanup({ auth, payload, url, }) {
     if (!payload.comment) {
         return;
     }
-    const octokit = await octokitFromAuth({ auth });
-    const { actor, locator } = createActor(octokit, url);
+    const { actor, octokit } = await createActor({ auth, url });
     if (!actor) {
         throw new Error("Could not resolve GitHub entity actor.");
     }
@@ -89249,26 +89483,21 @@ async function runCommentCleanup({ auth, payload, url, }) {
     if (payload.discussion) {
         info(`Deleting discussion comment with node id: ${existingComment.node_id}`);
         await octokit.graphql(`
-				mutation($body: String!, $commentId: ID!) {
-					deleteDiscussionComment(input: {
-						body: $body,
-						commentId: $commentId
-					}) {
+				mutation($id: ID!) {
+					deleteDiscussionComment(input: { id: $id }) {
 						comment {
 							id
 						}
 					}
 				}
 			`, {
-            commentId: existingComment.node_id,
+            id: existingComment.node_id,
         });
     }
     else {
         info(`Deleting issue-like comment with id: ${existingComment.id}`);
         await octokit.rest.issues.deleteComment({
             comment_id: existingComment.id,
-            owner: locator.owner,
-            repo: locator.repository,
         });
     }
 }
