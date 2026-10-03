@@ -121,6 +121,8 @@ describe(prBodyDescriptive.about.name, () => {
 		"resolved https://github.com/owner/repo/discussions/123",
 		"https://github.com/owner/repo/issues/123#issuecomment-456",
 		"https://github.com/owner/repo/pull/123/files",
+		"https://github.com/owner/repo/pull/123/files#diff-abc123",
+		"https://github.com/owner/repo/pull/123/commits/abc123?w=1",
 		"http://github.com/owner/repo/issues/123",
 		"https://www.github.com/owner/repo/issues/123",
 		"HTTPS://GITHUB.COM/owner/repo/issues/123",
@@ -231,6 +233,8 @@ describe(prBodyDescriptive.about.name, () => {
 		"#12 resolved",
 		"Resolved",
 		"fix#1es",
+		"https://github.com/o/r/issues/1#issuecomment-123，修复了解析器的错误。",
+		"|https://github.com/o/r/pull/1/files|Refactor|",
 	])(
 		"does not report when the pull request adds words that aren't issue references: %s",
 		async (text) => {

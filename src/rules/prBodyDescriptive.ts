@@ -7,7 +7,7 @@ import { defineRule } from "./defineRule.js";
  * along with any GitHub closing keyword directly before them (e.g. `fixes #123`).
  */
 const issueReferences =
-	/(?<![\w.-])(?:(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?[ \t]+)?(?:https?:\/\/(?:www\.)?github\.com\/[\w.-]+\/[\w.-]+\/(?:discussions|issues|pull)\/\d+\b(?:[#/?][^\s()<>[\]]*)?|(?:[\w.-]+\/[\w.-]+)?#\d+\b|gh-\d+\b)/gi;
+	/(?<![\w.-])(?:(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?[ \t]+)?(?:https?:\/\/(?:www\.)?github\.com\/[\w.-]+\/[\w.-]+\/(?:discussions|issues|pull)\/\d+\b(?:[#/?][\w#/?=&%.~+:-]*)?|(?:[\w.-]+\/[\w.-]+)?#\d+\b|gh-\d+\b)/gi;
 
 export const prBodyDescriptive = defineRule({
 	about: {
