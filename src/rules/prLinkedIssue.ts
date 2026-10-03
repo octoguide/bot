@@ -1,5 +1,12 @@
-import type { PullRequestEntity } from "../types/entities.js";
+import MarkdownIt, { type Token } from "markdown-it";
 
+import type { RepositoryLocator } from "../types/data.js";
+import type { PullRequestData } from "../types/entities.js";
+import type { LocatedOctokit } from "../types/octokit.js";
+import type { RuleContext } from "../types/rules.js";
+
+import { isRequestError } from "../action/comments/isRequestError.js";
+import { findPrTemplate } from "../action/findPrTemplate.js";
 import { defineRule } from "./defineRule.js";
 
 interface ClosingIssuesResponse {
@@ -14,20 +21,142 @@ interface ClosingIssuesResponse {
 	};
 }
 
-/**
- * Checks whether a body uses a closing keyword on an issue, such as `fixes #123`.
- * @remarks GitHub only records closing issue references for pull requests
- * into the default branch, so others (such as stacked PRs) need this instead.
- * @see https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue
- */
-function hasClosingKeyword(body: string) {
-	return /\b(?:close[ds]?|fix(?:e[ds])?|resolve[ds]?):?\s+(?:(?:[\w.-]+\/[\w.-]+)?#|https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/issues\/)\d+/i.test(
-		body,
-	);
+interface ClosingReference {
+	inRepository: boolean;
+	key: string;
+	number: number;
 }
 
-function targetsDefaultBranch(entity: PullRequestEntity) {
-	return entity.data.base.ref === entity.data.base.repo.default_branch;
+const closingReferencePattern =
+	/(?<![\w-])(?:close[ds]?|fix(?:e[ds])?|resolve[ds]?):?[ \t]+(?:([\w.-]+\/[\w.-]+)?#|https:\/\/github\.com\/([\w.-]+\/[\w.-]+)\/issues\/)(\d+)\b/gi;
+
+const markdown = new MarkdownIt({ html: true });
+
+/**
+ * Finds closing keywords on issues in a body, such as `fixes #123`.
+ * @remarks Like GitHub, ignores references in code and HTML comments,
+ * and references not on the same line as their keyword.
+ * @see https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue
+ */
+function findClosingReferences(locator: RepositoryLocator, body: string) {
+	const ownRepository = `${locator.owner}/${locator.repository}`.toLowerCase();
+	const references = new Map<string, ClosingReference>();
+	const text = getReferenceableText(body);
+
+	for (const match of text.matchAll(closingReferencePattern)) {
+		const [, shorthandRepository, urlRepository, issueNumber] = match;
+		const repository = (
+			shorthandRepository ||
+			urlRepository ||
+			ownRepository
+		).toLowerCase();
+		const number = Number(issueNumber);
+		const key = `${repository}#${number}`;
+
+		references.set(key, {
+			inRepository: repository === ownRepository,
+			key,
+			number,
+		});
+	}
+
+	return Array.from(references.values());
+}
+
+/**
+ * Gets the text of an inline Markdown token that may contain references.
+ * @remarks Formatting such as links is skipped, and other inline content
+ * such as code is replaced with a line break.
+ */
+function getInlineText(token: Token) {
+	if (token.type === "text") {
+		return token.content;
+	}
+
+	return token.nesting === 0 ? "\n" : "";
+}
+
+/**
+ * Gets the text of a Markdown body that may contain references.
+ * @remarks Code and HTML comments are replaced with line breaks, so that text
+ * on either side of them can't join together.
+ */
+function getReferenceableText(body: string) {
+	return markdown
+		.parse(body, {})
+		.map((token) => {
+			switch (token.type) {
+				case "html_block":
+					return token.content.replaceAll(/<!--[\s\S]*?(?:-->|$)/g, "\n");
+				case "inline":
+					return token.children?.map(getInlineText).join("") ?? "";
+				default:
+					return "";
+			}
+		})
+		.join("\n");
+}
+
+/**
+ * Checks whether a body uses a closing keyword on an issue, such as `fixes #123`.
+ * @remarks GitHub only links issues from closing keywords in pull requests
+ * into the default branch, so others (such as stacked PRs) need this instead.
+ * References that are also in the PR template, such as an unchanged
+ * `fixes #000`, are ignored. References to this repository must be to an
+ * existing issue, while references to other repositories are trusted.
+ */
+async function hasClosingKeyword(context: RuleContext, body: string) {
+	const references = findClosingReferences(context.locator, body);
+	if (!references.length) {
+		return false;
+	}
+
+	const template = await findPrTemplate(context.octokit);
+	const templateKeys = new Set(
+		template
+			? findClosingReferences(context.locator, template).map(
+					(reference) => reference.key,
+				)
+			: [],
+	);
+
+	for (const reference of references) {
+		if (
+			!templateKeys.has(reference.key) &&
+			(!reference.inRepository ||
+				(await issueMightExist(context.octokit, reference.number)))
+		) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+/**
+ * Checks whether an issue, and not a pull request, might exist.
+ * @remarks Only a 404 from GitHub definitively means the issue doesn't exist.
+ * Other errors, such as from missing permissions or rate limits, are assumed
+ * to be for an existing issue.
+ */
+async function issueMightExist(octokit: LocatedOctokit, issueNumber: number) {
+	try {
+		const { data } = await octokit.rest.issues.get({
+			issue_number: issueNumber,
+		});
+		return !data.pull_request;
+	} catch (error) {
+		return !isRequestError(error) || error.status !== 404;
+	}
+}
+
+/**
+ * Checks whether a pull request targets its repository's default branch.
+ * @remarks Pull request data without base branch information, such as partial
+ * data passed in by API consumers, is assumed to target the default branch.
+ */
+function targetsDefaultBranch({ base }: Partial<PullRequestData>) {
+	return !base?.repo || base.ref === base.repo.default_branch;
 }
 
 export const prLinkedIssue = defineRule({
@@ -69,7 +198,10 @@ export const prLinkedIssue = defineRule({
 			return;
 		}
 
-		if (!targetsDefaultBranch(entity) && hasClosingKeyword(body)) {
+		if (
+			!targetsDefaultBranch(entity.data) &&
+			(await hasClosingKeyword(context, body))
+		) {
 			return;
 		}
 

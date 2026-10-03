@@ -1,6 +1,6 @@
 import type { Octokit } from "octokit";
 
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, type Mock, vi } from "vitest";
 
 import { testRule } from "../tests/testRule.js";
 import { prLinkedIssue } from "./prLinkedIssue.js";
@@ -119,13 +119,12 @@ describe(prLinkedIssue.about.name, () => {
 		expect(report).not.toHaveBeenCalled();
 	});
 
-	it.each([
-		"fixes #1",
-		"Closes owner/repo#1",
-		"resolved: https://github.com/owner/repo/issues/1",
-	])(
-		"does not report when a pull request into a non-default branch has a closing keyword in its body: %s",
-		async (body) => {
+	describe("pull requests into a non-default branch", () => {
+		const testStackedPullRequest = async (
+			body: string,
+			getIssue: Mock,
+			template?: string,
+		) => {
 			const report = vi.fn();
 
 			await testRule(
@@ -143,57 +142,178 @@ describe(prLinkedIssue.about.name, () => {
 				},
 				{
 					octokit: {
-						graphql: vi.fn().mockResolvedValue({
-							repository: {
-								pullRequest: {
-									closingIssuesReferences: {
-										nodes: [],
+						graphql: vi
+							.fn()
+							.mockResolvedValueOnce({
+								repository: {
+									pullRequest: {
+										closingIssuesReferences: {
+											nodes: [],
+										},
 									},
 								},
-							},
-						}) as unknown as Octokit["graphql"],
+							})
+							.mockResolvedValueOnce({
+								repository: template ? { file0: { text: template } } : {},
+							}) as unknown as Octokit["graphql"],
+						rest: { issues: { get: getIssue } },
 					},
 					report,
 				},
 			);
 
-			expect(report).not.toHaveBeenCalled();
-		},
-	);
+			return report;
+		};
 
-	it("reports when a pull request into a non-default branch references an issue without a closing keyword", async () => {
-		const report = vi.fn();
+		it.each([
+			"fixes #1",
+			"FIXES: #1",
+			"Closes test-owner/test-repo#1",
+			"resolved https://github.com/Test-Owner/test-repo/issues/1",
+			"- [x] Addresses an existing open issue: fixes #1",
+			"See:\n\n> fixes #1.",
+		])(
+			"does not report when the body has a closing keyword on an existing issue: %s",
+			async (body) => {
+				const getIssue = vi.fn().mockResolvedValue({ data: {} });
 
-		await testRule(
-			prLinkedIssue,
-			{
-				data: {
-					base: {
-						ref: "stacked-base",
-						repo: { default_branch: "main" },
-					},
-					body: "Builds on #1.",
-				},
-				number: 2,
-				type: "pull_request",
-			},
-			{
-				octokit: {
-					graphql: vi.fn().mockResolvedValue({
-						repository: {
-							pullRequest: {
-								closingIssuesReferences: {
-									nodes: [],
-								},
-							},
-						},
-					}) as unknown as Octokit["graphql"],
-				},
-				report,
+				const report = await testStackedPullRequest(body, getIssue);
+
+				expect(getIssue).toHaveBeenCalledWith({ issue_number: 1 });
+				expect(report).not.toHaveBeenCalled();
 			},
 		);
 
-		expect(report).toHaveBeenCalledOnce();
+		it.each([
+			"Closes owner/repo#1",
+			"resolved: https://github.com/owner/repo/issues/1",
+		])(
+			"does not report or look up a closing keyword on an issue in another repository: %s",
+			async (body) => {
+				const getIssue = vi.fn();
+
+				const report = await testStackedPullRequest(body, getIssue);
+
+				expect(getIssue).not.toHaveBeenCalled();
+				expect(report).not.toHaveBeenCalled();
+			},
+		);
+
+		it("reports when the closing keyword is on a pull request", async () => {
+			const getIssue = vi
+				.fn()
+				.mockResolvedValue({ data: { pull_request: {} } });
+
+			const report = await testStackedPullRequest("fixes #1", getIssue);
+
+			expect(report).toHaveBeenCalledOnce();
+		});
+
+		it("reports when the closing keyword is on an issue that does not exist", async () => {
+			const getIssue = vi
+				.fn()
+				.mockRejectedValue(
+					Object.assign(new Error("Not Found"), { status: 404 }),
+				);
+
+			const report = await testStackedPullRequest("fixes #1", getIssue);
+
+			expect(report).toHaveBeenCalledOnce();
+		});
+
+		it.each([
+			Object.assign(new Error("Forbidden"), { status: 403 }),
+			Object.assign(new Error("Server Error"), { status: 500 }),
+			new Error("Network Error"),
+		])(
+			"does not report when looking up the issue fails with: %s",
+			async (error) => {
+				const getIssue = vi.fn().mockRejectedValue(error);
+
+				const report = await testStackedPullRequest("fixes #1", getIssue);
+
+				expect(report).not.toHaveBeenCalled();
+			},
+		);
+
+		it("does not report when a later closing keyword is on an existing issue", async () => {
+			const getIssue = vi
+				.fn()
+				.mockResolvedValueOnce({ data: { pull_request: {} } })
+				.mockResolvedValueOnce({ data: {} });
+
+			const report = await testStackedPullRequest(
+				"fixes #2\nfixes #1",
+				getIssue,
+			);
+
+			expect(getIssue).toHaveBeenNthCalledWith(1, { issue_number: 2 });
+			expect(getIssue).toHaveBeenNthCalledWith(2, { issue_number: 1 });
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it("reports when the only closing keyword is unchanged from the pull request template", async () => {
+			const getIssue = vi.fn().mockResolvedValue({ data: {} });
+
+			const report = await testStackedPullRequest(
+				"- [x] Addresses an existing open issue: fixes #000\n\nChanges things.",
+				getIssue,
+				"- [ ] Addresses an existing open issue: fixes #000",
+			);
+
+			expect(getIssue).not.toHaveBeenCalled();
+			expect(report).toHaveBeenCalledOnce();
+		});
+
+		it("does not report when the pull request template's closing keyword is filled in", async () => {
+			const getIssue = vi.fn().mockResolvedValue({ data: {} });
+
+			const report = await testStackedPullRequest(
+				"- [x] Addresses an existing open issue: fixes #1",
+				getIssue,
+				"- [ ] Addresses an existing open issue: fixes #000",
+			);
+
+			expect(getIssue).toHaveBeenCalledWith({ issue_number: 1 });
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it("does not report when the closing keyword is in an HTML block", async () => {
+			const getIssue = vi.fn().mockResolvedValue({ data: {} });
+
+			const report = await testStackedPullRequest(
+				"<div>fixes #1</div>",
+				getIssue,
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it.each([
+			"```\nfixes #1\n```",
+			"~~~md\nfixes #1\n~~~",
+			"Example:\n\n    fixes #1",
+			"`fixes #1`",
+			"fixes `#1`",
+			"<!-- fixes #1 -->",
+			"<div><!-- fixes #1 --></div>",
+			"Text <!-- fixes #1 --> text",
+			"fixes\n#1",
+			"fixes #1abc",
+			"pre-fix #1",
+			"prefixes #1",
+			"Builds on #1.",
+		])(
+			"reports when the body only has text GitHub wouldn't treat as a closing keyword: %s",
+			async (body) => {
+				const getIssue = vi.fn().mockResolvedValue({ data: {} });
+
+				const report = await testStackedPullRequest(body, getIssue);
+
+				expect(getIssue).not.toHaveBeenCalled();
+				expect(report).toHaveBeenCalledOnce();
+			},
+		);
 	});
 
 	it("reports when a pull request into the default branch has a closing keyword in its body that GitHub did not link", async () => {
@@ -230,4 +350,39 @@ describe(prLinkedIssue.about.name, () => {
 
 		expect(report).toHaveBeenCalledOnce();
 	});
+
+	it.each([
+		{ body: "fixes #1" },
+		{ base: { ref: "stacked-base" }, body: "fixes #1" },
+	])(
+		"reports when the pull request data is missing its base repository: %o",
+		async (data) => {
+			const report = vi.fn();
+
+			await testRule(
+				prLinkedIssue,
+				{
+					data,
+					number: 2,
+					type: "pull_request",
+				},
+				{
+					octokit: {
+						graphql: vi.fn().mockResolvedValue({
+							repository: {
+								pullRequest: {
+									closingIssuesReferences: {
+										nodes: [],
+									},
+								},
+							},
+						}) as unknown as Octokit["graphql"],
+					},
+					report,
+				},
+			);
+
+			expect(report).toHaveBeenCalledOnce();
+		},
+	);
 });
