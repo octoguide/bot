@@ -153,11 +153,11 @@ ensuring that users with no association still have rules enforced.
 When someone edits the title or body of another user's entity or comment, OctoGuide treats that edit as coming from the editor.
 Other edits, such as changing a pull request's base branch, are still treated as coming from the original author.
 
-Each rule checks the editor against its own `include-associations` and `include-bots` options, including any per-rule overrides and rule defaults:
+Each rule checks the editor with the same options it uses for authors, including any per-rule overrides and rule defaults:
 
 - Editing someone else's content requires write access, so a user editor is considered to be an `OWNER` if they own the repository, or a `COLLABORATOR` or `MEMBER` otherwise.
-- A bot editor is only included by rules whose `include-bots` is enabled.
-- Content created by a bot stays skipped by rules whose `include-bots` is disabled, even when a user edits it.
+- A bot editor is only included by rules that would include that bot as an author.
+- Content created by a bot stays skipped by rules that skip that bot, even when a user edits it.
 
 OctoGuide's comment for the edit lists only reports from rules that include the editor, and mentions the editor rather than the original author.
 If the only reports come from rules that exclude the editor but include the original author, OctoGuide leaves any existing comment as-is rather than updating or resolving it.
