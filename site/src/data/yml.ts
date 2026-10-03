@@ -178,8 +178,7 @@ export const getStartedIncludeFirstTimers = `jobs:
 
 export const getStartedSynchronize = `on:
   pull_request_target:
--    types: [edited, opened]
-+    types: [edited, opened, synchronize]`;
+    types: [edited, opened, synchronize]`;
 
 export const getRuleDefaultOptions = (
 	ruleName: string,
