@@ -7,6 +7,7 @@ import { Code } from "@astrojs/starlight/components";
 
 import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
 import IncludedIn from "../../../components/IncludedIn.astro";
+import HowToEnable from "../../../components/HowToEnable.astro";
 import { getStartedSynchronize } from "../../../data/yml.js";
 
 <IncludedIn rule="pr-force-push-avoided" />
@@ -49,6 +50,10 @@ With it, a report is resolved as soon as new changes are pushed without force-pu
 	existing commits to keep them clean. If you need to resolve conflicts, merge
 	the base branch in instead of rebasing onto it.
 </OctoGuideGitHubComment>
+
+## How to Enable
+
+<HowToEnable rule="pr-force-push-avoided" />
 
 ## See More
 
