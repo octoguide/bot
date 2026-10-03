@@ -42,10 +42,15 @@ function createReview(
 async function testWithTimeline(
 	reviews: TestReview[],
 	forcePush: TestForcePush | undefined,
+	{
+		author = { login: authorLogin },
+		userLogin = authorLogin,
+	}: { author?: null | { login: string }; userLogin?: string } = {},
 ) {
 	const graphql = vi.fn().mockResolvedValue({
 		repository: {
 			pullRequest: {
+				author,
 				reviews: {
 					nodes: reviews,
 				},
@@ -65,7 +70,7 @@ async function testWithTimeline(
 					sha: headSha,
 				},
 				user: {
-					login: authorLogin,
+					login: userLogin,
 				},
 			},
 			number: 2,
@@ -139,6 +144,26 @@ describe(prForcePushAvoided.about.name, () => {
 		);
 
 		expect(report).not.toHaveBeenCalled();
+	});
+
+	it("does not report when the pull request's author is unknown", async () => {
+		const { report } = await testWithTimeline(
+			[createReview("2026-01-01T00:00:00Z")],
+			createForcePush("2026-01-02T00:00:00Z", { actor: null }),
+			{ author: null },
+		);
+
+		expect(report).not.toHaveBeenCalled();
+	});
+
+	it("reports when a bot author force-pushed after a human review", async () => {
+		const { report } = await testWithTimeline(
+			[createReview("2026-01-01T00:00:00Z")],
+			createForcePush("2026-01-02T00:00:00Z", { actor: { login: "renovate" } }),
+			{ author: { login: "renovate" }, userLogin: "renovate[bot]" },
+		);
+
+		expect(report).toHaveBeenCalledTimes(1);
 	});
 
 	it("does not report when the pull request was only reviewed by bots and its author", async () => {

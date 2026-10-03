@@ -3,6 +3,7 @@ import { defineRule } from "./defineRule.js";
 interface ForcePushesResponse {
 	repository: {
 		pullRequest: {
+			author: null | { login: string };
 			reviews: {
 				nodes: {
 					author: null | { __typename: string; login: string };
@@ -36,6 +37,9 @@ export const prForcePushAvoided = defineRule({
 				query forcePushes($id: Int!, $owner: String!, $repo: String!) {
 					repository(owner: $owner, name: $repo) {
 						pullRequest(number: $id) {
+							author {
+								login
+							}
 							reviews(first: 100, states: [APPROVED, CHANGES_REQUESTED, COMMENTED, DISMISSED]) {
 								nodes {
 									author {
@@ -65,12 +69,12 @@ export const prForcePushAvoided = defineRule({
 			{ id: entity.number },
 		);
 
-		const { reviews, timelineItems } = response.repository.pullRequest;
-		const authorLogin = entity.data.user.login;
+		const { author, reviews, timelineItems } = response.repository.pullRequest;
 		const lastForcePush = timelineItems.nodes.at(0);
 
 		if (
-			lastForcePush?.actor?.login !== authorLogin ||
+			!author ||
+			lastForcePush?.actor?.login !== author.login ||
 			lastForcePush.afterCommit?.oid !== entity.data.head.sha
 		) {
 			return;
@@ -78,8 +82,8 @@ export const prForcePushAvoided = defineRule({
 
 		const firstReviewedAt = reviews.nodes
 			.filter(
-				({ author }) =>
-					author?.__typename !== "Bot" && author?.login !== authorLogin,
+				({ author: reviewer }) =>
+					reviewer?.__typename !== "Bot" && reviewer?.login !== author.login,
 			)
 			.map(({ submittedAt }) => submittedAt)
 			.filter((submittedAt) => submittedAt !== null)
