@@ -368,6 +368,36 @@ describe(prBodyDescriptive.about.name, () => {
 		expect(report).not.toHaveBeenCalled();
 	});
 
+	it.each(["🚀", "---"])(
+		"reports when the pull request body has no words and no template exists: %s",
+		async (body) => {
+			const report = vi.fn();
+
+			await testRule(
+				prBodyDescriptive,
+				{
+					data: {
+						body,
+					},
+					type: "pull_request",
+				},
+				{
+					octokit: {
+						graphql: vi.fn().mockResolvedValue({
+							repository: {},
+						}) as unknown as Octokit["graphql"],
+					},
+					report,
+				},
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: "This PR's description doesn't contain any words.",
+				suggestion: ["Please add at least a brief explanation of the changes."],
+			});
+		},
+	);
+
 	it.each([
 		"#123",
 		"fixes #123",
