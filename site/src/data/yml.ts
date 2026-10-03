@@ -176,6 +176,10 @@ export const getStartedIncludeFirstTimers = `jobs:
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR"`;
 
+export const getStartedSynchronize = `on:
+  pull_request_target:
+    types: [edited, opened, synchronize]`;
+
 export const getRuleDefaultOptions = (
 	ruleName: string,
 	defaultOptions: object,

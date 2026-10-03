@@ -2,6 +2,7 @@ import { commentMeaningful } from "./commentMeaningful.js";
 import { prAutomationDetected } from "./prAutomationDetected.js";
 import { prBodyDescriptive } from "./prBodyDescriptive.js";
 import { prBranchNonDefault } from "./prBranchNonDefault.js";
+import { prForcePushAvoided } from "./prForcePushAvoided.js";
 import { prLinkedIssue } from "./prLinkedIssue.js";
 import { prTaskCompletion } from "./prTaskCompletion.js";
 import { prTitleConventional } from "./prTitleConventional.js";
@@ -13,6 +14,7 @@ export const allRules = [
 	prAutomationDetected,
 	prBranchNonDefault,
 	prBodyDescriptive,
+	prForcePushAvoided,
 	prLinkedIssue,
 	prTaskCompletion,
 	prTitleConventional,
