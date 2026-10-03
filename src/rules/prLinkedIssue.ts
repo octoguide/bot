@@ -65,15 +65,17 @@ function findClosingReferences(locator: RepositoryLocator, body: string) {
 
 /**
  * Gets the text of an inline Markdown token that may contain references.
- * @remarks Formatting such as links is skipped, and other inline content
- * such as code is replaced with a line break.
+ * @remarks The start of formatting such as links is skipped, so a reference
+ * inside a link still follows its keyword. Ends of formatting and other inline
+ * content such as code are replaced with a line break, since GitHub doesn't
+ * treat a keyword as closing when formatting ends between it and a reference.
  */
 function getInlineText(token: Token) {
 	if (token.type === "text") {
 		return token.content;
 	}
 
-	return token.nesting === 0 ? "\n" : "";
+	return token.nesting === 1 ? "" : "\n";
 }
 
 /**

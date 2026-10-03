@@ -172,6 +172,7 @@ describe(prLinkedIssue.about.name, () => {
 			"resolved https://github.com/Test-Owner/test-repo/issues/1",
 			"- [x] Addresses an existing open issue: fixes #1",
 			"See:\n\n> fixes #1.",
+			"Fixes [#1](https://github.com/test-owner/test-repo/issues/1)",
 		])(
 			"does not report when the body has a closing keyword on an existing issue: %s",
 			async (body) => {
@@ -303,6 +304,10 @@ describe(prLinkedIssue.about.name, () => {
 			"pre-fix #1",
 			"prefixes #1",
 			"Builds on #1.",
+			"- [x] **Closes:** #1",
+			"**Fixes** #1",
+			"already **closed**: **#1**",
+			"[Fixes](https://example.com) #1",
 		])(
 			"reports when the body only has text GitHub wouldn't treat as a closing keyword: %s",
 			async (body) => {
