@@ -12,7 +12,8 @@ import { defineRule } from "./defineRule.js";
 // This helps the parser populate `parsed.type` correctly in more cases.
 const commitParser = new CommitParser({
 	// Matches: type, optional (scope), '!' and the subject
-	breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
+	breakingHeaderPattern: /^(\w*)(?:\(([^()]*)\))?!: (.*)$/,
+	headerPattern: /^(\w*)(?:\(([^()]*)\))?: (.*)$/,
 });
 
 export const prTitleConventional = defineRule({
