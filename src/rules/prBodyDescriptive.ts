@@ -2,12 +2,32 @@ import { findPrTemplate } from "../action/findPrTemplate.js";
 import { defineRule } from "./defineRule.js";
 
 /**
+ * A GitHub closing keyword and its trailing whitespace, such as `fixes ` or `Resolves: `.
+ */
+const closingKeyword = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?[ \t]+/;
+
+/**
+ * A GitHub issue, pull request, or discussion URL, such as
+ * `https://github.com/owner/repo/issues/123`,
+ * including any comment, file, or other path within it.
+ */
+const referenceUrl =
+	/https?:\/\/(?:www\.)?github\.com\/[\w.-]+\/[\w.-]+\/(?:discussions|issues|pull)\/\d+\b(?:[#/?][\w#/?=&%.~+:-]*)?/;
+
+/**
+ * A shorthand issue reference, such as `#123`, `owner/repo#123`, or `GH-123`.
+ */
+const referenceShorthand = /(?:[\w.-]+\/[\w.-]+)?#\d+\b|gh-\d+\b/;
+
+/**
  * Issue, pull request, and discussion references, such as `#123`,
  * `owner/repo#123`, `GH-123`, or `https://github.com/owner/repo/issues/123`,
  * along with any GitHub closing keyword directly before them (e.g. `fixes #123`).
  */
-const issueReferences =
-	/(?<![\w.-])(?:(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?):?[ \t]+)?(?:https?:\/\/(?:www\.)?github\.com\/[\w.-]+\/[\w.-]+\/(?:discussions|issues|pull)\/\d+\b(?:[#/?][\w#/?=&%.~+:-]*)?|(?:[\w.-]+\/[\w.-]+)?#\d+\b|gh-\d+\b)/gi;
+const issueReferences = new RegExp(
+	String.raw`(?<![\w.-])(?:${closingKeyword.source})?(?:${referenceUrl.source}|${referenceShorthand.source})`,
+	"gi",
+);
 
 export const prBodyDescriptive = defineRule({
 	about: {
