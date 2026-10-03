@@ -2,11 +2,11 @@ import type * as github from "@actions/github";
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { EntityActor } from "../actors/types.js";
-import type { CommentData, Entity, IssueEntity } from "../types/entities.js";
-import type { RuleReport } from "../types/reports.js";
+import type { EntityActor } from "../actors/types.ts";
+import type { CommentData, Entity, IssueEntity } from "../types/entities.ts";
+import type { RuleReport } from "../types/reports.ts";
 
-import { runOctoGuideAction } from "./runOctoGuideAction";
+import { runOctoGuideAction } from "./runOctoGuideAction.ts";
 
 const TEST_GITHUB_URL = "https://github.com/test/repo/issues/1";
 const TEST_GITHUB_TOKEN = "mock-token";
@@ -36,25 +36,25 @@ vi.mock("@actions/core", () => ({
 	},
 }));
 
-vi.mock("../index.js", () => ({
+vi.mock("../index.ts", () => ({
 	get runOctoGuideRules() {
 		return mockRunOctoGuideRules;
 	},
 }));
 
-vi.mock("../reporters/cliReporter.js", () => ({
+vi.mock("../reporters/cliReporter.ts", () => ({
 	get cliReporter() {
 		return mockCliReporter;
 	},
 }));
 
-vi.mock("./runCommentCleanup.js", () => ({
+vi.mock("./runCommentCleanup.ts", () => ({
 	get runCommentCleanup() {
 		return mockRunCommentCleanup;
 	},
 }));
 
-vi.mock("./comments/outputActionReports.js", () => ({
+vi.mock("./comments/outputActionReports.ts", () => ({
 	get outputActionReports() {
 		return mockOutputActionReports;
 	},

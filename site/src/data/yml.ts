@@ -1,4 +1,4 @@
-import { version } from "./package.js";
+import { version } from "./package.ts";
 
 const atVersion = `@${version}`;
 

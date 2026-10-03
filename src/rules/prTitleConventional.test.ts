@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { prTitleConventional } from "./prTitleConventional.js";
+import { testRule } from "../tests/testRule.ts";
+import { prTitleConventional } from "./prTitleConventional.ts";
 
 describe(prTitleConventional.about.name, () => {
 	it("reports when the pull request title is missing a type", async () => {

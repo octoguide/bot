@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
-import { DiscussionActor } from "./DiscussionActor.js";
+import { DiscussionActor } from "./DiscussionActor.ts";
 
 const mockPaginate = vi.fn();
 

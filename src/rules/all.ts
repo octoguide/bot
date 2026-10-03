@@ -1,12 +1,12 @@
-import { commentMeaningful } from "./commentMeaningful.js";
-import { prAutomationDetected } from "./prAutomationDetected.js";
-import { prBodyDescriptive } from "./prBodyDescriptive.js";
-import { prBranchNonDefault } from "./prBranchNonDefault.js";
-import { prLinkedIssue } from "./prLinkedIssue.js";
-import { prTaskCompletion } from "./prTaskCompletion.js";
-import { prTitleConventional } from "./prTitleConventional.js";
-import { textImageAltText } from "./textImageAltText.js";
-import { titleMeaningful } from "./titleMeaningful.js";
+import { commentMeaningful } from "./commentMeaningful.ts";
+import { prAutomationDetected } from "./prAutomationDetected.ts";
+import { prBodyDescriptive } from "./prBodyDescriptive.ts";
+import { prBranchNonDefault } from "./prBranchNonDefault.ts";
+import { prLinkedIssue } from "./prLinkedIssue.ts";
+import { prTaskCompletion } from "./prTaskCompletion.ts";
+import { prTitleConventional } from "./prTitleConventional.ts";
+import { textImageAltText } from "./textImageAltText.ts";
+import { titleMeaningful } from "./titleMeaningful.ts";
 
 export const allRules = [
 	commentMeaningful,

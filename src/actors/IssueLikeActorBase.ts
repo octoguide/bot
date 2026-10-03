@@ -1,6 +1,6 @@
-import type { CommentData, IssueLikeData } from "../types/entities.js";
+import type { CommentData, IssueLikeData } from "../types/entities.ts";
 
-import { EntityActorBase } from "./EntityActorBase.js";
+import { EntityActorBase } from "./EntityActorBase.ts";
 
 export abstract class IssueLikeActorBase<
 	Data extends CommentData | IssueLikeData,

@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import type { CommentEntity, DiscussionEntity } from "../types/entities.js";
+import type { CommentEntity, DiscussionEntity } from "../types/entities.ts";
 
-import { createHeadlineAsMarkdown } from "./createHeadlineAsMarkdown.js";
+import { createHeadlineAsMarkdown } from "./createHeadlineAsMarkdown.ts";
 
 const commentEntity = {
 	data: {

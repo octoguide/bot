@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { collectAuth } from "./collectAuth.js";
+import { collectAuth } from "./collectAuth.ts";
 
 const mockGetInput = vi.fn<(name: string) => string>();
 
