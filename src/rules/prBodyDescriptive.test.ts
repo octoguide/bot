@@ -294,7 +294,86 @@ describe(prBodyDescriptive.about.name, () => {
 		expect(report).not.toHaveBeenCalled();
 	});
 
-	it.each(["#123", "fixes #123", "- Closes owner/repo#123."])(
+	it.each([
+		["- [ ]", "- [x]"],
+		["- [ ]", "- [X]"],
+		["* [ ]", "+ [x]"],
+		["  - [ ]", "  - [x]"],
+		["1. [ ]", "1. [x]"],
+		["1) [ ]", "1) [x]"],
+	])(
+		"reports when the pull request only ticks task list items and adds an issue reference beyond the template: %s to %s",
+		async (templateMarker, bodyMarker) => {
+			const report = vi.fn();
+			const templateContent = `## Checklist\n\n${templateMarker} Fixes #000\n${templateMarker} Tests added\n\n## Description\n`;
+			const body = `## Checklist\n\n${bodyMarker} Fixes #123\n${bodyMarker} Tests added\n\n## Description\n`;
+
+			await testRule(
+				prBodyDescriptive,
+				{
+					data: {
+						body,
+					},
+					type: "pull_request",
+				},
+				{
+					octokit: {
+						graphql: vi.fn().mockResolvedValue({
+							repository: {
+								file0: { text: templateContent },
+							},
+						}) as unknown as Octokit["graphql"],
+					},
+					report,
+				},
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary:
+					"This PR's description doesn't contain any content beyond the template.",
+				suggestion: [
+					"Please add a description explaining the purpose and changes in this PR.",
+				],
+			});
+		},
+	);
+
+	it("does not report when the pull request ticks task list items and adds words beyond the template", async () => {
+		const report = vi.fn();
+		const templateContent =
+			"## Checklist\n\n- [ ] Fixes #000\n- [ ] Tests added\n\n## Description\n";
+		const body =
+			"## Checklist\n\n- [x] Fixes #123\n- [x] Tests added\n\n## Description\n\nUpdates the login logic.";
+
+		await testRule(
+			prBodyDescriptive,
+			{
+				data: {
+					body,
+				},
+				type: "pull_request",
+			},
+			{
+				octokit: {
+					graphql: vi.fn().mockResolvedValue({
+						repository: {
+							file0: { text: templateContent },
+						},
+					}) as unknown as Octokit["graphql"],
+				},
+				report,
+			},
+		);
+
+		expect(report).not.toHaveBeenCalled();
+	});
+
+	it.each([
+		"#123",
+		"fixes #123",
+		"- Closes owner/repo#123.",
+		"- [x] fixes #123",
+	])(
 		"reports when the pull request body is only an issue reference and no template exists: %s",
 		async (body) => {
 			const report = vi.fn();

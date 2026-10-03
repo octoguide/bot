@@ -29,6 +29,11 @@ const issueReferences = new RegExp(
 	"gi",
 );
 
+/**
+ * Task list item checkboxes, such as the `[x]` in `- [x] Tests added`.
+ */
+const taskListMarkers = /^([ \t]*(?:[-*+]|\d+[.)])[ \t]+)\[[ x]\](?!\S)/gim;
+
 export const prBodyDescriptive = defineRule({
 	about: {
 		config: "recommended",
@@ -84,5 +89,10 @@ export const prBodyDescriptive = defineRule({
 });
 
 function getWords(text: string) {
-	return text.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+	return (
+		text
+			.replaceAll(taskListMarkers, "$1")
+			.toLowerCase()
+			.match(/[\p{L}\p{N}]+/gu) ?? []
+	);
 }
