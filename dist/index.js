@@ -89483,18 +89483,15 @@ async function runCommentCleanup({ auth, payload, url, }) {
     if (payload.discussion) {
         info(`Deleting discussion comment with node id: ${existingComment.node_id}`);
         await octokit.graphql(`
-				mutation($body: String!, $commentId: ID!) {
-					deleteDiscussionComment(input: {
-						body: $body,
-						commentId: $commentId
-					}) {
+				mutation($id: ID!) {
+					deleteDiscussionComment(input: { id: $id }) {
 						comment {
 							id
 						}
 					}
 				}
 			`, {
-            commentId: existingComment.node_id,
+            id: existingComment.node_id,
         });
     }
     else {
