@@ -20,7 +20,9 @@
 		"octoguide": "bin/index.js"
 	},
 	"files": [
-		"lib/"
+		"lib/",
+		"!lib/**/*.test.*",
+		"!lib/tests/"
 	],
 	"scripts": {
 		"build": "tsc",
