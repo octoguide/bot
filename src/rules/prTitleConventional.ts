@@ -15,6 +15,60 @@ const commitParser = new CommitParser({
 	breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
 });
 
+/**
+ * Whether a title would pass this rule: it parses with a known type and subject.
+ */
+function isConventionalTitle(title: string) {
+	const parsed = commitParser.parse(title);
+
+	return (
+		!!parsed.type &&
+		Object.hasOwn(conventionalTypes.types, parsed.type) &&
+		!!parsed.subject
+	);
+}
+
+/**
+ * Attempts to fix a title that starts with a known type, but doesn't follow it
+ * with a colon and space, such as `fix(md) [headingIncrements]: subject`.
+ * @returns The title's type header and subject, if the fixed title would pass this rule.
+ */
+function fixTitleSyntax(title: string) {
+	const match = /^(\w+)\b(\s*\([^)]*\))?(!)?(.*)$/.exec(title);
+	if (!match) {
+		return undefined;
+	}
+
+	const [, rawType, rawScope = "", breaking = "", rest] = match;
+	const type = rawType.toLowerCase();
+	const scope = rawScope.trimStart();
+	const leadingColon = /^\s*:/;
+
+	if (
+		!Object.hasOwn(conventionalTypes.types, type) ||
+		rest.trimStart().startsWith("!")
+	) {
+		return undefined;
+	}
+
+	let subject: string;
+
+	if (leadingColon.test(rest)) {
+		subject = rest.replace(leadingColon, "");
+	} else if (breaking || (scope && scope === rawScope)) {
+		subject = rest.replace(/^\s*(\[[^\]]*\]):(?=\s|$)/, "$1");
+	} else {
+		return undefined;
+	}
+
+	const header = type + scope + breaking;
+	subject = subject.trim();
+
+	return isConventionalTitle(`${header}: ${subject || "etc."}`)
+		? { header, subject }
+		: undefined;
+}
+
 export const prTitleConventional = defineRule({
 	about: {
 		config: "strict",
@@ -28,6 +82,27 @@ export const prTitleConventional = defineRule({
 	pullRequest(context, entity) {
 		const parsed = commitParser.parse(entity.data.title);
 		if (!parsed.type) {
+			const fixed = fixTitleSyntax(entity.data.title);
+			if (fixed && !fixed.subject) {
+				context.report({
+					primary: `PR title is missing a subject after its type.`,
+					suggestion: [
+						`To resolve this report, add text after the type, like _"${fixed.header}: etc."_`,
+					],
+				});
+				return;
+			}
+
+			if (fixed) {
+				context.report({
+					primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
+					suggestion: [
+						`To resolve this report, follow conventional commit syntax, like _"${fixed.header}: ${fixed.subject}"_.`,
+					],
+				});
+				return;
+			}
+
 			context.report({
 				primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
 				suggestion: [
