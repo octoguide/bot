@@ -21,12 +21,29 @@ const commitParser = new CommitParser({
 const typeAliases = new Map([
 	["bug", "fix"],
 	["bugfix", "fix"],
+	["bugfixes", "fix"],
+	["bugs", "fix"],
+	["builds", "build"],
+	["built", "build"],
+	["chores", "chore"],
 	["doc", "docs"],
 	["documentation", "docs"],
+	["feats", "feat"],
 	["feature", "feat"],
+	["features", "feat"],
+	["fixed", "fix"],
+	["fixes", "fix"],
 	["hotfix", "fix"],
+	["hotfixes", "fix"],
 	["performance", "perf"],
+	["refactored", "refactor"],
 	["refactoring", "refactor"],
+	["refactors", "refactor"],
+	["reverted", "revert"],
+	["reverts", "revert"],
+	["styled", "style"],
+	["styles", "style"],
+	["tested", "test"],
 	["tests", "test"],
 ]);
 
@@ -67,6 +84,12 @@ export const prTitleConventional = defineRule({
 		}
 
 		if (!Object.hasOwn(conventionalTypes.types, parsed.type)) {
+			const secondary = [
+				`Known types are: ${Object.keys(conventionalTypes.types)
+					.sort()
+					.map((type) => `'${type}'`)
+					.join(", ")}`,
+			];
 			const intendedType = findIntendedType(parsed.type);
 			if (intendedType && parsed.subject) {
 				const scope = parsed.scope ? `(${parsed.scope})` : "";
@@ -78,6 +101,7 @@ export const prTitleConventional = defineRule({
 
 				context.report({
 					primary: `The PR title has an unknown type: '${parsed.type}'.`,
+					secondary,
 					suggestion: [
 						`To resolve this report, replace the current type with its known equivalent, like _"${intendedType}${scope}${breaking}: ${parsed.subject}"_.`,
 					],
@@ -87,12 +111,7 @@ export const prTitleConventional = defineRule({
 
 			context.report({
 				primary: `The PR title has an unknown type: '${parsed.type}'.`,
-				secondary: [
-					`Known types are: ${Object.keys(conventionalTypes.types)
-						.sort()
-						.map((type) => `'${type}'`)
-						.join(", ")}`,
-				],
+				secondary,
 				suggestion: [
 					parsed.subject
 						? `To resolve this report, replace the current type with one of those known types, like _"feat: ${parsed.subject}"_.`
