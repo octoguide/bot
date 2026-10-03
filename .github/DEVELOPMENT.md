@@ -33,6 +33,9 @@ Run [`@vercel/ncc`](https://github.com/vercel/ncc) to create an output `dist/` t
 pnpm build:release
 ```
 
+You don't need to commit changes to `dist/` in pull requests.
+The release process rebuilds it as part of each release commit.
+
 ## Formatting
 
 [Prettier](https://prettier.io) is used to format code.
