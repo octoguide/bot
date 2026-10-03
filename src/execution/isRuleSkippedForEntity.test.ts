@@ -20,6 +20,7 @@ describe("isRuleSkippedForEntity", () => {
 				user: { login: "test-user", type: "User" },
 			}),
 			{
+				"include-ais": false,
 				"include-associations": new Set(["CONTRIBUTOR"]),
 				"include-bots": false,
 			},
@@ -32,6 +33,7 @@ describe("isRuleSkippedForEntity", () => {
 		const actual = isRuleSkippedForEntity(
 			createIssueEntity({ author_association: "OWNER" }),
 			{
+				"include-ais": true,
 				"include-associations": new Set(["CONTRIBUTOR"]),
 				"include-bots": true,
 			},
@@ -43,7 +45,7 @@ describe("isRuleSkippedForEntity", () => {
 	it("returns true when the entity is from a bot and bots are excluded", () => {
 		const actual = isRuleSkippedForEntity(
 			createIssueEntity({ user: { login: "dependabot[bot]", type: "Bot" } }),
-			{ "include-bots": false },
+			{ "include-ais": true, "include-bots": false },
 		);
 
 		expect(actual).toBe(true);
@@ -52,9 +54,36 @@ describe("isRuleSkippedForEntity", () => {
 	it("returns false when the entity is from a bot and bots are included", () => {
 		const actual = isRuleSkippedForEntity(
 			createIssueEntity({ user: { login: "dependabot[bot]", type: "Bot" } }),
-			{ "include-bots": true },
+			{ "include-ais": false, "include-bots": true },
 		);
 
 		expect(actual).toBe(false);
+	});
+
+	it("returns true when the entity is from an AI agent and AI agents are excluded, even if bots are included", () => {
+		const actual = isRuleSkippedForEntity(
+			createIssueEntity({ user: { login: "Copilot", type: "Bot" } }),
+			{ "include-ais": false, "include-bots": true },
+		);
+
+		expect(actual).toBe(true);
+	});
+
+	it("returns false when the entity is from an AI agent and AI agents are included, even if bots are excluded", () => {
+		const actual = isRuleSkippedForEntity(
+			createIssueEntity({ user: { login: "Copilot", type: "Bot" } }),
+			{ "include-ais": true, "include-bots": false },
+		);
+
+		expect(actual).toBe(false);
+	});
+
+	it("returns true when the entity is from an AI agent, bots are excluded, and include-ais is not provided", () => {
+		const actual = isRuleSkippedForEntity(
+			createIssueEntity({ user: { login: "Copilot", type: "Bot" } }),
+			{ "include-bots": false },
+		);
+
+		expect(actual).toBe(true);
 	});
 });

@@ -59,6 +59,7 @@ describe("resolveRules", () => {
 		});
 
 		expect(actual).toEqual({
+			"include-ais": false,
 			"include-associations": new Set(["MEMBER", "NONE"]),
 			"include-bots": false,
 		});
@@ -84,6 +85,70 @@ describe("resolveRules", () => {
 		});
 
 		expect(actual?.["include-bots"]).toBe(true);
+	});
+
+	it("derives include-ais from a rule's default include-bots when include-ais is not provided", () => {
+		const actual = resolveRuleOptions("pr-automation-detected", {
+			options: { "include-bots": false },
+		});
+
+		expect(actual?.["include-ais"]).toBe(true);
+	});
+
+	it("prefers a global include-ais over a rule's default include-bots", () => {
+		const actual = resolveRuleOptions("pr-automation-detected", {
+			options: { "include-ais": false, "include-bots": false },
+		});
+
+		expect(actual).toEqual({
+			"include-ais": false,
+			"include-associations": undefined,
+			"include-bots": true,
+		});
+	});
+
+	it("applies a global include-ais of true even when bots are excluded", () => {
+		const actual = resolveRuleOptions("comment-meaningful", {
+			options: { "include-ais": true, "include-bots": false },
+		});
+
+		expect(actual).toEqual({
+			"include-ais": true,
+			"include-associations": undefined,
+			"include-bots": false,
+		});
+	});
+
+	it("prefers a global include-ais over a per-rule include-bots", () => {
+		const actual = resolveRuleOptions("comment-meaningful", {
+			options: { "include-ais": false, "include-bots": false },
+			rules: { "comment-meaningful": { "include-bots": true } },
+		});
+
+		expect(actual).toEqual({
+			"include-ais": false,
+			"include-associations": undefined,
+			"include-bots": true,
+		});
+	});
+
+	it("derives include-ais from a per-rule include-bots when include-ais is not provided", () => {
+		const actual = resolveRuleOptions("comment-meaningful", {
+			options: { "include-bots": false },
+			rules: { "comment-meaningful": { "include-bots": true } },
+		});
+
+		expect(actual?.["include-ais"]).toBe(true);
+	});
+
+	it("throws when a rule's options include include-ais", () => {
+		expect(() =>
+			resolveRules({
+				rules: { "comment-meaningful": { "include-ais": true } },
+			}),
+		).toThrow(
+			`"include-ais" can only be set as a top-level option, not in the "comment-meaningful" rule's options.`,
+		);
 	});
 
 	it("prefers per-rule options over a rule's default options", () => {

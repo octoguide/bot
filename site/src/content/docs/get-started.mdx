@@ -4,6 +4,7 @@ title: Get Started
 
 import { Code } from "@astrojs/starlight/components";
 
+import AILogins from "../../components/AILogins.astro";
 import {
 	getStartedBase,
 	getStartedStrict,
@@ -14,6 +15,7 @@ import {
 	getStartedRuleEnable,
 	getStartedRuleNone,
 	getStartedRuleOptions,
+	getStartedIncludeAIs,
 	getStartedIncludeBots,
 	getStartedIncludeAssociationsDefault,
 	getStartedIncludeCollaborators,
@@ -92,6 +94,7 @@ necessarily need to follow the same contribution guidelines as human contributor
 
 Bot detection works by checking if the entity creator's `user.type` field is `"Bot"`,
 which is the standard way GitHub identifies bot accounts and GitHub Apps.
+Known AI agents are bots too, so `include-bots` also applies to them unless [`include-ais`](#include-ais) is set.
 
 If you want OctoGuide to run rules on bot-created entities and comments, you can
 enable this by setting `include-bots` to `"true"`:
@@ -109,6 +112,35 @@ enable this by setting `include-bots` to `"true"`:
 Every rule supports the `include-associations` and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 :::
+
+### `include-ais`
+
+Known AI agents, such as GitHub Copilot, Claude, Cursor, and Devin, are also bots.
+`include-ais` controls whether OctoGuide runs rules on entities and comments they create,
+separately from other bots.
+
+For example, to hold AI agents to the same contribution guidelines as humans while still skipping other bots such as Dependabot and Renovate:
+
+<Code
+	code={getStartedIncludeAIs}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+OctoGuide considers the following bot accounts to be known AI agents:
+
+<AILogins />
+
+These include AI code review bots such as CodeRabbit and Gemini Code Assist,
+so setting `include-ais` to `"true"` also runs comment rules on the comments they post.
+
+If `include-ais` isn't set, AI agents follow each rule's `include-bots`, whether it comes from the top-level input, per-rule options, or the rule's own default options.
+If it is set, it applies to AI agents for every rule, regardless of `include-bots`.
+For example, setting `include-ais` to `"false"` stops [`pr-automation-detected`](/rules/pr-automation-detected) from checking pull requests opened by AI agents, even though that rule runs on bots by default.
+
+`include-ais` is only a top-level input.
+Unlike `include-associations` and `include-bots`, it can't be set in a rule's [options](#rule-options), and OctoGuide fails with an error if it is.
 
 ### `include-associations`
 

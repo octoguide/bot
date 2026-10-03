@@ -113,7 +113,15 @@ export interface RuleOptions {
 	"include-associations"?: Set<string>;
 
 	/**
+	 * Whether the rule runs on entities created by known AI agents.
+	 * Resolved from the top-level `include-ais` setting if it's provided.
+	 * Otherwise, and if this is omitted, `include-bots` applies to AI agents.
+	 */
+	"include-ais"?: boolean;
+
+	/**
 	 * Whether the rule runs on entities created by bots.
+	 * Also applies to known AI agents, unless `include-ais` is set.
 	 */
 	"include-bots": boolean;
 }
@@ -132,6 +140,7 @@ export interface RuleOptionsRaw {
 
 	/**
 	 * Whether the rule runs on entities created by bots.
+	 * Also applies to known AI agents, unless the top-level `include-ais` is set.
 	 */
 	"include-bots"?: boolean;
 }

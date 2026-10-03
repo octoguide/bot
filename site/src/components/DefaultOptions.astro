@@ -39,6 +39,16 @@ const entries = Object.entries(defaultOptions);
 				</li>
 			))}
 		</ul>
+		{"include-bots" in defaultOptions && (
+			<p>
+				The default <code>include-bots</code> also applies to known AI agents,
+				unless the top-level{" "}
+				<a href="/get-started#include-ais">
+					<code>include-ais</code>
+				</a>{" "}
+				input is set.
+			</p>
+		)}
 		<p>
 			Those defaults are equivalent to the following{" "}
 			<a href="/get-started#rule-options">rule options</a>. Changing a value

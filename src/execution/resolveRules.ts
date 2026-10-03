@@ -19,6 +19,7 @@ export function resolveRules(settings: Settings = {}): RuleAndOptions[] {
 	const configRuleNames = new Set(
 		configs[settings.config ?? "recommended"].map((rule) => rule.about.name),
 	);
+	const { "include-ais": includeAIs, ...options } = settings.options ?? {};
 	const overrides: Record<string, boolean | RuleOptionsRaw | undefined> =
 		settings.rules ?? {};
 
@@ -30,16 +31,36 @@ export function resolveRules(settings: Settings = {}): RuleAndOptions[] {
 				? configRuleNames.has(rule.about.name)
 				: !!override;
 		})
-		.map((rule) => ({
-			options: mergeRuleOptions(
-				settings.options,
+		.map((rule) => {
+			const merged = mergeRuleOptions(
+				options,
 				rule.about.defaultOptions,
-				asRuleOptions(overrides[rule.about.name]),
-			),
-			rule,
-		}));
+				asRuleOptions(rule.about.name, overrides[rule.about.name]),
+			);
+
+			return {
+				options: {
+					...merged,
+					"include-ais": includeAIs ?? merged["include-bots"],
+				},
+				rule,
+			};
+		});
 }
 
-function asRuleOptions(override: boolean | RuleOptionsRaw | undefined) {
-	return typeof override === "object" ? override : undefined;
+function asRuleOptions(
+	ruleName: string,
+	override: boolean | RuleOptionsRaw | undefined,
+) {
+	if (typeof override !== "object") {
+		return undefined;
+	}
+
+	if (override["include-ais"] !== undefined) {
+		throw new Error(
+			`"include-ais" can only be set as a top-level option, not in the "${ruleName}" rule's options.`,
+		);
+	}
+
+	return override;
 }

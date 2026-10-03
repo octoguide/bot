@@ -2,6 +2,7 @@ import type { Entity } from "../types/entities.js";
 import type { RuleOptions } from "../types/rules.js";
 
 import { isEntityAssociationIncluded } from "./isEntityAssociationIncluded.js";
+import { isEntityFromAI } from "./isEntityFromAI.js";
 import { isEntityFromBot } from "./isEntityFromBot.js";
 
 export function isRuleSkippedForEntity(entity: Entity, options: RuleOptions) {
@@ -9,5 +10,12 @@ export function isRuleSkippedForEntity(entity: Entity, options: RuleOptions) {
 		return true;
 	}
 
-	return !options["include-bots"] && isEntityFromBot(entity);
+	const includeBots = options["include-bots"];
+	const includeAIs = options["include-ais"] ?? includeBots;
+
+	if (includeAIs !== includeBots && isEntityFromAI(entity)) {
+		return !includeAIs;
+	}
+
+	return !includeBots && isEntityFromBot(entity);
 }

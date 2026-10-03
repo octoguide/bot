@@ -139,6 +139,15 @@ export const getStartedRuleOptions = `jobs:
 +              }
 +            }`;
 
+export const getStartedIncludeAIs = `jobs:
+  octoguide:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: OctoGuide/bot${atVersion}
+        with:
+          github-token: \${{ secrets.GITHUB_TOKEN }}
++          include-ais: "true"`;
+
 export const getStartedIncludeBots = `jobs:
   octoguide:
 
