@@ -213,7 +213,6 @@ describe("runOctoGuideRules", () => {
 				number: 1,
 				type: "issue",
 			},
-			excludedReports: [],
 			reports: [],
 		});
 
@@ -249,7 +248,6 @@ describe("runOctoGuideRules", () => {
 				number: 1,
 				type: "issue",
 			},
-			excludedReports: [],
 			reports: [],
 		});
 
@@ -338,7 +336,6 @@ describe("runOctoGuideRules", () => {
 				number: 1,
 				type: "issue",
 			},
-			excludedReports: [],
 			reports: [],
 		});
 
@@ -386,7 +383,6 @@ describe("runOctoGuideRules", () => {
 				number: 1,
 				type: "pr",
 			},
-			excludedReports: [],
 			reports: [],
 		});
 
@@ -439,7 +435,6 @@ describe("runOctoGuideRules", () => {
 		expect(result).toEqual({
 			actor: mockActor,
 			entity: entityInput,
-			excludedReports: [],
 			reports: [],
 		});
 
@@ -533,7 +528,7 @@ describe("runOctoGuideRules", () => {
 			});
 		});
 
-		it("separates reports by whether each rule's merged options include the editor", async () => {
+		it("runs rules that include either the entity's author or the editor", async () => {
 			const result = await runOctoGuideRules({
 				editor: { login: "collaborator", type: "User" },
 				entity: createEntity("CONTRIBUTOR"),
@@ -554,8 +549,10 @@ describe("runOctoGuideRules", () => {
 				"comment-meaningful",
 				"pr-body-descriptive",
 			]);
-			expect(getNames(result.reports)).toEqual(["pr-body-descriptive"]);
-			expect(getNames(result.excludedReports)).toEqual(["comment-meaningful"]);
+			expect(getNames(result.reports)).toEqual([
+				"comment-meaningful",
+				"pr-body-descriptive",
+			]);
 		});
 
 		it("runs rules whose default options include the editor even when the author is excluded", async () => {
@@ -574,35 +571,37 @@ describe("runOctoGuideRules", () => {
 
 			expect(getRunNames()).toEqual(["text-image-alt-text"]);
 			expect(getNames(result.reports)).toEqual(["text-image-alt-text"]);
-			expect(result.excludedReports).toEqual([]);
 		});
 
 		it("treats the repository owner as an OWNER editor", async () => {
-			const result = await runOctoGuideRules({
+			await runOctoGuideRules({
 				editor: { login: "test-owner", type: "User" },
-				entity: createEntity("CONTRIBUTOR"),
+				entity: createEntity("FIRST_TIMER"),
 				settings: {
 					config: "none",
-					options: { "include-associations": ["COLLABORATOR", "MEMBER"] },
+					options: { "include-associations": ["CONTRIBUTOR"] },
 					rules: {
-						"comment-meaningful": true,
+						"comment-meaningful": {
+							"include-associations": ["COLLABORATOR", "MEMBER"],
+						},
 						"pr-body-descriptive": { "include-associations": ["OWNER"] },
 					},
 				},
 			});
 
 			expect(getRunNames()).toEqual(["pr-body-descriptive"]);
-			expect(getNames(result.reports)).toEqual(["pr-body-descriptive"]);
-			expect(result.excludedReports).toEqual([]);
 		});
 
 		it("includes bot editors based on each rule's include-bots", async () => {
-			const result = await runOctoGuideRules({
+			await runOctoGuideRules({
 				editor: { login: "renovate[bot]", type: "Bot" },
-				entity: createEntity("CONTRIBUTOR"),
+				entity: createEntity("OWNER"),
 				settings: {
 					config: "none",
-					options: { "include-bots": false },
+					options: {
+						"include-associations": ["CONTRIBUTOR"],
+						"include-bots": false,
+					},
 					rules: {
 						"comment-meaningful": true,
 						"pr-automation-detected": true,
@@ -611,11 +610,10 @@ describe("runOctoGuideRules", () => {
 				},
 			});
 
-			expect(getNames(result.reports)).toEqual([
+			expect(getRunNames()).toEqual([
 				"pr-body-descriptive",
 				"pr-automation-detected",
 			]);
-			expect(getNames(result.excludedReports)).toEqual(["comment-meaningful"]);
 		});
 
 		it("skips rules that exclude the entity's bot author, even when they include the editor", async () => {
@@ -637,11 +635,10 @@ describe("runOctoGuideRules", () => {
 
 			expect(mockRunRuleOnEntity).not.toHaveBeenCalled();
 			expect(result.reports).toEqual([]);
-			expect(result.excludedReports).toEqual([]);
 		});
 
 		it("checks the editor for rules that include the entity's bot author", async () => {
-			const result = await runOctoGuideRules({
+			await runOctoGuideRules({
 				editor: { login: "collaborator", type: "User" },
 				entity: createEntity("CONTRIBUTOR", {
 					login: "renovate[bot]",
@@ -650,7 +647,7 @@ describe("runOctoGuideRules", () => {
 				settings: {
 					config: "none",
 					options: {
-						"include-associations": ["CONTRIBUTOR"],
+						"include-associations": ["FIRST_TIMER"],
 						"include-bots": false,
 					},
 					rules: {
@@ -664,8 +661,7 @@ describe("runOctoGuideRules", () => {
 				},
 			});
 
-			expect(getNames(result.reports)).toEqual(["pr-body-descriptive"]);
-			expect(getNames(result.excludedReports)).toEqual(["comment-meaningful"]);
+			expect(getRunNames()).toEqual(["pr-body-descriptive"]);
 		});
 	});
 });

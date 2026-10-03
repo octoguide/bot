@@ -150,18 +150,21 @@ ensuring that users with no association still have rules enforced.
 
 #### Edits by other users
 
-When someone edits the title or body of another user's entity or comment, OctoGuide treats that edit as coming from the editor.
-Other edits, such as changing a pull request's base branch, are still treated as coming from the original author.
+When someone edits the title or body of another user's entity or comment, OctoGuide checks the content from both before and after the edit:
 
-Each rule checks the editor against its own options, including any per-rule overrides and rule defaults:
+- Reports that were already there before the edit, from the same rule with the same message, are attributed to the original author.
+  They're only kept by rules that include the author.
+- Reports introduced by the edit are attributed to the editor.
+  They're only kept by rules that include the editor.
 
-- Editing someone else's content requires write access, so a user editor is considered to be an `OWNER` if they own the repository, or a `COLLABORATOR` or `MEMBER` otherwise.
-- A bot editor isn't checked against `include-associations`, and is only included by rules whose [`include-bots`](#include-bots) settings would include that bot as an author.
-- Content created by a bot stays skipped by rules whose [`include-bots`](#include-bots) settings skip that bot, even when a user edits it.
+OctoGuide's comment lists all kept reports and mentions everyone they're attributed to.
+If no reports are kept, OctoGuide marks any existing comment as resolved.
 
-OctoGuide's comment for the edit lists only reports from rules that include the editor, and mentions the editor rather than the original author.
-If the only reports come from rules that exclude the editor but include the original author, OctoGuide leaves any existing comment as-is rather than updating or resolving it.
-If there are no reports at all, OctoGuide marks any existing comment as resolved.
+Editing someone else's content requires write access, so a user editor is considered to be an `OWNER` if they own the repository, or a `COLLABORATOR` or `MEMBER` otherwise.
+A bot editor isn't checked against `include-associations`, and is only included by rules whose [`include-bots`](#include-bots) settings would include that bot as an author.
+Content created by a bot stays skipped by rules whose [`include-bots`](#include-bots) settings skip that bot, even when a user edits it.
+
+Other edits, such as changing a pull request's base branch, are treated as coming from the original author.
 
 #### Including collaborators and owners
 

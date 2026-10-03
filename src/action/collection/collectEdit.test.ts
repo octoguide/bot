@@ -8,16 +8,22 @@ import type {
 	PullRequestData,
 } from "../../types/entities.js";
 
-import { collectEditor } from "./collectEditor.js";
+import { collectEdit } from "./collectEdit.js";
 
 const entity: Entity = {
-	data: { user: { login: "author" } } as PartialDeep<IssueData> as IssueData,
+	data: {
+		body: "New body.",
+		title: "New title",
+		user: { login: "author" },
+	} as PartialDeep<IssueData> as IssueData,
 	number: 1,
 	type: "issue",
 };
 
 const pullRequestEntity: Entity = {
 	data: {
+		body: "New body.",
+		title: "New title",
 		user: { login: "author" },
 	} as PartialDeep<PullRequestData> as PullRequestData,
 	number: 1,
@@ -26,9 +32,9 @@ const pullRequestEntity: Entity = {
 
 const bodyChanges = { body: { from: "Old body." } };
 
-describe("collectEditor", () => {
+describe("collectEdit", () => {
 	it("returns undefined when the payload is not an edit", () => {
-		const actual = collectEditor(
+		const actual = collectEdit(
 			{ action: "opened", sender: { login: "other", type: "User" } },
 			entity,
 		);
@@ -37,7 +43,7 @@ describe("collectEditor", () => {
 	});
 
 	it("returns undefined when the payload has no sender", () => {
-		const actual = collectEditor(
+		const actual = collectEdit(
 			{ action: "edited", changes: bodyChanges },
 			entity,
 		);
@@ -46,7 +52,7 @@ describe("collectEditor", () => {
 	});
 
 	it("returns undefined when the entity is edited by its author", () => {
-		const actual = collectEditor(
+		const actual = collectEdit(
 			{
 				action: "edited",
 				changes: bodyChanges,
@@ -59,7 +65,7 @@ describe("collectEditor", () => {
 	});
 
 	it("returns undefined when the payload has no changes", () => {
-		const actual = collectEditor(
+		const actual = collectEdit(
 			{ action: "edited", sender: { login: "other", type: "User" } },
 			entity,
 		);
@@ -68,7 +74,7 @@ describe("collectEditor", () => {
 	});
 
 	it("returns undefined when a pull request's base is the only change", () => {
-		const actual = collectEditor(
+		const actual = collectEdit(
 			{
 				action: "edited",
 				changes: { base: { ref: { from: "old" }, sha: { from: "abc123" } } },
@@ -80,8 +86,8 @@ describe("collectEditor", () => {
 		expect(actual).toBeUndefined();
 	});
 
-	it("returns the editor when someone other than the author edits the body", () => {
-		const actual = collectEditor(
+	it("returns the editor and the previous body when someone other than the author edits the body", () => {
+		const actual = collectEdit(
 			{
 				action: "edited",
 				changes: bodyChanges,
@@ -90,11 +96,17 @@ describe("collectEditor", () => {
 			entity,
 		);
 
-		expect(actual).toEqual({ login: "other", type: "User" });
+		expect(actual).toEqual({
+			editor: { login: "other", type: "User" },
+			previous: {
+				...entity,
+				data: { ...entity.data, body: "Old body." },
+			},
+		});
 	});
 
-	it("returns the editor when someone other than the author edits a pull request's title", () => {
-		const actual = collectEditor(
+	it("returns the editor and the previous title when someone other than the author edits a pull request's title", () => {
+		const actual = collectEdit(
 			{
 				action: "edited",
 				changes: { title: { from: "Old title" } },
@@ -103,19 +115,52 @@ describe("collectEditor", () => {
 			pullRequestEntity,
 		);
 
-		expect(actual).toEqual({ login: "other", type: "User" });
+		expect(actual).toEqual({
+			editor: { login: "other", type: "User" },
+			previous: {
+				...pullRequestEntity,
+				data: { ...pullRequestEntity.data, title: "Old title" },
+			},
+		});
 	});
 
-	it("returns the editor when someone other than the author edits a pull request's body and base", () => {
-		const actual = collectEditor(
+	it("returns the editor and the previous body and title when someone other than the author edits a pull request's body, title, and base", () => {
+		const actual = collectEdit(
 			{
 				action: "edited",
-				changes: { ...bodyChanges, base: { ref: { from: "old" } } },
+				changes: {
+					...bodyChanges,
+					base: { ref: { from: "old" } },
+					title: { from: "Old title" },
+				},
 				sender: { login: "renovate[bot]", type: "Bot" },
 			},
 			pullRequestEntity,
 		);
 
-		expect(actual).toEqual({ login: "renovate[bot]", type: "Bot" });
+		expect(actual).toEqual({
+			editor: { login: "renovate[bot]", type: "Bot" },
+			previous: {
+				...pullRequestEntity,
+				data: {
+					...pullRequestEntity.data,
+					body: "Old body.",
+					title: "Old title",
+				},
+			},
+		});
+	});
+
+	it("does not modify the entity when creating its previous version", () => {
+		collectEdit(
+			{
+				action: "edited",
+				changes: bodyChanges,
+				sender: { login: "other", type: "User" },
+			},
+			entity,
+		);
+
+		expect(entity.data.body).toBe("New body.");
 	});
 });

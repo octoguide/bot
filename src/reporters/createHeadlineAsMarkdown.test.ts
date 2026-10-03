@@ -73,11 +73,31 @@ describe(createHeadlineAsMarkdown, () => {
 		);
 	});
 
-	test("named comment with a different mention", () => {
-		const actual = createHeadlineAsMarkdown(commentEntity, [{}], "editor");
+	test("named comment with a different login", () => {
+		const actual = createHeadlineAsMarkdown(commentEntity, [{}], ["editor"]);
 
 		expect(actual).toMatchInlineSnapshot(
 			`"👋 Hi @editor, thanks for the [comment](github.com/owner/repo/discussions/123#discussioncomment-456 "comment 123 reported by OctoGuide")! A scan flagged a concern with it. Could you please take a look?"`,
+		);
+	});
+
+	test("named comment with two logins", () => {
+		const actual = createHeadlineAsMarkdown(
+			commentEntity,
+			[{}, {}],
+			["test-user", "editor"],
+		);
+
+		expect(actual).toMatchInlineSnapshot(
+			`"👋 Hi @test-user and @editor, thanks for the [comment](github.com/owner/repo/discussions/123#discussioncomment-456 "comment 123 reported by OctoGuide")! A scan flagged some concerns with it. Could you please take a look?"`,
+		);
+	});
+
+	test("named comment with no logins", () => {
+		const actual = createHeadlineAsMarkdown(commentEntity, [{}], []);
+
+		expect(actual).toMatchInlineSnapshot(
+			`"👋 Hi, thanks for the [comment](github.com/owner/repo/discussions/123#discussioncomment-456 "comment 123 reported by OctoGuide")! A scan flagged a concern with it. Could you please take a look?"`,
 		);
 	});
 });
