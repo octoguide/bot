@@ -19,6 +19,7 @@ export function resolveRules(settings: Settings = {}): RuleAndOptions[] {
 	const configRuleNames = new Set(
 		configs[settings.config ?? "recommended"].map((rule) => rule.about.name),
 	);
+	const { "include-ais": includeAIs, ...options } = settings.options ?? {};
 	const overrides: Record<string, boolean | RuleOptionsRaw | undefined> =
 		settings.rules ?? {};
 
@@ -31,35 +32,35 @@ export function resolveRules(settings: Settings = {}): RuleAndOptions[] {
 				: !!override;
 		})
 		.map((rule) => {
-			const override = asRuleOptions(overrides[rule.about.name]);
+			const merged = mergeRuleOptions(
+				options,
+				rule.about.defaultOptions,
+				asRuleOptions(rule.about.name, overrides[rule.about.name]),
+			);
 
 			return {
-				options: mergeRuleOptions(
-					settings.options,
-					getDefaultOptions(rule, override),
-					override,
-				),
+				options: {
+					...merged,
+					"include-ais": includeAIs ?? merged["include-bots"],
+				},
 				rule,
 			};
 		});
 }
 
-function asRuleOptions(override: boolean | RuleOptionsRaw | undefined) {
-	return typeof override === "object" ? override : undefined;
-}
-
-/**
- * Gets a rule's default options, without its default `include-ais` if the
- * user's options for the rule set `include-bots` but not `include-ais`.
- * @remarks This way, a user's `include-bots` for a rule still applies to AI
- * agents, rather than being overridden by the rule's own defaults.
- */
-function getDefaultOptions(
-	rule: Rule<RuleAboutWithUrl>,
-	override: RuleOptionsRaw | undefined,
+function asRuleOptions(
+	ruleName: string,
+	override: boolean | RuleOptionsRaw | undefined,
 ) {
-	return override?.["include-bots"] !== undefined &&
-		override["include-ais"] === undefined
-		? { ...rule.about.defaultOptions, "include-ais": undefined }
-		: rule.about.defaultOptions;
+	if (typeof override !== "object") {
+		return undefined;
+	}
+
+	if (override["include-ais"] !== undefined) {
+		throw new Error(
+			`"include-ais" can only be set as a top-level option, not in the "${ruleName}" rule's options.`,
+		);
+	}
+
+	return override;
 }

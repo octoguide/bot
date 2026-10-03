@@ -114,14 +114,14 @@ export interface RuleOptions {
 
 	/**
 	 * Whether the rule runs on entities created by known AI agents.
-	 * OctoGuide always sets this when resolving options for a run;
-	 * if it's omitted, the value of `include-bots` is used instead.
+	 * Resolved from the top-level `include-ais` setting if it's provided.
+	 * Otherwise, and if this is omitted, `include-bots` applies to AI agents.
 	 */
 	"include-ais"?: boolean;
 
 	/**
 	 * Whether the rule runs on entities created by bots.
-	 * AI agents are controlled by `include-ais`, which defaults to this value.
+	 * Also applies to known AI agents, unless `include-ais` is set.
 	 */
 	"include-bots": boolean;
 }
@@ -139,14 +139,8 @@ export interface RuleOptionsRaw {
 	"include-associations"?: string[];
 
 	/**
-	 * Whether the rule runs on entities created by known AI agents.
-	 * Defaults to the value of `include-bots`.
-	 */
-	"include-ais"?: boolean;
-
-	/**
 	 * Whether the rule runs on entities created by bots.
-	 * AI agents are controlled by `include-ais`, which defaults to this value.
+	 * Also applies to known AI agents, unless the top-level `include-ais` is set.
 	 */
 	"include-bots"?: boolean;
 }

@@ -7,7 +7,6 @@ describe("mergeRuleOptions", () => {
 		const actual = mergeRuleOptions();
 
 		expect(actual).toEqual({
-			"include-ais": true,
 			"include-associations": undefined,
 			"include-bots": true,
 		});
@@ -17,7 +16,6 @@ describe("mergeRuleOptions", () => {
 		const actual = mergeRuleOptions({ "include-associations": ["MEMBER"] });
 
 		expect(actual).toEqual({
-			"include-ais": true,
 			"include-associations": new Set(["MEMBER", "NONE"]),
 			"include-bots": true,
 		});
@@ -30,7 +28,6 @@ describe("mergeRuleOptions", () => {
 		);
 
 		expect(actual).toEqual({
-			"include-ais": false,
 			"include-associations": new Set(["NONE", "OWNER"]),
 			"include-bots": false,
 		});
@@ -44,7 +41,6 @@ describe("mergeRuleOptions", () => {
 		);
 
 		expect(actual).toEqual({
-			"include-ais": false,
 			"include-associations": new Set(["MEMBER", "NONE"]),
 			"include-bots": false,
 		});
@@ -54,23 +50,9 @@ describe("mergeRuleOptions", () => {
 		const actual = mergeRuleOptions({ labels: ["bug"] });
 
 		expect(actual).toEqual({
-			"include-ais": true,
 			"include-associations": undefined,
 			"include-bots": true,
 			labels: ["bug"],
-		});
-	});
-
-	it("prefers an explicit include-ais over include-bots", () => {
-		const actual = mergeRuleOptions(
-			{ "include-ais": true },
-			{ "include-bots": false },
-		);
-
-		expect(actual).toEqual({
-			"include-ais": true,
-			"include-associations": undefined,
-			"include-bots": false,
 		});
 	});
 });

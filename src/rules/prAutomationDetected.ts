@@ -11,7 +11,6 @@ export const prAutomationDetected = defineRule({
 	about: {
 		config: "recommended",
 		defaultOptions: {
-			"include-ais": true,
 			"include-bots": true,
 		},
 		description: "PRs labeled as automated or AI-generated should be closed.",

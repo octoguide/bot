@@ -14,14 +14,12 @@ export function mergeRuleOptions(
 	}
 
 	const includeAssociations = merged["include-associations"];
-	const includeBots = merged["include-bots"] ?? true;
 
 	return {
 		...merged,
-		"include-ais": merged["include-ais"] ?? includeBots,
 		"include-associations": includeAssociations
 			? new Set(["NONE", ...includeAssociations])
 			: undefined,
-		"include-bots": includeBots,
+		"include-bots": merged["include-bots"] ?? true,
 	};
 }
