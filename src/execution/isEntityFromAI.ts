@@ -27,5 +27,5 @@ export const aiLogins = new Set([
 ]);
 
 export function isEntityFromAI(entity: Entity) {
-	return isEntityFromBot(entity) && aiLogins.has(entity.data.user?.login ?? "");
+	return isEntityFromBot(entity) && aiLogins.has(entity.data.user.login);
 }
