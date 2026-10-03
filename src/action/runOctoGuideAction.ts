@@ -10,7 +10,6 @@ import { collectEntityInput } from "./collection/collectEntityInput.js";
 import { collectSettings } from "./collection/collectSettings.js";
 import { collectTarget } from "./collection/collectTarget.js";
 import { outputActionReports } from "./comments/outputActionReports.js";
-import { isEditorIncluded } from "./isEditorIncluded.js";
 import { runCommentCleanup } from "./runCommentCleanup.js";
 
 export async function runOctoGuideAction(context: typeof github.context) {
@@ -31,18 +30,9 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	const settings = collectSettings();
 	const editor = collectEditor(payload, entityInput);
 
-	if (
-		editor &&
-		!isEditorIncluded(editor, context.repo.owner, settings.options)
-	) {
-		core.info(
-			`Skipping edit by ${editor.login}, who is not included by settings.`,
-		);
-		return;
-	}
-
-	const { actor, entity, reports } = await runOctoGuideRules({
+	const { actor, entity, excludedReports, reports } = await runOctoGuideRules({
 		auth,
+		editor,
 		entity: entityInput,
 		settings,
 	});
@@ -50,6 +40,11 @@ export async function runOctoGuideAction(context: typeof github.context) {
 	if (reports.length) {
 		core.info(`Found ${reports.length} report(s).`);
 		console.log(cliReporter(reports));
+	} else if (excludedReports.length) {
+		core.info(
+			`Found ${excludedReports.length} report(s), all from rules that exclude the editor. Leaving any existing comment as-is.`,
+		);
+		return;
 	} else {
 		core.info("Found 0 reports. Great! ✅");
 	}

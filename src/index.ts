@@ -17,6 +17,7 @@ export type {
 	CommentEntity,
 	DiscussionEntity,
 	Entity,
+	EntityEditor,
 	IssueEntity,
 	PullRequestEntity,
 } from "./types/entities.js";
