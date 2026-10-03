@@ -148,7 +148,7 @@ describe("runOctoGuideRules", () => {
 	it("should use the authentication token when provided", async () => {
 		const mockOctokit = createMockOctokit();
 
-		mockCreatedActor({ getData: vi.fn().mockResolvedValue({}) }, mockOctokit);
+		mockCreatedActor({ getData: vi.fn() }, mockOctokit);
 
 		await runOctoGuideRules({
 			auth: "test-token",

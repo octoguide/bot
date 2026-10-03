@@ -87,6 +87,36 @@ describe("resolveRules", () => {
 		expect(actual?.["include-bots"]).toBe(true);
 	});
 
+	it("keeps AI agents included for pr-automation-detected when global options exclude AI agents", () => {
+		const actual = resolveRuleOptions("pr-automation-detected", {
+			options: { "include-ais": false, "include-bots": false },
+		});
+
+		expect(actual?.["include-ais"]).toBe(true);
+	});
+
+	it("prefers a global include-ais over a per-rule include-bots", () => {
+		const actual = resolveRuleOptions("comment-meaningful", {
+			options: { "include-ais": false, "include-bots": false },
+			rules: { "comment-meaningful": { "include-bots": true } },
+		});
+
+		expect(actual).toEqual({
+			"include-ais": false,
+			"include-associations": undefined,
+			"include-bots": true,
+		});
+	});
+
+	it("derives include-ais from a per-rule include-bots when include-ais is not provided", () => {
+		const actual = resolveRuleOptions("comment-meaningful", {
+			options: { "include-bots": false },
+			rules: { "comment-meaningful": { "include-bots": true } },
+		});
+
+		expect(actual?.["include-ais"]).toBe(true);
+	});
+
 	it("prefers per-rule options over a rule's default options", () => {
 		const actual = resolveRuleOptions("text-image-alt-text", {
 			rules: { "text-image-alt-text": { "include-associations": ["MEMBER"] } },

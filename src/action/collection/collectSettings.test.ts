@@ -51,6 +51,14 @@ describe("collectSettings", () => {
 		expect(() => collectSettings()).toThrow('Could not parse "rules" input:');
 	});
 
+	it("parses include-ais as true when it is provided as true", () => {
+		mockInputs({ "include-ais": "true" });
+
+		const actual = collectSettings();
+
+		expect(actual.options?.["include-ais"]).toBe(true);
+	});
+
 	it("returns customized settings when inputs are provided", () => {
 		mockInputs({
 			"comment-footer": "Custom footer!",

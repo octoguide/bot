@@ -1,0 +1,11 @@
+---
+import { aiLogins } from "../../../src/execution/isEntityFromAI.js";
+---
+
+<ul>
+	{[...aiLogins].map((login) => (
+		<li>
+			<code>{login}</code>
+		</li>
+	))}
+</ul>

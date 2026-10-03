@@ -21,6 +21,14 @@ describe("isEntityFromAI", () => {
 		expect(actual).toBe(true);
 	});
 
+	it("returns true when the entity's user is a known AI agent with a [bot] login", () => {
+		const actual = isEntityFromAI(
+			createIssueEntity({ user: { login: "claude[bot]", type: "Bot" } }),
+		);
+
+		expect(actual).toBe(true);
+	});
+
 	it("returns false when the entity's user is a bot that is not a known AI agent", () => {
 		const actual = isEntityFromAI(
 			createIssueEntity({ user: { login: "dependabot[bot]", type: "Bot" } }),

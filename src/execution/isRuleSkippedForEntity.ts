@@ -10,9 +10,12 @@ export function isRuleSkippedForEntity(entity: Entity, options: RuleOptions) {
 		return true;
 	}
 
-	if (isEntityFromAI(entity)) {
-		return !options["include-ais"];
+	const includeBots = options["include-bots"];
+	const includeAIs = options["include-ais"] ?? includeBots;
+
+	if (includeAIs !== includeBots && isEntityFromAI(entity)) {
+		return !includeAIs;
 	}
 
-	return !options["include-bots"] && isEntityFromBot(entity);
+	return !includeBots && isEntityFromBot(entity);
 }
