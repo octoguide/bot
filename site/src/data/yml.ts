@@ -1,3 +1,5 @@
+import type { ConfigName } from "../../../src/types/core.js";
+
 import { version } from "./package.js";
 
 const atVersion = `@${version}`;
@@ -85,18 +87,22 @@ export const getStartedRuleDisable = `jobs:
 +              "comment-meaningful": false
 +            }`;
 
-export const getStartedRuleEnable = `jobs:
+export const getRuleEnabled = (ruleName: string, config?: ConfigName) => `jobs:
   octoguide:
     runs-on: ubuntu-latest
     steps:
       - uses: OctoGuide/bot${atVersion}
-        with:
-+          config: recommended
+        with:${config ? `\n+          config: ${config}` : ""}
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          rules: |
 +            {
-+              "pr-title-conventional": true
++              "${ruleName}": true
 +            }`;
+
+export const getStartedRuleEnable = getRuleEnabled(
+	"pr-title-conventional",
+	"recommended",
+);
 
 export const getStartedRuleNone = `jobs:
   octoguide:
