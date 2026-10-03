@@ -25,6 +25,7 @@ interface ClosingReference {
 	inRepository: boolean;
 	key: string;
 	number: number;
+	shorthand: boolean;
 }
 
 const closingReferencePattern =
@@ -76,7 +77,14 @@ function findClosingReferences(locator: RepositoryLocator, body: string) {
 		const number = Number(issueNumber);
 		const key = `${repository}#${number}`;
 
-		references.set(key, { inRepository, key, number });
+		if (!references.get(key)?.shorthand) {
+			references.set(key, {
+				inRepository,
+				key,
+				number,
+				shorthand: !urlRepository,
+			});
+		}
 	}
 
 	return Array.from(references.values());
@@ -173,7 +181,11 @@ async function hasClosingKeyword(
 		if (
 			!templateKeys.has(reference.key) &&
 			(!reference.inRepository ||
-				(await issueMightExist(context.octokit, reference.number, inFork)))
+				(await issueMightExist(
+					context.octokit,
+					reference.number,
+					inFork && reference.shorthand,
+				)))
 		) {
 			return true;
 		}
@@ -185,14 +197,15 @@ async function hasClosingKeyword(
 /**
  * Checks whether an issue, and not a pull request, might exist.
  * @remarks Only a 404 from GitHub definitively means the issue doesn't exist,
- * except in forks, where GitHub links missing issues to the parent repository's.
+ * except for shorthand references such as `#123` in forks, which GitHub links
+ * to the parent repository's issue if the fork doesn't have it.
  * Other errors, such as from missing permissions or rate limits, are assumed
  * to be for an existing issue.
  */
 async function issueMightExist(
 	octokit: LocatedOctokit,
 	issueNumber: number,
-	inFork: boolean,
+	parentMightHaveIssue: boolean,
 ) {
 	try {
 		const { data } = await octokit.rest.issues.get({
@@ -200,7 +213,9 @@ async function issueMightExist(
 		});
 		return !data.pull_request;
 	} catch (error) {
-		return !isRequestError(error) || error.status !== 404 || inFork;
+		return (
+			!isRequestError(error) || error.status !== 404 || parentMightHaveIssue
+		);
 	}
 }
 

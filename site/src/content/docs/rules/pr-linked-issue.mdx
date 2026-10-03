@@ -27,7 +27,7 @@ Otherwise, this rule checks their pull request bodies for closing keywords:
 - Closing keywords in code or HTML comments, on a different line from their issue reference, or separated from it by formatting such as emphasis, are ignored
 - Closing keywords for this repository must refer to an existing issue, not a pull request
   - If GitHub responds with an error other than not found, such as from rate limiting, the issue is assumed to exist
-  - In forks, issues not found in the fork are assumed to be in its parent repository
+  - In forks, `#123`-style references to issues not found in the fork are assumed to be in its parent repository
 - Closing keywords left unchanged from the pull request template, such as `fixes #000`, are ignored
 - Closing keywords for issues in other repositories are assumed to refer to an existing issue
 

@@ -231,23 +231,54 @@ describe(prLinkedIssue.about.name, () => {
 			expect(report).toHaveBeenCalledOnce();
 		});
 
-		it("does not report when the closing keyword is on an issue that does not exist in a fork", async () => {
-			const getIssue = vi
-				.fn()
-				.mockRejectedValue(
-					Object.assign(new Error("Not Found"), { status: 404 }),
+		it.each([
+			"fixes https://github.com/test-owner/test-repo/issues/1",
+			"fixes [#1](https://github.com/test-owner/test-repo/issues/1)",
+		])(
+			"reports when the closing keyword is on a URL to an issue that does not exist in a fork: %s",
+			async (body) => {
+				const getIssue = vi
+					.fn()
+					.mockRejectedValue(
+						Object.assign(new Error("Not Found"), { status: 404 }),
+					);
+
+				const report = await testStackedPullRequest(
+					body,
+					getIssue,
+					undefined,
+					true,
 				);
 
-			const report = await testStackedPullRequest(
-				"fixes #1",
-				getIssue,
-				undefined,
-				true,
-			);
+				expect(getIssue).toHaveBeenCalledWith({ issue_number: 1 });
+				expect(report).toHaveBeenCalledOnce();
+			},
+		);
 
-			expect(getIssue).toHaveBeenCalledWith({ issue_number: 1 });
-			expect(report).not.toHaveBeenCalled();
-		});
+		it.each([
+			"fixes #1",
+			"fixes https://github.com/test-owner/test-repo/issues/1\nfixes #1",
+			"fixes #1\nfixes https://github.com/test-owner/test-repo/issues/1",
+		])(
+			"does not report when a shorthand closing keyword is on an issue that does not exist in a fork: %j",
+			async (body) => {
+				const getIssue = vi
+					.fn()
+					.mockRejectedValue(
+						Object.assign(new Error("Not Found"), { status: 404 }),
+					);
+
+				const report = await testStackedPullRequest(
+					body,
+					getIssue,
+					undefined,
+					true,
+				);
+
+				expect(getIssue).toHaveBeenCalledWith({ issue_number: 1 });
+				expect(report).not.toHaveBeenCalled();
+			},
+		);
 
 		it.each([
 			Object.assign(new Error("Forbidden"), { status: 403 }),
