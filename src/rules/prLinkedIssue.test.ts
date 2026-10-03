@@ -308,6 +308,9 @@ describe(prLinkedIssue.about.name, () => {
 			"**Fixes** #1",
 			"already **closed**: **#1**",
 			"[Fixes](https://example.com) #1",
+			"fixes **#1**",
+			"fixes _#1_",
+			"fixes ~~#1~~",
 		])(
 			"reports when the body only has text GitHub wouldn't treat as a closing keyword: %s",
 			async (body) => {
