@@ -3,10 +3,13 @@ description: "PRs labeled as automated or AI-generated should be closed"
 title: "pr-automation-detected"
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
 import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
 import IncludedIn from "../../../components/IncludedIn.astro";
 import HowToEnable from "../../../components/HowToEnable.astro";
 import DefaultOptions from "../../../components/DefaultOptions.astro";
+import { getStartedLabeled } from "../../../data/yml.js";
 
 <IncludedIn rule="pr-automation-detected" />
 
@@ -21,6 +24,19 @@ At this time, the following label names are matched case-insensitively:
 
 - `automation-signal` or `automation signal`
 - `ai-slop` or `ai slop`
+
+## Running on Labels
+
+Adding a label to a pull request fires the `labeled` event.
+OctoGuide's [default workflow](/get-started#installation) doesn't run on `labeled`, so this rule only checks pull requests when they're opened or edited.
+To check pull requests as soon as a matching label is added, add `labeled` to the workflow's `pull_request_target` types:
+
+<Code
+	code={getStartedLabeled}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
 
 ## Default Options
 
