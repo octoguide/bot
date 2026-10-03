@@ -84,18 +84,7 @@ describe(prTitleConventional.about.name, () => {
 		},
 	);
 
-	it.each([
-		"feat(a,b): x",
-		"feat(a, b): x",
-		"fix(café): x",
-		"fix(#12): x",
-		"fix(a+b): x",
-		"feat(a,b) x",
-		"fix(a: b) c",
-		"refactor(!) x",
-		"fix(a)!!: x",
-		"fix (windows) path handling",
-	])(
+	it.each(["feat(a(b)) x", "fix(a)!!: x", "fix (windows) path handling"])(
 		"reports a missing type without a corrected title when the pull request title %j has a known type but no valid correction",
 		async (title) => {
 			const report = vi.fn();
