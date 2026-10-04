@@ -25,9 +25,6 @@ export interface AttributeEditReportsOptions {
 /**
  * Attributes the reports from an edit by someone other than an entity's author
  * to whoever caused them, keeping only reports from rules that include that person.
- * @remarks Reports that already existed before the edit are the author's,
- * and reports that the edit introduced are the editor's.
- * @returns The kept reports, and the logins of everyone they're attributed to.
  */
 export function attributeEditReports({
 	editor,
@@ -66,10 +63,6 @@ export function attributeEditReports({
 
 /**
  * Finds which reports were already reported before an edit.
- * @remarks Reports are first matched to identical reports from before the edit,
- * then to reports from the same rule with the same primary message, so that
- * details such as which tasks remain unchecked can change without the report
- * counting as new.
  */
 function findExistingReports(
 	previousReports: RuleReport[],
