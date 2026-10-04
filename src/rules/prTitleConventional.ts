@@ -14,7 +14,7 @@ import { defineRule } from "./defineRule.js";
 // This helps the parser populate `parsed.type` correctly in more cases.
 const commitParser = new CommitParser({
 	// Matches: type, optional (scope), '!' and the subject
-	breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
+	breakingHeaderPattern: /^(\w*)(?:\(([^()]*)\))?!: (.*)$/,
 });
 
 const knownTypes = Object.keys(conventionalTypes.types);
@@ -31,7 +31,9 @@ export const prTitleConventional = defineRule({
 	},
 	pullRequest(context, entity) {
 		const scopes = getStringsOption(context.options, "scopes");
-		const types = getStringsOption(context.options, "types") ?? knownTypes;
+		const allowedTypes = getStringsOption(context.options, "types");
+		const types = allowedTypes ?? knownTypes;
+		const typesLabel = allowedTypes ? "allowed" : "known";
 		const exampleType = types.includes("feat") ? "feat" : [...types].sort()[0];
 
 		const parsed = commitParser.parse(entity.data.title);
@@ -53,12 +55,16 @@ export const prTitleConventional = defineRule({
 
 		if (!types.includes(parsed.type)) {
 			context.report({
-				primary: `The PR title has an unknown type: '${parsed.type}'.`,
-				secondary: [`Known types are: ${formatList(types)}`],
+				primary: allowedTypes
+					? `The PR title has a type that isn't allowed: '${parsed.type}'.`
+					: `The PR title has an unknown type: '${parsed.type}'.`,
+				secondary: [
+					`${allowedTypes ? "Allowed" : "Known"} types are: ${formatList(types)}`,
+				],
 				suggestion: [
 					parsed.subject
-						? `To resolve this report, replace the current type with one of those known types, like _"${exampleType}: ${parsed.subject}"_.`
-						: `To resolve this report, replace the current type with one of those known types.`,
+						? `To resolve this report, replace the current type with one of those ${typesLabel} types, like _"${exampleType}: ${parsed.subject}"_.`
+						: `To resolve this report, replace the current type with one of those ${typesLabel} types.`,
 				],
 			});
 			return;
@@ -74,12 +80,13 @@ export const prTitleConventional = defineRule({
 			return;
 		}
 
-		if (scopes && parsed.scope && !scopes.includes(parsed.scope)) {
+		const scope = parsed.scope?.trim();
+		if (scopes && scope && !scopes.includes(scope)) {
 			context.report({
-				primary: `The PR title has an unknown scope: '${parsed.scope}'.`,
-				secondary: [`Known scopes are: ${formatList(scopes)}`],
+				primary: `The PR title has a scope that isn't allowed: '${scope}'.`,
+				secondary: [`Allowed scopes are: ${formatList(scopes)}`],
 				suggestion: [
-					`To resolve this report, replace the current scope with one of those known scopes, like _"${entity.data.title.replace(
+					`To resolve this report, replace the current scope with one of those allowed scopes, like _"${entity.data.title.replace(
 						`(${parsed.scope})`,
 						() => `(${[...scopes].sort()[0]})`,
 					)}"_, or remove the scope.`,

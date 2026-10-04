@@ -231,10 +231,10 @@ describe(prTitleConventional.about.name, () => {
 			);
 
 			expect(report).toHaveBeenCalledWith({
-				primary: `The PR title has an unknown type: 'feat'.`,
-				secondary: ["Known types are: 'deps', 'fix'"],
+				primary: `The PR title has a type that isn't allowed: 'feat'.`,
+				secondary: ["Allowed types are: 'deps', 'fix'"],
 				suggestion: [
-					`To resolve this report, replace the current type with one of those known types, like _"deps: add this new feature"_.`,
+					`To resolve this report, replace the current type with one of those allowed types, like _"deps: add this new feature"_.`,
 				],
 			});
 		});
@@ -291,6 +291,8 @@ describe(prTitleConventional.about.name, () => {
 			"feat: add this new feature",
 			"feat(parser): add this new feature",
 			"fix(cli)!: change CLI flags",
+			"feat( parser ): add this new feature",
+			"fix(cli)!: rename `x(y)!: z`",
 		])("does not report when the pull request title is %j", async (title) => {
 			const report = vi.fn();
 
@@ -320,7 +322,7 @@ describe(prTitleConventional.about.name, () => {
 				"fix(cli)!: change parser API",
 			],
 		])(
-			"reports when the pull request title %j has an unknown scope",
+			"reports when the pull request title %j has a scope that isn't allowed",
 			async (title, scope, suggested) => {
 				const report = vi.fn();
 
@@ -336,10 +338,10 @@ describe(prTitleConventional.about.name, () => {
 				);
 
 				expect(report).toHaveBeenCalledWith({
-					primary: `The PR title has an unknown scope: '${scope}'.`,
-					secondary: ["Known scopes are: 'cli', 'parser'"],
+					primary: `The PR title has a scope that isn't allowed: '${scope}'.`,
+					secondary: ["Allowed scopes are: 'cli', 'parser'"],
 					suggestion: [
-						`To resolve this report, replace the current scope with one of those known scopes, like _"${suggested}"_, or remove the scope.`,
+						`To resolve this report, replace the current scope with one of those allowed scopes, like _"${suggested}"_, or remove the scope.`,
 					],
 				});
 			},
@@ -362,8 +364,54 @@ describe(prTitleConventional.about.name, () => {
 			expect(report).toHaveBeenCalledWith(
 				expect.objectContaining({
 					suggestion: [
-						`To resolve this report, replace the current scope with one of those known scopes, like _"feat($&): add this new feature"_, or remove the scope.`,
+						`To resolve this report, replace the current scope with one of those allowed scopes, like _"feat($&): add this new feature"_, or remove the scope.`,
 					],
+				}),
+			);
+		});
+	});
+
+	describe("scopes and types options", () => {
+		const options = {
+			"include-bots": true,
+			scopes: ["parser"],
+			types: ["fix"],
+		};
+
+		it("does not report when the pull request title has an allowed type and scope", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "fix(parser): handle semicolons",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it("reports only the type when the pull request title has neither an allowed type nor scope", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat(cli): add this new feature",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).toHaveBeenCalledExactlyOnceWith(
+				expect.objectContaining({
+					primary: `The PR title has a type that isn't allowed: 'feat'.`,
 				}),
 			);
 		});
