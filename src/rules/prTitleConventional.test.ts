@@ -128,6 +128,44 @@ describe(prTitleConventional.about.name, () => {
 		});
 	});
 
+	it.each([
+		["feat(a,b): x", "a,b", "feat(a): x"],
+		["feat(a, b): x", "a, b", "feat(a): x"],
+		["feat(api/cli): x", "api/cli", "feat(api): x"],
+		["feat(api\\cli): x", "api\\cli", "feat(api): x"],
+		["feat(a,b)!: x", "a,b", "feat(a)!: x"],
+		["feat(a|b): x", "a|b", "feat(a): x"],
+		["feat(a;b): x", "a;b", "feat(a): x"],
+		["feat(@a/b,c): x", "@a/b,c", "feat(@a/b): x"],
+		["feat(c,@a/b): x", "c,@a/b", "feat(c): x"],
+	])(
+		"reports when the pull request title is %j with multiple scopes",
+		async (title, scope, suggested) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title has multiple scopes: '${scope}'.`,
+				secondary: [
+					`A conventional commit scope is a single noun describing a section of the codebase.`,
+				],
+				suggestion: [
+					`To resolve this report, keep only one scope, like _"${suggested}"_.`,
+				],
+			});
+		},
+	);
+
 	it("does not report when the pull request title has both a subject and a type", async () => {
 		const report = vi.fn();
 
@@ -195,4 +233,31 @@ describe(prTitleConventional.about.name, () => {
 
 		expect(report).not.toHaveBeenCalled();
 	});
+
+	it.each([
+		"feat(café): x",
+		"fix(rule options): x",
+		"fix(c++): x",
+		"fix(@octoguide/bot): x",
+		"fix(@octoguide/bot)!: x",
+		"feat(a,): x",
+	])(
+		"does not report when the pull request title is %j with a single scope",
+		async (title) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ report },
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		},
+	);
 });
