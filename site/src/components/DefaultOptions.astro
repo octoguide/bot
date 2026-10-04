@@ -2,7 +2,7 @@
 import { Code } from "@astrojs/starlight/components";
 
 import { getRule } from "../data/rules.js";
-import { getRuleDefaultOptions } from "../data/yml.js";
+import { getRuleWithOptions } from "../data/yml.js";
 
 interface Props {
 	rule: string;
@@ -45,7 +45,7 @@ const entries = Object.entries(defaultOptions);
 			runs the rule with yours instead:
 		</p>
 		<Code
-			code={getRuleDefaultOptions(ruleName, defaultOptions)}
+			code={getRuleWithOptions(ruleName, defaultOptions)}
 			meta="lang=yml"
 			lang="diff"
 			title=".github/workflows/octoguide.yml"
