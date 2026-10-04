@@ -64,7 +64,7 @@ export type Entity =
 	CommentEntity | DiscussionEntity | IssueEntity | PullRequestEntity;
 
 /**
- * A user who edited an entity they didn't create.
+ * A user who edited an entity.
  */
 export interface EntityEditor {
 	/**

@@ -5,13 +5,6 @@ import { isRuleSkippedForUser } from "./isRuleSkippedForUser.js";
 
 /**
  * Checks whether a rule's options exclude someone's edit to another user's entity.
- * @remarks Entities whose authors are excluded bots stay skipped, whoever edits them.
- * Otherwise, the editor is checked in place of the author.
- * Editing another user's entity requires write access, so a human
- * editor's association is either `OWNER` or else `COLLABORATOR` or `MEMBER`.
- * GitHub doesn't provide editors' associations, so the latter two are
- * treated as equivalent.
- * Bot editors aren't checked against `include-associations`.
  */
 export function isRuleSkippedForEditor(
 	editor: EntityEditor,

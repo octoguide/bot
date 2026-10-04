@@ -25,10 +25,8 @@ interface EntityChanges {
 /**
  * Finds who edited an entity and what it was before, if the event is an edit
  * to its body or title by someone other than its author.
- * @remarks Other edits, such as changing a pull request's base branch, don't
- * change any content rules check, so they're still treated as the author's.
  */
-export function collectEdit(
+export function collectEntityEdit(
 	payload: typeof github.context.payload,
 	entity: Entity,
 ): EntityEdit | undefined {

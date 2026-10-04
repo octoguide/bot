@@ -8,7 +8,7 @@ import type {
 	PullRequestData,
 } from "../../types/entities.js";
 
-import { collectEdit } from "./collectEdit.js";
+import { collectEntityEdit } from "./collectEntityEdit.js";
 
 const entity: Entity = {
 	data: {
@@ -34,7 +34,7 @@ const bodyChanges = { body: { from: "Old body." } };
 
 describe("collectEdit", () => {
 	it("returns undefined when the payload is not an edit", () => {
-		const actual = collectEdit(
+		const actual = collectEntityEdit(
 			{ action: "opened", sender: { login: "other", type: "User" } },
 			entity,
 		);
@@ -43,7 +43,7 @@ describe("collectEdit", () => {
 	});
 
 	it("returns undefined when the payload has no sender", () => {
-		const actual = collectEdit(
+		const actual = collectEntityEdit(
 			{ action: "edited", changes: bodyChanges },
 			entity,
 		);
@@ -52,7 +52,7 @@ describe("collectEdit", () => {
 	});
 
 	it("returns undefined when the entity is edited by its author", () => {
-		const actual = collectEdit(
+		const actual = collectEntityEdit(
 			{
 				action: "edited",
 				changes: bodyChanges,
@@ -65,7 +65,7 @@ describe("collectEdit", () => {
 	});
 
 	it("returns undefined when the payload has no changes", () => {
-		const actual = collectEdit(
+		const actual = collectEntityEdit(
 			{ action: "edited", sender: { login: "other", type: "User" } },
 			entity,
 		);
@@ -74,7 +74,7 @@ describe("collectEdit", () => {
 	});
 
 	it("returns undefined when a pull request's base is the only change", () => {
-		const actual = collectEdit(
+		const actual = collectEntityEdit(
 			{
 				action: "edited",
 				changes: { base: { ref: { from: "old" }, sha: { from: "abc123" } } },
@@ -87,7 +87,7 @@ describe("collectEdit", () => {
 	});
 
 	it("returns the editor and the previous body when someone other than the author edits the body", () => {
-		const actual = collectEdit(
+		const actual = collectEntityEdit(
 			{
 				action: "edited",
 				changes: bodyChanges,
@@ -106,7 +106,7 @@ describe("collectEdit", () => {
 	});
 
 	it("returns the editor and the previous title when someone other than the author edits a pull request's title", () => {
-		const actual = collectEdit(
+		const actual = collectEntityEdit(
 			{
 				action: "edited",
 				changes: { title: { from: "Old title" } },
@@ -125,7 +125,7 @@ describe("collectEdit", () => {
 	});
 
 	it("returns the editor and the previous body and title when someone other than the author edits a pull request's body, title, and base", () => {
-		const actual = collectEdit(
+		const actual = collectEntityEdit(
 			{
 				action: "edited",
 				changes: {
@@ -152,7 +152,7 @@ describe("collectEdit", () => {
 	});
 
 	it("does not modify the entity when creating its previous version", () => {
-		collectEdit(
+		collectEntityEdit(
 			{
 				action: "edited",
 				changes: bodyChanges,

@@ -45,10 +45,6 @@ export interface RunOctoGuideRulesOptions {
 
 	/**
 	 * User who edited the entity, if the run is for an edit by someone other than its author.
-	 * Rules then run if they include either the entity's author or the editor,
-	 * except that entities from bots excluded by a rule's bot options (such as `include-bots`) stay skipped by that rule.
-	 * Editing another user's entity requires write access, so a user editor is considered
-	 * an `OWNER` if they own the repository, and otherwise a `COLLABORATOR` or `MEMBER`.
 	 */
 	editor?: EntityEditor;
 

@@ -8,7 +8,7 @@ import { runOctoGuideRules } from "../index.js";
 import { cliReporter } from "../reporters/cliReporter.js";
 import { attributeEditReports } from "./attributeEditReports.js";
 import { collectAuth } from "./collection/collectAuth.js";
-import { collectEdit } from "./collection/collectEdit.js";
+import { collectEntityEdit } from "./collection/collectEntityEdit.js";
 import { collectEntityInput } from "./collection/collectEntityInput.js";
 import { collectSettings } from "./collection/collectSettings.js";
 import { collectTarget } from "./collection/collectTarget.js";
@@ -31,7 +31,7 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	const entityInput = collectEntityInput(payload, target, url);
 	const settings = collectSettings();
-	const edit = collectEdit(payload, entityInput);
+	const edit = collectEntityEdit(payload, entityInput);
 
 	const runRules = (entity: Entity) =>
 		runOctoGuideRules({ auth, editor: edit?.editor, entity, settings });
