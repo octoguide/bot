@@ -3,6 +3,9 @@ description: "PR titles should be in conventional commit format"
 title: "pr-title-conventional"
 ---
 
+import { Code } from "@astrojs/starlight/components";
+
+import { getRuleWithOptions } from "../../../data/yml.js";
 import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
 import IncludedIn from "../../../components/IncludedIn.astro";
 import HowToEnable from "../../../components/HowToEnable.astro";
@@ -39,6 +42,27 @@ docs: mention 'rick' feature in README.md
 feat: add optional new 'roll' option to API
 fix(parser): don't throw error on consecutive semicolons
 ```
+
+## Options
+
+This rule accepts the following [rule options](/get-started#rule-options) to restrict which titles are allowed:
+
+- `types`: an array of conventional commit types to allow instead of the [default known types](https://www.npmjs.com/package/conventional-commit-types)
+  - Each type may contain ASCII letters, digits, and `_` characters
+- `scopes`: an array of single scopes to allow; titles may still omit a scope
+  - Each scope may contain ASCII letters, digits, spaces, and `_$@.-*/` characters
+
+For example, this configuration only allows `docs`, `feat`, and `fix` types, with scopes that are either omitted or are `cli` or `parser`:
+
+<Code
+	code={getRuleWithOptions("pr-title-conventional", {
+		scopes: ["cli", "parser"],
+		types: ["docs", "feat", "fix"],
+	})}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
 
 ## Examples
 
