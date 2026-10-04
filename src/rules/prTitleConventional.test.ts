@@ -358,13 +358,13 @@ describe(prTitleConventional.about.name, () => {
 					},
 					type: "pull_request",
 				},
-				{ options: { "include-bots": true, scopes: ["$&"] }, report },
+				{ options: { "include-bots": true, scopes: ["$$"] }, report },
 			);
 
 			expect(report).toHaveBeenCalledWith(
 				expect.objectContaining({
 					suggestion: [
-						`To resolve this report, replace the current scope with one of those allowed scopes, like _"feat($&): add this new feature"_, or remove the scope.`,
+						`To resolve this report, replace the current scope with one of those allowed scopes, like _"feat($$): add this new feature"_, or remove the scope.`,
 					],
 				}),
 			);
@@ -417,28 +417,57 @@ describe(prTitleConventional.about.name, () => {
 		});
 	});
 
-	describe.each(["scopes", "types"])("invalid %s option", (name) => {
-		it.each([[[]], ["fix"], [[""]], [[1]], [null]])(
-			"throws when the option is %j",
-			async (value) => {
-				await expect(
-					testRule(
-						prTitleConventional,
-						{
-							data: {
-								title: "feat: add this new feature",
-							},
-							type: "pull_request",
+	describe.each([
+		[
+			"scopes",
+			"letters, digits, spaces, and _$@.-*/ characters",
+			[" web", "ui:web", "a,b"],
+		],
+		["types", "letters, digits, and _ characters", ["feat-x", "feat "]],
+	])("invalid %s option", (name, characters, invalidItems) => {
+		it.each(
+			[[], "fix", [""], [1], null, ...invalidItems.map((item) => [item])].map(
+				(value) => ({ value }),
+			),
+		)("throws when the option is $value", async ({ value }) => {
+			await expect(
+				testRule(
+					prTitleConventional,
+					{
+						data: {
+							title: "feat: add this new feature",
 						},
-						{
-							options: { "include-bots": true, [name]: value },
-							report: vi.fn(),
-						},
-					),
-				).rejects.toThrow(
-					`pr-title-conventional's "${name}" option must be a non-empty array of non-empty strings.`,
-				);
+						type: "pull_request",
+					},
+					{
+						options: { "include-bots": true, [name]: value },
+						report: vi.fn(),
+					},
+				),
+			).rejects.toThrow(
+				`pr-title-conventional's "${name}" option must be a non-empty array of trimmed strings made of ${characters}.`,
+			);
+		});
+	});
+
+	it("lists duplicate allowed types once", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title: "feat: add this new feature",
+				},
+				type: "pull_request",
 			},
+			{ options: { "include-bots": true, types: ["fix", "fix"] }, report },
+		);
+
+		expect(report).toHaveBeenCalledWith(
+			expect.objectContaining({
+				secondary: ["Allowed types are: 'fix'"],
+			}),
 		);
 	});
 });

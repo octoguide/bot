@@ -14,7 +14,7 @@ import { defineRule } from "./defineRule.js";
 // This helps the parser populate `parsed.type` correctly in more cases.
 const commitParser = new CommitParser({
 	// Matches: type, optional (scope), '!' and the subject
-	breakingHeaderPattern: /^(\w*)(?:\(([^()]*)\))?!: (.*)$/,
+	breakingHeaderPattern: /^(\w*)(?:\(([\w$@.\-*/ ]*)\))?!: (.*)$/,
 });
 
 const knownTypes = Object.keys(conventionalTypes.types);
@@ -30,8 +30,18 @@ export const prTitleConventional = defineRule({
 		name: "pr-title-conventional",
 	},
 	pullRequest(context, entity) {
-		const scopes = getStringsOption(context.options, "scopes");
-		const allowedTypes = getStringsOption(context.options, "types");
+		const scopes = getStringsOption(
+			context.options,
+			"scopes",
+			/^[\w$@.\-*/ ]+$/,
+			"letters, digits, spaces, and _$@.-*/ characters",
+		);
+		const allowedTypes = getStringsOption(
+			context.options,
+			"types",
+			/^\w+$/,
+			"letters, digits, and _ characters",
+		);
 		const types = allowedTypes ?? knownTypes;
 		const typesLabel = allowedTypes ? "allowed" : "known";
 		const exampleType = types.includes("feat") ? "feat" : [...types].sort()[0];
@@ -109,7 +119,12 @@ function getExampleTypes(types: string[]) {
 	return [...new Set([...preferred, ...[...types].sort()])].slice(0, 2).sort();
 }
 
-function getStringsOption(options: RuleOptions, name: string) {
+function getStringsOption(
+	options: RuleOptions,
+	name: string,
+	pattern: RegExp,
+	characters: string,
+) {
 	const value = options[name];
 	if (value === undefined) {
 		return undefined;
@@ -118,12 +133,15 @@ function getStringsOption(options: RuleOptions, name: string) {
 	if (
 		!Array.isArray(value) ||
 		!value.length ||
-		!value.every((item) => typeof item === "string" && item)
+		!value.every(
+			(item) =>
+				typeof item === "string" && item.trim() === item && pattern.test(item),
+		)
 	) {
 		throw new Error(
-			`pr-title-conventional's "${name}" option must be a non-empty array of non-empty strings.`,
+			`pr-title-conventional's "${name}" option must be a non-empty array of trimmed strings made of ${characters}.`,
 		);
 	}
 
-	return value as string[];
+	return [...new Set(value as string[])];
 }

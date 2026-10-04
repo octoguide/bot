@@ -48,7 +48,9 @@ fix(parser): don't throw error on consecutive semicolons
 This rule accepts the following [rule options](/get-started#rule-options) to restrict which titles are allowed:
 
 - `types`: an array of conventional commit types to allow instead of the [default known types](https://www.npmjs.com/package/conventional-commit-types)
-- `scopes`: an array of scopes to allow; titles may still omit a scope
+  - Each type may contain letters, digits, and `_` characters
+- `scopes`: an array of single scopes to allow; titles may still omit a scope
+  - Each scope may contain letters, digits, spaces, and `_$@.-*/` characters
 
 For example, this configuration only allows `docs`, `feat`, and `fix` types, with scopes that are either omitted or are `cli` or `parser`:
 
