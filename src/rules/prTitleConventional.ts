@@ -34,13 +34,13 @@ export const prTitleConventional = defineRule({
 			context.options,
 			"scopes",
 			/^[\w$@.\-*/ ]+$/,
-			"letters, digits, spaces, and _$@.-*/ characters",
+			"ASCII letters, digits, spaces, and _$@.-*/ characters",
 		);
 		const allowedTypes = getStringsOption(
 			context.options,
 			"types",
 			/^\w+$/,
-			"letters, digits, and _ characters",
+			"ASCII letters, digits, and _ characters",
 		);
 		const types = allowedTypes ?? knownTypes;
 		const typesLabel = allowedTypes ? "allowed" : "known";

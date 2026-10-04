@@ -317,6 +317,11 @@ describe(prTitleConventional.about.name, () => {
 				"feat(cli): add this new feature",
 			],
 			[
+				"feat( website ): add this new feature",
+				"website",
+				"feat(cli): add this new feature",
+			],
+			[
 				"fix(Parser)!: change parser API",
 				"Parser",
 				"fix(cli)!: change parser API",
@@ -420,10 +425,10 @@ describe(prTitleConventional.about.name, () => {
 	describe.each([
 		[
 			"scopes",
-			"letters, digits, spaces, and _$@.-*/ characters",
+			"ASCII letters, digits, spaces, and _$@.-*/ characters",
 			[" web", "ui:web", "a,b"],
 		],
-		["types", "letters, digits, and _ characters", ["feat-x", "feat "]],
+		["types", "ASCII letters, digits, and _ characters", ["feat-x", "feat "]],
 	])("invalid %s option", (name, characters, invalidItems) => {
 		it.each(
 			[[], "fix", [""], [1], null, ...invalidItems.map((item) => [item])].map(
