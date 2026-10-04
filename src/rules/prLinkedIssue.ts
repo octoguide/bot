@@ -22,13 +22,6 @@ interface DependabotAlertLink {
 	url: string;
 }
 
-/**
- * Checks whether a linked Dependabot alert might exist.
- * @remarks GitHub responds with a 403 when the token can't read alerts or the
- * repository has alerts disabled, and a 404 "Not Found" when the token can't
- * see the repository at all. Only a 404 saying no alert was found, or a 404
- * for this repository, definitively means the alert doesn't exist.
- */
 async function dependabotAlertMightExist(
 	context: RuleContext,
 	{ alertNumber, owner, repo }: DependabotAlertLink,
@@ -53,9 +46,6 @@ async function dependabotAlertMightExist(
 	}
 }
 
-/**
- * Finds unique links to Dependabot alerts in a body.
- */
 function findDependabotAlertLinks(body: string) {
 	const links = new Map<string, DependabotAlertLink>();
 

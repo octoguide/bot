@@ -29,13 +29,6 @@ fixes https://github.com/owner/repo/security/dependabot/123
 
 This recognizes that security vulnerability fixes often don't need the same discussion process as other changes.
 
-This rule looks up each linked alert, and is satisfied if at least one of them exists.
-Alerts that OctoGuide can't read are assumed to exist, including when:
-
-- OctoGuide's token doesn't have permission to read Dependabot alerts
-- The alert's repository has Dependabot alerts disabled
-- The alert is in another repository that OctoGuide's token can't see
-
 ### Validating Dependabot Alerts
 
 The `permissions` in the [getting started workflow](/get-started#installation) don't include reading Dependabot alerts, so by default any linked alert is assumed to exist.
