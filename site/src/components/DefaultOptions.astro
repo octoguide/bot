@@ -1,7 +1,7 @@
 ---
 import { Code } from "@astrojs/starlight/components";
 
-import { allRules } from "../../../src/rules/all.ts";
+import { getRule } from "../data/rules.ts";
 import { getRuleDefaultOptions } from "../data/yml.ts";
 
 interface Props {
@@ -9,11 +9,7 @@ interface Props {
 }
 
 const { rule: ruleName } = Astro.props;
-const rule = allRules.find((r) => r.about.name === ruleName);
-
-if (!rule) {
-	throw new Error(`Rule ${ruleName} not found`);
-}
+const rule = getRule(ruleName);
 
 const defaultOptions = rule.about.defaultOptions ?? {};
 const entries = Object.entries(defaultOptions);

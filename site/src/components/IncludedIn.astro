@@ -1,18 +1,14 @@
 ---
 import type { ConfigName } from "../../../src/types/core.ts";
-import { allRules } from "../../../src/rules/all.ts";
 import { configEmojis } from "../data/configEmojis.ts";
+import { getRule } from "../data/rules.ts";
 
 interface Props {
 	rule: string;
 }
 
 const { rule: ruleName } = Astro.props;
-const rule = allRules.find((r) => r.about.name === ruleName);
-
-if (!rule) {
-	throw new Error(`Rule ${ruleName} not found`);
-}
+const rule = getRule(ruleName);
 
 function getRuleConfigs(config: ConfigName) {
 	const configs: ConfigName[] = [config];
@@ -26,7 +22,8 @@ const configs = getRuleConfigs(rule.about.config);
 ---
 
 <blockquote>
-	Included in {configs.length === 1 ? "config:" : "configs:"}
+	Included in{" "}
+	<a href="/configs">{configs.length === 1 ? "config" : "configs"}</a>:{" "}
 	{configs.map((config, i) => (
 		<>
 			{configEmojis[config]}&nbsp;{config}

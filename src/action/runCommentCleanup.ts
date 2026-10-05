@@ -2,8 +2,12 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
+import type { CommentData } from "../types/entities.ts";
+import type { LocatedOctokit } from "../types/octokit.ts";
+
 import { createActor } from "../actors/createActor.ts";
 import { getExistingComment } from "./comments/getExistingComment.ts";
+import { isRequestError } from "./comments/isRequestError.ts";
 
 export interface RunCommentCleanupSettings {
 	auth: string;
@@ -31,17 +35,30 @@ export async function runCommentCleanup({
 		return;
 	}
 
+	try {
+		await deleteExistingComment(existingComment, octokit, payload);
+	} catch (error) {
+		if (!isAlreadyDeletedError(error)) {
+			throw error;
+		}
+
+		core.info("Existing comment was already deleted. Nothing to clean up.");
+	}
+}
+
+async function deleteExistingComment(
+	existingComment: CommentData,
+	octokit: LocatedOctokit,
+	payload: typeof github.context.payload,
+) {
 	if (payload.discussion) {
 		core.info(
 			`Deleting discussion comment with node id: ${existingComment.node_id}`,
 		);
 		await octokit.graphql(
 			`
-				mutation($body: String!, $commentId: ID!) {
-					deleteDiscussionComment(input: {
-						body: $body,
-						commentId: $commentId
-					}) {
+				mutation($id: ID!) {
+					deleteDiscussionComment(input: { id: $id }) {
 						comment {
 							id
 						}
@@ -49,7 +66,7 @@ export async function runCommentCleanup({
 				}
 			`,
 			{
-				commentId: existingComment.node_id,
+				id: existingComment.node_id,
 			},
 		);
 	} else {
@@ -58,4 +75,19 @@ export async function runCommentCleanup({
 			comment_id: existingComment.id,
 		});
 	}
+}
+
+function isAlreadyDeletedError(error: unknown) {
+	if (isRequestError(error)) {
+		return error.status === 404;
+	}
+
+	return (
+		error instanceof Error &&
+		"errors" in error &&
+		Array.isArray(error.errors) &&
+		error.errors.some(
+			(graphqlError: { type?: string }) => graphqlError.type === "NOT_FOUND",
+		)
+	);
 }

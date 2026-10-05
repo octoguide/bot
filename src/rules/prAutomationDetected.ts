@@ -15,7 +15,7 @@ export const prAutomationDetected = defineRule({
 		},
 		description: "PRs labeled as automated or AI-generated should be closed.",
 		explanation: [
-			'Pull requests labeled as automated (e.g. "automation-signal")or AI-generated (e.g. "ai slop") indicate contributions that were not meaningfully authored by a human.',
+			'Pull requests labeled as automated (e.g. "automation-signal") or AI-generated (e.g. "ai slop") indicate contributions that were not meaningfully authored by a human.',
 			"These contributions are often low-quality, miss project context, and create unnecessary review burden for maintainers.",
 		],
 		name: "pr-automation-detected",
