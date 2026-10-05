@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 
-import type { RuleReportData } from "../types/reports.js";
-import type { RuleAboutWithUrl } from "../types/rules.js";
+import type { RuleReportData } from "../types/reports.ts";
+import type { RuleAboutWithUrl } from "../types/rules.ts";
 
-import { markdownReporter } from "./markdownReporter.js";
+import { markdownReporter } from "./markdownReporter.ts";
 
 const fakeAbout = {
 	description: "Fake description.",

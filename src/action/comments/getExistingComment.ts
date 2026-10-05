@@ -1,6 +1,6 @@
-import type { EntityActor } from "../../actors/types.js";
+import type { EntityActor } from "../../actors/types.ts";
 
-import { createCommentIdentifier } from "./createCommentIdentifier.js";
+import { createCommentIdentifier } from "./createCommentIdentifier.ts";
 
 export async function getExistingComment(actor: EntityActor, url: string) {
 	const commentIdentifier = createCommentIdentifier(url);

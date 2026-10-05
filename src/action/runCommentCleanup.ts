@@ -2,12 +2,12 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
-import type { CommentData } from "../types/entities.js";
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { CommentData } from "../types/entities.ts";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
-import { createActor } from "../actors/createActor.js";
-import { getExistingComment } from "./comments/getExistingComment.js";
-import { isRequestError } from "./comments/isRequestError.js";
+import { createActor } from "../actors/createActor.ts";
+import { getExistingComment } from "./comments/getExistingComment.ts";
+import { isRequestError } from "./comments/isRequestError.ts";
 
 export interface RunCommentCleanupSettings {
 	auth: string;

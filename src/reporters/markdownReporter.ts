@@ -1,8 +1,8 @@
-import type { RuleReport } from "../types/reports.js";
+import type { RuleReport } from "../types/reports.ts";
 
-import { groupBy } from "../action/groupBy.js";
-import { RESOLVED_BY_OCTOGUIDE } from "../constants.js";
-import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
+import { groupBy } from "../action/groupBy.ts";
+import { RESOLVED_BY_OCTOGUIDE } from "../constants.ts";
+import { formatReportAsMarkdown } from "./formatReportAsMarkdown.ts";
 
 /**
  * Message displayed when all reports are resolved.

@@ -8,20 +8,20 @@
  * @module
  */
 
-export * from "./createDefineRule.js";
-export * from "./reporters/cliReporter.js";
-export * from "./reporters/markdownReporter.js";
-export * from "./runOctoGuideRules.js";
-export type { RepositoryLocator } from "./types/data.js";
+export * from "./createDefineRule.ts";
+export * from "./reporters/cliReporter.ts";
+export * from "./reporters/markdownReporter.ts";
+export * from "./runOctoGuideRules.ts";
+export type { RepositoryLocator } from "./types/data.ts";
 export type {
 	CommentEntity,
 	DiscussionEntity,
 	Entity,
 	IssueEntity,
 	PullRequestEntity,
-} from "./types/entities.js";
-export type { LocatedOctokit } from "./types/octokit.js";
-export type { RuleReport, RuleReportData } from "./types/reports.js";
+} from "./types/entities.ts";
+export type { LocatedOctokit } from "./types/octokit.ts";
+export type { RuleReport, RuleReportData } from "./types/reports.ts";
 export type {
 	Rule,
 	RuleAbout,
@@ -30,5 +30,5 @@ export type {
 	RuleOptions,
 	RuleOptionsRaw,
 	RuleReporter,
-} from "./types/rules.js";
-export type { Settings } from "./types/settings.js";
+} from "./types/rules.ts";
+export type { Settings } from "./types/settings.ts";

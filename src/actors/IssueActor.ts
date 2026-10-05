@@ -2,10 +2,10 @@ import type {
 	IssueLikeData,
 	IssueLikeEntity,
 	IssueLikeEntityType,
-} from "../types/entities.js";
-import type { LocatedOctokit } from "../types/octokit.js";
+} from "../types/entities.ts";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
-import { IssueLikeActorBase } from "./IssueLikeActorBase.js";
+import { IssueLikeActorBase } from "./IssueLikeActorBase.ts";
 
 export class IssueActor extends IssueLikeActorBase<IssueLikeData> {
 	readonly metadata: Omit<IssueLikeEntity, "data">;

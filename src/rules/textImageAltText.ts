@@ -8,10 +8,10 @@ import markdownlintGitHub from "@github/markdownlint-github";
 import MarkdownItParser from "markdown-it";
 import { lint } from "markdownlint/sync";
 
-import type { Entity } from "../types/entities.js";
-import type { RuleContext } from "../types/rules.js";
+import type { Entity } from "../types/entities.ts";
+import type { RuleContext } from "../types/rules.ts";
 
-import { defineRule } from "./defineRule.js";
+import { defineRule } from "./defineRule.ts";
 
 export const textImageAltText = defineRule({
 	about: {

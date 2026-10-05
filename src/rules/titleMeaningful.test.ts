@@ -2,8 +2,8 @@ import type { Octokit } from "octokit";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { titleMeaningful } from "./titleMeaningful.js";
+import { testRule } from "../tests/testRule.ts";
+import { titleMeaningful } from "./titleMeaningful.ts";
 
 function createGraphql(templateContents: string[]) {
 	return vi.fn().mockResolvedValue({

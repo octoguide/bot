@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { configs } from "../rules/configs.js";
-import { textImageAltText } from "../rules/textImageAltText.js";
-import { resolveRules } from "./resolveRules.js";
+import { configs } from "../rules/configs.ts";
+import { textImageAltText } from "../rules/textImageAltText.ts";
+import { resolveRules } from "./resolveRules.ts";
 
 const resolveRuleNames = (...parameters: Parameters<typeof resolveRules>) =>
 	resolveRules(...parameters).map(({ rule }) => rule.about.name);

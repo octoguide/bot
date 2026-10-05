@@ -1,14 +1,14 @@
 import * as core from "@actions/core";
 
-import type { Entity } from "../../types/entities.js";
-import type { Settings } from "../../types/settings.js";
+import type { Entity } from "../../types/entities.ts";
+import type { Settings } from "../../types/settings.ts";
 
-import { EntityActor } from "../../actors/types.js";
-import { RESOLVED_BY_OCTOGUIDE } from "../../constants.js";
-import { markdownReportPassMessage } from "../../reporters/markdownReporter.js";
-import { createNewCommentForReports } from "./createNewCommentForReports.js";
-import { getExistingComment } from "./getExistingComment.js";
-import { updateExistingCommentForReports } from "./updateExistingCommentForReports.js";
+import { EntityActor } from "../../actors/types.ts";
+import { RESOLVED_BY_OCTOGUIDE } from "../../constants.ts";
+import { markdownReportPassMessage } from "../../reporters/markdownReporter.ts";
+import { createNewCommentForReports } from "./createNewCommentForReports.ts";
+import { getExistingComment } from "./getExistingComment.ts";
+import { updateExistingCommentForReports } from "./updateExistingCommentForReports.ts";
 
 export interface ReportComment {
 	status: "created" | "existing";

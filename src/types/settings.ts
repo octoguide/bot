@@ -1,5 +1,5 @@
-import type { ConfigName } from "./core.js";
-import type { RuleOptionsRaw } from "./rules.js";
+import type { ConfigName } from "./core.ts";
+import type { RuleOptionsRaw } from "./rules.ts";
 
 export interface Settings {
 	comments?: Comments;

@@ -1,6 +1,6 @@
-import type { ConfigName } from "../../../src/types/core.js";
+import type { ConfigName } from "../../../src/types/core.ts";
 
-import { version } from "./package.js";
+import { version } from "./package.ts";
 
 const atVersion = `@${version}`;
 

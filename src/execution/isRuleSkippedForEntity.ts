@@ -1,8 +1,8 @@
-import type { Entity } from "../types/entities.js";
-import type { RuleOptions } from "../types/rules.js";
+import type { Entity } from "../types/entities.ts";
+import type { RuleOptions } from "../types/rules.ts";
 
-import { isEntityAssociationIncluded } from "./isEntityAssociationIncluded.js";
-import { isEntityFromBot } from "./isEntityFromBot.js";
+import { isEntityAssociationIncluded } from "./isEntityAssociationIncluded.ts";
+import { isEntityFromBot } from "./isEntityFromBot.ts";
 
 export function isRuleSkippedForEntity(entity: Entity, options: RuleOptions) {
 	if (!isEntityAssociationIncluded(entity, options["include-associations"])) {

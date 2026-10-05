@@ -3,12 +3,12 @@ import type {
 	RuleAboutWithUrl,
 	RuleOptions,
 	RuleOptionsRaw,
-} from "../types/rules.js";
-import type { Settings } from "../types/settings.js";
+} from "../types/rules.ts";
+import type { Settings } from "../types/settings.ts";
 
-import { allRules } from "../rules/all.js";
-import { configs } from "../rules/configs.js";
-import { mergeRuleOptions } from "./mergeRuleOptions.js";
+import { allRules } from "../rules/all.ts";
+import { configs } from "../rules/configs.ts";
+import { mergeRuleOptions } from "./mergeRuleOptions.ts";
 
 export interface RuleAndOptions {
 	options: RuleOptions;

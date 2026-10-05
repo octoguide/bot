@@ -1,15 +1,15 @@
 import * as core from "@actions/core";
 
-import type { EntityActor } from "../../actors/types.js";
-import type { Entity } from "../../types/entities.js";
-import type { RuleReport } from "../../types/reports.js";
-import type { Settings } from "../../types/settings.js";
+import type { EntityActor } from "../../actors/types.ts";
+import type { Entity } from "../../types/entities.ts";
+import type { RuleReport } from "../../types/reports.ts";
+import type { Settings } from "../../types/settings.ts";
 
-import { actionReporter } from "../../reporters/actionReporter.js";
-import { createHeadlineAsMarkdown } from "../../reporters/createHeadlineAsMarkdown.js";
-import { markdownReporter } from "../../reporters/markdownReporter.js";
-import { isRequestError } from "./isRequestError.js";
-import { setCommentForReports } from "./setCommentForReports.js";
+import { actionReporter } from "../../reporters/actionReporter.ts";
+import { createHeadlineAsMarkdown } from "../../reporters/createHeadlineAsMarkdown.ts";
+import { markdownReporter } from "../../reporters/markdownReporter.ts";
+import { isRequestError } from "./isRequestError.ts";
+import { setCommentForReports } from "./setCommentForReports.ts";
 
 export async function outputActionReports(
 	actor: EntityActor,
