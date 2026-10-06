@@ -85,6 +85,30 @@ For public repositories that's the following permissions:
 - `repo` > `public_repo`
 - `read:discussion`
 
+### `include-ais`
+
+Known AI agents, such as GitHub Copilot, Claude, Cursor, and Devin, are handled separately from other bots.
+OctoGuide skips entities and comments they create by default.
+`include-ais` controls whether it runs rules on them.
+
+For example, to hold AI agents to the same contribution guidelines as humans while still skipping other bots such as Dependabot and Renovate:
+
+<Code
+	code={getStartedIncludeAIs}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+OctoGuide considers the following bot accounts to be known AI agents:
+
+<AILogins />
+
+:::tip
+These include AI code review bots such as CodeRabbit and Gemini Code Assist.
+Setting `include-ais` to `"true"` also runs comment rules on the comments they post.
+:::
+
 ### `include-bots`
 
 OctoGuide by default skips running rules for bot-created entities (issues, pull requests, and discussions)
@@ -94,7 +118,11 @@ necessarily need to follow the same contribution guidelines as human contributor
 
 Bot detection works by checking if the entity creator's `user.type` field is `"Bot"`,
 which is the standard way GitHub identifies bot accounts and GitHub Apps.
-Known AI agents are handled separately by [`include-ais`](#include-ais), so `include-bots` doesn't apply to them.
+
+:::note
+Known AI agents are handled separately by [`include-ais`](#include-ais).
+`include-bots` doesn't apply to them.
+:::
 
 If you want OctoGuide to run rules on bot-created entities and comments, you can
 enable this by setting `include-bots` to `"true"`:
@@ -112,30 +140,6 @@ enable this by setting `include-bots` to `"true"`:
 Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 :::
-
-### `include-ais`
-
-Known AI agents, such as GitHub Copilot, Claude, Cursor, and Devin, are handled separately from other bots.
-OctoGuide skips entities and comments they create by default, and `include-ais` controls whether it runs rules on them.
-
-For example, to hold AI agents to the same contribution guidelines as humans while still skipping other bots such as Dependabot and Renovate:
-
-<Code
-	code={getStartedIncludeAIs}
-	meta="lang=yml"
-	lang="diff"
-	title=".github/workflows/octoguide.yml"
-/>
-
-OctoGuide considers the following bot accounts to be known AI agents:
-
-<AILogins />
-
-These include AI code review bots such as CodeRabbit and Gemini Code Assist,
-so setting `include-ais` to `"true"` also runs comment rules on the comments they post.
-
-`include-ais` and `include-bots` are independent: setting one never affects the other.
-For example, setting `include-bots` to `"true"` doesn't run rules on AI agents.
 
 ### `include-associations`
 
