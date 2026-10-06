@@ -57885,6 +57885,7 @@ const prLinkedIssue = defineRule({
 				query closingIssues($id: Int!, $owner: String!, $repo: String!) {
 					repository(owner: $owner, name: $repo) {
 						pullRequest(number: $id) {
+							bodyHTML
 							closingIssuesReferences(first: 1) {
 								nodes {
 									number
@@ -57895,6 +57896,10 @@ const prLinkedIssue = defineRule({
 				}
 			`, { id: entity.number });
         if (response.repository.pullRequest.closingIssuesReferences.nodes.length) {
+            return;
+        }
+        if (targetsNonDefaultBranch(entity.data) &&
+            hasClosingKeyword(response.repository.pullRequest.bodyHTML)) {
             return;
         }
         const body = entity.data.body?.trim() ?? "";
@@ -57919,6 +57924,12 @@ const prLinkedIssue = defineRule({
         });
     },
 });
+function hasClosingKeyword(bodyHTML) {
+    return /<span class="issue-keyword[^"]*"[^>]*>[^<]*<\/span>:?\s*<a\s[^>]*\bdata-hovercard-type="issue"/.test(bodyHTML);
+}
+function targetsNonDefaultBranch({ base }) {
+    return !!base?.repo && base.ref !== base.repo.default_branch;
+}
 
 ;// CONCATENATED MODULE: ./src/rules/prTaskCompletion.ts
 

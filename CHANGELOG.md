@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.26.6](https://github.com/octoguide/bot/compare/0.26.5...0.26.6) (2026-10-06)
+
+### Bug Fixes
+
+- accept closing keywords in pr-linked-issue for PRs into non-default branches ([#671](https://github.com/octoguide/bot/issues/671)) ([e6cefb4](https://github.com/octoguide/bot/commit/e6cefb4f7fe53a22372fd3a5b5217c0c950c6aa1)), closes [#639](https://github.com/octoguide/bot/issues/639)
+
 ## [0.26.5](https://github.com/octoguide/bot/compare/0.26.4...0.26.5) (2026-10-06)
 
 ### Bug Fixes
