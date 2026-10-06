@@ -1,3 +1,4 @@
+import type { PullRequestData } from "../types/entities.js";
 import type { RuleContext } from "../types/rules.js";
 
 import { isRequestError } from "../action/comments/isRequestError.js";
@@ -6,6 +7,7 @@ import { defineRule } from "./defineRule.js";
 interface ClosingIssuesResponse {
 	repository: {
 		pullRequest: {
+			bodyHTML: string;
 			closingIssuesReferences: {
 				nodes: {
 					number: number;
@@ -79,6 +81,7 @@ export const prLinkedIssue = defineRule({
 				query closingIssues($id: Int!, $owner: String!, $repo: String!) {
 					repository(owner: $owner, name: $repo) {
 						pullRequest(number: $id) {
+							bodyHTML
 							closingIssuesReferences(first: 1) {
 								nodes {
 									number
@@ -92,6 +95,13 @@ export const prLinkedIssue = defineRule({
 		);
 
 		if (response.repository.pullRequest.closingIssuesReferences.nodes.length) {
+			return;
+		}
+
+		if (
+			targetsNonDefaultBranch(entity.data) &&
+			hasClosingKeyword(response.repository.pullRequest.bodyHTML)
+		) {
 			return;
 		}
 
@@ -122,3 +132,13 @@ export const prLinkedIssue = defineRule({
 		});
 	},
 });
+
+function hasClosingKeyword(bodyHTML: string) {
+	return /<span class="issue-keyword[^"]*"[^>]*>[^<]*<\/span>:?\s*<a\s[^>]*\bdata-hovercard-type="issue"/.test(
+		bodyHTML,
+	);
+}
+
+function targetsNonDefaultBranch({ base }: Partial<PullRequestData>) {
+	return !!base?.repo && base.ref !== base.repo.default_branch;
+}
