@@ -52,7 +52,9 @@
 		"marked": "^18.0.12",
 		"octokit": "^5.0.5",
 		"octokit-from-auth": "^0.3.2",
-		"parse-github-url": "^1.0.4"
+		"parse-github-url": "^1.0.4",
+		"parse-standard-args": "link:../parse-standard-args",
+		"zod": "^4.6.2"
 	},
 	"devDependencies": {
 		"@eslint-community/eslint-plugin-eslint-comments": "4.8.0",

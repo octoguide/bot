@@ -211,6 +211,12 @@ importers:
       parse-github-url:
         specifier: ^1.0.4
         version: 1.0.4
+      parse-standard-args:
+        specifier: link:../parse-standard-args
+        version: link:../parse-standard-args
+      zod:
+        specifier: ^4.6.2
+        version: 4.6.2
     devDependencies:
       '@eslint-community/eslint-plugin-eslint-comments':
         specifier: 4.8.0

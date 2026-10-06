@@ -2,4 +2,8 @@
 
 import { cli } from "../lib/cli.js";
 
-console.log(await cli(...process.argv.slice(2)));
+const output = await cli(...process.argv.slice(2));
+
+if (output !== undefined) {
+	console.log(output);
+}
