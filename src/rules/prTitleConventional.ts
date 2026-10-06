@@ -49,7 +49,6 @@ const typeAliases = new Map([
 
 /**
  * Finds the known type an unknown type was likely meant to be, if any.
- * @example "Feature" -> "feat"
  */
 function findIntendedType(type: string) {
 	const lowercase = type.toLowerCase();
