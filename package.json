@@ -1,6 +1,6 @@
 {
 	"name": "octoguide",
-	"version": "0.26.2",
+	"version": "0.26.4",
 	"description": "A friendly bot that helps contributors adhere to best practices for your repository on GitHub. 🗺️",
 	"repository": {
 		"type": "git",
@@ -20,7 +20,9 @@
 		"octoguide": "bin/index.js"
 	},
 	"files": [
-		"lib/"
+		"lib/",
+		"!lib/**/*.test.*",
+		"!lib/tests/"
 	],
 	"scripts": {
 		"build": "tsc",
@@ -70,7 +72,7 @@
 		"eslint-plugin-jsdoc": "64.5.0",
 		"eslint-plugin-jsonc": "3.4.2",
 		"eslint-plugin-markdown": "5.1.0",
-		"eslint-plugin-n": "18.3.0",
+		"eslint-plugin-n": "18.4.0",
 		"eslint-plugin-package-json": "1.10.0",
 		"eslint-plugin-perfectionist": "5.12.0",
 		"eslint-plugin-regexp": "3.3.0",

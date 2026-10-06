@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.26.4](https://github.com/octoguide/bot/compare/0.26.3...0.26.4) (2026-10-04)
+
+### Bug Fixes
+
+- treat already-deleted report comments as cleaned up ([#695](https://github.com/octoguide/bot/issues/695)) ([de93570](https://github.com/octoguide/bot/commit/de93570ccf8aa1e8012ba093aa522c9b3020db11)), closes [#694](https://github.com/octoguide/bot/issues/694)
+
+## [0.26.3](https://github.com/octoguide/bot/compare/0.26.2...0.26.3) (2026-10-04)
+
+### Bug Fixes
+
+- add missing space in pr-automation-detected explanation ([#697](https://github.com/octoguide/bot/issues/697)) ([01d9305](https://github.com/octoguide/bot/commit/01d93057f3d0e614242b3b94735672d8ae4eb032)), closes [#696](https://github.com/octoguide/bot/issues/696)
+
 ## [0.26.2](https://github.com/octoguide/bot/compare/0.26.1...0.26.2) (2026-10-03)
 
 ### Bug Fixes

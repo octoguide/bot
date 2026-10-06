@@ -57640,7 +57640,7 @@ const prAutomationDetected = defineRule({
         },
         description: "PRs labeled as automated or AI-generated should be closed.",
         explanation: [
-            'Pull requests labeled as automated (e.g. "automation-signal")or AI-generated (e.g. "ai slop") indicate contributions that were not meaningfully authored by a human.',
+            'Pull requests labeled as automated (e.g. "automation-signal") or AI-generated (e.g. "ai slop") indicate contributions that were not meaningfully authored by a human.',
             "These contributions are often low-quality, miss project context, and create unnecessary review burden for maintainers.",
         ],
         name: "pr-automation-detected",
@@ -89467,6 +89467,7 @@ async function outputActionReports(actor, entity, reports, settings) {
 
 
 
+
 async function runCommentCleanup({ auth, payload, url, }) {
     if (!payload.comment) {
         return;
@@ -89480,6 +89481,17 @@ async function runCommentCleanup({ auth, payload, url, }) {
         info("No existing comment found. Nothing to clean up.");
         return;
     }
+    try {
+        await deleteExistingComment(existingComment, octokit, payload);
+    }
+    catch (error) {
+        if (!isAlreadyDeletedError(error)) {
+            throw error;
+        }
+        info("Existing comment was already deleted. Nothing to clean up.");
+    }
+}
+async function deleteExistingComment(existingComment, octokit, payload) {
     if (payload.discussion) {
         info(`Deleting discussion comment with node id: ${existingComment.node_id}`);
         await octokit.graphql(`
@@ -89500,6 +89512,15 @@ async function runCommentCleanup({ auth, payload, url, }) {
             comment_id: existingComment.id,
         });
     }
+}
+function isAlreadyDeletedError(error) {
+    if (isRequestError_isRequestError(error)) {
+        return error.status === 404;
+    }
+    return (error instanceof Error &&
+        "errors" in error &&
+        Array.isArray(error.errors) &&
+        error.errors.some((graphqlError) => graphqlError.type === "NOT_FOUND"));
 }
 
 ;// CONCATENATED MODULE: ./src/action/runOctoGuideAction.ts

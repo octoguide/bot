@@ -35,8 +35,7 @@ permissions:
 
 export const getStartedLabeled = `on:
   pull_request_target:
--    types: [edited, opened]
-+    types: [edited, labeled, opened]`;
+    types: [edited, labeled, opened]`;
 
 export const getStartedStrict = `
 jobs:
