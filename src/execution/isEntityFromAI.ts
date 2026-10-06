@@ -4,8 +4,6 @@ import { isEntityFromBot } from "./isEntityFromBot.js";
 
 /**
  * Logins of known AI agents that author or review entities and comments on GitHub.
- * @remarks GitHub gives these the `"Bot"` user type, so they would otherwise
- * be indistinguishable from other bots.
  */
 export const aiLogins = new Set([
 	"amazon-q-developer[bot]",
