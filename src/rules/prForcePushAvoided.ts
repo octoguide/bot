@@ -32,6 +32,10 @@ export const prForcePushAvoided = defineRule({
 		name: "pr-force-push-avoided",
 	},
 	async pullRequest(context, entity) {
+		if (entity.data.draft) {
+			return;
+		}
+
 		const response = await context.octokit.graphql<ForcePushesResponse>(
 			`
 				query forcePushes($id: Int!, $owner: String!, $repo: String!) {

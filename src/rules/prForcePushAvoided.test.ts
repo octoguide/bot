@@ -44,8 +44,13 @@ async function testWithTimeline(
 	forcePush: TestForcePush | undefined,
 	{
 		author = { login: authorLogin },
+		draft = false,
 		userLogin = authorLogin,
-	}: { author?: null | { login: string }; userLogin?: string } = {},
+	}: {
+		author?: null | { login: string };
+		draft?: boolean;
+		userLogin?: string;
+	} = {},
 ) {
 	const graphql = vi.fn().mockResolvedValue({
 		repository: {
@@ -66,6 +71,7 @@ async function testWithTimeline(
 		prForcePushAvoided,
 		{
 			data: {
+				draft,
 				head: {
 					sha: headSha,
 				},
@@ -88,6 +94,17 @@ async function testWithTimeline(
 }
 
 describe(prForcePushAvoided.about.name, () => {
+	it("does not query or report when the pull request is a draft", async () => {
+		const { graphql, report } = await testWithTimeline(
+			[createReview("2026-01-01T00:00:00Z")],
+			createForcePush("2026-01-02T00:00:00Z"),
+			{ draft: true },
+		);
+
+		expect(graphql).not.toHaveBeenCalled();
+		expect(report).not.toHaveBeenCalled();
+	});
+
 	it("does not report when the pull request has not been reviewed", async () => {
 		const { report } = await testWithTimeline(
 			[],
