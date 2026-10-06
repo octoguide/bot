@@ -27,6 +27,73 @@ describe(prTitleConventional.about.name, () => {
 		});
 	});
 
+	it("reports with a corrected title when the pull request title has a known type with incorrect syntax", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title: "fix(md) fill in suggestions",
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
+			suggestion: [
+				`To resolve this report, follow conventional commit syntax, like _"fix(md): fill in suggestions"_.`,
+			],
+		});
+	});
+
+	it("reports a missing type without a corrected title when the pull request title has a known type but no valid correction", async () => {
+		const report = vi.fn();
+		const title = "fix (windows) path handling";
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title,
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
+			suggestion: [
+				`To resolve this report, add a conventional commit type in front of the title, like _"feat: fix (windows) path handling"_.`,
+			],
+		});
+	});
+
+	it("reports when the pull request title has a known type with incorrect syntax and no subject", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title: "fix(md)",
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `PR title is missing a subject after its type.`,
+			suggestion: [
+				`To resolve this report, add text after the type, like _"fix(md): etc."_`,
+			],
+		});
+	});
+
 	it("reports when the pull request title has an unknown type", async () => {
 		const report = vi.fn();
 		const title = "other: add this new feature";
