@@ -15,29 +15,18 @@ import { getStartedSynchronize } from "../../../data/yml.js";
 Force-pushing a pull request rewrites its history.
 Once a pull request has been reviewed, rewritten history makes it harder for reviewers to see what changed since their last review.
 
-Many repositories squash merge pull requests, so there's no need to keep a pull request's commits clean.
-Pushing new commits on top of existing ones keeps each review's changes easy to find.
-To bring in changes from the base branch, such as to resolve merge conflicts, merge the base branch in instead of rebasing onto it.
-
 This rule reports when a pull request's latest commit was force-pushed by its author after the pull request was first reviewed.
 Reviews from bots, such as automatic Copilot reviews, and from the pull request's author don't count.
 Force-pushes by anyone other than the author, such as maintainers or stacking tool bots, are ignored.
 
-## Running on Pushes
+## Avoiding Force Pushing During Reviews
 
-Pushes to a pull request fire the `synchronize` event, which OctoGuide's [default workflow](/get-started#installation) doesn't run on.
-A pull request can't have been reviewed yet when it's opened, so with the default workflow, this rule only checks pull requests when their title or body is edited.
-Its reports also stay until the next edit.
+Many repositories squash merge pull requests, so there's no need to keep a pull request's commits clean.
+Pushing new commits on top of existing ones keeps each review's changes easy to find.
+To bring in changes from the base branch, such as to resolve merge conflicts, merge the base branch in instead of rebasing onto it.
 
-This rule needs `synchronize` in the workflow's `pull_request_target` types to check every push.
-With it, a report is resolved as soon as new changes are pushed without force-pushing:
-
-<Code
-	code={getStartedSynchronize}
-	ins=", synchronize"
-	lang="yml"
-	title=".github/workflows/octoguide.yml"
-/>
+This rule intentionally does not report on draft PRs.
+If you wish to present a clear Git history before peer reviews, consider force pushing while the PR is still in draft
 
 ## Examples
 
@@ -52,6 +41,17 @@ With it, a report is resolved as soon as new changes are pushed without force-pu
 </OctoGuideGitHubComment>
 
 ## How to Enable
+
+:::note
+This rule needs to listen to `synchronize` events to run on force pushes themselves.
+
+<Code
+	code={getStartedSynchronize}
+	ins=", synchronize"
+	lang="yml"
+	title=".github/workflows/octoguide.yml"
+/>
+:::
 
 <HowToEnable rule="pr-force-push-avoided" />
 
