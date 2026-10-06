@@ -1,0 +1,62 @@
+---
+description: "PRs should not be force-pushed after they've been reviewed"
+title: "pr-force-pushes"
+---
+
+import { Code } from "@astrojs/starlight/components";
+
+import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.astro";
+import IncludedIn from "../../../components/IncludedIn.astro";
+import HowToEnable from "../../../components/HowToEnable.astro";
+import { getStartedSynchronize } from "../../../data/yml.js";
+
+<IncludedIn rule="pr-force-pushes" />
+
+Force-pushing a pull request rewrites its history.
+Once a pull request has been reviewed, rewritten history makes it harder for reviewers to see what changed since their last review.
+
+This rule reports when a pull request's latest commit was force-pushed by its author after the pull request was first reviewed.
+Reviews from bots, such as automatic Copilot reviews, and from the pull request's author don't count.
+Force-pushes by anyone other than the author, such as maintainers or stacking tool bots, are ignored.
+
+## Avoiding Force Pushing During Reviews
+
+Many repositories squash merge pull requests, so there's no need to keep a pull request's commits clean.
+Pushing new commits on top of existing ones keeps each review's changes easy to find.
+To bring in changes from the base branch, such as to resolve merge conflicts, merge the base branch in instead of rebasing onto it.
+
+This rule intentionally does not report on draft PRs.
+If you wish to present a clear Git history before peer reviews, consider force pushing while the PR is still in draft
+
+## Examples
+
+<OctoGuideGitHubComment rule="pr-force-pushes">
+	This pull request's latest changes were force-pushed after it was reviewed.
+	This repository asks that pull requests not be force-pushed after they've been
+	reviewed. Rewriting a pull request's history makes it harder for reviewers to
+	see what changed between reviews. To resolve this report, push any further
+	changes as new commits rather than force-pushing. There's no need to rewrite
+	existing commits to keep them clean. If you need to resolve conflicts, merge
+	the base branch in instead of rebasing onto it.
+</OctoGuideGitHubComment>
+
+## How to Enable
+
+:::note
+This rule needs to listen to `synchronize` events to run on force pushes themselves.
+
+<Code
+	code={getStartedSynchronize}
+	ins=", synchronize"
+	lang="yml"
+	title=".github/workflows/octoguide.yml"
+/>
+:::
+
+<HowToEnable rule="pr-force-pushes" />
+
+## See More
+
+- [typescript-eslint: Consider adding a bot that asks not to force push](https://github.com/typescript-eslint/typescript-eslint/issues/5170)
+- [Rule source](https://github.com/OctoGuide/bot/blob/main/src/rules/prForcePushes.ts)
+- [Rule tests](https://github.com/OctoGuide/bot/blob/main/src/rules/prForcePushes.test.ts)
