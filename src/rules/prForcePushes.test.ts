@@ -3,7 +3,7 @@ import type { Octokit } from "octokit";
 import { describe, expect, it, vi } from "vitest";
 
 import { testRule } from "../tests/testRule.js";
-import { prForcePushAvoided } from "./prForcePushAvoided.js";
+import { prForcePushes } from "./prForcePushes.js";
 
 const authorLogin = "contributor";
 const headSha = "abc123";
@@ -68,7 +68,7 @@ async function testWithTimeline(
 	const report = vi.fn();
 
 	await testRule(
-		prForcePushAvoided,
+		prForcePushes,
 		{
 			data: {
 				draft,
@@ -93,7 +93,7 @@ async function testWithTimeline(
 	return { graphql, report };
 }
 
-describe(prForcePushAvoided.about.name, () => {
+describe(prForcePushes.about.name, () => {
 	it("does not query or report when the pull request is a draft", async () => {
 		const { graphql, report } = await testWithTimeline(
 			[createReview("2026-01-01T00:00:00Z")],

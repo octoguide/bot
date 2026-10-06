@@ -21,7 +21,7 @@ interface ForcePushesResponse {
 	};
 }
 
-export const prForcePushAvoided = defineRule({
+export const prForcePushes = defineRule({
 	about: {
 		config: "strict",
 		description: "PRs should not be force-pushed after they've been reviewed.",
@@ -29,7 +29,7 @@ export const prForcePushAvoided = defineRule({
 			`This repository asks that pull requests not be force-pushed after they've been reviewed.`,
 			`Rewriting a pull request's history makes it harder for reviewers to see what changed between reviews.`,
 		],
-		name: "pr-force-push-avoided",
+		name: "pr-force-pushes",
 	},
 	async pullRequest(context, entity) {
 		if (entity.data.draft) {

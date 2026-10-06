@@ -1,6 +1,6 @@
 ---
 description: "PRs should not be force-pushed after they've been reviewed"
-title: "pr-force-push-avoided"
+title: "pr-force-pushes"
 ---
 
 import { Code } from "@astrojs/starlight/components";
@@ -10,7 +10,7 @@ import IncludedIn from "../../../components/IncludedIn.astro";
 import HowToEnable from "../../../components/HowToEnable.astro";
 import { getStartedSynchronize } from "../../../data/yml.js";
 
-<IncludedIn rule="pr-force-push-avoided" />
+<IncludedIn rule="pr-force-pushes" />
 
 Force-pushing a pull request rewrites its history.
 Once a pull request has been reviewed, rewritten history makes it harder for reviewers to see what changed since their last review.
@@ -30,7 +30,7 @@ If you wish to present a clear Git history before peer reviews, consider force p
 
 ## Examples
 
-<OctoGuideGitHubComment rule="pr-force-push-avoided">
+<OctoGuideGitHubComment rule="pr-force-pushes">
 	This pull request's latest changes were force-pushed after it was reviewed.
 	This repository asks that pull requests not be force-pushed after they've been
 	reviewed. Rewriting a pull request's history makes it harder for reviewers to
@@ -53,10 +53,10 @@ This rule needs to listen to `synchronize` events to run on force pushes themsel
 />
 :::
 
-<HowToEnable rule="pr-force-push-avoided" />
+<HowToEnable rule="pr-force-pushes" />
 
 ## See More
 
 - [typescript-eslint: Consider adding a bot that asks not to force push](https://github.com/typescript-eslint/typescript-eslint/issues/5170)
-- [Rule source](https://github.com/OctoGuide/bot/blob/main/src/rules/prForcePushAvoided.ts)
-- [Rule tests](https://github.com/OctoGuide/bot/blob/main/src/rules/prForcePushAvoided.test.ts)
+- [Rule source](https://github.com/OctoGuide/bot/blob/main/src/rules/prForcePushes.ts)
+- [Rule tests](https://github.com/OctoGuide/bot/blob/main/src/rules/prForcePushes.test.ts)
