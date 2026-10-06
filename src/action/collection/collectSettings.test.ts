@@ -29,7 +29,7 @@ describe("collectSettings", () => {
 			comments: { footer: defaultFooter, header: "" },
 			config: "recommended",
 			options: {
-				"include-ais": undefined,
+				"include-ais": false,
 				"include-associations": [],
 				"include-bots": false,
 			},

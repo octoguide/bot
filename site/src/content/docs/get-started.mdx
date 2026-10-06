@@ -94,7 +94,7 @@ necessarily need to follow the same contribution guidelines as human contributor
 
 Bot detection works by checking if the entity creator's `user.type` field is `"Bot"`,
 which is the standard way GitHub identifies bot accounts and GitHub Apps.
-Known AI agents are bots too, so `include-bots` also applies to them unless [`include-ais`](#include-ais) is set.
+Known AI agents are handled separately by [`include-ais`](#include-ais), so `include-bots` doesn't apply to them.
 
 If you want OctoGuide to run rules on bot-created entities and comments, you can
 enable this by setting `include-bots` to `"true"`:
@@ -109,15 +109,14 @@ enable this by setting `include-bots` to `"true"`:
 />
 
 :::note
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 :::
 
 ### `include-ais`
 
-Known AI agents, such as GitHub Copilot, Claude, Cursor, and Devin, are also bots.
-`include-ais` controls whether OctoGuide runs rules on entities and comments they create,
-separately from other bots.
+Known AI agents, such as GitHub Copilot, Claude, Cursor, and Devin, are handled separately from other bots.
+OctoGuide skips entities and comments they create by default, and `include-ais` controls whether it runs rules on them.
 
 For example, to hold AI agents to the same contribution guidelines as humans while still skipping other bots such as Dependabot and Renovate:
 
@@ -135,12 +134,8 @@ OctoGuide considers the following bot accounts to be known AI agents:
 These include AI code review bots such as CodeRabbit and Gemini Code Assist,
 so setting `include-ais` to `"true"` also runs comment rules on the comments they post.
 
-If `include-ais` isn't set, AI agents follow each rule's `include-bots`, whether it comes from the top-level input, per-rule options, or the rule's own default options.
-If it is set, it applies to AI agents for every rule, regardless of `include-bots`.
-For example, setting `include-ais` to `"false"` stops [`pr-automation-detected`](/rules/pr-automation-detected) from checking pull requests opened by AI agents, even though that rule runs on bots by default.
-
-`include-ais` is only a top-level input.
-Unlike `include-associations` and `include-bots`, it can't be set in a rule's [options](#rule-options), and OctoGuide fails with an error if it is.
+`include-ais` and `include-bots` are independent: setting one never affects the other.
+For example, setting `include-bots` to `"true"` doesn't run rules on AI agents.
 
 ### `include-associations`
 
@@ -161,7 +156,7 @@ to include for rule checking. The default value excludes collaborators, organiza
 />
 
 :::note
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 :::
 
@@ -277,7 +272,7 @@ When a rule is explicitly set via input, it takes precedence over the preset con
 #### Rule Options
 
 Setting a rule to an object both enables the rule and gives it options to run with.
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 `include-associations` is provided per-rule as an array rather than a comma-separated string.
 
@@ -291,6 +286,6 @@ which override the equivalent top-level inputs for that one rule.
 />
 
 Some rules declare their own default options.
-Those defaults take precedence over the top-level `include-associations` and `include-bots` inputs,
+Those defaults take precedence over the top-level `include-ais`, `include-associations`, and `include-bots` inputs,
 so a rule such as [`text-image-alt-text`](/rules/text-image-alt-text) that applies to all author associations
 keeps doing so until you give it options of your own.

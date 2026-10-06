@@ -77,13 +77,4 @@ describe("isRuleSkippedForEntity", () => {
 
 		expect(actual).toBe(false);
 	});
-
-	it("returns true when the entity is from an AI agent, bots are excluded, and include-ais is not provided", () => {
-		const actual = isRuleSkippedForEntity(
-			createIssueEntity({ user: { login: "Copilot", type: "Bot" } }),
-			{ "include-bots": false },
-		);
-
-		expect(actual).toBe(true);
-	});
 });

@@ -19,7 +19,6 @@ export function resolveRules(settings: Settings = {}): RuleAndOptions[] {
 	const configRuleNames = new Set(
 		configs[settings.config ?? "recommended"].map((rule) => rule.about.name),
 	);
-	const { "include-ais": includeAIs, ...options } = settings.options ?? {};
 	const overrides: Record<string, boolean | RuleOptionsRaw | undefined> =
 		settings.rules ?? {};
 
@@ -31,36 +30,16 @@ export function resolveRules(settings: Settings = {}): RuleAndOptions[] {
 				? configRuleNames.has(rule.about.name)
 				: !!override;
 		})
-		.map((rule) => {
-			const merged = mergeRuleOptions(
-				options,
+		.map((rule) => ({
+			options: mergeRuleOptions(
+				settings.options,
 				rule.about.defaultOptions,
-				asRuleOptions(rule.about.name, overrides[rule.about.name]),
-			);
-
-			return {
-				options: {
-					...merged,
-					"include-ais": includeAIs ?? merged["include-bots"],
-				},
-				rule,
-			};
-		});
+				asRuleOptions(overrides[rule.about.name]),
+			),
+			rule,
+		}));
 }
 
-function asRuleOptions(
-	ruleName: string,
-	override: boolean | RuleOptionsRaw | undefined,
-) {
-	if (typeof override !== "object") {
-		return undefined;
-	}
-
-	if (override["include-ais"] !== undefined) {
-		throw new Error(
-			`"include-ais" can only be set as a top-level option, not in the "${ruleName}" rule's options.`,
-		);
-	}
-
-	return override;
+function asRuleOptions(override: boolean | RuleOptionsRaw | undefined) {
+	return typeof override === "object" ? override : undefined;
 }

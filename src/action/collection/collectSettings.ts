@@ -26,7 +26,7 @@ export function collectSettings(): Settings {
 		},
 		config,
 		options: {
-			"include-ais": parseBooleanInput(core.getInput("include-ais")),
+			"include-ais": core.getInput("include-ais") === "true",
 			"include-associations": parseIncludeAssociations(
 				core.getInput("include-associations"),
 			),
@@ -34,8 +34,4 @@ export function collectSettings(): Settings {
 		},
 		rules,
 	};
-}
-
-function parseBooleanInput(input: string) {
-	return input ? input === "true" : undefined;
 }
