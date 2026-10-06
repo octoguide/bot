@@ -26,6 +26,7 @@ export function collectSettings(): Settings {
 		},
 		config,
 		options: {
+			"include-ais": core.getInput("include-ais") === "true",
 			"include-associations": parseIncludeAssociations(
 				core.getInput("include-associations"),
 			),

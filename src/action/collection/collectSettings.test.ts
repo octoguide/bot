@@ -29,6 +29,7 @@ describe("collectSettings", () => {
 			comments: { footer: defaultFooter, header: "" },
 			config: "recommended",
 			options: {
+				"include-ais": false,
 				"include-associations": [],
 				"include-bots": false,
 			},
@@ -50,11 +51,20 @@ describe("collectSettings", () => {
 		expect(() => collectSettings()).toThrow('Could not parse "rules" input:');
 	});
 
+	it("parses include-ais as true when it is provided as true", () => {
+		mockInputs({ "include-ais": "true" });
+
+		const actual = collectSettings();
+
+		expect(actual.options?.["include-ais"]).toBe(true);
+	});
+
 	it("returns customized settings when inputs are provided", () => {
 		mockInputs({
 			"comment-footer": "Custom footer!",
 			"comment-header": "Custom header!",
 			config: "strict",
+			"include-ais": "false",
 			"include-associations": "MEMBER, OWNER",
 			"include-bots": "true",
 			rules: `{"comment-meaningful": false}`,
@@ -66,6 +76,7 @@ describe("collectSettings", () => {
 			comments: { footer: "Custom footer!", header: "Custom header!" },
 			config: "strict",
 			options: {
+				"include-ais": false,
 				"include-associations": ["MEMBER", "OWNER"],
 				"include-bots": true,
 			},

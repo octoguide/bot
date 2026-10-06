@@ -1,6 +1,10 @@
 import type { Entity } from "../types/entities.js";
 
-export function isEntityFromBot(entity: Entity) {
+type EntityFromBot = Entity & {
+	data: { user: { login: string; type: "Bot" } };
+};
+
+export function isEntityFromBot(entity: Entity): entity is EntityFromBot {
 	return (
 		"user" in entity.data &&
 		!!entity.data.user &&
