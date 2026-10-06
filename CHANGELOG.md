@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.26.5](https://github.com/octoguide/bot/compare/0.26.4...0.26.5) (2026-10-06)
+
+### Bug Fixes
+
+- validate that linked Dependabot alerts exist in pr-linked-issue ([#672](https://github.com/octoguide/bot/issues/672)) ([3e87119](https://github.com/octoguide/bot/commit/3e871191c309b9881c22c72cfc83a57e684b8952)), closes [#322](https://github.com/octoguide/bot/issues/322)
+
 ## [0.26.4](https://github.com/octoguide/bot/compare/0.26.3...0.26.4) (2026-10-04)
 
 ### Bug Fixes

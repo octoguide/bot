@@ -57829,8 +57829,47 @@ const prBranchNonDefault = defineRule({
     },
 });
 
+;// CONCATENATED MODULE: ./src/action/comments/isRequestError.ts
+function isRequestError_isRequestError(error) {
+    return (typeof error === "object" &&
+        !!error &&
+        "status" in error &&
+        typeof error.status === "number");
+}
+
 ;// CONCATENATED MODULE: ./src/rules/prLinkedIssue.ts
 
+
+async function dependabotAlertMightExist(context, { alertNumber, owner, repo }) {
+    try {
+        await context.octokit.rest.dependabot.getAlert({
+            alert_number: alertNumber,
+            owner,
+            repo,
+        });
+        return true;
+    }
+    catch (error) {
+        if (!isRequestError_isRequestError(error) || error.status !== 404) {
+            return true;
+        }
+        return (!/no alert found/i.test(error.message) &&
+            `${owner}/${repo}`.toLowerCase() !==
+                `${context.locator.owner}/${context.locator.repository}`.toLowerCase());
+    }
+}
+function findDependabotAlertLinks(body) {
+    const links = new Map();
+    for (const [url, owner, repo, alertNumber] of body.matchAll(/https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)\/security\/dependabot\/(\d+)/g)) {
+        links.set(url.toLowerCase(), {
+            alertNumber: Number(alertNumber),
+            owner,
+            repo,
+            url,
+        });
+    }
+    return Array.from(links.values());
+}
 const prLinkedIssue = defineRule({
     about: {
         config: "strict",
@@ -57859,12 +57898,17 @@ const prLinkedIssue = defineRule({
             return;
         }
         const body = entity.data.body?.trim() ?? "";
-        const dependabotAlertPattern = /https:\/\/github\.com\/[^/]+\/[^/]+\/security\/dependabot\/\d+/;
-        if (dependabotAlertPattern.test(body)) {
-            return;
+        const dependabotAlertLinks = findDependabotAlertLinks(body);
+        for (const link of dependabotAlertLinks) {
+            if (await dependabotAlertMightExist(context, link)) {
+                return;
+            }
         }
         context.report({
             primary: "This pull request is not linked as closing any issues.",
+            ...(dependabotAlertLinks.length > 0 && {
+                secondary: dependabotAlertLinks.map((link) => `The linked Dependabot alert, ${link.url}, could not be found.`),
+            }),
             suggestion: [
                 "To resolve this report:",
                 "* If this is a straightforward documentation change that doesn't need an issue, you can ignore this report",
@@ -89296,14 +89340,6 @@ function markdownReporter(headline, reports) {
         ].join("");
     });
     return [headline, "\n\n", printedReports.join("\n\n")].join("");
-}
-
-;// CONCATENATED MODULE: ./src/action/comments/isRequestError.ts
-function isRequestError_isRequestError(error) {
-    return (typeof error === "object" &&
-        !!error &&
-        "status" in error &&
-        typeof error.status === "number");
 }
 
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
