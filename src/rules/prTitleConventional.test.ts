@@ -105,6 +105,81 @@ describe(prTitleConventional.about.name, () => {
 		});
 	});
 
+	it.each([
+		["Feature: Abc Def", "Feature", "feat: Abc Def"],
+		["Feat: add this new feature", "Feat", "feat: add this new feature"],
+		["FIX(parser): handle semicolons", "FIX", "fix(parser): handle semicolons"],
+		[
+			"bugfix(parser)!: change parser API",
+			"bugfix",
+			"fix(parser)!: change parser API",
+		],
+		["Documentation: mention option", "Documentation", "docs: mention option"],
+		["doc: mention option", "doc", "docs: mention option"],
+		["Features: add option", "Features", "feat: add option"],
+		["fixes: handle semicolons", "fixes", "fix: handle semicolons"],
+		["Fixed: handle semicolons", "Fixed", "fix: handle semicolons"],
+		["hotfix: handle semicolons", "hotfix", "fix: handle semicolons"],
+		["bug: handle semicolons", "bug", "fix: handle semicolons"],
+		["builds: bump target", "builds", "build: bump target"],
+		["chores(deps): bump x", "chores", "chore(deps): bump x"],
+		["refactored: extract helper", "refactored", "refactor: extract helper"],
+		["reverts: undo change", "reverts", "revert: undo change"],
+		["styles: format files", "styles", "style: format files"],
+		["tests: cover parser", "tests", "test: cover parser"],
+	])(
+		"reports with a corrected title when the pull request title %j has a near-miss type",
+		async (title, type, corrected) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title has an unknown type: '${type}'.`,
+				secondary: [
+					"Known types are: 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'",
+				],
+				suggestion: [
+					`To resolve this report, replace the current type with its known equivalent, like _"${corrected}"_.`,
+				],
+			});
+		},
+	);
+
+	it("reports without a corrected title when the pull request title has a near-miss type and no subject", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title: "Feature: ",
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `The PR title has an unknown type: 'Feature'.`,
+			secondary: [
+				"Known types are: 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'",
+			],
+			suggestion: [
+				`To resolve this report, replace the current type with one of those known types.`,
+			],
+		});
+	});
+
 	it("reports when the pull request title is missing a subject", async () => {
 		const report = vi.fn();
 		const title = "feat: ";

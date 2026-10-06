@@ -15,6 +15,49 @@ const commitParser = new CommitParser({
 	breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
 });
 
+/**
+ * Common alternate names for known types, keyed by their lowercase form.
+ */
+const typeAliases = new Map([
+	["bug", "fix"],
+	["bugfix", "fix"],
+	["bugfixes", "fix"],
+	["bugs", "fix"],
+	["builds", "build"],
+	["built", "build"],
+	["chores", "chore"],
+	["doc", "docs"],
+	["documentation", "docs"],
+	["feats", "feat"],
+	["feature", "feat"],
+	["features", "feat"],
+	["fixed", "fix"],
+	["fixes", "fix"],
+	["hotfix", "fix"],
+	["hotfixes", "fix"],
+	["performance", "perf"],
+	["refactored", "refactor"],
+	["refactoring", "refactor"],
+	["refactors", "refactor"],
+	["reverted", "revert"],
+	["reverts", "revert"],
+	["styled", "style"],
+	["styles", "style"],
+	["tested", "test"],
+	["tests", "test"],
+]);
+
+/**
+ * Finds the known type an unknown type was likely meant to be, if any.
+ */
+function findIntendedType(type: string) {
+	const lowercase = type.toLowerCase();
+
+	return Object.hasOwn(conventionalTypes.types, lowercase)
+		? lowercase
+		: typeAliases.get(lowercase);
+}
+
 export const prTitleConventional = defineRule({
 	about: {
 		config: "strict",
@@ -40,14 +83,34 @@ export const prTitleConventional = defineRule({
 		}
 
 		if (!Object.hasOwn(conventionalTypes.types, parsed.type)) {
+			const secondary = [
+				`Known types are: ${Object.keys(conventionalTypes.types)
+					.sort()
+					.map((type) => `'${type}'`)
+					.join(", ")}`,
+			];
+			const intendedType = findIntendedType(parsed.type);
+			if (intendedType && parsed.subject) {
+				const scope = parsed.scope ? `(${parsed.scope})` : "";
+				const breaking = parsed.notes.some(
+					(note) => note.title === "BREAKING CHANGE",
+				)
+					? "!"
+					: "";
+
+				context.report({
+					primary: `The PR title has an unknown type: '${parsed.type}'.`,
+					secondary,
+					suggestion: [
+						`To resolve this report, replace the current type with its known equivalent, like _"${intendedType}${scope}${breaking}: ${parsed.subject}"_.`,
+					],
+				});
+				return;
+			}
+
 			context.report({
 				primary: `The PR title has an unknown type: '${parsed.type}'.`,
-				secondary: [
-					`Known types are: ${Object.keys(conventionalTypes.types)
-						.sort()
-						.map((type) => `'${type}'`)
-						.join(", ")}`,
-				],
+				secondary,
 				suggestion: [
 					parsed.subject
 						? `To resolve this report, replace the current type with one of those known types, like _"feat: ${parsed.subject}"_.`
