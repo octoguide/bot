@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.27.0](https://github.com/octoguide/bot/compare/0.26.6...0.27.0) (2026-10-14)
+
+### Features
+
+- add pr-force-pushes rule ([#679](https://github.com/octoguide/bot/issues/679)) ([779f757](https://github.com/octoguide/bot/commit/779f757cc0fa82082b790aaac38e96c11db6f9b8)), closes [#572](https://github.com/octoguide/bot/issues/572)
+
 ## [0.26.6](https://github.com/octoguide/bot/compare/0.26.5...0.26.6) (2026-10-06)
 
 ### Bug Fixes
