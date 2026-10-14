@@ -78,7 +78,7 @@
 		"eslint-plugin-regexp": "3.3.0",
 		"eslint-plugin-yml": "3.8.1",
 		"knip": "6.40.0",
-		"lefthook": "2.1.12",
+		"lefthook": "2.2.0",
 		"markdownlint-cli": "0.49.1",
 		"markdownlint-sentences-per-line": "0.1.4",
 		"prettier": "3.9.6",
