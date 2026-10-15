@@ -3,9 +3,13 @@
 
 import conventionalTypes from "conventional-commit-types" with { type: "json" };
 
+import type { RuleOptions } from "../types/rules.ts";
+
 import { commitParser } from "./commitParser.ts";
 import { defineRule } from "./defineRule.ts";
 import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTitle.ts";
+
+const knownTypes = Object.keys(conventionalTypes.types);
 
 // Matches each scope in a list, keeping package names like `@a/b` intact.
 const scopeItems = /@[^,/;\\|]+\/[^,/;\\|]+|[^,/;\\|]+/g;
@@ -21,6 +25,22 @@ export const prTitleConventional = defineRule({
 		name: "pr-title-conventional",
 	},
 	pullRequest(context, entity) {
+		const scopes = getStringsOption(
+			context.options,
+			"scopes",
+			/^[\w$@.\-*/ ]+$/,
+			"ASCII letters, digits, spaces, and _$@.-*/ characters",
+		);
+		const allowedTypes = getStringsOption(
+			context.options,
+			"types",
+			/^\w+$/,
+			"ASCII letters, digits, and _ characters",
+		);
+		const types = allowedTypes ?? knownTypes;
+		const typesLabel = allowedTypes ? "allowed" : "known";
+		const exampleType = types.includes("feat") ? "feat" : [...types].sort()[0];
+
 		const parsed = commitParser.parse(entity.data.title);
 		if (!parsed.type) {
 			const fixed = getFixedConventionalCommitTitle(entity.data.title);
@@ -44,30 +64,33 @@ export const prTitleConventional = defineRule({
 				return;
 			}
 
+			const exampleTypes = getExampleTypes(types);
+
 			context.report({
-				primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
+				primary: `The PR title is missing ${exampleTypes.length === 1 ? "the" : "a"} conventional commit type, such as ${exampleTypes
+					.map((type) => `_"${type}: "_`)
+					.join(" or ")}.`,
 				suggestion: [
 					parsed.header
-						? `To resolve this report, add a conventional commit type in front of the title, like _"feat: ${parsed.header}"_.`
+						? `To resolve this report, add a conventional commit type in front of the title, like _"${exampleType}: ${parsed.header}"_.`
 						: `To resolve this report, add a conventional commit type in front of the title.`,
 				],
 			});
 			return;
 		}
 
-		if (!Object.hasOwn(conventionalTypes.types, parsed.type)) {
+		if (!types.includes(parsed.type)) {
 			context.report({
-				primary: `The PR title has an unknown type: '${parsed.type}'.`,
+				primary: allowedTypes
+					? `The PR title has a type that isn't allowed: '${parsed.type}'.`
+					: `The PR title has an unknown type: '${parsed.type}'.`,
 				secondary: [
-					`Known types are: ${Object.keys(conventionalTypes.types)
-						.sort()
-						.map((type) => `'${type}'`)
-						.join(", ")}`,
+					`${allowedTypes ? "Allowed" : "Known"} types are: ${formatList(types)}`,
 				],
 				suggestion: [
 					parsed.subject
-						? `To resolve this report, replace the current type with one of those known types, like _"feat: ${parsed.subject}"_.`
-						: `To resolve this report, replace the current type with one of those known types.`,
+						? `To resolve this report, replace the current type with one of those ${typesLabel} types, like _"${exampleType}: ${parsed.subject}"_.`
+						: `To resolve this report, replace the current type with one of those ${typesLabel} types.`,
 				],
 			});
 			return;
@@ -83,21 +106,76 @@ export const prTitleConventional = defineRule({
 			return;
 		}
 
-		const scopes = parsed.scope
+		const titleScopes = parsed.scope
 			?.match(scopeItems)
-			?.map((scope) => scope.trim())
+			?.map((item) => item.trim())
 			.filter(Boolean);
 
-		if (scopes && scopes.length > 1) {
+		if (titleScopes && titleScopes.length > 1) {
 			context.report({
 				primary: `The PR title has multiple scopes: '${parsed.scope}'.`,
 				secondary: [
 					`A conventional commit scope is a single noun describing a section of the codebase.`,
 				],
 				suggestion: [
-					`To resolve this report, keep only one scope, like _"${entity.data.title.replace(`(${parsed.scope})`, `(${scopes[0]})`)}"_.`,
+					`To resolve this report, keep only one scope, like _"${entity.data.title.replace(`(${parsed.scope})`, `(${titleScopes[0]})`)}"_.`,
+				],
+			});
+			return;
+		}
+
+		const scope = parsed.scope?.trim();
+		if (scopes && scope && !scopes.includes(scope)) {
+			context.report({
+				primary: `The PR title has a scope that isn't allowed: '${scope}'.`,
+				secondary: [`Allowed scopes are: ${formatList(scopes)}`],
+				suggestion: [
+					`To resolve this report, replace the current scope with one of those allowed scopes, like _"${entity.data.title.replace(
+						`(${parsed.scope})`,
+						() => `(${[...scopes].sort()[0]})`,
+					)}"_, or remove the scope.`,
 				],
 			});
 		}
 	},
 });
+
+function formatList(values: string[]) {
+	return [...values]
+		.sort()
+		.map((value) => `'${value}'`)
+		.join(", ");
+}
+
+function getExampleTypes(types: string[]) {
+	const preferred = ["docs", "feat"].filter((type) => types.includes(type));
+
+	return [...new Set([...preferred, ...[...types].sort()])].slice(0, 2).sort();
+}
+
+function getStringsOption(
+	options: RuleOptions,
+	name: string,
+	pattern: RegExp,
+	characters: string,
+) {
+	const value = options[name];
+	if (value === undefined) {
+		return undefined;
+	}
+
+	if (
+		!Array.isArray(value) ||
+		!value.length ||
+		!value.every(
+			(item) =>
+				typeof item === "string" && item.trim() === item && pattern.test(item),
+		)
+	) {
+		throw new Error(
+			`pr-title-conventional's "${name}" option must be a non-empty array of trimmed strings made of ${characters}.`,
+		);
+	}
+
+	return [...new Set(value as string[])];
+}
