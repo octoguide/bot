@@ -1,4 +1,4 @@
-import type { Entity } from "../types/entities.js";
+import type { Entity } from "../types/entities.ts";
 
 export function createHeadlineAsMarkdown(entity: Entity, reports: unknown[]) {
 	const entityAlias = entity.type.replace("_", " ");

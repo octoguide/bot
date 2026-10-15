@@ -1,7 +1,7 @@
 import { octokitFromAuth, type OctokitOptions } from "octokit-from-auth";
 
-import type { RepositoryLocator } from "../types/data.js";
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { RepositoryLocator } from "../types/data.ts";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
 /**
  * Creates an Octokit whose `owner` and `repo` API parameters default to a repository.

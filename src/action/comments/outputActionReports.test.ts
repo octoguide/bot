@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { EntityActor } from "../../actors/types.js";
-import type { IssueEntity, PullRequestEntity } from "../../types/entities.js";
-import type { RuleReport, RuleReportData } from "../../types/reports.js";
-import type { RuleAboutWithUrl } from "../../types/rules.js";
-import type { Settings } from "../../types/settings.js";
+import type { EntityActor } from "../../actors/types.ts";
+import type { IssueEntity, PullRequestEntity } from "../../types/entities.ts";
+import type { RuleReport, RuleReportData } from "../../types/reports.ts";
+import type { RuleAboutWithUrl } from "../../types/rules.ts";
+import type { Settings } from "../../types/settings.ts";
 
-import { outputActionReports } from "./outputActionReports.js";
+import { outputActionReports } from "./outputActionReports.ts";
 
 const mockCore = {
 	debug: vi.fn(),
@@ -37,7 +37,7 @@ vi.mock("@actions/core", () => ({
 
 const mockSetCommentForReports = vi.fn();
 
-vi.mock("./setCommentForReports.js", () => ({
+vi.mock("./setCommentForReports.ts", () => ({
 	get setCommentForReports() {
 		return mockSetCommentForReports;
 	},

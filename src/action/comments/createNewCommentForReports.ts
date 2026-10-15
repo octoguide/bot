@@ -1,10 +1,10 @@
 import * as core from "@actions/core";
 
-import type { EntityActor } from "../../actors/types.js";
-import type { Entity } from "../../types/entities.js";
-import type { Settings } from "../../types/settings.js";
+import type { EntityActor } from "../../actors/types.ts";
+import type { Entity } from "../../types/entities.ts";
+import type { Settings } from "../../types/settings.ts";
 
-import { createCommentBody } from "./createCommentBody.js";
+import { createCommentBody } from "./createCommentBody.ts";
 
 export async function createNewCommentForReports(
 	actor: EntityActor,

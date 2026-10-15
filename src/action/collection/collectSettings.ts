@@ -1,10 +1,10 @@
 import * as core from "@actions/core";
 
-import type { Settings } from "../../types/settings.js";
+import type { Settings } from "../../types/settings.ts";
 
-import { isKnownConfig } from "../../rules/configs.js";
-import { parseIncludeAssociations } from "./parseIncludeAssociations.js";
-import { parseRules } from "./parseRules.js";
+import { isKnownConfig } from "../../rules/configs.ts";
+import { parseIncludeAssociations } from "./parseIncludeAssociations.ts";
+import { parseRules } from "./parseRules.ts";
 
 export function collectSettings(): Settings {
 	const config = core.getInput("config") || "recommended";
