@@ -63,6 +63,21 @@ export interface DiscussionEntity {
 export type Entity =
 	CommentEntity | DiscussionEntity | IssueEntity | PullRequestEntity;
 
+/**
+ * A user who edited an entity.
+ */
+export interface EntityEditor {
+	/**
+	 * GitHub login of the editor.
+	 */
+	login: string;
+
+	/**
+	 * GitHub account type of the editor, such as `"Bot"` or `"User"`.
+	 */
+	type: string;
+}
+
 export type EntityType = Entity["type"];
 
 export type IssueData =

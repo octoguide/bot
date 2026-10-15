@@ -2,9 +2,13 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
+import type { Entity } from "../types/entities.ts";
+
 import { runOctoGuideRules } from "../index.ts";
 import { cliReporter } from "../reporters/cliReporter.ts";
+import { attributeEditReports } from "./attributeEditReports.ts";
 import { collectAuth } from "./collection/collectAuth.ts";
+import { collectEntityEdit } from "./collection/collectEntityEdit.ts";
 import { collectEntityInput } from "./collection/collectEntityInput.ts";
 import { collectSettings } from "./collection/collectSettings.ts";
 import { collectTarget } from "./collection/collectTarget.ts";
@@ -27,12 +31,33 @@ export async function runOctoGuideAction(context: typeof github.context) {
 
 	const entityInput = collectEntityInput(payload, target, url);
 	const settings = collectSettings();
+	const edit = collectEntityEdit(payload, entityInput);
 
-	const { actor, entity, reports } = await runOctoGuideRules({
-		auth,
-		entity: entityInput,
-		settings,
-	});
+	const runRules = (entity: Entity) =>
+		runOctoGuideRules({ auth, editor: edit?.editor, entity, settings });
+
+	const [{ actor, entity, reports: allReports }, previous] = await Promise.all([
+		runRules(entityInput),
+		edit && runRules(edit.previous),
+	]);
+
+	const { logins, reports } =
+		edit && previous
+			? attributeEditReports({
+					editor: edit.editor,
+					entity,
+					previousReports: previous.reports,
+					reports: allReports,
+					repositoryOwner: context.repo.owner,
+					settings,
+				})
+			: { logins: undefined, reports: allReports };
+
+	if (reports.length < allReports.length) {
+		core.info(
+			`Ignoring ${allReports.length - reports.length} report(s) from rules that exclude whoever caused them.`,
+		);
+	}
 
 	if (reports.length) {
 		core.info(`Found ${reports.length} report(s).`);
@@ -41,5 +66,5 @@ export async function runOctoGuideAction(context: typeof github.context) {
 		core.info("Found 0 reports. Great! ✅");
 	}
 
-	await outputActionReports(actor, entity, reports, settings);
+	await outputActionReports(actor, entity, reports, settings, logins);
 }
