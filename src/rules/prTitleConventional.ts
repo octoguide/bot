@@ -7,6 +7,9 @@ import { commitParser } from "./commitParser.ts";
 import { defineRule } from "./defineRule.ts";
 import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTitle.ts";
 
+// Matches each scope in a list, keeping package names like `@a/b` intact.
+const scopeItems = /@[^,/;\\|]+\/[^,/;\\|]+|[^,/;\\|]+/g;
+
 export const prTitleConventional = defineRule({
 	about: {
 		config: "strict",
@@ -78,6 +81,23 @@ export const prTitleConventional = defineRule({
 				],
 			});
 			return;
+		}
+
+		const scopes = parsed.scope
+			?.match(scopeItems)
+			?.map((scope) => scope.trim())
+			.filter(Boolean);
+
+		if (scopes && scopes.length > 1) {
+			context.report({
+				primary: `The PR title has multiple scopes: '${parsed.scope}'.`,
+				secondary: [
+					`A conventional commit scope is a single noun describing a section of the codebase.`,
+				],
+				suggestion: [
+					`To resolve this report, keep only one scope, like _"${entity.data.title.replace(`(${parsed.scope})`, `(${scopes[0]})`)}"_.`,
+				],
+			});
 		}
 	},
 });
