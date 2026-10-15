@@ -4,6 +4,7 @@ title: Get Started
 
 import { Code } from "@astrojs/starlight/components";
 
+import AILogins from "../../components/AILogins.astro";
 import {
 	getStartedBase,
 	getStartedStrict,
@@ -14,6 +15,7 @@ import {
 	getStartedRuleEnable,
 	getStartedRuleNone,
 	getStartedRuleOptions,
+	getStartedIncludeAIs,
 	getStartedIncludeBots,
 	getStartedIncludeAssociationsDefault,
 	getStartedIncludeCollaborators,
@@ -83,6 +85,28 @@ For public repositories that's the following permissions:
 - `repo` > `public_repo`
 - `read:discussion`
 
+### `include-ais`
+
+Known AI agents, such as GitHub Copilot, Claude, Cursor, and Devin, are handled separately from other bots.
+OctoGuide skips entities and comments they create by default.
+`include-ais` controls whether it runs rules on them.
+
+For example, to hold AI agents to the same contribution guidelines as humans while still skipping other bots such as Dependabot and Renovate:
+
+<Code
+	code={getStartedIncludeAIs}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+<AILogins />
+
+:::tip
+These include AI code review bots such as CodeRabbit and Gemini Code Assist.
+Setting `include-ais` to `"true"` also runs comment rules on the comments they post.
+:::
+
 ### `include-bots`
 
 OctoGuide by default skips running rules for bot-created entities (issues, pull requests, and discussions)
@@ -92,6 +116,11 @@ necessarily need to follow the same contribution guidelines as human contributor
 
 Bot detection works by checking if the entity creator's `user.type` field is `"Bot"`,
 which is the standard way GitHub identifies bot accounts and GitHub Apps.
+
+:::note
+Known AI agents are handled separately by [`include-ais`](#include-ais).
+`include-bots` doesn't apply to them.
+:::
 
 If you want OctoGuide to run rules on bot-created entities and comments, you can
 enable this by setting `include-bots` to `"true"`:
@@ -106,7 +135,7 @@ enable this by setting `include-bots` to `"true"`:
 />
 
 :::note
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 :::
 
@@ -129,7 +158,7 @@ to include for rule checking. The default value excludes collaborators, organiza
 />
 
 :::note
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 :::
 
@@ -245,7 +274,7 @@ When a rule is explicitly set via input, it takes precedence over the preset con
 #### Rule Options
 
 Setting a rule to an object both enables the rule and gives it options to run with.
-Every rule supports the `include-associations` and `include-bots` options,
+Every rule supports the `include-ais`, `include-associations`, and `include-bots` options,
 which override the equivalent top-level inputs for that one rule.
 `include-associations` is provided per-rule as an array rather than a comma-separated string.
 
@@ -259,6 +288,6 @@ which override the equivalent top-level inputs for that one rule.
 />
 
 Some rules declare their own default options.
-Those defaults take precedence over the top-level `include-associations` and `include-bots` inputs,
+Those defaults take precedence over the top-level `include-ais`, `include-associations`, and `include-bots` inputs,
 so a rule such as [`text-image-alt-text`](/rules/text-image-alt-text) that applies to all author associations
 keeps doing so until you give it options of your own.

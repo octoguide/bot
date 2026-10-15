@@ -17,6 +17,7 @@ export interface TestRuleContext {
 }
 
 const defaultOptions: RuleOptions = {
+	"include-ais": true,
 	"include-bots": true,
 };
 

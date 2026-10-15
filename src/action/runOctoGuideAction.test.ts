@@ -399,6 +399,7 @@ describe("runOctoGuideAction", () => {
 				},
 				config: "strict",
 				options: {
+					"include-ais": false,
 					"include-associations": [],
 					"include-bots": false,
 				},
@@ -428,6 +429,7 @@ describe("runOctoGuideAction", () => {
 				},
 				config: "none",
 				options: {
+					"include-ais": false,
 					"include-associations": [],
 					"include-bots": false,
 				},
@@ -457,6 +459,7 @@ describe("runOctoGuideAction", () => {
 				},
 				config: "recommended",
 				options: {
+					"include-ais": false,
 					"include-associations": [],
 					"include-bots": false,
 				},
