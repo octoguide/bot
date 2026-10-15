@@ -48477,7 +48477,7 @@ module.exports = {
 
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5560);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7079);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(1564);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__/* .context */ ._);
@@ -48487,7 +48487,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 7079:
+/***/ 1564:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -58597,11 +58597,7 @@ function parseCommitsStream(options = {}) {
 
 
 //# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQ0EsY0FBYyxtQkFBbUIsQ0FBQTtBQUNqQyxjQUFjLGFBQWEsQ0FBQSJ9
-;// CONCATENATED MODULE: ./src/rules/prTitleConventional.ts
-// Code inspired by pr-compliance-action:
-// https://github.com/mtfoley/pr-compliance-action/blob/bcb6dbea496e44a980f8d6d77af91b67f1eea68d/src/checks.ts
-
-
+;// CONCATENATED MODULE: ./src/rules/commitParser.ts
 
 // Configuring the parser to recognize breaking-change headers that
 // include a `!` before the colon (e.g., `fix!: ...` or `fix(scope)!: ...`).
@@ -58611,6 +58607,64 @@ const commitParser = new CommitParser_CommitParser({
     // Matches: type, optional (scope), '!' and the subject
     breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
 });
+
+;// CONCATENATED MODULE: ./src/rules/getFixedConventionalCommitTitle.ts
+
+
+/**
+ * Whether a title would pass pr-title-conventional: it parses with a known type and subject.
+ */
+function isConventionalTitle(title) {
+    const parsed = commitParser.parse(title);
+    return (!!parsed.type &&
+        Object.hasOwn(conventional_commit_types_namespaceObject.g, parsed.type) &&
+        !!parsed.subject);
+}
+/**
+ * Attempts to fix a title that starts with a known type, but doesn't follow it
+ * with a colon and space, such as `fix(md) [headingIncrements]: subject`.
+ */
+function getFixedConventionalCommitTitle(title) {
+    const match = /^(\w+)\b(\s*\([^)]*\))?(!)?(.*)$/.exec(title);
+    if (!match) {
+        return undefined;
+    }
+    const [, rawType, rawScope = "", breaking = "", rawRest] = match;
+    const type = rawType.toLowerCase();
+    const scope = rawScope.trimStart();
+    const rest = breaking ? rawRest.replace(/^!+/, "") : rawRest;
+    const leadingColon = /^\s*:/;
+    if (!Object.hasOwn(conventional_commit_types_namespaceObject.g, type) ||
+        rest.trimStart().startsWith("!")) {
+        return undefined;
+    }
+    let subject;
+    if (leadingColon.test(rest)) {
+        subject = rest.replace(leadingColon, "");
+    }
+    else if (breaking || scope) {
+        subject = rest.replace(/^\s*(\[[^\]]*\]):(?=\s|$)/, "$1");
+    }
+    else {
+        return undefined;
+    }
+    const header = type + scope + breaking;
+    subject = subject
+        .replace(/\s*:\s*(?=\S)/g, " - ")
+        .replace(/\s*:\s*$/, "")
+        .trim();
+    return isConventionalTitle(`${header}: ${subject || "etc."}`)
+        ? { header, subject }
+        : undefined;
+}
+
+;// CONCATENATED MODULE: ./src/rules/prTitleConventional.ts
+// Code inspired by pr-compliance-action:
+// https://github.com/mtfoley/pr-compliance-action/blob/bcb6dbea496e44a980f8d6d77af91b67f1eea68d/src/checks.ts
+
+
+
+
 const prTitleConventional = defineRule({
     about: {
         config: "strict",
@@ -58624,6 +58678,25 @@ const prTitleConventional = defineRule({
     pullRequest(context, entity) {
         const parsed = commitParser.parse(entity.data.title);
         if (!parsed.type) {
+            const fixed = getFixedConventionalCommitTitle(entity.data.title);
+            if (fixed && !fixed.subject) {
+                context.report({
+                    primary: `PR title is missing a subject after its type.`,
+                    suggestion: [
+                        `To resolve this report, add text after the type, like _"${fixed.header}: etc."_`,
+                    ],
+                });
+                return;
+            }
+            if (fixed) {
+                context.report({
+                    primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
+                    suggestion: [
+                        `To resolve this report, follow conventional commit syntax, like _"${fixed.header}: ${fixed.subject}"_.`,
+                    ],
+                });
+                return;
+            }
             context.report({
                 primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
                 suggestion: [

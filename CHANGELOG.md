@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.28.0](https://github.com/octoguide/bot/compare/0.27.0...0.28.0) (2026-10-15)
+
+### Features
+
+- suggest corrected syntax for misformatted conventional PR titles ([#669](https://github.com/octoguide/bot/issues/669)) ([38a5e0b](https://github.com/octoguide/bot/commit/38a5e0b5e7a16d1d79c95bfa07d4f440a2adc50d)), closes [#448](https://github.com/octoguide/bot/issues/448)
+
 # [0.27.0](https://github.com/octoguide/bot/compare/0.26.6...0.27.0) (2026-10-14)
 
 ### Features
