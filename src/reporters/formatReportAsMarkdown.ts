@@ -1,4 +1,4 @@
-import type { RuleReport } from "../types/reports.js";
+import type { RuleReport } from "../types/reports.ts";
 
 export function formatReportAsMarkdown(
 	report: RuleReport,

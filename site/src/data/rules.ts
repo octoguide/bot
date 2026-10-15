@@ -1,4 +1,4 @@
-import { allRules } from "../../../src/rules/all.js";
+import { allRules } from "../../../src/rules/all.ts";
 
 export function getRule(name: string) {
 	const rule = allRules.find((candidate) => candidate.about.name === name);

@@ -2,8 +2,8 @@ import type { Octokit } from "octokit";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { prBodyDescriptive } from "./prBodyDescriptive.js";
+import { testRule } from "../tests/testRule.ts";
+import { prBodyDescriptive } from "./prBodyDescriptive.ts";
 
 describe(prBodyDescriptive.about.name, () => {
 	it("reports when the pull request has no description", async () => {

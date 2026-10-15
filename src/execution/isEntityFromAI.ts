@@ -1,6 +1,6 @@
-import type { Entity } from "../types/entities.js";
+import type { Entity } from "../types/entities.ts";
 
-import { isEntityFromBot } from "./isEntityFromBot.js";
+import { isEntityFromBot } from "./isEntityFromBot.ts";
 
 /**
  * Logins of known AI agents that author or review entities and comments on GitHub.

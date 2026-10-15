@@ -1,4 +1,4 @@
-import type { RuleOptions, RuleOptionsRaw } from "../types/rules.js";
+import type { RuleOptions, RuleOptionsRaw } from "../types/rules.ts";
 
 export function mergeRuleOptions(
 	...layers: (RuleOptionsRaw | undefined)[]

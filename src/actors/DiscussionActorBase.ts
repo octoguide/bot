@@ -1,6 +1,6 @@
-import type { CommentData, DiscussionData } from "../types/entities.js";
+import type { CommentData, DiscussionData } from "../types/entities.ts";
 
-import { EntityActorBase } from "./EntityActorBase.js";
+import { EntityActorBase } from "./EntityActorBase.ts";
 
 export interface DiscussionCommentData extends CommentData {
 	parent_id?: number;

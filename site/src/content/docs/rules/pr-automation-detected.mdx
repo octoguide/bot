@@ -9,7 +9,7 @@ import OctoGuideGitHubComment from "../../../components/OctoGuideGitHubComment.a
 import IncludedIn from "../../../components/IncludedIn.astro";
 import HowToEnable from "../../../components/HowToEnable.astro";
 import DefaultOptions from "../../../components/DefaultOptions.astro";
-import { getStartedLabeled } from "../../../data/yml.js";
+import { getStartedLabeled } from "../../../data/yml.ts";
 
 <IncludedIn rule="pr-automation-detected" />
 
@@ -33,8 +33,8 @@ To check pull requests as soon as a matching label is added, add `labeled` to th
 
 <Code
 	code={getStartedLabeled}
-	meta="lang=yml"
-	lang="diff"
+	ins="labeled, "
+	lang="yml"
 	title=".github/workflows/octoguide.yml"
 />
 

@@ -1,6 +1,6 @@
-import type { ConfigName } from "../../../src/types/core.js";
+import type { ConfigName } from "../../../src/types/core.ts";
 
-import { version } from "./package.js";
+import { version } from "./package.ts";
 
 const atVersion = `@${version}`;
 
@@ -35,8 +35,7 @@ permissions:
 
 export const getStartedLabeled = `on:
   pull_request_target:
--    types: [edited, opened]
-+    types: [edited, labeled, opened]`;
+    types: [edited, labeled, opened]`;
 
 export const getStartedStrict = `
 jobs:
@@ -184,6 +183,10 @@ export const getStartedIncludeFirstTimers = `jobs:
         with:
           github-token: \${{ secrets.GITHUB_TOKEN }}
 +          include-associations: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR"`;
+
+export const getStartedSynchronize = `on:
+  pull_request_target:
+    types: [edited, opened, synchronize]`;
 
 export const getRuleDefaultOptions = (
 	ruleName: string,

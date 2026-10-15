@@ -1,4 +1,4 @@
-import type { Entity } from "../types/entities.js";
+import type { Entity } from "../types/entities.ts";
 
 type EntityFromBot = Entity & {
 	data: { user: { login: string; type: "Bot" } };
