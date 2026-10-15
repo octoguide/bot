@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mergeRuleOptions } from "./mergeRuleOptions.js";
+import { mergeRuleOptions } from "./mergeRuleOptions.ts";
 
 describe("mergeRuleOptions", () => {
 	it("returns permissive defaults when given no layers", () => {

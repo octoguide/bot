@@ -1,8 +1,8 @@
-import type { PullRequestData } from "../types/entities.js";
-import type { RuleContext } from "../types/rules.js";
+import type { PullRequestData } from "../types/entities.ts";
+import type { RuleContext } from "../types/rules.ts";
 
-import { isRequestError } from "../action/comments/isRequestError.js";
-import { defineRule } from "./defineRule.js";
+import { isRequestError } from "../action/comments/isRequestError.ts";
+import { defineRule } from "./defineRule.ts";
 
 interface ClosingIssuesResponse {
 	repository: {

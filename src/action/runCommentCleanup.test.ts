@@ -2,7 +2,7 @@ import type * as github from "@actions/github";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { runCommentCleanup } from "./runCommentCleanup";
+import { runCommentCleanup } from "./runCommentCleanup.ts";
 
 const mockCore = {
 	info: vi.fn(),
@@ -16,7 +16,7 @@ vi.mock("@actions/core", () => ({
 
 const mockCreateActor = vi.fn();
 
-vi.mock("../actors/createActor.js", () => ({
+vi.mock("../actors/createActor.ts", () => ({
 	get createActor() {
 		return mockCreateActor;
 	},
@@ -24,7 +24,7 @@ vi.mock("../actors/createActor.js", () => ({
 
 const mockGetExistingComment = vi.fn();
 
-vi.mock("./comments/getExistingComment.js", () => ({
+vi.mock("./comments/getExistingComment.ts", () => ({
 	get getExistingComment() {
 		return mockGetExistingComment;
 	},

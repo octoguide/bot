@@ -1,6 +1,6 @@
 import conventionalTypes from "conventional-commit-types" with { type: "json" };
 
-import { commitParser } from "./commitParser.js";
+import { commitParser } from "./commitParser.ts";
 
 /**
  * Whether a title would pass pr-title-conventional: it parses with a known type and subject.

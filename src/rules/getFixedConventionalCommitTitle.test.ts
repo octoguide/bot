@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTitle.js";
+import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTitle.ts";
 
 describe(getFixedConventionalCommitTitle, () => {
 	it.each([

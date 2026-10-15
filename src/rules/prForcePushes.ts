@@ -1,4 +1,4 @@
-import { defineRule } from "./defineRule.js";
+import { defineRule } from "./defineRule.ts";
 
 interface ForcePushesResponse {
 	repository: {

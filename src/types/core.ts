@@ -1,4 +1,4 @@
-import type { RuleAbout } from "./rules.js";
+import type { RuleAbout } from "./rules.ts";
 
 export type ConfigName = "none" | "recommended" | "strict";
 

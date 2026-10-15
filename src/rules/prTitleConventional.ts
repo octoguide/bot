@@ -3,9 +3,9 @@
 
 import conventionalTypes from "conventional-commit-types" with { type: "json" };
 
-import { commitParser } from "./commitParser.js";
-import { defineRule } from "./defineRule.js";
-import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTitle.js";
+import { commitParser } from "./commitParser.ts";
+import { defineRule } from "./defineRule.ts";
+import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTitle.ts";
 
 export const prTitleConventional = defineRule({
 	about: {

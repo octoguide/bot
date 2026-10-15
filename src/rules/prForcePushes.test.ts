@@ -2,8 +2,8 @@ import type { Octokit } from "octokit";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { prForcePushes } from "./prForcePushes.js";
+import { testRule } from "../tests/testRule.ts";
+import { prForcePushes } from "./prForcePushes.ts";
 
 const authorLogin = "contributor";
 const headSha = "abc123";

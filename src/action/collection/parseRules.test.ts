@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseRules } from "./parseRules.js";
+import { parseRules } from "./parseRules.ts";
 
 describe("parseRules", () => {
 	it("returns no rules when given an empty string", () => {
