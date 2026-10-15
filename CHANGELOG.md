@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.29.0](https://github.com/octoguide/bot/compare/0.28.1...0.29.0) (2026-10-15)
+
+### Features
+
+- allow types and scopes options in pr-title-conventional ([#703](https://github.com/octoguide/bot/issues/703)) ([11adeb8](https://github.com/octoguide/bot/commit/11adeb896a6f7d5673ff80ebe2cfd64cf97117bf)), closes [#121](https://github.com/octoguide/bot/issues/121)
+
 ## [0.28.1](https://github.com/octoguide/bot/compare/0.28.0...0.28.1) (2026-10-15)
 
 ### Bug Fixes
