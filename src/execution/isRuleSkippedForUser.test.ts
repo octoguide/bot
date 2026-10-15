@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isRuleSkippedForUser } from "./isRuleSkippedForUser.js";
+import { isRuleSkippedForUser } from "./isRuleSkippedForUser.ts";
 
 const bot = { login: "dependabot[bot]", type: "Bot" };
 

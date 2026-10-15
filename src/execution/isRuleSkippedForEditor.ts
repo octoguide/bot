@@ -1,7 +1,7 @@
-import type { Entity, EntityEditor } from "../types/entities.js";
-import type { RuleOptions } from "../types/rules.js";
+import type { Entity, EntityEditor } from "../types/entities.ts";
+import type { RuleOptions } from "../types/rules.ts";
 
-import { isRuleSkippedForUser } from "./isRuleSkippedForUser.js";
+import { isRuleSkippedForUser } from "./isRuleSkippedForUser.ts";
 
 /**
  * Checks whether a rule's options exclude someone's edit to another user's entity.

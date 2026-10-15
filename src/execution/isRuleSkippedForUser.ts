@@ -1,4 +1,4 @@
-import type { RuleOptions } from "../types/rules.js";
+import type { RuleOptions } from "../types/rules.ts";
 
 export function isRuleSkippedForUser(
 	user: { login: string; type?: string },

@@ -2,18 +2,18 @@ import type * as github from "@actions/github";
 
 import * as core from "@actions/core";
 
-import type { Entity } from "../types/entities.js";
+import type { Entity } from "../types/entities.ts";
 
-import { runOctoGuideRules } from "../index.js";
-import { cliReporter } from "../reporters/cliReporter.js";
-import { attributeEditReports } from "./attributeEditReports.js";
-import { collectAuth } from "./collection/collectAuth.js";
-import { collectEntityEdit } from "./collection/collectEntityEdit.js";
-import { collectEntityInput } from "./collection/collectEntityInput.js";
-import { collectSettings } from "./collection/collectSettings.js";
-import { collectTarget } from "./collection/collectTarget.js";
-import { outputActionReports } from "./comments/outputActionReports.js";
-import { runCommentCleanup } from "./runCommentCleanup.js";
+import { runOctoGuideRules } from "../index.ts";
+import { cliReporter } from "../reporters/cliReporter.ts";
+import { attributeEditReports } from "./attributeEditReports.ts";
+import { collectAuth } from "./collection/collectAuth.ts";
+import { collectEntityEdit } from "./collection/collectEntityEdit.ts";
+import { collectEntityInput } from "./collection/collectEntityInput.ts";
+import { collectSettings } from "./collection/collectSettings.ts";
+import { collectTarget } from "./collection/collectTarget.ts";
+import { outputActionReports } from "./comments/outputActionReports.ts";
+import { runCommentCleanup } from "./runCommentCleanup.ts";
 
 export async function runOctoGuideAction(context: typeof github.context) {
 	const { payload } = context;

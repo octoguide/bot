@@ -1,6 +1,6 @@
 import type * as github from "@actions/github";
 
-import type { Entity, EntityEditor } from "../../types/entities.js";
+import type { Entity, EntityEditor } from "../../types/entities.ts";
 
 /**
  * An edit to an entity's body or title by someone other than its author.

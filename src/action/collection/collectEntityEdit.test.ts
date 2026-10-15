@@ -6,9 +6,9 @@ import type {
 	Entity,
 	IssueData,
 	PullRequestData,
-} from "../../types/entities.js";
+} from "../../types/entities.ts";
 
-import { collectEntityEdit } from "./collectEntityEdit.js";
+import { collectEntityEdit } from "./collectEntityEdit.ts";
 
 const entity: Entity = {
 	data: {

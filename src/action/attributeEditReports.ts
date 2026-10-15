@@ -1,12 +1,12 @@
 import { isDeepStrictEqual } from "node:util";
 
-import type { Entity, EntityEditor } from "../types/entities.js";
-import type { RuleReport } from "../types/reports.js";
-import type { Settings } from "../types/settings.js";
+import type { Entity, EntityEditor } from "../types/entities.ts";
+import type { RuleReport } from "../types/reports.ts";
+import type { Settings } from "../types/settings.ts";
 
-import { isRuleSkippedForEditor } from "../execution/isRuleSkippedForEditor.js";
-import { isRuleSkippedForEntity } from "../execution/isRuleSkippedForEntity.js";
-import { resolveRules } from "../execution/resolveRules.js";
+import { isRuleSkippedForEditor } from "../execution/isRuleSkippedForEditor.ts";
+import { isRuleSkippedForEntity } from "../execution/isRuleSkippedForEntity.ts";
+import { resolveRules } from "../execution/resolveRules.ts";
 
 export interface AttributedReports {
 	logins: string[];

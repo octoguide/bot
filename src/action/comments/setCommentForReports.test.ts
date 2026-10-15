@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { EntityActor } from "../../actors/types.js";
-import type { IssueEntity } from "../../types/entities.js";
-import type { Settings } from "../../types/settings.js";
+import type { EntityActor } from "../../actors/types.ts";
+import type { IssueEntity } from "../../types/entities.ts";
+import type { Settings } from "../../types/settings.ts";
 
-import { markdownReportPassMessage } from "../../reporters/markdownReporter.js";
-import { setCommentForReports } from "./setCommentForReports.js";
+import { markdownReportPassMessage } from "../../reporters/markdownReporter.ts";
+import { setCommentForReports } from "./setCommentForReports.ts";
 
 const mockCore = {
 	debug: vi.fn(),
@@ -27,7 +27,7 @@ vi.mock("@actions/core", () => ({
 
 const mockMarkdownReportPassMessage = vi.fn();
 
-vi.mock("../../reporters/markdownReporter.js", () => ({
+vi.mock("../../reporters/markdownReporter.ts", () => ({
 	get markdownReportPassMessage() {
 		return mockMarkdownReportPassMessage;
 	},
@@ -35,7 +35,7 @@ vi.mock("../../reporters/markdownReporter.js", () => ({
 
 const mockCreateNewCommentForReports = vi.fn();
 
-vi.mock("./createNewCommentForReports.js", () => ({
+vi.mock("./createNewCommentForReports.ts", () => ({
 	get createNewCommentForReports() {
 		return mockCreateNewCommentForReports;
 	},
@@ -43,7 +43,7 @@ vi.mock("./createNewCommentForReports.js", () => ({
 
 const mockGetExistingComment = vi.fn();
 
-vi.mock("./getExistingComment.js", () => ({
+vi.mock("./getExistingComment.ts", () => ({
 	get getExistingComment() {
 		return mockGetExistingComment;
 	},
@@ -51,7 +51,7 @@ vi.mock("./getExistingComment.js", () => ({
 
 const mockUpdateExistingCommentForReports = vi.fn();
 
-vi.mock("./updateExistingCommentForReports.js", () => ({
+vi.mock("./updateExistingCommentForReports.ts", () => ({
 	get updateExistingCommentForReports() {
 		return mockUpdateExistingCommentForReports;
 	},

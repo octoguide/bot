@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { collectSettings } from "./collectSettings.js";
+import { collectSettings } from "./collectSettings.ts";
 
 const defaultFooter =
 	"🗺️ This message was posted automatically by [OctoGuide](https://octo.guide): a bot for GitHub repository best practices.";

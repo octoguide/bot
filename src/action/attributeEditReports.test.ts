@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import type { Entity, IssueData } from "../types/entities.js";
-import type { RuleReport, RuleReportData } from "../types/reports.js";
-import type { Settings } from "../types/settings.js";
+import type { Entity, IssueData } from "../types/entities.ts";
+import type { RuleReport, RuleReportData } from "../types/reports.ts";
+import type { Settings } from "../types/settings.ts";
 
-import { prBodyDescriptive } from "../rules/prBodyDescriptive.js";
-import { textImageAltText } from "../rules/textImageAltText.js";
-import { attributeEditReports } from "./attributeEditReports.js";
+import { prBodyDescriptive } from "../rules/prBodyDescriptive.ts";
+import { textImageAltText } from "../rules/textImageAltText.ts";
+import { attributeEditReports } from "./attributeEditReports.ts";
 
 const editor = { login: "collaborator", type: "User" };
 

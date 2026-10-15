@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
 
-import type { RuleAboutWithUrl } from "../types/rules.js";
+import type { RuleAboutWithUrl } from "../types/rules.ts";
 
-import { formatReportAsMarkdown } from "./formatReportAsMarkdown.js";
+import { formatReportAsMarkdown } from "./formatReportAsMarkdown.ts";
 
 const about = {
 	description: "My test rule.",

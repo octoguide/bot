@@ -1,7 +1,7 @@
-import type { DiscussionData, DiscussionEntity } from "../types/entities.js";
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { DiscussionData, DiscussionEntity } from "../types/entities.ts";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
-import { DiscussionActorBase } from "./DiscussionActorBase.js";
+import { DiscussionActorBase } from "./DiscussionActorBase.ts";
 export class DiscussionActor extends DiscussionActorBase<DiscussionData> {
 	readonly metadata: Omit<DiscussionEntity, "data">;
 

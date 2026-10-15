@@ -2,9 +2,9 @@ import type { PartialDeep } from "type-fest";
 
 import { describe, expect, it } from "vitest";
 
-import type { Entity, IssueData } from "../types/entities.js";
+import type { Entity, IssueData } from "../types/entities.ts";
 
-import { isEntityAssociationIncluded } from "./isEntityAssociationIncluded.js";
+import { isEntityAssociationIncluded } from "./isEntityAssociationIncluded.ts";
 
 const createIssueEntity = (data: PartialDeep<IssueData>): Entity => ({
 	data: data as IssueData,

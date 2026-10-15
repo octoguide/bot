@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import type { Entity, IssueData } from "../types/entities.js";
+import type { Entity, IssueData } from "../types/entities.ts";
 
-import { isRuleSkippedForEditor } from "./isRuleSkippedForEditor.js";
+import { isRuleSkippedForEditor } from "./isRuleSkippedForEditor.ts";
 
 const bot = { login: "renovate[bot]", type: "Bot" };
 const collaborator = { login: "collaborator", type: "User" };
