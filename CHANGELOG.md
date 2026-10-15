@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.28.1](https://github.com/octoguide/bot/compare/0.28.0...0.28.1) (2026-10-15)
+
+### Bug Fixes
+
+- report multiple scopes in pr-title-conventional ([#702](https://github.com/octoguide/bot/issues/702)) ([840ba30](https://github.com/octoguide/bot/commit/840ba30f1a011c0f9225996d29864cd3acfc523b)), closes [#701](https://github.com/octoguide/bot/issues/701)
+
 # [0.28.0](https://github.com/octoguide/bot/compare/0.27.0...0.28.0) (2026-10-15)
 
 ### Features

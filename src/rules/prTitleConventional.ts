@@ -11,6 +11,9 @@ import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTit
 
 const knownTypes = Object.keys(conventionalTypes.types);
 
+// Matches each scope in a list, keeping package names like `@a/b` intact.
+const scopeItems = /@[^,/;\\|]+\/[^,/;\\|]+|[^,/;\\|]+/g;
+
 export const prTitleConventional = defineRule({
 	about: {
 		config: "strict",
@@ -98,6 +101,24 @@ export const prTitleConventional = defineRule({
 				primary: `PR title is missing a subject after its type.`,
 				suggestion: [
 					`To resolve this report, add text after the type, like _"${parsed.type}: etc."_`,
+				],
+			});
+			return;
+		}
+
+		const titleScopes = parsed.scope
+			?.match(scopeItems)
+			?.map((item) => item.trim())
+			.filter(Boolean);
+
+		if (titleScopes && titleScopes.length > 1) {
+			context.report({
+				primary: `The PR title has multiple scopes: '${parsed.scope}'.`,
+				secondary: [
+					`A conventional commit scope is a single noun describing a section of the codebase.`,
+				],
+				suggestion: [
+					`To resolve this report, keep only one scope, like _"${entity.data.title.replace(`(${parsed.scope})`, `(${titleScopes[0]})`)}"_.`,
 				],
 			});
 			return;

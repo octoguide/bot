@@ -58602,10 +58602,13 @@ function parseCommitsStream(options = {}) {
 // Configuring the parser to recognize breaking-change headers that
 // include a `!` before the colon (e.g., `fix!: ...` or `fix(scope)!: ...`).
 // (see https://github.com/conventional-changelog/conventional-changelog/issues/648)
-// This helps the parser populate `parsed.type` correctly in more cases.
+// Both patterns accept any scope without parentheses, so titles parse the same
+// with or without a `!` and multiple scopes can be reported on directly.
 const commitParser = new CommitParser_CommitParser({
     // Matches: type, optional (scope), '!' and the subject
-    breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
+    breakingHeaderPattern: /^(\w*)(?:\(([^()]*)\))?!: (.*)$/,
+    // Matches: type, optional (scope), and the subject
+    headerPattern: /^(\w*)(?:\(([^()]*)\))?: (.*)$/,
 });
 
 ;// CONCATENATED MODULE: ./src/rules/getFixedConventionalCommitTitle.ts
@@ -58665,6 +58668,8 @@ function getFixedConventionalCommitTitle(title) {
 
 
 
+// Matches each scope in a list, keeping package names like `@a/b` intact.
+const scopeItems = /@[^,/;\\|]+\/[^,/;\\|]+|[^,/;\\|]+/g;
 const prTitleConventional = defineRule({
     about: {
         config: "strict",
@@ -58732,6 +58737,21 @@ const prTitleConventional = defineRule({
                 ],
             });
             return;
+        }
+        const scopes = parsed.scope
+            ?.match(scopeItems)
+            ?.map((scope) => scope.trim())
+            .filter(Boolean);
+        if (scopes && scopes.length > 1) {
+            context.report({
+                primary: `The PR title has multiple scopes: '${parsed.scope}'.`,
+                secondary: [
+                    `A conventional commit scope is a single noun describing a section of the codebase.`,
+                ],
+                suggestion: [
+                    `To resolve this report, keep only one scope, like _"${entity.data.title.replace(`(${parsed.scope})`, `(${scopes[0]})`)}"_.`,
+                ],
+            });
         }
     },
 });
