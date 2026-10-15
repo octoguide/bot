@@ -7,11 +7,25 @@ const { class: className, ...props } = Astro.props;
 ---
 
 <div class:list={["credits", Astro.props.class]} {...props}>
-	Made with 💚 in Boston by{" "}
-	<a href="https://joshuakgoldberg.com" target="_blank">
-		Josh Goldberg
-	</a>
-	.
+	<p>
+		Made with 💚 by{" "}
+		<a href="https://github.com/cylewaitforit" target="_blank">
+			Cyle
+		</a>{" "}
+		and{" "}
+		<a href="https://joshuakgoldberg.com" target="_blank">
+			Josh
+		</a>
+		.
+	</p>
+	<p>
+		<a
+			href="https://github.com/OctoGuide/bot/blob/main/.github/CODE_OF_CONDUCT.md"
+			target="_blank"
+		>
+			Code of Conduct
+		</a>
+	</p>
 </div>
 
 <style>
@@ -25,5 +39,13 @@ const { class: className, ...props } = Astro.props;
 
 	.credits a {
 		color: var(--sl-color-gray-2);
+	}
+
+	.credits p {
+		margin: 0;
+	}
+
+	.credits p + p {
+		margin-top: 0.5rem;
 	}
 </style>
