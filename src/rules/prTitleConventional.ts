@@ -61,10 +61,10 @@ export const prTitleConventional = defineRule({
 				return;
 			}
 
+			const exampleTypes = getExampleTypes(types);
+
 			context.report({
-				primary: `The PR title is missing a conventional commit type, such as ${getExampleTypes(
-					types,
-				)
+				primary: `The PR title is missing ${exampleTypes.length === 1 ? "the" : "a"} conventional commit type, such as ${exampleTypes
 					.map((type) => `_"${type}: "_`)
 					.join(" or ")}.`,
 				suggestion: [
