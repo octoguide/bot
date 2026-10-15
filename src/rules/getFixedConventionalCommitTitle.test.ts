@@ -30,7 +30,7 @@ describe(getFixedConventionalCommitTitle, () => {
 		["feat(scope)!x", { header: "feat(scope)!", subject: "x" }],
 		[
 			"fix(api) handle error: timeout",
-			{ header: "fix(api)", subject: "handle error: timeout" },
+			{ header: "fix(api)", subject: "handle error - timeout" },
 		],
 		[
 			"docs(readme) Note: something",
