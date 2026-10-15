@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { collectTarget } from "./collectTarget.js";
+import { collectTarget } from "./collectTarget.ts";
 
 const mockCore = {
 	debug: vi.fn(),

@@ -2,21 +2,10 @@
 // https://github.com/mtfoley/pr-compliance-action/blob/bcb6dbea496e44a980f8d6d77af91b67f1eea68d/src/checks.ts
 
 import conventionalTypes from "conventional-commit-types" with { type: "json" };
-import { CommitParser } from "conventional-commits-parser";
 
-import { defineRule } from "./defineRule.js";
-
-// Configuring the parser to recognize breaking-change headers that
-// include a `!` before the colon (e.g., `fix!: ...` or `fix(scope)!: ...`).
-// (see https://github.com/conventional-changelog/conventional-changelog/issues/648)
-// Both patterns accept any scope without parentheses, so titles parse the same
-// with or without a `!` and multiple scopes can be reported on directly.
-const commitParser = new CommitParser({
-	// Matches: type, optional (scope), '!' and the subject
-	breakingHeaderPattern: /^(\w*)(?:\(([^()]*)\))?!: (.*)$/,
-	// Matches: type, optional (scope), and the subject
-	headerPattern: /^(\w*)(?:\(([^()]*)\))?: (.*)$/,
-});
+import { commitParser } from "./commitParser.ts";
+import { defineRule } from "./defineRule.ts";
+import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTitle.ts";
 
 // Matches each scope in a list, keeping package names like `@a/b` intact.
 const scopeItems = /@[^,/;\\|]+\/[^,/;\\|]+|[^,/;\\|]+/g;
@@ -34,6 +23,27 @@ export const prTitleConventional = defineRule({
 	pullRequest(context, entity) {
 		const parsed = commitParser.parse(entity.data.title);
 		if (!parsed.type) {
+			const fixed = getFixedConventionalCommitTitle(entity.data.title);
+			if (fixed && !fixed.subject) {
+				context.report({
+					primary: `PR title is missing a subject after its type.`,
+					suggestion: [
+						`To resolve this report, add text after the type, like _"${fixed.header}: etc."_`,
+					],
+				});
+				return;
+			}
+
+			if (fixed) {
+				context.report({
+					primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
+					suggestion: [
+						`To resolve this report, follow conventional commit syntax, like _"${fixed.header}: ${fixed.subject}"_.`,
+					],
+				});
+				return;
+			}
+
 			context.report({
 				primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
 				suggestion: [

@@ -48477,7 +48477,7 @@ module.exports = {
 
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5560);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(6039);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(1564);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__/* .context */ ._);
@@ -48487,7 +48487,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 6039:
+/***/ 1564:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -57829,8 +57829,123 @@ const prBranchNonDefault = defineRule({
     },
 });
 
+;// CONCATENATED MODULE: ./src/rules/prForcePushes.ts
+
+const prForcePushes = defineRule({
+    about: {
+        config: "strict",
+        description: "PRs should not be force-pushed after they've been reviewed.",
+        explanation: [
+            `This repository asks that pull requests not be force-pushed after they've been reviewed.`,
+            `Rewriting a pull request's history makes it harder for reviewers to see what changed between reviews.`,
+        ],
+        name: "pr-force-pushes",
+    },
+    async pullRequest(context, entity) {
+        if (entity.data.draft) {
+            return;
+        }
+        const response = await context.octokit.graphql(`
+				query forcePushes($id: Int!, $owner: String!, $repo: String!) {
+					repository(owner: $owner, name: $repo) {
+						pullRequest(number: $id) {
+							author {
+								login
+							}
+							reviews(first: 100, states: [APPROVED, CHANGES_REQUESTED, COMMENTED, DISMISSED]) {
+								nodes {
+									author {
+										__typename
+										login
+									}
+									submittedAt
+								}
+							}
+							timelineItems(itemTypes: [HEAD_REF_FORCE_PUSHED_EVENT], last: 1) {
+								nodes {
+									... on HeadRefForcePushedEvent {
+										actor {
+											login
+										}
+										afterCommit {
+											oid
+										}
+										createdAt
+									}
+								}
+							}
+						}
+					}
+				}
+			`, { id: entity.number });
+        const { author, reviews, timelineItems } = response.repository.pullRequest;
+        const lastForcePush = timelineItems.nodes.at(0);
+        if (!author ||
+            lastForcePush?.actor?.login !== author.login ||
+            lastForcePush.afterCommit?.oid !== entity.data.head.sha) {
+            return;
+        }
+        const firstReviewedAt = reviews.nodes
+            .filter(({ author: reviewer }) => reviewer?.__typename !== "Bot" && reviewer?.login !== author.login)
+            .map(({ submittedAt }) => submittedAt)
+            .filter((submittedAt) => submittedAt !== null)
+            .sort()
+            .at(0);
+        if (!firstReviewedAt || lastForcePush.createdAt < firstReviewedAt) {
+            return;
+        }
+        context.report({
+            primary: "This pull request's latest changes were force-pushed after it was reviewed.",
+            suggestion: [
+                "To resolve this report, push any further changes as new commits rather than force-pushing.",
+                "There's no need to rewrite existing commits to keep them clean.",
+                "If you need to resolve conflicts, merge the base branch in instead of rebasing onto it.",
+            ],
+        });
+    },
+});
+
+;// CONCATENATED MODULE: ./src/action/comments/isRequestError.ts
+function isRequestError_isRequestError(error) {
+    return (typeof error === "object" &&
+        !!error &&
+        "status" in error &&
+        typeof error.status === "number");
+}
+
 ;// CONCATENATED MODULE: ./src/rules/prLinkedIssue.ts
 
+
+async function dependabotAlertMightExist(context, { alertNumber, owner, repo }) {
+    try {
+        await context.octokit.rest.dependabot.getAlert({
+            alert_number: alertNumber,
+            owner,
+            repo,
+        });
+        return true;
+    }
+    catch (error) {
+        if (!isRequestError_isRequestError(error) || error.status !== 404) {
+            return true;
+        }
+        return (!/no alert found/i.test(error.message) &&
+            `${owner}/${repo}`.toLowerCase() !==
+                `${context.locator.owner}/${context.locator.repository}`.toLowerCase());
+    }
+}
+function findDependabotAlertLinks(body) {
+    const links = new Map();
+    for (const [url, owner, repo, alertNumber] of body.matchAll(/https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)\/security\/dependabot\/(\d+)/g)) {
+        links.set(url.toLowerCase(), {
+            alertNumber: Number(alertNumber),
+            owner,
+            repo,
+            url,
+        });
+    }
+    return Array.from(links.values());
+}
 const prLinkedIssue = defineRule({
     about: {
         config: "strict",
@@ -57846,6 +57961,7 @@ const prLinkedIssue = defineRule({
 				query closingIssues($id: Int!, $owner: String!, $repo: String!) {
 					repository(owner: $owner, name: $repo) {
 						pullRequest(number: $id) {
+							bodyHTML
 							closingIssuesReferences(first: 1) {
 								nodes {
 									number
@@ -57858,13 +57974,22 @@ const prLinkedIssue = defineRule({
         if (response.repository.pullRequest.closingIssuesReferences.nodes.length) {
             return;
         }
-        const body = entity.data.body?.trim() ?? "";
-        const dependabotAlertPattern = /https:\/\/github\.com\/[^/]+\/[^/]+\/security\/dependabot\/\d+/;
-        if (dependabotAlertPattern.test(body)) {
+        if (targetsNonDefaultBranch(entity.data) &&
+            hasClosingKeyword(response.repository.pullRequest.bodyHTML)) {
             return;
+        }
+        const body = entity.data.body?.trim() ?? "";
+        const dependabotAlertLinks = findDependabotAlertLinks(body);
+        for (const link of dependabotAlertLinks) {
+            if (await dependabotAlertMightExist(context, link)) {
+                return;
+            }
         }
         context.report({
             primary: "This pull request is not linked as closing any issues.",
+            ...(dependabotAlertLinks.length > 0 && {
+                secondary: dependabotAlertLinks.map((link) => `The linked Dependabot alert, ${link.url}, could not be found.`),
+            }),
             suggestion: [
                 "To resolve this report:",
                 "* If this is a straightforward documentation change that doesn't need an issue, you can ignore this report",
@@ -57875,6 +58000,12 @@ const prLinkedIssue = defineRule({
         });
     },
 });
+function hasClosingKeyword(bodyHTML) {
+    return /<span class="issue-keyword[^"]*"[^>]*>[^<]*<\/span>:?\s*<a\s[^>]*\bdata-hovercard-type="issue"/.test(bodyHTML);
+}
+function targetsNonDefaultBranch({ base }) {
+    return !!base?.repo && base.ref !== base.repo.default_branch;
+}
 
 ;// CONCATENATED MODULE: ./src/rules/prTaskCompletion.ts
 
@@ -58466,11 +58597,7 @@ function parseCommitsStream(options = {}) {
 
 
 //# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQ0EsY0FBYyxtQkFBbUIsQ0FBQTtBQUNqQyxjQUFjLGFBQWEsQ0FBQSJ9
-;// CONCATENATED MODULE: ./src/rules/prTitleConventional.ts
-// Code inspired by pr-compliance-action:
-// https://github.com/mtfoley/pr-compliance-action/blob/bcb6dbea496e44a980f8d6d77af91b67f1eea68d/src/checks.ts
-
-
+;// CONCATENATED MODULE: ./src/rules/commitParser.ts
 
 // Configuring the parser to recognize breaking-change headers that
 // include a `!` before the colon (e.g., `fix!: ...` or `fix(scope)!: ...`).
@@ -58480,6 +58607,64 @@ const commitParser = new CommitParser_CommitParser({
     // Matches: type, optional (scope), '!' and the subject
     breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
 });
+
+;// CONCATENATED MODULE: ./src/rules/getFixedConventionalCommitTitle.ts
+
+
+/**
+ * Whether a title would pass pr-title-conventional: it parses with a known type and subject.
+ */
+function isConventionalTitle(title) {
+    const parsed = commitParser.parse(title);
+    return (!!parsed.type &&
+        Object.hasOwn(conventional_commit_types_namespaceObject.g, parsed.type) &&
+        !!parsed.subject);
+}
+/**
+ * Attempts to fix a title that starts with a known type, but doesn't follow it
+ * with a colon and space, such as `fix(md) [headingIncrements]: subject`.
+ */
+function getFixedConventionalCommitTitle(title) {
+    const match = /^(\w+)\b(\s*\([^)]*\))?(!)?(.*)$/.exec(title);
+    if (!match) {
+        return undefined;
+    }
+    const [, rawType, rawScope = "", breaking = "", rawRest] = match;
+    const type = rawType.toLowerCase();
+    const scope = rawScope.trimStart();
+    const rest = breaking ? rawRest.replace(/^!+/, "") : rawRest;
+    const leadingColon = /^\s*:/;
+    if (!Object.hasOwn(conventional_commit_types_namespaceObject.g, type) ||
+        rest.trimStart().startsWith("!")) {
+        return undefined;
+    }
+    let subject;
+    if (leadingColon.test(rest)) {
+        subject = rest.replace(leadingColon, "");
+    }
+    else if (breaking || scope) {
+        subject = rest.replace(/^\s*(\[[^\]]*\]):(?=\s|$)/, "$1");
+    }
+    else {
+        return undefined;
+    }
+    const header = type + scope + breaking;
+    subject = subject
+        .replace(/\s*:\s*(?=\S)/g, " - ")
+        .replace(/\s*:\s*$/, "")
+        .trim();
+    return isConventionalTitle(`${header}: ${subject || "etc."}`)
+        ? { header, subject }
+        : undefined;
+}
+
+;// CONCATENATED MODULE: ./src/rules/prTitleConventional.ts
+// Code inspired by pr-compliance-action:
+// https://github.com/mtfoley/pr-compliance-action/blob/bcb6dbea496e44a980f8d6d77af91b67f1eea68d/src/checks.ts
+
+
+
+
 const prTitleConventional = defineRule({
     about: {
         config: "strict",
@@ -58493,6 +58678,25 @@ const prTitleConventional = defineRule({
     pullRequest(context, entity) {
         const parsed = commitParser.parse(entity.data.title);
         if (!parsed.type) {
+            const fixed = getFixedConventionalCommitTitle(entity.data.title);
+            if (fixed && !fixed.subject) {
+                context.report({
+                    primary: `PR title is missing a subject after its type.`,
+                    suggestion: [
+                        `To resolve this report, add text after the type, like _"${fixed.header}: etc."_`,
+                    ],
+                });
+                return;
+            }
+            if (fixed) {
+                context.report({
+                    primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
+                    suggestion: [
+                        `To resolve this report, follow conventional commit syntax, like _"${fixed.header}: ${fixed.subject}"_.`,
+                    ],
+                });
+                return;
+            }
             context.report({
                 primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
                 suggestion: [
@@ -88619,11 +88823,13 @@ function sharedPrefixLength(left, right) {
 
 
 
+
 const allRules = [
     commentMeaningful,
     prAutomationDetected,
     prBranchNonDefault,
     prBodyDescriptive,
+    prForcePushes,
     prLinkedIssue,
     prTaskCompletion,
     prTitleConventional,
@@ -89298,14 +89504,6 @@ function markdownReporter(headline, reports) {
     return [headline, "\n\n", printedReports.join("\n\n")].join("");
 }
 
-;// CONCATENATED MODULE: ./src/action/comments/isRequestError.ts
-function isRequestError_isRequestError(error) {
-    return (typeof error === "object" &&
-        !!error &&
-        "status" in error &&
-        typeof error.status === "number");
-}
-
 ;// CONCATENATED MODULE: ./src/action/comments/createCommentIdentifier.ts
 function createCommentIdentifier(url) {
     return `<!-- OctoGuide response for: ${url} -->`;
@@ -89467,6 +89665,7 @@ async function outputActionReports(actor, entity, reports, settings) {
 
 
 
+
 async function runCommentCleanup({ auth, payload, url, }) {
     if (!payload.comment) {
         return;
@@ -89480,6 +89679,17 @@ async function runCommentCleanup({ auth, payload, url, }) {
         info("No existing comment found. Nothing to clean up.");
         return;
     }
+    try {
+        await deleteExistingComment(existingComment, octokit, payload);
+    }
+    catch (error) {
+        if (!isAlreadyDeletedError(error)) {
+            throw error;
+        }
+        info("Existing comment was already deleted. Nothing to clean up.");
+    }
+}
+async function deleteExistingComment(existingComment, octokit, payload) {
     if (payload.discussion) {
         info(`Deleting discussion comment with node id: ${existingComment.node_id}`);
         await octokit.graphql(`
@@ -89500,6 +89710,15 @@ async function runCommentCleanup({ auth, payload, url, }) {
             comment_id: existingComment.id,
         });
     }
+}
+function isAlreadyDeletedError(error) {
+    if (isRequestError_isRequestError(error)) {
+        return error.status === 404;
+    }
+    return (error instanceof Error &&
+        "errors" in error &&
+        Array.isArray(error.errors) &&
+        error.errors.some((graphqlError) => graphqlError.type === "NOT_FOUND"));
 }
 
 ;// CONCATENATED MODULE: ./src/action/runOctoGuideAction.ts

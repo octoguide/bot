@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseIncludeAssociations } from "./parseIncludeAssociations.js";
+import { parseIncludeAssociations } from "./parseIncludeAssociations.ts";
 
 describe("parseIncludeAssociations", () => {
 	it("returns an empty list when given an empty string", () => {

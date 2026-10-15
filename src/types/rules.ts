@@ -1,13 +1,13 @@
-import type { RepositoryLocator } from "./data.js";
+import type { RepositoryLocator } from "./data.ts";
 import type {
 	CommentEntity,
 	DiscussionEntity,
 	Entity,
 	IssueEntity,
 	PullRequestEntity,
-} from "./entities.js";
-import type { LocatedOctokit } from "./octokit.js";
-import type { RuleReportData } from "./reports.js";
+} from "./entities.ts";
+import type { LocatedOctokit } from "./octokit.ts";
+import type { RuleReportData } from "./reports.ts";
 
 /**
  * Defines how to analyze entities for a single best practice.

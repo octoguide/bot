@@ -36,7 +36,7 @@ These docs don't refer to OctoGuide as a linter because some users have a negati
 Rules are created internally by OctoGuide using a `defineRule` function.
 
 ```ts title="src/rules/text-require-emoji.ts"
-import { defineRule } from "./defineRule.js";
+import { defineRule } from "./defineRule.ts";
 
 export const textRequireEmoji = defineRule({
 	// ...
