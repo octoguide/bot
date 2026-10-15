@@ -1,8 +1,13 @@
+import type { PullRequestData } from "../types/entities.ts";
+import type { RuleContext } from "../types/rules.ts";
+
+import { isRequestError } from "../action/comments/isRequestError.ts";
 import { defineRule } from "./defineRule.ts";
 
 interface ClosingIssuesResponse {
 	repository: {
 		pullRequest: {
+			bodyHTML: string;
 			closingIssuesReferences: {
 				nodes: {
 					number: number;
@@ -10,6 +15,54 @@ interface ClosingIssuesResponse {
 			};
 		};
 	};
+}
+
+interface DependabotAlertLink {
+	alertNumber: number;
+	owner: string;
+	repo: string;
+	url: string;
+}
+
+async function dependabotAlertMightExist(
+	context: RuleContext,
+	{ alertNumber, owner, repo }: DependabotAlertLink,
+) {
+	try {
+		await context.octokit.rest.dependabot.getAlert({
+			alert_number: alertNumber,
+			owner,
+			repo,
+		});
+		return true;
+	} catch (error) {
+		if (!isRequestError(error) || error.status !== 404) {
+			return true;
+		}
+
+		return (
+			!/no alert found/i.test(error.message) &&
+			`${owner}/${repo}`.toLowerCase() !==
+				`${context.locator.owner}/${context.locator.repository}`.toLowerCase()
+		);
+	}
+}
+
+function findDependabotAlertLinks(body: string) {
+	const links = new Map<string, DependabotAlertLink>();
+
+	for (const [url, owner, repo, alertNumber] of body.matchAll(
+		/https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)\/security\/dependabot\/(\d+)/g,
+	)) {
+		links.set(url.toLowerCase(), {
+			alertNumber: Number(alertNumber),
+			owner,
+			repo,
+			url,
+		});
+	}
+
+	return Array.from(links.values());
 }
 
 export const prLinkedIssue = defineRule({
@@ -28,6 +81,7 @@ export const prLinkedIssue = defineRule({
 				query closingIssues($id: Int!, $owner: String!, $repo: String!) {
 					repository(owner: $owner, name: $repo) {
 						pullRequest(number: $id) {
+							bodyHTML
 							closingIssuesReferences(first: 1) {
 								nodes {
 									number
@@ -44,15 +98,30 @@ export const prLinkedIssue = defineRule({
 			return;
 		}
 
-		const body = entity.data.body?.trim() ?? "";
-		const dependabotAlertPattern =
-			/https:\/\/github\.com\/[^/]+\/[^/]+\/security\/dependabot\/\d+/;
-		if (dependabotAlertPattern.test(body)) {
+		if (
+			targetsNonDefaultBranch(entity.data) &&
+			hasClosingKeyword(response.repository.pullRequest.bodyHTML)
+		) {
 			return;
+		}
+
+		const body = entity.data.body?.trim() ?? "";
+		const dependabotAlertLinks = findDependabotAlertLinks(body);
+
+		for (const link of dependabotAlertLinks) {
+			if (await dependabotAlertMightExist(context, link)) {
+				return;
+			}
 		}
 
 		context.report({
 			primary: "This pull request is not linked as closing any issues.",
+			...(dependabotAlertLinks.length > 0 && {
+				secondary: dependabotAlertLinks.map(
+					(link) =>
+						`The linked Dependabot alert, ${link.url}, could not be found.`,
+				),
+			}),
 			suggestion: [
 				"To resolve this report:",
 				"* If this is a straightforward documentation change that doesn't need an issue, you can ignore this report",
@@ -63,3 +132,13 @@ export const prLinkedIssue = defineRule({
 		});
 	},
 });
+
+function hasClosingKeyword(bodyHTML: string) {
+	return /<span class="issue-keyword[^"]*"[^>]*>[^<]*<\/span>:?\s*<a\s[^>]*\bdata-hovercard-type="issue"/.test(
+		bodyHTML,
+	);
+}
+
+function targetsNonDefaultBranch({ base }: Partial<PullRequestData>) {
+	return !!base?.repo && base.ref !== base.repo.default_branch;
+}

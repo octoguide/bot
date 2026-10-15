@@ -2,6 +2,7 @@ import { commentMeaningful } from "./commentMeaningful.ts";
 import { prAutomationDetected } from "./prAutomationDetected.ts";
 import { prBodyDescriptive } from "./prBodyDescriptive.ts";
 import { prBranchNonDefault } from "./prBranchNonDefault.ts";
+import { prForcePushes } from "./prForcePushes.ts";
 import { prLinkedIssue } from "./prLinkedIssue.ts";
 import { prTaskCompletion } from "./prTaskCompletion.ts";
 import { prTitleConventional } from "./prTitleConventional.ts";
@@ -13,6 +14,7 @@ export const allRules = [
 	prAutomationDetected,
 	prBranchNonDefault,
 	prBodyDescriptive,
+	prForcePushes,
 	prLinkedIssue,
 	prTaskCompletion,
 	prTitleConventional,
