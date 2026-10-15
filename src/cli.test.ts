@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { cli } from "./cli.js";
+import { cli } from "./cli.ts";
 
 const mockRunOctoGuideRules = vi.fn().mockResolvedValue({});
 
-vi.mock("./runOctoGuideRules.js", () => ({
+vi.mock("./runOctoGuideRules.ts", () => ({
 	get runOctoGuideRules() {
 		return mockRunOctoGuideRules;
 	},
@@ -12,7 +12,7 @@ vi.mock("./runOctoGuideRules.js", () => ({
 
 const mockResolveEntityUrl = vi.fn();
 
-vi.mock("./resolveEntityUrl.js", () => ({
+vi.mock("./resolveEntityUrl.ts", () => ({
 	get resolveEntityUrl() {
 		return mockResolveEntityUrl;
 	},
@@ -20,7 +20,7 @@ vi.mock("./resolveEntityUrl.js", () => ({
 
 const mockCliReporter = vi.fn();
 
-vi.mock("./reporters/cliReporter.js", () => ({
+vi.mock("./reporters/cliReporter.ts", () => ({
 	get cliReporter() {
 		return mockCliReporter;
 	},

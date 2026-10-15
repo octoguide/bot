@@ -4,7 +4,10 @@
 		"requireCommits": true
 	},
 	"github": { "release": true, "releaseName": "v${version}" },
-	"hooks": { "after:git:release": "npm publish" },
+	"hooks": {
+		"after:bump": "pnpm build:release",
+		"after:git:release": "npm publish"
+	},
 	"npm": { "publish": false },
 	"plugins": {
 		"@release-it/conventional-changelog": {

@@ -1,6 +1,6 @@
 {
 	"name": "octoguide",
-	"version": "0.26.0",
+	"version": "0.28.0",
 	"description": "A friendly bot that helps contributors adhere to best practices for your repository on GitHub. 🗺️",
 	"repository": {
 		"type": "git",
@@ -20,11 +20,13 @@
 		"octoguide": "bin/index.js"
 	},
 	"files": [
-		"lib/"
+		"lib/",
+		"!lib/**/*.test.*",
+		"!lib/tests/"
 	],
 	"scripts": {
 		"build": "tsc",
-		"build:release": "ncc build src/action/index.ts -o dist; node postbuild.js",
+		"build:release": "ncc build src/action/index.ts -o dist && node postbuild.js",
 		"format": "prettier .",
 		"lint": "eslint . --max-warnings 0",
 		"lint:knip": "knip",
@@ -64,33 +66,33 @@
 		"@vercel/ncc": "0.45.0",
 		"@vitest/coverage-v8": "5.0.0",
 		"@vitest/eslint-plugin": "1.6.27",
-		"console-fail-test": "0.9.0",
+		"console-fail-test": "0.10.0",
 		"cspell": "10.3.0",
-		"eslint": "10.11.0",
-		"eslint-plugin-jsdoc": "64.5.0",
+		"eslint": "10.12.0",
+		"eslint-plugin-jsdoc": "65.2.0",
 		"eslint-plugin-jsonc": "3.4.2",
 		"eslint-plugin-markdown": "5.1.0",
-		"eslint-plugin-n": "18.3.0",
+		"eslint-plugin-n": "18.4.0",
 		"eslint-plugin-package-json": "1.10.0",
 		"eslint-plugin-perfectionist": "5.12.0",
 		"eslint-plugin-regexp": "3.3.0",
 		"eslint-plugin-yml": "3.8.1",
-		"knip": "6.38.0",
-		"lefthook": "2.1.12",
+		"knip": "6.40.0",
+		"lefthook": "2.2.0",
 		"markdownlint-cli": "0.49.1",
 		"markdownlint-sentences-per-line": "0.1.4",
 		"prettier": "3.9.6",
 		"prettier-plugin-astro": "1.1.0",
 		"prettier-plugin-curly": "0.4.1",
 		"prettier-plugin-packagejson": "3.0.2",
-		"prettier-plugin-sh": "0.19.0",
+		"prettier-plugin-sh": "0.20.2",
 		"release-it": "21.1.0",
 		"type-fest": "5.10.0",
 		"typescript": "6.0.3",
-		"typescript-eslint": "8.70.0",
+		"typescript-eslint": "8.71.0",
 		"vitest": "5.0.0"
 	},
-	"packageManager": "pnpm@12.6.0",
+	"packageManager": "pnpm@12.10.1",
 	"engines": {
 		"node": ">=24.0.0"
 	}

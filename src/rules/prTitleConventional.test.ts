@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { prTitleConventional } from "./prTitleConventional.js";
+import { testRule } from "../tests/testRule.ts";
+import { prTitleConventional } from "./prTitleConventional.ts";
 
 describe(prTitleConventional.about.name, () => {
 	it("reports when the pull request title is missing a type", async () => {
@@ -23,6 +23,73 @@ describe(prTitleConventional.about.name, () => {
 			primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
 			suggestion: [
 				`To resolve this report, add a conventional commit type in front of the title, like _"feat: add this new feature"_.`,
+			],
+		});
+	});
+
+	it("reports with a corrected title when the pull request title has a known type with incorrect syntax", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title: "fix(md) fill in suggestions",
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `The PR title does not follow the conventional commit syntax of _"type: subject"_ or _"type(scope): subject"_.`,
+			suggestion: [
+				`To resolve this report, follow conventional commit syntax, like _"fix(md): fill in suggestions"_.`,
+			],
+		});
+	});
+
+	it("reports a missing type without a corrected title when the pull request title has a known type but no valid correction", async () => {
+		const report = vi.fn();
+		const title = "fix something";
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title,
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
+			suggestion: [
+				`To resolve this report, add a conventional commit type in front of the title, like _"feat: fix something"_.`,
+			],
+		});
+	});
+
+	it("reports when the pull request title has a known type with incorrect syntax and no subject", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title: "fix(md)",
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `PR title is missing a subject after its type.`,
+			suggestion: [
+				`To resolve this report, add text after the type, like _"fix(md): etc."_`,
 			],
 		});
 	});

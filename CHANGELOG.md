@@ -1,5 +1,53 @@
 # Changelog
 
+# [0.28.0](https://github.com/octoguide/bot/compare/0.27.0...0.28.0) (2026-10-15)
+
+### Features
+
+- suggest corrected syntax for misformatted conventional PR titles ([#669](https://github.com/octoguide/bot/issues/669)) ([38a5e0b](https://github.com/octoguide/bot/commit/38a5e0b5e7a16d1d79c95bfa07d4f440a2adc50d)), closes [#448](https://github.com/octoguide/bot/issues/448)
+
+# [0.27.0](https://github.com/octoguide/bot/compare/0.26.6...0.27.0) (2026-10-14)
+
+### Features
+
+- add pr-force-pushes rule ([#679](https://github.com/octoguide/bot/issues/679)) ([779f757](https://github.com/octoguide/bot/commit/779f757cc0fa82082b790aaac38e96c11db6f9b8)), closes [#572](https://github.com/octoguide/bot/issues/572)
+
+## [0.26.6](https://github.com/octoguide/bot/compare/0.26.5...0.26.6) (2026-10-06)
+
+### Bug Fixes
+
+- accept closing keywords in pr-linked-issue for PRs into non-default branches ([#671](https://github.com/octoguide/bot/issues/671)) ([e6cefb4](https://github.com/octoguide/bot/commit/e6cefb4f7fe53a22372fd3a5b5217c0c950c6aa1)), closes [#639](https://github.com/octoguide/bot/issues/639)
+
+## [0.26.5](https://github.com/octoguide/bot/compare/0.26.4...0.26.5) (2026-10-06)
+
+### Bug Fixes
+
+- validate that linked Dependabot alerts exist in pr-linked-issue ([#672](https://github.com/octoguide/bot/issues/672)) ([3e87119](https://github.com/octoguide/bot/commit/3e871191c309b9881c22c72cfc83a57e684b8952)), closes [#322](https://github.com/octoguide/bot/issues/322)
+
+## [0.26.4](https://github.com/octoguide/bot/compare/0.26.3...0.26.4) (2026-10-04)
+
+### Bug Fixes
+
+- treat already-deleted report comments as cleaned up ([#695](https://github.com/octoguide/bot/issues/695)) ([de93570](https://github.com/octoguide/bot/commit/de93570ccf8aa1e8012ba093aa522c9b3020db11)), closes [#694](https://github.com/octoguide/bot/issues/694)
+
+## [0.26.3](https://github.com/octoguide/bot/compare/0.26.2...0.26.3) (2026-10-04)
+
+### Bug Fixes
+
+- add missing space in pr-automation-detected explanation ([#697](https://github.com/octoguide/bot/issues/697)) ([01d9305](https://github.com/octoguide/bot/commit/01d93057f3d0e614242b3b94735672d8ae4eb032)), closes [#696](https://github.com/octoguide/bot/issues/696)
+
+## [0.26.2](https://github.com/octoguide/bot/compare/0.26.1...0.26.2) (2026-10-03)
+
+### Bug Fixes
+
+- rebuild dist/ bundle in each release commit ([#690](https://github.com/octoguide/bot/issues/690)) ([a1b4747](https://github.com/octoguide/bot/commit/a1b4747eff10ca1bbc480c985f28a05a05a61856)), closes [#687](https://github.com/octoguide/bot/issues/687)
+
+## [0.26.1](https://github.com/octoguide/bot/compare/0.26.0...0.26.1) (2026-10-03)
+
+### Bug Fixes
+
+- use valid deleteDiscussionComment mutation in comment cleanup ([#664](https://github.com/octoguide/bot/issues/664)) ([577d91f](https://github.com/octoguide/bot/commit/577d91f0a217acac0c3488e947e69de628106604)), closes [#647](https://github.com/octoguide/bot/issues/647)
+
 # [0.26.0](https://github.com/octoguide/bot/compare/0.25.0...0.26.0) (2026-10-02)
 
 ### Features
