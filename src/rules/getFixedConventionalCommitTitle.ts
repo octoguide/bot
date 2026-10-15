@@ -25,9 +25,10 @@ export function getFixedConventionalCommitTitle(title: string) {
 		return undefined;
 	}
 
-	const [, rawType, rawScope = "", breaking = "", rest] = match;
+	const [, rawType, rawScope = "", breaking = "", rawRest] = match;
 	const type = rawType.toLowerCase();
 	const scope = rawScope.trimStart();
+	const rest = breaking ? rawRest.replace(/^!+/, "") : rawRest;
 	const leadingColon = /^\s*:/;
 
 	if (
@@ -41,14 +42,17 @@ export function getFixedConventionalCommitTitle(title: string) {
 
 	if (leadingColon.test(rest)) {
 		subject = rest.replace(leadingColon, "");
-	} else if (breaking || (scope && scope === rawScope)) {
+	} else if (breaking || scope) {
 		subject = rest.replace(/^\s*(\[[^\]]*\]):(?=\s|$)/, "$1");
 	} else {
 		return undefined;
 	}
 
 	const header = type + scope + breaking;
-	subject = subject.trim();
+	subject = subject
+		.replace(/\s*:\s*(?=\S)/g, " - ")
+		.replace(/\s*:\s*$/, "")
+		.trim();
 
 	return isConventionalTitle(`${header}: ${subject || "etc."}`)
 		? { header, subject }

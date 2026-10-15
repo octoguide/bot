@@ -51,7 +51,7 @@ describe(prTitleConventional.about.name, () => {
 
 	it("reports a missing type without a corrected title when the pull request title has a known type but no valid correction", async () => {
 		const report = vi.fn();
-		const title = "fix (windows) path handling";
+		const title = "fix something";
 
 		await testRule(
 			prTitleConventional,
@@ -67,7 +67,7 @@ describe(prTitleConventional.about.name, () => {
 		expect(report).toHaveBeenCalledWith({
 			primary: `The PR title is missing a conventional commit type, such as _"docs: "_ or _"feat: "_.`,
 			suggestion: [
-				`To resolve this report, add a conventional commit type in front of the title, like _"feat: fix (windows) path handling"_.`,
+				`To resolve this report, add a conventional commit type in front of the title, like _"feat: fix something"_.`,
 			],
 		});
 	});

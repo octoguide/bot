@@ -34,7 +34,7 @@ describe(getFixedConventionalCommitTitle, () => {
 		],
 		[
 			"docs(readme) Note: something",
-			{ header: "docs(readme)", subject: "Note: something" },
+			{ header: "docs(readme)", subject: "Note - something" },
 		],
 		["Feat:add x", { header: "feat", subject: "add x" }],
 		["FIX(md) x", { header: "fix(md)", subject: "x" }],
@@ -42,6 +42,12 @@ describe(getFixedConventionalCommitTitle, () => {
 		["chore (deps): bump x", { header: "chore(deps)", subject: "bump x" }],
 		["feat (scope)! x", { header: "feat(scope)!", subject: "x" }],
 		["fix(md)", { header: "fix(md)", subject: "" }],
+		["fix(md) suggestions:", { header: "fix(md)", subject: "suggestions" }],
+		["fix(a)!!: x", { header: "fix(a)!", subject: "x" }],
+		[
+			"fix (windows) path handling",
+			{ header: "fix(windows)", subject: "path handling" },
+		],
 	])("returns a fixed title for %j", (title, expected) => {
 		expect(getFixedConventionalCommitTitle(title)).toEqual(expected);
 	});
@@ -51,8 +57,7 @@ describe(getFixedConventionalCommitTitle, () => {
 		"other(md) x",
 		"fix something",
 		"feat(a(b)) x",
-		"fix(a)!!: x",
-		"fix (windows) path handling",
+		"fix(a) !: x",
 	])("returns undefined for %j", (title) => {
 		expect(getFixedConventionalCommitTitle(title)).toBeUndefined();
 	});
