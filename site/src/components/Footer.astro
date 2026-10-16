@@ -4,8 +4,6 @@ import Default from "@astrojs/starlight/components/Footer.astro";
 import Credits from "./Credits.astro";
 
 export type Props = StarlightRouteData;
-
-const isDeployedToNetlify = Boolean(process.env.NETLIFY);
 ---
 
 <Default {...Astro.props}>
@@ -14,14 +12,22 @@ const isDeployedToNetlify = Boolean(process.env.NETLIFY);
 
 <Credits class="footer-credits" />
 
-{isDeployedToNetlify && (
-	<a class="netlify-badge" href="https://www.netlify.com">
-		<img
-			src="https://www.netlify.com/assets/badges/netlify-badge-color-accent.svg"
-			alt="Deploys by Netlify"
-		/>
-	</a>
-)}
+<a class="netlify-badge" href="https://www.netlify.com" hidden>
+	<img
+		src="https://www.netlify.com/assets/badges/netlify-badge-color-accent.svg"
+		alt="Deploys by Netlify"
+	/>
+</a>
+
+<script>
+	const isDeployedToNetlify =
+		document.querySelector("[data-netlify-deploy-id]") !== null ||
+		window.location.hostname.endsWith(".netlify.app");
+
+	if (isDeployedToNetlify) {
+		document.querySelector(".netlify-badge")?.removeAttribute("hidden");
+	}
+</script>
 
 <style>
 	.footer-credits {
@@ -32,6 +38,10 @@ const isDeployedToNetlify = Boolean(process.env.NETLIFY);
 		display: block;
 		margin: 1.5rem auto 0;
 		width: fit-content;
+	}
+
+	.netlify-badge[hidden] {
+		display: none;
 	}
 
 	.netlify-badge img {
