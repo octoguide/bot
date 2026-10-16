@@ -1,0 +1,24 @@
+---
+const isDeployedToNetlify = import.meta.env.NETLIFY === "true";
+---
+
+{isDeployedToNetlify && (
+	<a class="netlify-badge" href="https://www.netlify.com">
+		<img
+			src="https://www.netlify.com/assets/badges/netlify-badge-color-accent.svg"
+			alt="Deploys by Netlify"
+		/>
+	</a>
+)}
+
+<style>
+	.netlify-badge {
+		display: inline-block;
+	}
+
+	.netlify-badge img {
+		display: block;
+		height: auto;
+		width: 7rem;
+	}
+</style>
