@@ -1,0 +1,32 @@
+<a class="netlify-badge" href="https://www.netlify.com" hidden>
+	<img
+		src="https://www.netlify.com/assets/badges/netlify-badge-color-accent.svg"
+		alt="Deploys by Netlify"
+	/>
+</a>
+
+<script>
+	const isDeployedToNetlify =
+		document.querySelector("[data-netlify-deploy-id]") !== null ||
+		window.location.hostname.endsWith(".netlify.app");
+
+	if (isDeployedToNetlify) {
+		document.querySelector(".netlify-badge")?.removeAttribute("hidden");
+	}
+</script>
+
+<style>
+	.netlify-badge {
+		display: inline-block;
+	}
+
+	.netlify-badge[hidden] {
+		display: none;
+	}
+
+	.netlify-badge img {
+		display: block;
+		height: auto;
+		width: 7rem;
+	}
+</style>
