@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.29.1](https://github.com/octoguide/bot/compare/0.29.0...0.29.1) (2026-10-16)
+
+### Bug Fixes
+
+- **deps:** update dependency starlight-links-validator to v0.27.0 ([#732](https://github.com/octoguide/bot/issues/732)) ([ed1970c](https://github.com/octoguide/bot/commit/ed1970c0a4220216a18795fe20e1be745d28f21c))
+
 # [0.29.0](https://github.com/octoguide/bot/compare/0.28.1...0.29.0) (2026-10-15)
 
 ### Features
