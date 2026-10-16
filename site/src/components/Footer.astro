@@ -5,7 +5,7 @@ import Credits from "./Credits.astro";
 
 export type Props = StarlightRouteData;
 
-const isDeployedToNetlify = import.meta.env.NETLIFY === "true";
+const isDeployedToNetlify = process.env.NETLIFY === "true";
 ---
 
 <Default {...Astro.props}>
