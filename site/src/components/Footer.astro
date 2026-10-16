@@ -4,6 +4,8 @@ import Default from "@astrojs/starlight/components/Footer.astro";
 import Credits from "./Credits.astro";
 
 export type Props = StarlightRouteData;
+
+const isDeployedToNetlify = import.meta.env.NETLIFY === "true";
 ---
 
 <Default {...Astro.props}>
@@ -12,8 +14,29 @@ export type Props = StarlightRouteData;
 
 <Credits class="footer-credits" />
 
+{isDeployedToNetlify && (
+	<a class="netlify-badge" href="https://www.netlify.com">
+		<img
+			src="https://www.netlify.com/assets/badges/netlify-badge-color-accent.svg"
+			alt="Deploys by Netlify"
+		/>
+	</a>
+)}
+
 <style>
 	.footer-credits {
 		padding-top: 2rem;
+	}
+
+	.netlify-badge {
+		display: block;
+		margin: 1.5rem auto 0;
+		width: fit-content;
+	}
+
+	.netlify-badge img {
+		display: block;
+		height: auto;
+		width: 7rem;
 	}
 </style>
