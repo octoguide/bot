@@ -1,4 +1,6 @@
 ---
+import NetlifyBadge from "./NetlifyBadge.astro";
+
 interface Props {
 	class?: string;
 }
@@ -26,6 +28,7 @@ const { class: className, ...props } = Astro.props;
 			Code of Conduct
 		</a>
 	</p>
+	<NetlifyBadge />
 </div>
 
 <style>
