@@ -8,3 +8,7 @@ exclude_path = [
 	"(^|/)dist-site(/|$)",
 	"(^|/)node_modules(/|$)",
 ]
+
+exclude = [
+	"^https://github\\.com/owner/repo/security/dependabot/123$",
+]

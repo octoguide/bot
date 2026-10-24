@@ -3,3 +3,8 @@ verbose = "info"
 
 extensions = ["html"]
 index_files = ["index.html"]
+
+exclude = [
+	"^https://github\\.com/owner/repo/security/dependabot/123$",
+	"^https://octo\\.guide/404/$",
+]
