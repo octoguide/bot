@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.30.0](https://github.com/octoguide/bot/compare/0.29.3...0.30.0) (2026-10-24)
+
+### Features
+
+- suggest corrected type for near-miss conventional PR titles ([#670](https://github.com/octoguide/bot/issues/670)) ([bf45205](https://github.com/octoguide/bot/commit/bf45205caff284652f5eb6a837ceade30207f863)), closes [#69](https://github.com/octoguide/bot/issues/69) [#669](https://github.com/octoguide/bot/issues/669)
+
 ## [0.29.3](https://github.com/octoguide/bot/compare/0.29.2...0.29.3) (2026-10-24)
 
 ### Bug Fixes
