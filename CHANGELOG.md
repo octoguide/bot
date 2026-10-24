@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.29.3](https://github.com/octoguide/bot/compare/0.29.2...0.29.3) (2026-10-24)
+
+### Bug Fixes
+
+- **deps:** update dependency astro to v7.4.0 ([#745](https://github.com/octoguide/bot/issues/745)) ([a3f7048](https://github.com/octoguide/bot/commit/a3f7048caff8254b196e6b08c9accf64cd62d961)), closes [#x26](https://github.com/octoguide/bot/issues/x26)
+
+## [0.29.2](https://github.com/octoguide/bot/compare/0.29.1...0.29.2) (2026-10-22)
+
+### Bug Fixes
+
+- **deps:** update dependency markdownlint to v0.42.0 ([#742](https://github.com/octoguide/bot/issues/742)) ([1f9503e](https://github.com/octoguide/bot/commit/1f9503e05ecc315c1edf2492ddc10e982289ad68))
+
+## [0.29.1](https://github.com/octoguide/bot/compare/0.29.0...0.29.1) (2026-10-16)
+
+### Bug Fixes
+
+- **deps:** update dependency starlight-links-validator to v0.27.0 ([#732](https://github.com/octoguide/bot/issues/732)) ([ed1970c](https://github.com/octoguide/bot/commit/ed1970c0a4220216a18795fe20e1be745d28f21c))
+
+# [0.29.0](https://github.com/octoguide/bot/compare/0.28.1...0.29.0) (2026-10-15)
+
+### Features
+
+- allow types and scopes options in pr-title-conventional ([#703](https://github.com/octoguide/bot/issues/703)) ([11adeb8](https://github.com/octoguide/bot/commit/11adeb896a6f7d5673ff80ebe2cfd64cf97117bf)), closes [#121](https://github.com/octoguide/bot/issues/121)
+
+## [0.28.1](https://github.com/octoguide/bot/compare/0.28.0...0.28.1) (2026-10-15)
+
+### Bug Fixes
+
+- report multiple scopes in pr-title-conventional ([#702](https://github.com/octoguide/bot/issues/702)) ([840ba30](https://github.com/octoguide/bot/commit/840ba30f1a011c0f9225996d29864cd3acfc523b)), closes [#701](https://github.com/octoguide/bot/issues/701)
+
 # [0.28.0](https://github.com/octoguide/bot/compare/0.27.0...0.28.0) (2026-10-15)
 
 ### Features
