@@ -19,6 +19,7 @@ export const aiLogins = new Set([
 	"codiumai-pr-agent-free[bot]",
 	"continue[bot]",
 	"Copilot",
+	"copilot-pull-request-reviewer[bot]",
 	"corgea[bot]",
 	"cto-new[bot]",
 	"cubic-dev-ai[bot]",
