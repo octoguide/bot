@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.29.3](https://github.com/octoguide/bot/compare/0.29.2...0.29.3) (2026-10-24)
+
+### Bug Fixes
+
+- **deps:** update dependency astro to v7.4.0 ([#745](https://github.com/octoguide/bot/issues/745)) ([a3f7048](https://github.com/octoguide/bot/commit/a3f7048caff8254b196e6b08c9accf64cd62d961)), closes [#x26](https://github.com/octoguide/bot/issues/x26)
+
 ## [0.29.2](https://github.com/octoguide/bot/compare/0.29.1...0.29.2) (2026-10-22)
 
 ### Bug Fixes
