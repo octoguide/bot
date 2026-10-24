@@ -1,5 +1,35 @@
 # Changelog
 
+# [0.31.0](https://github.com/octoguide/bot/compare/0.30.0...0.31.0) (2026-10-24)
+
+### Features
+
+- split out `include-ais` option from `include-bots` ([#673](https://github.com/octoguide/bot/issues/673)) ([79b771d](https://github.com/octoguide/bot/commit/79b771d3e2de903ad18927b7a3f573f5b367f74f)), closes [#440](https://github.com/octoguide/bot/issues/440)
+
+# [0.30.0](https://github.com/octoguide/bot/compare/0.29.3...0.30.0) (2026-10-24)
+
+### Features
+
+- suggest corrected type for near-miss conventional PR titles ([#670](https://github.com/octoguide/bot/issues/670)) ([bf45205](https://github.com/octoguide/bot/commit/bf45205caff284652f5eb6a837ceade30207f863)), closes [#69](https://github.com/octoguide/bot/issues/69) [#669](https://github.com/octoguide/bot/issues/669)
+
+## [0.29.3](https://github.com/octoguide/bot/compare/0.29.2...0.29.3) (2026-10-24)
+
+### Bug Fixes
+
+- **deps:** update dependency astro to v7.4.0 ([#745](https://github.com/octoguide/bot/issues/745)) ([a3f7048](https://github.com/octoguide/bot/commit/a3f7048caff8254b196e6b08c9accf64cd62d961)), closes [#x26](https://github.com/octoguide/bot/issues/x26)
+
+## [0.29.2](https://github.com/octoguide/bot/compare/0.29.1...0.29.2) (2026-10-22)
+
+### Bug Fixes
+
+- **deps:** update dependency markdownlint to v0.42.0 ([#742](https://github.com/octoguide/bot/issues/742)) ([1f9503e](https://github.com/octoguide/bot/commit/1f9503e05ecc315c1edf2492ddc10e982289ad68))
+
+## [0.29.1](https://github.com/octoguide/bot/compare/0.29.0...0.29.1) (2026-10-16)
+
+### Bug Fixes
+
+- **deps:** update dependency starlight-links-validator to v0.27.0 ([#732](https://github.com/octoguide/bot/issues/732)) ([ed1970c](https://github.com/octoguide/bot/commit/ed1970c0a4220216a18795fe20e1be745d28f21c))
+
 # [0.29.0](https://github.com/octoguide/bot/compare/0.28.1...0.29.0) (2026-10-15)
 
 ### Features

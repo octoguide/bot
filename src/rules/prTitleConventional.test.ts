@@ -172,6 +172,81 @@ describe(prTitleConventional.about.name, () => {
 		});
 	});
 
+	it.each([
+		["Feature: Abc Def", "Feature", "feat: Abc Def"],
+		["Feat: add this new feature", "Feat", "feat: add this new feature"],
+		["FIX(parser): handle semicolons", "FIX", "fix(parser): handle semicolons"],
+		[
+			"bugfix(parser)!: change parser API",
+			"bugfix",
+			"fix(parser)!: change parser API",
+		],
+		["Documentation: mention option", "Documentation", "docs: mention option"],
+		["doc: mention option", "doc", "docs: mention option"],
+		["Features: add option", "Features", "feat: add option"],
+		["fixes: handle semicolons", "fixes", "fix: handle semicolons"],
+		["Fixed: handle semicolons", "Fixed", "fix: handle semicolons"],
+		["hotfix: handle semicolons", "hotfix", "fix: handle semicolons"],
+		["bug: handle semicolons", "bug", "fix: handle semicolons"],
+		["builds: bump target", "builds", "build: bump target"],
+		["chores(deps): bump x", "chores", "chore(deps): bump x"],
+		["refactored: extract helper", "refactored", "refactor: extract helper"],
+		["reverts: undo change", "reverts", "revert: undo change"],
+		["styles: format files", "styles", "style: format files"],
+		["tests: cover parser", "tests", "test: cover parser"],
+	])(
+		"reports with a corrected title when the pull request title %j has a near-miss type",
+		async (title, type, corrected) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title has an unknown type: '${type}'.`,
+				secondary: [
+					"Known types are: 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'",
+				],
+				suggestion: [
+					`To resolve this report, replace the current type with its known equivalent, like _"${corrected}"_.`,
+				],
+			});
+		},
+	);
+
+	it("reports without a corrected title when the pull request title has a near-miss type and no subject", async () => {
+		const report = vi.fn();
+
+		await testRule(
+			prTitleConventional,
+			{
+				data: {
+					title: "Feature: ",
+				},
+				type: "pull_request",
+			},
+			{ report },
+		);
+
+		expect(report).toHaveBeenCalledWith({
+			primary: `The PR title has an unknown type: 'Feature'.`,
+			secondary: [
+				"Known types are: 'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'",
+			],
+			suggestion: [
+				`To resolve this report, replace the current type with one of those known types.`,
+			],
+		});
+	});
+
 	it("reports when the pull request title is missing a subject", async () => {
 		const report = vi.fn();
 		const title = "feat: ";
@@ -329,7 +404,11 @@ describe(prTitleConventional.about.name, () => {
 	);
 
 	describe("types option", () => {
-		const options = { "include-bots": true, types: ["fix", "deps"] };
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			types: ["fix", "deps"],
+		};
 
 		it("does not report when the pull request title has an allowed type", async () => {
 			const report = vi.fn();
@@ -371,6 +450,52 @@ describe(prTitleConventional.about.name, () => {
 			});
 		});
 
+		it("reports with a corrected title when the pull request title has a near-miss of an allowed type", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "bugfix(parser): handle semicolons",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title has a type that isn't allowed: 'bugfix'.`,
+				secondary: ["Allowed types are: 'deps', 'fix'"],
+				suggestion: [
+					`To resolve this report, replace the current type with its allowed equivalent, like _"fix(parser): handle semicolons"_.`,
+				],
+			});
+		});
+
+		it("reports without a corrected title when the pull request title has a near-miss of a type that isn't allowed", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "Feature: add this new feature",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title has a type that isn't allowed: 'Feature'.`,
+				secondary: ["Allowed types are: 'deps', 'fix'"],
+				suggestion: [
+					`To resolve this report, replace the current type with one of those allowed types, like _"deps: add this new feature"_.`,
+				],
+			});
+		});
+
 		it("reports with allowed example types when the pull request title is missing a type", async () => {
 			const report = vi.fn();
 
@@ -404,7 +529,14 @@ describe(prTitleConventional.about.name, () => {
 					},
 					type: "pull_request",
 				},
-				{ options: { "include-bots": true, types: ["feat"] }, report },
+				{
+					options: {
+						"include-ais": true,
+						"include-bots": true,
+						types: ["feat"],
+					},
+					report,
+				},
 			);
 
 			expect(report).toHaveBeenCalledWith({
@@ -417,7 +549,11 @@ describe(prTitleConventional.about.name, () => {
 	});
 
 	describe("scopes option", () => {
-		const options = { "include-bots": true, scopes: ["parser", "cli"] };
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			scopes: ["parser", "cli"],
+		};
 
 		it.each([
 			"feat: add this new feature",
@@ -495,7 +631,14 @@ describe(prTitleConventional.about.name, () => {
 					},
 					type: "pull_request",
 				},
-				{ options: { "include-bots": true, scopes: ["$$"] }, report },
+				{
+					options: {
+						"include-ais": true,
+						"include-bots": true,
+						scopes: ["$$"],
+					},
+					report,
+				},
 			);
 
 			expect(report).toHaveBeenCalledWith(
@@ -510,6 +653,7 @@ describe(prTitleConventional.about.name, () => {
 
 	describe("scopes and types options", () => {
 		const options = {
+			"include-ais": true,
 			"include-bots": true,
 			scopes: ["parser"],
 			types: ["fix"],
@@ -577,7 +721,11 @@ describe(prTitleConventional.about.name, () => {
 						type: "pull_request",
 					},
 					{
-						options: { "include-bots": true, [name]: value },
+						options: {
+							"include-ais": true,
+							"include-bots": true,
+							[name]: value,
+						},
 						report: vi.fn(),
 					},
 				),
@@ -588,7 +736,11 @@ describe(prTitleConventional.about.name, () => {
 	});
 
 	describe("subject-case option", () => {
-		const options = { "include-bots": true, "subject-case": "lower" };
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			"subject-case": "lower",
+		};
 
 		it.each([
 			"feat: add this new feature",
@@ -643,6 +795,7 @@ describe(prTitleConventional.about.name, () => {
 
 	describe("subject-trailing-punctuation option", () => {
 		const options = {
+			"include-ais": true,
 			"include-bots": true,
 			"subject-trailing-punctuation": false,
 		};
@@ -733,6 +886,7 @@ describe(prTitleConventional.about.name, () => {
 				},
 				{
 					options: {
+						"include-ais": true,
 						"include-bots": true,
 						"subject-trailing-punctuation": true,
 					},
@@ -746,6 +900,7 @@ describe(prTitleConventional.about.name, () => {
 
 	describe("subject-pattern option", () => {
 		const options = {
+			"include-ais": true,
 			"include-bots": true,
 			"subject-pattern": String.raw`^(\[[a-z\-]+(, [a-z\-]+)*\] )?[a-z].+$`,
 		};
@@ -841,6 +996,7 @@ describe(prTitleConventional.about.name, () => {
 				},
 				{
 					options: {
+						"include-ais": true,
 						"include-bots": true,
 						"subject-pattern": "[a-z ]+",
 					},
@@ -858,6 +1014,7 @@ describe(prTitleConventional.about.name, () => {
 
 	describe("subject options together", () => {
 		const options = {
+			"include-ais": true,
 			"include-bots": true,
 			"subject-case": "lower",
 			"subject-pattern": String.raw`^(\[[a-z\-]+\] )?[a-z].+$`,
@@ -1037,7 +1194,14 @@ describe(prTitleConventional.about.name, () => {
 				},
 				type: "pull_request",
 			},
-			{ options: { "include-bots": true, types: ["fix", "fix"] }, report },
+			{
+				options: {
+					"include-ais": true,
+					"include-bots": true,
+					types: ["fix", "fix"],
+				},
+				report,
+			},
 		);
 
 		expect(report).toHaveBeenCalledWith(
@@ -1062,7 +1226,12 @@ async function testRuleWithOption(
 			type: "pull_request",
 		},
 		{
-			options: { "include-bots": true, ...rest, [name]: value },
+			options: {
+				"include-ais": true,
+				"include-bots": true,
+				...rest,
+				[name]: value,
+			},
 			report: vi.fn(),
 		},
 	);

@@ -16,6 +16,50 @@ const scopeItems = /@[^,/;\\|]+\/[^,/;\\|]+|[^,/;\\|]+/g;
 
 const trailingPunctuation = /[!,.:;?]+$/;
 
+/**
+ * Common alternate names for known types, keyed by their lowercase form.
+ */
+const typeAliases = new Map([
+	["bug", "fix"],
+	["bugfix", "fix"],
+	["bugfixes", "fix"],
+	["bugs", "fix"],
+	["builds", "build"],
+	["built", "build"],
+	["chores", "chore"],
+	["doc", "docs"],
+	["documentation", "docs"],
+	["feats", "feat"],
+	["feature", "feat"],
+	["features", "feat"],
+	["fixed", "fix"],
+	["fixes", "fix"],
+	["hotfix", "fix"],
+	["hotfixes", "fix"],
+	["performance", "perf"],
+	["refactored", "refactor"],
+	["refactoring", "refactor"],
+	["refactors", "refactor"],
+	["reverted", "revert"],
+	["reverts", "revert"],
+	["styled", "style"],
+	["styles", "style"],
+	["tested", "test"],
+	["tests", "test"],
+]);
+
+/**
+ * Finds the type an unrecognized type was likely meant to be, if any.
+ */
+function findIntendedType(type: string, types: string[]) {
+	const lowercase = type.toLowerCase();
+	const intended = types.includes(lowercase)
+		? lowercase
+		: typeAliases.get(lowercase);
+
+	return intended && types.includes(intended) ? intended : undefined;
+}
+
 export const prTitleConventional = defineRule({
 	about: {
 		config: "strict",
@@ -100,13 +144,34 @@ export const prTitleConventional = defineRule({
 		}
 
 		if (!types.includes(parsed.type)) {
+			const primary = allowedTypes
+				? `The PR title has a type that isn't allowed: '${parsed.type}'.`
+				: `The PR title has an unknown type: '${parsed.type}'.`;
+			const secondary = [
+				`${allowedTypes ? "Allowed" : "Known"} types are: ${formatList(types)}`,
+			];
+			const intendedType = findIntendedType(parsed.type, types);
+			if (intendedType && parsed.subject) {
+				const scope = parsed.scope ? `(${parsed.scope})` : "";
+				const breaking = parsed.notes.some(
+					(note) => note.title === "BREAKING CHANGE",
+				)
+					? "!"
+					: "";
+
+				context.report({
+					primary,
+					secondary,
+					suggestion: [
+						`To resolve this report, replace the current type with its ${typesLabel} equivalent, like _"${intendedType}${scope}${breaking}: ${parsed.subject}"_.`,
+					],
+				});
+				return;
+			}
+
 			context.report({
-				primary: allowedTypes
-					? `The PR title has a type that isn't allowed: '${parsed.type}'.`
-					: `The PR title has an unknown type: '${parsed.type}'.`,
-				secondary: [
-					`${allowedTypes ? "Allowed" : "Known"} types are: ${formatList(types)}`,
-				],
+				primary,
+				secondary,
 				suggestion: [
 					parsed.subject
 						? `To resolve this report, replace the current type with one of those ${typesLabel} types, like _"${exampleType}: ${parsed.subject}"_.`
