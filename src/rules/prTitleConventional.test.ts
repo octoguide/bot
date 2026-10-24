@@ -735,6 +735,454 @@ describe(prTitleConventional.about.name, () => {
 		});
 	});
 
+	describe("subject-case option", () => {
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			"subject-case": "lower",
+		};
+
+		it.each([
+			"feat: add this new feature",
+			"feat(cli): add this new feature",
+			"fix!: `Thing` renamed",
+			"feat: [rule-name] add an option",
+		])("does not report when the pull request title is %j", async (title) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it.each([
+			["feat: Add this new feature", "feat: add this new feature"],
+			["fix(cli)!: Change CLI flags", "fix(cli)!: change CLI flags"],
+		])(
+			"reports when the pull request title %j starts its subject with an upper-case letter",
+			async (title, suggested) => {
+				const report = vi.fn();
+
+				await testRule(
+					prTitleConventional,
+					{
+						data: {
+							title,
+						},
+						type: "pull_request",
+					},
+					{ options, report },
+				);
+
+				expect(report).toHaveBeenCalledWith({
+					primary: `The PR title's subject starts with an upper-case letter: '${title.split(": ")[1]}'.`,
+					suggestion: [
+						`To resolve this report, lower-case the first letter of the subject, like _"${suggested}"_.`,
+					],
+				});
+			},
+		);
+	});
+
+	describe("subject-trailing-punctuation option", () => {
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			"subject-trailing-punctuation": false,
+		};
+
+		it.each([
+			"feat: add this new feature",
+			"feat: add support for `a.b`",
+			"fix(cli)!: rename --dry-run",
+			"chore(deps): this is a very long pr title that will probably get…",
+		])("does not report when the pull request title is %j", async (title) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it.each([
+			["feat: add this new feature.", ".", "feat: add this new feature"],
+			["fix: what even is this?!", "?!", "fix: what even is this"],
+			["docs: clarify the thing...", "...", "docs: clarify the thing"],
+		])(
+			"reports when the pull request title %j ends its subject with punctuation",
+			async (title, punctuation, suggested) => {
+				const report = vi.fn();
+
+				await testRule(
+					prTitleConventional,
+					{
+						data: {
+							title,
+						},
+						type: "pull_request",
+					},
+					{ options, report },
+				);
+
+				expect(report).toHaveBeenCalledWith({
+					primary: `The PR title's subject ends with punctuation: '${punctuation}'.`,
+					suggestion: [
+						`To resolve this report, remove the trailing punctuation, like _"${suggested}"_.`,
+					],
+				});
+			},
+		);
+
+		it("reports without a suggested title when the subject is only punctuation", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat: ???",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title's subject ends with punctuation: '???'.`,
+				suggestion: [
+					`To resolve this report, remove the trailing punctuation from the subject.`,
+				],
+			});
+		});
+
+		it("does not report when the option is true", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat: add this new feature.",
+					},
+					type: "pull_request",
+				},
+				{
+					options: {
+						"include-ais": true,
+						"include-bots": true,
+						"subject-trailing-punctuation": true,
+					},
+					report,
+				},
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
+	});
+
+	describe("subject-pattern option", () => {
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			"subject-pattern": String.raw`^(\[[a-z\-]+(, [a-z\-]+)*\] )?[a-z].+$`,
+		};
+
+		it.each([
+			"feat: add this new feature",
+			"feat: [rule-name] add an option",
+			"fix: [rule-one, rule-two] stop crashing",
+		])("does not report when the pull request title is %j", async (title) => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title,
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it("reports with the pattern when the subject does not match and no error is provided", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat: [RuleName] add an option",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title's subject doesn't match the pattern this repository requires: '[RuleName] add an option'.`,
+				secondary: [
+					"Subjects must match the regular expression `" +
+						options["subject-pattern"] +
+						"`.",
+				],
+				suggestion: [
+					`To resolve this report, edit the PR title's subject to match that regular expression.`,
+				],
+			});
+		});
+
+		it("reports with the provided error when the subject does not match", async () => {
+			const report = vi.fn();
+			const subjectPatternError = `ESLint-plugin rule PRs should begin with "[rule-name] ".`;
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat: [RuleName] add an option",
+					},
+					type: "pull_request",
+				},
+				{
+					options: {
+						...options,
+						"subject-pattern-error": subjectPatternError,
+					},
+					report,
+				},
+			);
+
+			expect(report).toHaveBeenCalledWith({
+				primary: `The PR title's subject doesn't match the pattern this repository requires: '[RuleName] add an option'.`,
+				secondary: [subjectPatternError],
+				suggestion: [
+					`To resolve this report, edit the PR title's subject to match that description.`,
+				],
+			});
+		});
+
+		it("reports when the subject only partially matches an unanchored pattern", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat: add this new feature!",
+					},
+					type: "pull_request",
+				},
+				{
+					options: {
+						"include-ais": true,
+						"include-bots": true,
+						"subject-pattern": "[a-z ]+",
+					},
+					report,
+				},
+			);
+
+			expect(report).toHaveBeenCalledWith(
+				expect.objectContaining({
+					primary: `The PR title's subject doesn't match the pattern this repository requires: 'add this new feature!'.`,
+				}),
+			);
+		});
+	});
+
+	describe("subject options together", () => {
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			"subject-case": "lower",
+			"subject-pattern": String.raw`^(\[[a-z\-]+\] )?[a-z].+$`,
+			"subject-trailing-punctuation": false,
+		};
+
+		it("does not report when the pull request title satisfies every option", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat: [rule-name] add an option",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).not.toHaveBeenCalled();
+		});
+
+		it("reports only the case when the pull request title satisfies no subject option", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat: Add an option.",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).toHaveBeenCalledExactlyOnceWith(
+				expect.objectContaining({
+					primary: `The PR title's subject starts with an upper-case letter: 'Add an option.'.`,
+				}),
+			);
+		});
+
+		it("reports only the trailing punctuation when the pull request title also fails the pattern", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat: [RuleName] add an option.",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).toHaveBeenCalledExactlyOnceWith(
+				expect.objectContaining({
+					primary: `The PR title's subject ends with punctuation: '.'.`,
+				}),
+			);
+		});
+
+		it("reports the type before any subject option", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "other: Add an option.",
+					},
+					type: "pull_request",
+				},
+				{ options, report },
+			);
+
+			expect(report).toHaveBeenCalledExactlyOnceWith(
+				expect.objectContaining({
+					primary: `The PR title has an unknown type: 'other'.`,
+				}),
+			);
+		});
+
+		it("reports the scope before any subject option", async () => {
+			const report = vi.fn();
+
+			await testRule(
+				prTitleConventional,
+				{
+					data: {
+						title: "feat(other): Add an option.",
+					},
+					type: "pull_request",
+				},
+				{ options: { ...options, scopes: ["cli"] }, report },
+			);
+
+			expect(report).toHaveBeenCalledExactlyOnceWith(
+				expect.objectContaining({
+					primary: `The PR title has a scope that isn't allowed: 'other'.`,
+				}),
+			);
+		});
+	});
+
+	describe("invalid subject options", () => {
+		it.each([{ value: "upper" }, { value: true }, { value: 1 }, { value: [] }])(
+			"throws when the subject-case option is $value",
+			async ({ value }) => {
+				await expect(testRuleWithOption("subject-case", value)).rejects.toThrow(
+					`pr-title-conventional's "subject-case" option must be one of: 'lower'.`,
+				);
+			},
+		);
+
+		it.each([{ value: "no" }, { value: 1 }, { value: [] }, { value: null }])(
+			"throws when the subject-trailing-punctuation option is $value",
+			async ({ value }) => {
+				await expect(
+					testRuleWithOption("subject-trailing-punctuation", value),
+				).rejects.toThrow(
+					`pr-title-conventional's "subject-trailing-punctuation" option must be a boolean.`,
+				);
+			},
+		);
+
+		it.each([{ value: "" }, { value: " ^.+$" }, { value: 1 }])(
+			"throws when the subject-pattern option is $value",
+			async ({ value }) => {
+				await expect(
+					testRuleWithOption("subject-pattern", value),
+				).rejects.toThrow(
+					`pr-title-conventional's "subject-pattern" option must be a non-empty trimmed string.`,
+				);
+			},
+		);
+
+		it("throws when the subject-pattern option is not a valid regular expression", async () => {
+			await expect(testRuleWithOption("subject-pattern", "^(")).rejects.toThrow(
+				`pr-title-conventional's "subject-pattern" option must be a valid regular expression.`,
+			);
+		});
+
+		it.each([{ value: "" }, { value: "oh no " }, { value: false }])(
+			"throws when the subject-pattern-error option is $value",
+			async ({ value }) => {
+				await expect(
+					testRuleWithOption("subject-pattern-error", value, {
+						"subject-pattern": "^.+$",
+					}),
+				).rejects.toThrow(
+					`pr-title-conventional's "subject-pattern-error" option must be a non-empty trimmed string.`,
+				);
+			},
+		);
+
+		it("throws when the subject-pattern-error option is provided without a subject-pattern", async () => {
+			await expect(
+				testRuleWithOption("subject-pattern-error", "Oh no."),
+			).rejects.toThrow(
+				`pr-title-conventional's "subject-pattern-error" option can only be used alongside its "subject-pattern" option.`,
+			);
+		});
+	});
+
 	it("lists duplicate allowed types once", async () => {
 		const report = vi.fn();
 
@@ -763,3 +1211,28 @@ describe(prTitleConventional.about.name, () => {
 		);
 	});
 });
+
+async function testRuleWithOption(
+	name: string,
+	value: unknown,
+	rest?: Record<string, unknown>,
+) {
+	await testRule(
+		prTitleConventional,
+		{
+			data: {
+				title: "feat: add this new feature",
+			},
+			type: "pull_request",
+		},
+		{
+			options: {
+				"include-ais": true,
+				"include-bots": true,
+				...rest,
+				[name]: value,
+			},
+			report: vi.fn(),
+		},
+	);
+}

@@ -64,6 +64,34 @@ For example, this configuration only allows `docs`, `feat`, and `fix` types, wit
 	title=".github/workflows/octoguide.yml"
 />
 
+### Subject Options
+
+These options restrict the `subject` portion of a title, after its type and optional scope:
+
+- `subject-case`: `"lower"` to ask that the subject not start with an upper-case letter
+- `subject-trailing-punctuation`: `false` to ask that the subject not end with `!`, `,`, `.`, `:`, `;`, or `?`
+- `subject-pattern`: a regular expression the entire subject must match
+- `subject-pattern-error`: a sentence describing `subject-pattern` to report in place of the pattern itself
+
+For example, this configuration asks for lower-case subjects without trailing punctuation, optionally prefixed with a bracketed list of rule names:
+
+<Code
+	code={getRuleWithOptions("pr-title-conventional", {
+		"subject-case": "lower",
+		"subject-pattern": "^(\\[[a-z\\-]+(, [a-z\\-]+)*\\] )?[a-z].+$",
+		"subject-pattern-error": 'PRs for rules should begin with "[rule-name] ".',
+		"subject-trailing-punctuation": false,
+	})}
+	meta="lang=yml"
+	lang="diff"
+	title=".github/workflows/octoguide.yml"
+/>
+
+:::note
+`subject-case` compares the subject's first character, so subjects starting with a proper noun such as `README.md tweaks` are reported.
+Repositories that want to allow those can use a `subject-pattern` instead.
+:::
+
 ## Examples
 
 [Pull request with a non-semantic title](https://github.com/OctoGuide/examples/pull/3#issuecomment-2839276016):
