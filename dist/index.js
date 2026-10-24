@@ -48477,7 +48477,7 @@ module.exports = {
 
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5560);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(3275);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2515);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__/* .context */ ._);
@@ -48487,7 +48487,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 3275:
+/***/ 2515:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -57459,12 +57459,69 @@ function isEntityFromBot(entity) {
         entity.data.user.type === "Bot");
 }
 
+;// CONCATENATED MODULE: ./src/execution/isEntityFromAI.ts
+
+/**
+ * Logins of known AI agents that author or review entities and comments on GitHub.
+ */
+const aiLogins = new Set([
+    "amazon-q-developer[bot]",
+    "augmentcode[bot]",
+    "baz-reviewer[bot]",
+    "bito-code-review[bot]",
+    "charliecreates[bot]",
+    "chatgpt-codex-connector[bot]",
+    "claude[bot]",
+    "codeant-ai[bot]",
+    "codegen-sh[bot]",
+    "coderabbitai[bot]",
+    "codiumai-pr-agent-free[bot]",
+    "continue[bot]",
+    "Copilot",
+    "copilot-pull-request-reviewer[bot]",
+    "corgea[bot]",
+    "cto-new[bot]",
+    "cubic-dev-ai[bot]",
+    "cursor[bot]",
+    "devin-ai-integration[bot]",
+    "ellipsis-dev[bot]",
+    "entelligence-ai-pr-reviews[bot]",
+    "factory-droid[bot]",
+    "gemini-cli[bot]",
+    "gemini-code-assist[bot]",
+    "gitauto-ai[bot]",
+    "google-labs-jules[bot]",
+    "greptile-apps[bot]",
+    "kilo-code-bot[bot]",
+    "kiro-agent[bot]",
+    "korbit-ai[bot]",
+    "llamapreview[bot]",
+    "macroscopeapp[bot]",
+    "mentatbot[bot]",
+    "opencode-agent[bot]",
+    "openhands-ai[bot]",
+    "qodo-code-review[bot]",
+    "recurseml[bot]",
+    "roomote[bot]",
+    "seer-by-sentry[bot]",
+    "sourcery-ai[bot]",
+    "tembo[bot]",
+    "what-the-diff[bot]",
+]);
+function isEntityFromAI(entity) {
+    return isEntityFromBot(entity) && aiLogins.has(entity.data.user.login);
+}
+
 ;// CONCATENATED MODULE: ./src/execution/isRuleSkippedForEntity.ts
+
 
 
 function isRuleSkippedForEntity(entity, options) {
     if (!isEntityAssociationIncluded(entity, options["include-associations"])) {
         return true;
+    }
+    if (isEntityFromAI(entity)) {
+        return !options["include-ais"];
     }
     return !options["include-bots"] && isEntityFromBot(entity);
 }
@@ -57636,6 +57693,7 @@ const prAutomationDetected = defineRule({
     about: {
         config: "recommended",
         defaultOptions: {
+            "include-ais": true,
             "include-bots": true,
         },
         description: "PRs labeled as automated or AI-generated should be closed.",
@@ -95829,6 +95887,7 @@ function mergeRuleOptions(...layers) {
     const includeAssociations = merged["include-associations"];
     return {
         ...merged,
+        "include-ais": merged["include-ais"] ?? true,
         "include-associations": includeAssociations
             ? new Set(["NONE", ...includeAssociations])
             : undefined,
@@ -96263,6 +96322,7 @@ function collectSettings() {
         },
         config,
         options: {
+            "include-ais": getInput("include-ais") === "true",
             "include-associations": parseIncludeAssociations(getInput("include-associations")),
             "include-bots": getInput("include-bots") === "true",
         },

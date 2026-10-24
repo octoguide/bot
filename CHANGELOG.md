@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.31.0](https://github.com/octoguide/bot/compare/0.30.0...0.31.0) (2026-10-24)
+
+### Features
+
+- split out `include-ais` option from `include-bots` ([#673](https://github.com/octoguide/bot/issues/673)) ([79b771d](https://github.com/octoguide/bot/commit/79b771d3e2de903ad18927b7a3f573f5b367f74f)), closes [#440](https://github.com/octoguide/bot/issues/440)
+
 # [0.30.0](https://github.com/octoguide/bot/compare/0.29.3...0.30.0) (2026-10-24)
 
 ### Features
