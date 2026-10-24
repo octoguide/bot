@@ -1,3 +1,5 @@
+import { regex } from "arkregex";
+
 import type { PullRequestData } from "../types/entities.ts";
 import type { RuleContext } from "../types/rules.ts";
 
@@ -41,7 +43,7 @@ async function dependabotAlertMightExist(
 		}
 
 		return (
-			!/no alert found/i.test(error.message) &&
+			!regex("no alert found", "i").test(error.message) &&
 			`${owner}/${repo}`.toLowerCase() !==
 				`${context.locator.owner}/${context.locator.repository}`.toLowerCase()
 		);
@@ -51,8 +53,12 @@ async function dependabotAlertMightExist(
 function findDependabotAlertLinks(body: string) {
 	const links = new Map<string, DependabotAlertLink>();
 
+	const dependabotAlertPattern = regex(
+		"https://github\\.com/([\\w.-]+)/([\\w.-]+)/security/dependabot/(\\d+)",
+		"g",
+	);
 	for (const [url, owner, repo, alertNumber] of body.matchAll(
-		/https:\/\/github\.com\/([\w.-]+)\/([\w.-]+)\/security\/dependabot\/(\d+)/g,
+		dependabotAlertPattern,
 	)) {
 		links.set(url.toLowerCase(), {
 			alertNumber: Number(alertNumber),
@@ -134,9 +140,11 @@ export const prLinkedIssue = defineRule({
 });
 
 function hasClosingKeyword(bodyHTML: string) {
-	return /<span class="issue-keyword[^"]*"[^>]*>[^<]*<\/span>:?\s*<a\s[^>]*\bdata-hovercard-type="issue"/.test(
-		bodyHTML,
+	// eslint-disable-next-line no-restricted-syntax -- This pattern exceeds TypeScript's inference depth.
+	const closingKeywordPattern = regex.as(
+		'<span class="issue-keyword[^"]*"[^>]*>[^<]*</span>:?\\s*<a\\s[^>]*\\bdata-hovercard-type="issue"',
 	);
+	return closingKeywordPattern.test(bodyHTML);
 }
 
 function targetsNonDefaultBranch({ base }: Partial<PullRequestData>) {

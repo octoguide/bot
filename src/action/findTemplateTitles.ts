@@ -1,3 +1,5 @@
+import { regex } from "arkregex";
+
 import type { LocatedOctokit } from "../types/octokit.ts";
 
 /**
@@ -148,12 +150,15 @@ export async function findTemplateTitles(
  * @see https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms
  */
 function parseTemplateTitle(contents: string) {
-	const frontMatter = /^---\r?\n([\s\S]*?)\r?\n---/.exec(contents);
-	const title = /^title:(.*)$/m.exec(frontMatter?.[1] ?? contents)?.[1].trim();
+	const frontMatterPattern = regex("^---\r?\n([\\s\\S]*?)\r?\n---");
+	const frontMatter = frontMatterPattern.exec(contents);
+	const titlePattern = regex("^title:(.*)$", "m");
+	const title = titlePattern.exec(frontMatter?.[1] ?? contents)?.[1].trim();
 
 	return title ? unquote(title) : undefined;
 }
 
 function unquote(text: string) {
-	return /^(["'])[\s\S]*\1$/.test(text) ? text.slice(1, -1) : text;
+	const quotedPattern = regex("^([\"'])[\\s\\S]*\\1$");
+	return quotedPattern.test(text) ? text.slice(1, -1) : text;
 }
