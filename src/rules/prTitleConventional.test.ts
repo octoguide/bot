@@ -651,6 +651,7 @@ describe(prTitleConventional.about.name, () => {
 			"feat: add this new feature",
 			"feat: add support for `a.b`",
 			"fix(cli)!: rename --dry-run",
+			"chore(deps): this is a very long pr title that will probably get trun…",
 		])("does not report when the pull request title is %j", async (title) => {
 			const report = vi.fn();
 
