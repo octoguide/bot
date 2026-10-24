@@ -1,5 +1,8 @@
 {
-	"dictionaries": ["npm", "node", "typescript"],
+	"dictionaries": ["ai-agents", "npm", "node", "typescript"],
+	"dictionaryDefinitions": [
+		{ "name": "ai-agents", "path": "./.cspell/ai-agents.txt" }
+	],
 	"ignorePaths": [
 		".all-contributorsrc",
 		".github",

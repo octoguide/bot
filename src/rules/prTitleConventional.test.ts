@@ -404,7 +404,11 @@ describe(prTitleConventional.about.name, () => {
 	);
 
 	describe("types option", () => {
-		const options = { "include-bots": true, types: ["fix", "deps"] };
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			types: ["fix", "deps"],
+		};
 
 		it("does not report when the pull request title has an allowed type", async () => {
 			const report = vi.fn();
@@ -525,7 +529,14 @@ describe(prTitleConventional.about.name, () => {
 					},
 					type: "pull_request",
 				},
-				{ options: { "include-bots": true, types: ["feat"] }, report },
+				{
+					options: {
+						"include-ais": true,
+						"include-bots": true,
+						types: ["feat"],
+					},
+					report,
+				},
 			);
 
 			expect(report).toHaveBeenCalledWith({
@@ -538,7 +549,11 @@ describe(prTitleConventional.about.name, () => {
 	});
 
 	describe("scopes option", () => {
-		const options = { "include-bots": true, scopes: ["parser", "cli"] };
+		const options = {
+			"include-ais": true,
+			"include-bots": true,
+			scopes: ["parser", "cli"],
+		};
 
 		it.each([
 			"feat: add this new feature",
@@ -616,7 +631,14 @@ describe(prTitleConventional.about.name, () => {
 					},
 					type: "pull_request",
 				},
-				{ options: { "include-bots": true, scopes: ["$$"] }, report },
+				{
+					options: {
+						"include-ais": true,
+						"include-bots": true,
+						scopes: ["$$"],
+					},
+					report,
+				},
 			);
 
 			expect(report).toHaveBeenCalledWith(
@@ -631,6 +653,7 @@ describe(prTitleConventional.about.name, () => {
 
 	describe("scopes and types options", () => {
 		const options = {
+			"include-ais": true,
 			"include-bots": true,
 			scopes: ["parser"],
 			types: ["fix"],
@@ -698,7 +721,11 @@ describe(prTitleConventional.about.name, () => {
 						type: "pull_request",
 					},
 					{
-						options: { "include-bots": true, [name]: value },
+						options: {
+							"include-ais": true,
+							"include-bots": true,
+							[name]: value,
+						},
 						report: vi.fn(),
 					},
 				),
@@ -719,7 +746,14 @@ describe(prTitleConventional.about.name, () => {
 				},
 				type: "pull_request",
 			},
-			{ options: { "include-bots": true, types: ["fix", "fix"] }, report },
+			{
+				options: {
+					"include-ais": true,
+					"include-bots": true,
+					types: ["fix", "fix"],
+				},
+				report,
+			},
 		);
 
 		expect(report).toHaveBeenCalledWith(

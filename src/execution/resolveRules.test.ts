@@ -59,6 +59,7 @@ describe("resolveRules", () => {
 		});
 
 		expect(actual).toEqual({
+			"include-ais": true,
 			"include-associations": new Set(["MEMBER", "NONE"]),
 			"include-bots": false,
 		});
@@ -84,6 +85,55 @@ describe("resolveRules", () => {
 		});
 
 		expect(actual?.["include-bots"]).toBe(true);
+	});
+
+	it("applies a global include-ais independently of include-bots", () => {
+		const actual = resolveRuleOptions("comment-meaningful", {
+			options: { "include-ais": true, "include-bots": false },
+		});
+
+		expect(actual).toEqual({
+			"include-ais": true,
+			"include-associations": undefined,
+			"include-bots": false,
+		});
+	});
+
+	it("prefers a rule's default include-ais over a global include-ais", () => {
+		const actual = resolveRuleOptions("pr-automation-detected", {
+			options: { "include-ais": false, "include-bots": false },
+		});
+
+		expect(actual).toEqual({
+			"include-ais": true,
+			"include-associations": undefined,
+			"include-bots": true,
+		});
+	});
+
+	it("does not apply a per-rule include-bots to include-ais", () => {
+		const actual = resolveRuleOptions("comment-meaningful", {
+			options: { "include-ais": false, "include-bots": false },
+			rules: { "comment-meaningful": { "include-bots": true } },
+		});
+
+		expect(actual).toEqual({
+			"include-ais": false,
+			"include-associations": undefined,
+			"include-bots": true,
+		});
+	});
+
+	it("prefers a per-rule include-ais over a rule's default include-ais", () => {
+		const actual = resolveRuleOptions("pr-automation-detected", {
+			rules: { "pr-automation-detected": { "include-ais": false } },
+		});
+
+		expect(actual).toEqual({
+			"include-ais": false,
+			"include-associations": undefined,
+			"include-bots": true,
+		});
 	});
 
 	it("prefers per-rule options over a rule's default options", () => {

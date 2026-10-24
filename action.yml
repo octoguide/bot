@@ -17,12 +17,15 @@ inputs:
   github-token:
     description: GitHub token (PAT) with repo and workflow permissions.
     required: false
+  include-ais:
+    description: Run OctoGuide rules on entities (issues, PRs, discussions) and comments created by known AI agents, such as Copilot. By default, AI agents are skipped.
+    required: false
   include-associations:
     default: "FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR"
     description: "Comma-separated list of GitHub author associations to include for rule checking. NONE is always included. Default: FIRST_TIMER,FIRST_TIME_CONTRIBUTOR,CONTRIBUTOR."
     required: false
   include-bots:
-    description: Run OctoGuide rules on bot-created entities (issues, PRs, discussions) and comments. By default, bots are skipped.
+    description: Run OctoGuide rules on bot-created entities (issues, PRs, discussions) and comments, other than those from known AI agents. By default, bots are skipped.
     required: false
   rules:
     description: JSON object keyed by rule name, with values of booleans to enable or disable rules or objects of options to run them with.
