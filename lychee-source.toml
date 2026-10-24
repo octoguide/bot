@@ -1,12 +1,13 @@
 verbose = "info"
 no_progress = true
 
-extensions = ["html", "md", "mdx", "rst"]
+extensions = ["html", "js", "md", "mdx", "rst", "ts"]
 
 exclude_path = [
 	"(^|/)coverage(/|$)",
 	"(^|/)dist-site(/|$)",
 	"(^|/)node_modules(/|$)",
+	"\\.test\\.(js|ts)$",
 ]
 
 exclude = [
