@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.32.0](https://github.com/octoguide/bot/compare/0.31.0...0.32.0) (2026-10-24)
+
+### Features
+
+- allow subject options in pr-title-conventional ([#724](https://github.com/octoguide/bot/issues/724)) ([f2df4c1](https://github.com/octoguide/bot/commit/f2df4c1a67ec0629f8a336b4355c979598a0e3d7)), closes [#723](https://github.com/octoguide/bot/issues/723)
+
 # [0.31.0](https://github.com/octoguide/bot/compare/0.30.0...0.31.0) (2026-10-24)
 
 ### Features

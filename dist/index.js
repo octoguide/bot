@@ -58729,6 +58729,7 @@ function getFixedConventionalCommitTitle(title) {
 const knownTypes = Object.keys(conventional_commit_types_namespaceObject.g);
 // Matches each scope in a list, keeping package names like `@a/b` intact.
 const scopeItems = /@[^,/;\\|]+\/[^,/;\\|]+|[^,/;\\|]+/g;
+const trailingPunctuation = /[!,.:;?]+$/;
 /**
  * Common alternate names for known types, keyed by their lowercase form.
  */
@@ -58786,6 +58787,15 @@ const prTitleConventional = defineRule({
         const types = allowedTypes ?? knownTypes;
         const typesLabel = allowedTypes ? "allowed" : "known";
         const exampleType = types.includes("feat") ? "feat" : [...types].sort()[0];
+        const subjectCase = getEnumOption(context.options, "subject-case", [
+            "lower",
+        ]);
+        const subjectPattern = getPatternOption(context.options, "subject-pattern");
+        const subjectPatternError = getStringOption(context.options, "subject-pattern-error");
+        const allowTrailingPunctuation = getBooleanOption(context.options, "subject-trailing-punctuation");
+        if (subjectPatternError && !subjectPattern) {
+            throw new Error(`pr-title-conventional's "subject-pattern-error" option can only be used alongside its "subject-pattern" option.`);
+        }
         const parsed = commitParser.parse(entity.data.title);
         if (!parsed.type) {
             const fixed = getFixedConventionalCommitTitle(entity.data.title);
@@ -58887,6 +58897,44 @@ const prTitleConventional = defineRule({
                     `To resolve this report, replace the current scope with one of those allowed scopes, like _"${entity.data.title.replace(`(${parsed.scope})`, () => `(${[...scopes].sort()[0]})`)}"_, or remove the scope.`,
                 ],
             });
+            return;
+        }
+        const subject = parsed.subject.trim();
+        const titlePrefix = entity.data.title.slice(0, entity.data.title.length - parsed.subject.length);
+        const withSubject = (replacement) => titlePrefix + replacement;
+        if (subjectCase === "lower" && /^\p{Lu}/u.test(subject)) {
+            context.report({
+                primary: `The PR title's subject starts with an upper-case letter: '${subject}'.`,
+                suggestion: [
+                    `To resolve this report, lower-case the first letter of the subject, like _"${withSubject(lowerCaseFirst(subject))}"_.`,
+                ],
+            });
+            return;
+        }
+        const punctuation = trailingPunctuation.exec(subject)?.[0];
+        if (allowTrailingPunctuation === false && punctuation) {
+            const trimmed = subject.replace(trailingPunctuation, "");
+            context.report({
+                primary: `The PR title's subject ends with punctuation: '${punctuation}'.`,
+                suggestion: [
+                    trimmed
+                        ? `To resolve this report, remove the trailing punctuation, like _"${withSubject(trimmed)}"_.`
+                        : `To resolve this report, remove the trailing punctuation from the subject.`,
+                ],
+            });
+            return;
+        }
+        if (subjectPattern && subjectPattern.exec(subject)?.[0] !== subject) {
+            context.report({
+                primary: `The PR title's subject doesn't match the pattern this repository requires: '${subject}'.`,
+                secondary: [
+                    subjectPatternError ??
+                        `Subjects must match the regular expression \`${subjectPattern.source}\`.`,
+                ],
+                suggestion: [
+                    `To resolve this report, edit the PR title's subject to match that ${subjectPatternError ? "description" : "regular expression"}.`,
+                ],
+            });
         }
     },
 });
@@ -58896,9 +58944,51 @@ function formatList(values) {
         .map((value) => `'${value}'`)
         .join(", ");
 }
+function getBooleanOption(options, name) {
+    const value = options[name];
+    if (value === undefined) {
+        return undefined;
+    }
+    if (typeof value !== "boolean") {
+        throw new Error(`pr-title-conventional's "${name}" option must be a boolean.`);
+    }
+    return value;
+}
+function getEnumOption(options, name, allowed) {
+    const value = options[name];
+    if (value === undefined) {
+        return undefined;
+    }
+    if (typeof value !== "string" || !allowed.includes(value)) {
+        throw new Error(`pr-title-conventional's "${name}" option must be one of: ${formatList(allowed)}.`);
+    }
+    return value;
+}
 function getExampleTypes(types) {
     const preferred = ["docs", "feat"].filter((type) => types.includes(type));
     return [...new Set([...preferred, ...[...types].sort()])].slice(0, 2).sort();
+}
+function getPatternOption(options, name) {
+    const value = getStringOption(options, name);
+    if (value === undefined) {
+        return undefined;
+    }
+    try {
+        return new RegExp(value);
+    }
+    catch {
+        throw new Error(`pr-title-conventional's "${name}" option must be a valid regular expression.`);
+    }
+}
+function getStringOption(options, name) {
+    const value = options[name];
+    if (value === undefined) {
+        return undefined;
+    }
+    if (typeof value !== "string" || value.trim() !== value || !value) {
+        throw new Error(`pr-title-conventional's "${name}" option must be a non-empty trimmed string.`);
+    }
+    return value;
 }
 function getStringsOption(options, name, pattern, characters) {
     const value = options[name];
@@ -58911,6 +59001,10 @@ function getStringsOption(options, name, pattern, characters) {
         throw new Error(`pr-title-conventional's "${name}" option must be a non-empty array of trimmed strings made of ${characters}.`);
     }
     return [...new Set(value)];
+}
+function lowerCaseFirst(subject) {
+    const [first, ...rest] = subject;
+    return first.toLowerCase() + rest.join("");
 }
 
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/@github+markdownlint-github@0.8.3/node_modules/@github/markdownlint-github/src/rules/no-empty-alt-text.js
