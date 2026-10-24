@@ -12,6 +12,7 @@
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 	<!-- prettier-ignore-end -->
 	<a href="https://github.com/OctoGuide/bot/blob/main/.github/CODE_OF_CONDUCT.md" target="_blank"><img alt="🤝 Code of Conduct: Kept" src="https://img.shields.io/badge/%F0%9F%A4%9D_code_of_conduct-kept-21bb42" /></a>
+	<a href="https://github.com/OctoGuide/bot/actions/workflows/links.yml" target="_blank"><img alt="⛓️‍💥 Docs Links Check" src="https://github.com/OctoGuide/bot/actions/workflows/links.yml/badge.svg" /></a>
 	<a href="https://codecov.io/gh/OctoGuide/bot" target="_blank"><img alt="🧪 Coverage" src="https://img.shields.io/codecov/c/github/OctoGuide/bot?label=%F0%9F%A7%AA%20coverage" /></a>
 	<a href="https://github.com/OctoGuide/bot/blob/main/LICENSE.md" target="_blank"><img alt="📝 License: MIT" src="https://img.shields.io/badge/%F0%9F%93%9D_license-MIT-21bb42.svg" /></a>
 	<a href="http://npmjs.com/package/octoguide" target="_blank"><img alt="📦 npm version" src="https://img.shields.io/npm/v/octoguide?color=21bb42&label=%F0%9F%93%A6%20npm" /></a>

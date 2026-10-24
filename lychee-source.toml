@@ -1,0 +1,10 @@
+verbose = "info"
+no_progress = true
+
+extensions = ["html", "md", "mdx", "rst"]
+
+exclude_path = [
+	"(^|/)coverage(/|$)",
+	"(^|/)dist-site(/|$)",
+	"(^|/)node_modules(/|$)",
+]
