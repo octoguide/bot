@@ -1,0 +1,15 @@
+verbose = "info"
+no_progress = true
+
+extensions = ["html", "js", "md", "mdx", "rst", "ts"]
+
+exclude_path = [
+	"(^|/)coverage(/|$)",
+	"(^|/)dist-site(/|$)",
+	"(^|/)node_modules(/|$)",
+	"\\.test\\.(js|ts)$",
+]
+
+exclude = [
+	"^https://github\\.com/owner/repo/security/dependabot/123$",
+]

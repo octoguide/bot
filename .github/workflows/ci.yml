@@ -20,6 +20,10 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: ./.github/actions/prepare
       - run: pnpm --filter site build
+      - name: 🥚 Run Lychee
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
+        with:
+          args: --config lychee-site.toml --root-dir "$(pwd)/dist-site" dist-site
   lint:
     name: Lint
     runs-on: ubuntu-latest

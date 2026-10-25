@@ -47,7 +47,7 @@ fix(parser): don't throw error on consecutive semicolons
 
 This rule accepts the following [rule options](/get-started#rule-options) to restrict which titles are allowed:
 
-- `types`: an array of conventional commit types to allow instead of the [default known types](https://www.npmjs.com/package/conventional-commit-types)
+- `types`: an array of conventional commit types to allow instead of the [default known types](https://npmx.dev/package/conventional-commit-types)
   - Each type may contain ASCII letters, digits, and `_` characters
 - `scopes`: an array of single scopes to allow; titles may still omit a scope
   - Each scope may contain ASCII letters, digits, spaces, and `_$@.-*/` characters
@@ -113,6 +113,6 @@ Repositories that want to allow those can use a `subject-pattern` instead.
 ## See More
 
 - [Conventional Commits](https://www.conventionalcommits.org)
-- [conventional-commit-types](https://www.npmjs.com/package/conventional-commit-types)
+- [conventional-commit-types](https://npmx.dev/package/conventional-commit-types)
 - [Rule source](https://github.com/OctoGuide/bot/blob/main/src/rules/prTitleConventional.ts)
 - [Rule tests](https://github.com/OctoGuide/bot/blob/main/src/rules/prTitleConventional.test.ts)
