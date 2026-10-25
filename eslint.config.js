@@ -89,6 +89,24 @@ export default defineConfig(
 			"no-restricted-syntax": [
 				"error",
 				{
+					message: "Use arkregex's regex() instead of a native regex literal.",
+					selector: "Literal[regex.pattern]",
+				},
+				{
+					message: "Use arkregex's regex() instead of calling RegExp().",
+					selector: "CallExpression[callee.name='RegExp']",
+				},
+				{
+					message: "Use arkregex's regex() instead of constructing RegExp.",
+					selector: "NewExpression[callee.name='RegExp']",
+				},
+				{
+					message:
+						"Use regex() instead of regex.as() unless the pattern exceeds TypeScript's inference depth.",
+					selector:
+						"CallExpression[callee.object.name='regex'][callee.property.name='as']",
+				},
+				{
 					message:
 						"Relative imports should use a .ts extension, which rewriteRelativeImportExtensions rewrites to .js.",
 					selector:

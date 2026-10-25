@@ -1,3 +1,5 @@
+import { regex } from "arkregex";
+
 import { findPrTemplate } from "../action/findPrTemplate.ts";
 import { defineRule } from "./defineRule.ts";
 
@@ -12,6 +14,8 @@ export const prBodyDescriptive = defineRule({
 		name: "pr-body-descriptive",
 	},
 	async pullRequest(context, entity) {
+		const whitespacePattern = regex("\\s+");
+		const wordPattern = regex("[\\p{L}\\p{N}]+", "gu");
 		if (!entity.data.body) {
 			context.report({
 				primary: "This PR doesn't have a description.",
@@ -28,7 +32,7 @@ export const prBodyDescriptive = defineRule({
 			if (
 				entity.data.body
 					.trim()
-					.split(/\s+/)
+					.split(whitespacePattern)
 					.filter((word) => word.length > 0).length === 0
 			) {
 				context.report({
@@ -42,11 +46,10 @@ export const prBodyDescriptive = defineRule({
 		}
 
 		const templateWords = new Set(
-			template.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [],
+			template.toLowerCase().match(wordPattern) ?? [],
 		);
 
-		const bodyWords =
-			entity.data.body.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+		const bodyWords = entity.data.body.toLowerCase().match(wordPattern) ?? [];
 
 		const uniqueWords = bodyWords.filter((word) => !templateWords.has(word));
 
