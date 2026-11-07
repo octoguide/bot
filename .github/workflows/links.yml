@@ -1,0 +1,29 @@
+jobs:
+  links:
+    name: ⛓️‍💥 Check Links
+    permissions:
+      issues: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - id: lychee
+        name: 🥚 Run Lychee
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2
+        with:
+          args: --config lychee-source.toml .
+      - if: always() && steps.lychee.outputs.exit_code != 0
+        name: 📝 Create Issue From Report
+        uses: peter-evans/create-issue-from-file@fca9117c27cdc29c6c4db3b86c48e4115a786710 # v6
+        with:
+          content-filepath: ./lychee/out.md
+          title: External Docs Links Report
+
+name: ⛓️‍💥 Link Checker
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch: ~
+
+permissions:
+  contents: read
