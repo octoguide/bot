@@ -1,5 +1,11 @@
 # Changelog
 
+# [0.33.0](https://github.com/octoguide/bot/compare/0.32.0...0.33.0) (2026-11-08)
+
+### Features
+
+- move pr-branch-non-default to strict config ([5856481](https://github.com/octoguide/bot/commit/5856481950654669b82d9dd3fa0b0f7497f713d6))
+
 # [0.32.0](https://github.com/octoguide/bot/compare/0.31.0...0.32.0) (2026-10-24)
 
 ### Features
