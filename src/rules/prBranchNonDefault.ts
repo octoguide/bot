@@ -2,7 +2,7 @@ import { defineRule } from "./defineRule.ts";
 
 export const prBranchNonDefault = defineRule({
 	about: {
-		config: "recommended",
+		config: "strict",
 		description: "PRs should be sent from a non-default branch.",
 		explanation: [
 			`Sending a PR from a repository's default branch, commonly \`main\`, means that repository will have a hard time pulling in updates from the upstream repository.`,

@@ -17,6 +17,7 @@ export function mergeRuleOptions(
 
 	return {
 		...merged,
+		"include-ais": merged["include-ais"] ?? true,
 		"include-associations": includeAssociations
 			? new Set(["NONE", ...includeAssociations])
 			: undefined,

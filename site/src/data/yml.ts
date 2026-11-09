@@ -138,6 +138,15 @@ export const getStartedRuleOptions = `jobs:
 +              }
 +            }`;
 
+export const getStartedIncludeAIs = `jobs:
+  octoguide:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: OctoGuide/bot${atVersion}
+        with:
+          github-token: \${{ secrets.GITHUB_TOKEN }}
++          include-ais: "true"`;
+
 export const getStartedIncludeBots = `jobs:
   octoguide:
 
@@ -179,11 +188,8 @@ export const getStartedSynchronize = `on:
   pull_request_target:
     types: [edited, opened, synchronize]`;
 
-export const getRuleDefaultOptions = (
-	ruleName: string,
-	defaultOptions: object,
-) => {
-	const rules = JSON.stringify({ [ruleName]: defaultOptions }, null, 2)
+export const getRuleWithOptions = (ruleName: string, options: object) => {
+	const rules = JSON.stringify({ [ruleName]: options }, null, 2)
 		.split("\n")
 		.map((line) => `+            ${line}`)
 		.join("\n");

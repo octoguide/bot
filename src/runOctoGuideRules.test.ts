@@ -59,6 +59,8 @@ vi.mock("./rules/configs.ts", () => ({
 				},
 				pullRequest: vi.fn(),
 			},
+		],
+		strict: [
 			{
 				about: {
 					description: "PRs should be sent from a non-default branch",
@@ -255,11 +257,7 @@ describe("runOctoGuideRules", () => {
 			mockRunRuleOnEntity.mock.calls.map(
 				(call) => (call[1] as { about: { name: string } }).about.name,
 			),
-		).toEqual([
-			"comment-meaningful",
-			"pr-body-descriptive",
-			"pr-branch-non-default",
-		]);
+		).toEqual(["comment-meaningful", "pr-body-descriptive"]);
 
 		expect(mockRunRuleOnEntity.mock.calls[0][0]).toMatchObject({
 			locator: testLocator,
@@ -296,7 +294,7 @@ describe("runOctoGuideRules", () => {
 			},
 		});
 
-		expect(result.reports).toHaveLength(3);
+		expect(result.reports).toHaveLength(2);
 		expect(result.reports[0]).toEqual({
 			about: {
 				description: "Comments should be meaningful",
@@ -339,14 +337,14 @@ describe("runOctoGuideRules", () => {
 			reports: [],
 		});
 
-		expect(mockRunRuleOnEntity).toHaveBeenCalledTimes(3);
+		expect(mockRunRuleOnEntity).toHaveBeenCalledTimes(2);
 
 		const calledRules = mockRunRuleOnEntity.mock.calls.map(
 			(call) => (call[1] as { about: { name: string } }).about.name,
 		);
 		expect(calledRules).toContain("comment-meaningful");
 		expect(calledRules).toContain("pr-body-descriptive");
-		expect(calledRules).toContain("pr-branch-non-default");
+		expect(calledRules).not.toContain("pr-branch-non-default");
 	});
 
 	it("should filter rules when rule overrides are provided", async () => {
