@@ -1,7 +1,3 @@
-import type { Entity } from "../types/entities.ts";
-
-import { isEntityFromBot } from "./isEntityFromBot.ts";
-
 /**
  * Logins of known AI agents that author or review entities and comments on GitHub.
  */
@@ -50,6 +46,6 @@ export const aiLogins = new Set([
 	"what-the-diff[bot]",
 ]);
 
-export function isEntityFromAI(entity: Entity) {
-	return isEntityFromBot(entity) && aiLogins.has(entity.data.user.login);
+export function isUserFromAI(user: { login: string; type?: string }) {
+	return user.type === "Bot" && aiLogins.has(user.login);
 }
