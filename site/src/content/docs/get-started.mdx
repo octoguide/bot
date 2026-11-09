@@ -202,16 +202,6 @@ You can also be more selective. For example, to only check first-time contributo
 	title=".github/workflows/octoguide.yml"
 />
 
-#### Edits by other users
-
-When someone other than the author edits the title or body of an entity or comment, OctoGuide also checks whether its rules include the editor.
-Repository owners are treated as `OWNER`, and other users who can edit someone else's content are treated as `COLLABORATOR` or `MEMBER`.
-Bots and AI agents who edit are checked against `include-bots` and `include-ais`.
-
-Reports introduced by the edit mention the editor, while reports that existed before the edit still mention the original author.
-If a rule doesn't include the editor, their edit won't add a new report for that rule, but an edit that fixes every report still resolves OctoGuide's existing comment.
-Entities and comments created by excluded bots or AI agents stay skipped no matter who edits them.
-
 ### `comment-header`
 
 You can customize the header message that OctoGuide adds to its comments by providing a `comment-header` input as a string.
