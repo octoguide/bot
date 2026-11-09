@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.33.1](https://github.com/octoguide/bot/compare/0.33.0...0.33.1) (2026-11-09)
+
+### Bug Fixes
+
+- respect and mention the editor when someone else edits an entity ([#678](https://github.com/octoguide/bot/issues/678)) ([e12e506](https://github.com/octoguide/bot/commit/e12e5064ccc364a5a61d1bc67d08bb8fff09a65d)), closes [#453](https://github.com/octoguide/bot/issues/453)
+
 # [0.33.0](https://github.com/octoguide/bot/compare/0.32.0...0.33.0) (2026-11-08)
 
 ### Features

@@ -48477,7 +48477,7 @@ module.exports = {
 
 __nccwpck_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(5560);
-/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(2515);
+/* harmony import */ var _runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(7934);
 
 
 await (0,_runOctoGuideAction_js__WEBPACK_IMPORTED_MODULE_1__/* .runOctoGuideAction */ .t)(_actions_github__WEBPACK_IMPORTED_MODULE_0__/* .context */ ._);
@@ -48487,7 +48487,7 @@ __webpack_async_result__();
 
 /***/ }),
 
-/***/ 2515:
+/***/ 7934:
 /***/ ((__unused_webpack_module, __webpack_exports__, __nccwpck_require__) => {
 
 
@@ -57440,27 +57440,7 @@ async function createActor({ auth, url }) {
     return { actor, locator, octokit };
 }
 
-;// CONCATENATED MODULE: ./src/execution/isEntityAssociationIncluded.ts
-function isEntityAssociationIncluded(entity, includeAssociations) {
-    if (!includeAssociations) {
-        return true;
-    }
-    const association = "author_association" in entity.data
-        ? entity.data.author_association
-        : undefined;
-    return !association || includeAssociations.has(association);
-}
-
-;// CONCATENATED MODULE: ./src/execution/isEntityFromBot.ts
-function isEntityFromBot(entity) {
-    return ("user" in entity.data &&
-        !!entity.data.user &&
-        "type" in entity.data.user &&
-        entity.data.user.type === "Bot");
-}
-
-;// CONCATENATED MODULE: ./src/execution/isEntityFromAI.ts
-
+;// CONCATENATED MODULE: ./src/execution/isUserFromAI.ts
 /**
  * Logins of known AI agents that author or review entities and comments on GitHub.
  */
@@ -57508,22 +57488,61 @@ const aiLogins = new Set([
     "tembo[bot]",
     "what-the-diff[bot]",
 ]);
-function isEntityFromAI(entity) {
-    return isEntityFromBot(entity) && aiLogins.has(entity.data.user.login);
+function isUserFromAI(user) {
+    return user.type === "Bot" && aiLogins.has(user.login);
+}
+
+;// CONCATENATED MODULE: ./src/execution/isRuleSkippedForUser.ts
+
+function isRuleSkippedForUser(user, options) {
+    if (isUserFromAI(user)) {
+        return !options["include-ais"];
+    }
+    return !options["include-bots"] && user.type === "Bot";
+}
+
+;// CONCATENATED MODULE: ./src/execution/isRuleSkippedForEditor.ts
+
+/**
+ * Checks whether a rule's options exclude someone's edit to another user's entity.
+ */
+function isRuleSkippedForEditor(editor, entity, repositoryOwner, options) {
+    const { user: author } = entity.data;
+    if (author && isRuleSkippedForUser(author, options)) {
+        return true;
+    }
+    if (editor.type === "Bot") {
+        return isRuleSkippedForUser(editor, options);
+    }
+    const associations = options["include-associations"];
+    if (!associations) {
+        return false;
+    }
+    return editor.login === repositoryOwner
+        ? !associations.has("OWNER")
+        : !associations.has("COLLABORATOR") && !associations.has("MEMBER");
+}
+
+;// CONCATENATED MODULE: ./src/execution/isEntityAssociationIncluded.ts
+function isEntityAssociationIncluded(entity, includeAssociations) {
+    if (!includeAssociations) {
+        return true;
+    }
+    const association = "author_association" in entity.data
+        ? entity.data.author_association
+        : undefined;
+    return !association || includeAssociations.has(association);
 }
 
 ;// CONCATENATED MODULE: ./src/execution/isRuleSkippedForEntity.ts
-
 
 
 function isRuleSkippedForEntity(entity, options) {
     if (!isEntityAssociationIncluded(entity, options["include-associations"])) {
         return true;
     }
-    if (isEntityFromAI(entity)) {
-        return !options["include-ais"];
-    }
-    return !options["include-bots"] && isEntityFromBot(entity);
+    const { user } = entity.data;
+    return !!user && isRuleSkippedForUser(user, options);
 }
 
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/is-comment-meaningless@0.2.0/node_modules/is-comment-meaningless/lib/index.js
@@ -96036,6 +96055,7 @@ async function runRuleOnEntity(context, rule, entity) {
 
 
 
+
 /**
  * Runs OctoGuide's rules to generate a list of reports for a GitHub entity.
  * The entity can be provided as either a URL string (which will be fetched from the GitHub API) or pre-existing entity data.
@@ -96052,7 +96072,7 @@ async function runRuleOnEntity(context, rule, entity) {
  * console.log("Received reports:", reports);
  * @returns Promise resolving to results with actor, entity data, and rule reports
  */
-async function runOctoGuideRules({ auth, entity: entityInput, settings, }) {
+async function runOctoGuideRules({ auth, editor, entity: entityInput, settings, }) {
     const url = typeof entityInput === "string" ? entityInput : entityInput.data.html_url;
     if (typeof url !== "string") {
         throw new Error("Entity data's html_url is not a string.");
@@ -96079,7 +96099,9 @@ async function runOctoGuideRules({ auth, entity: entityInput, settings, }) {
     }
     const reports = [];
     await Promise.all(resolveRules(settings).map(async ({ options, rule }) => {
-        if (isRuleSkippedForEntity(entity, options)) {
+        if (isRuleSkippedForEntity(entity, options) &&
+            (!editor ||
+                isRuleSkippedForEditor(editor, entity, locator.owner, options))) {
             core_debug(`Skipping rule for entity: ${rule.about.name}`);
             return;
         }
@@ -96182,6 +96204,61 @@ function cliReporter(reports) {
     return lines.join("\n");
 }
 
+;// CONCATENATED MODULE: ./src/action/attributeEditReports.ts
+
+
+
+
+/**
+ * Attributes the reports from an edit by someone other than an entity's author
+ * to whoever caused them, keeping only reports from rules that include that person.
+ */
+function attributeEditReports({ editor, entity, previousReports, reports, repositoryOwner, settings, }) {
+    const optionsByRule = new Map(resolveRules(settings).map(({ options, rule }) => [
+        rule.about.name,
+        options,
+    ]));
+    const existing = findExistingReports(previousReports, reports);
+    const kept = reports.filter((report) => {
+        const options = optionsByRule.get(report.about.name);
+        return (!!options &&
+            (existing.has(report)
+                ? !isRuleSkippedForEntity(entity, options)
+                : !isRuleSkippedForEditor(editor, entity, repositoryOwner, options)));
+    });
+    const logins = [
+        kept.some((report) => existing.has(report)) && entity.data.user?.login,
+        kept.some((report) => !existing.has(report)) && editor.login,
+    ].filter((login) => !!login);
+    return { logins, reports: kept };
+}
+/**
+ * Finds which reports were already reported before an edit.
+ */
+function findExistingReports(previousReports, reports) {
+    const existing = new Set();
+    const unmatched = [...previousReports];
+    for (const isMatch of [isSameReport, isSameViolation]) {
+        for (const report of reports) {
+            if (existing.has(report)) {
+                continue;
+            }
+            const index = unmatched.findIndex((previous) => isMatch(previous, report));
+            if (index !== -1) {
+                existing.add(report);
+                unmatched.splice(index, 1);
+            }
+        }
+    }
+    return existing;
+}
+function isSameReport(a, b) {
+    return a.about.name === b.about.name && (0,external_node_util_.isDeepStrictEqual)(a.data, b.data);
+}
+function isSameViolation(a, b) {
+    return a.about.name === b.about.name && a.data.primary === b.data.primary;
+}
+
 ;// CONCATENATED MODULE: ./src/action/collection/collectAuth.ts
 
 function collectAuth() {
@@ -96190,6 +96267,35 @@ function collectAuth() {
         throw new Error("Please provide a with.github-token to OctoGuide/bot.");
     }
     return auth;
+}
+
+;// CONCATENATED MODULE: ./src/action/collection/collectEntityEdit.ts
+/**
+ * Finds who edited an entity and what it was before, if the event is an edit
+ * to its body or title by someone other than its author.
+ */
+function collectEntityEdit(payload, entity) {
+    const changes = payload.changes;
+    if (payload.action !== "edited" ||
+        !payload.sender ||
+        !(changes?.body || changes?.title)) {
+        return undefined;
+    }
+    const { login, type } = payload.sender;
+    if (login === entity.data.user?.login) {
+        return undefined;
+    }
+    return {
+        editor: { login, type },
+        previous: {
+            ...entity,
+            data: {
+                ...entity.data,
+                ...(changes.body && { body: changes.body.from }),
+                ...(changes.title && { title: changes.title.from }),
+            },
+        },
+    };
 }
 
 ;// CONCATENATED MODULE: ./src/action/collection/collectEntityInput.ts
@@ -96551,14 +96657,17 @@ async function actionReporter(headline, reports, summary) {
 }
 
 ;// CONCATENATED MODULE: ./src/reporters/createHeadlineAsMarkdown.ts
-function createHeadlineAsMarkdown(entity, reports) {
+const listFormat = new Intl.ListFormat("en", { type: "conjunction" });
+function createHeadlineAsMarkdown(entity, reports, logins = entity.data.user ? [entity.data.user.login] : []) {
     const entityAlias = entity.type.replace("_", " ");
     const entityText = entity.type === "comment"
         ? `[${entityAlias}](${entity.data.html_url} "comment ${entity.data.id.toString()} reported by OctoGuide")`
         : entityAlias;
     return [
         "👋 Hi",
-        entity.data.user ? ` @${entity.data.user.login}` : "",
+        logins.length
+            ? ` ${listFormat.format(logins.map((login) => `@${login}`))}`
+            : "",
         ", thanks for the ",
         entityText,
         "! A scan flagged ",
@@ -96745,8 +96854,8 @@ async function unminimizeCommentIfPreviouslyResolved(actor, comment) {
 
 
 
-async function outputActionReports(actor, entity, reports, settings) {
-    const headline = createHeadlineAsMarkdown(entity, reports);
+async function outputActionReports(actor, entity, reports, settings, logins) {
+    const headline = createHeadlineAsMarkdown(entity, reports, logins);
     const reported = markdownReporter(headline, reports);
     let commentStepSucceeded = false;
     try {
@@ -96853,6 +96962,8 @@ function isAlreadyDeletedError(error) {
 
 
 
+
+
 async function runOctoGuideAction(context) {
     const { payload } = context;
     const { target, url } = collectTarget(payload);
@@ -96866,11 +96977,25 @@ async function runOctoGuideAction(context) {
     }
     const entityInput = collectEntityInput(payload, target, url);
     const settings = collectSettings();
-    const { actor, entity, reports } = await runOctoGuideRules({
-        auth,
-        entity: entityInput,
-        settings,
-    });
+    const edit = collectEntityEdit(payload, entityInput);
+    const runRules = (entity) => runOctoGuideRules({ auth, editor: edit?.editor, entity, settings });
+    const [{ actor, entity, reports: allReports }, previous] = await Promise.all([
+        runRules(entityInput),
+        edit && runRules(edit.previous),
+    ]);
+    const { logins, reports } = edit && previous
+        ? attributeEditReports({
+            editor: edit.editor,
+            entity,
+            previousReports: previous.reports,
+            reports: allReports,
+            repositoryOwner: context.repo.owner,
+            settings,
+        })
+        : { logins: undefined, reports: allReports };
+    if (reports.length < allReports.length) {
+        info(`Ignoring ${allReports.length - reports.length} report(s) from rules that exclude whoever caused them.`);
+    }
     if (reports.length) {
         info(`Found ${reports.length} report(s).`);
         console.log(cliReporter(reports));
@@ -96878,7 +97003,7 @@ async function runOctoGuideAction(context) {
     else {
         info("Found 0 reports. Great! ✅");
     }
-    await outputActionReports(actor, entity, reports, settings);
+    await outputActionReports(actor, entity, reports, settings, logins);
 }
 
 
