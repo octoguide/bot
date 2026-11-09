@@ -1,18 +1,23 @@
+import { regex } from "arkregex";
+
 import type { RuleReport } from "../types/reports.ts";
 
 export function formatReportAsMarkdown(
 	report: RuleReport,
 	explanation?: string[],
 ) {
+	const startsWithWordPattern = regex("^\\w");
 	const secondaryLines = (report.data.secondary ?? []).flatMap((line) =>
 		line.split("\n"),
 	);
 
 	const middle = secondaryLines.length
 		? [
-				/^\w/.test(secondaryLines[0]) ? " " : "\n\n",
+				startsWithWordPattern.test(secondaryLines[0]) ? " " : "\n\n",
 				secondaryLines.join("\n"),
-				/^\w/.test(secondaryLines[secondaryLines.length - 1]) ? " " : "\n\n",
+				startsWithWordPattern.test(secondaryLines[secondaryLines.length - 1])
+					? " "
+					: "\n\n",
 			]
 		: [" "];
 

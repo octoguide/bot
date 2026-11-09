@@ -1,6 +1,7 @@
 // Code inspired by pr-compliance-action:
 // https://github.com/mtfoley/pr-compliance-action/blob/bcb6dbea496e44a980f8d6d77af91b67f1eea68d/src/checks.ts
 
+import { regex, type Regex } from "arkregex";
 import conventionalTypes from "conventional-commit-types" with { type: "json" };
 
 import type { RuleOptions } from "../types/rules.ts";
@@ -12,9 +13,10 @@ import { getFixedConventionalCommitTitle } from "./getFixedConventionalCommitTit
 const knownTypes = Object.keys(conventionalTypes.types);
 
 // Matches each scope in a list, keeping package names like `@a/b` intact.
-const scopeItems = /@[^,/;\\|]+\/[^,/;\\|]+|[^,/;\\|]+/g;
+const scopeItems = regex("@[^,/;\\\\|]+/[^,/;\\\\|]+|[^,/;\\\\|]+", "g");
 
-const trailingPunctuation = /[!,.:;?]+$/;
+const trailingPunctuationPattern = regex("[!,.:;?]+$");
+const leadingUppercaseLetterPattern = regex("^\\p{Lu}", "u");
 
 /**
  * Common alternate names for known types, keyed by their lowercase form.
@@ -71,16 +73,18 @@ export const prTitleConventional = defineRule({
 		name: "pr-title-conventional",
 	},
 	pullRequest(context, entity) {
+		const scopeOptionPattern = regex("^[\\w$@.\\-*/ ]+$");
 		const scopes = getStringsOption(
 			context.options,
 			"scopes",
-			/^[\w$@.\-*/ ]+$/,
+			scopeOptionPattern,
 			"ASCII letters, digits, spaces, and _$@.-*/ characters",
 		);
+		const typeOptionPattern = regex("^\\w+$");
 		const allowedTypes = getStringsOption(
 			context.options,
 			"types",
-			/^\w+$/,
+			typeOptionPattern,
 			"ASCII letters, digits, and _ characters",
 		);
 		const types = allowedTypes ?? knownTypes;
@@ -231,7 +235,10 @@ export const prTitleConventional = defineRule({
 		);
 		const withSubject = (replacement: string) => titlePrefix + replacement;
 
-		if (subjectCase === "lower" && /^\p{Lu}/u.test(subject)) {
+		if (
+			subjectCase === "lower" &&
+			leadingUppercaseLetterPattern.test(subject)
+		) {
 			context.report({
 				primary: `The PR title's subject starts with an upper-case letter: '${subject}'.`,
 				suggestion: [
@@ -241,9 +248,9 @@ export const prTitleConventional = defineRule({
 			return;
 		}
 
-		const punctuation = trailingPunctuation.exec(subject)?.[0];
+		const punctuation = trailingPunctuationPattern.exec(subject)?.[0];
 		if (allowTrailingPunctuation === false && punctuation) {
-			const trimmed = subject.replace(trailingPunctuation, "");
+			const trimmed = subject.replace(trailingPunctuationPattern, "");
 
 			context.report({
 				primary: `The PR title's subject ends with punctuation: '${punctuation}'.`,
@@ -325,7 +332,8 @@ function getPatternOption(options: RuleOptions, name: string) {
 	}
 
 	try {
-		return new RegExp(value);
+		// eslint-disable-next-line no-restricted-syntax -- Repository configuration cannot be inferred statically.
+		return regex.as(value);
 	} catch {
 		throw new Error(
 			`pr-title-conventional's "${name}" option must be a valid regular expression.`,
@@ -351,7 +359,7 @@ function getStringOption(options: RuleOptions, name: string) {
 function getStringsOption(
 	options: RuleOptions,
 	name: string,
-	pattern: RegExp,
+	pattern: Regex,
 	characters: string,
 ) {
 	const value = options[name];

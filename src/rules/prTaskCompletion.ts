@@ -1,3 +1,5 @@
+import { regex } from "arkregex";
+
 import { findPrTemplate } from "../action/findPrTemplate.ts";
 import { defineRule } from "./defineRule.ts";
 
@@ -17,9 +19,8 @@ export const prTaskCompletion = defineRule({
 		if (!template) {
 			return;
 		}
-		const templateTasks = Array.from(
-			template.matchAll(/[-*]\s*\[\s*\]\s*(.+)/g),
-		);
+		const taskPattern = regex("[-*]\\s*\\[\\s*\\]\\s*(.+)", "g");
+		const templateTasks = Array.from(template.matchAll(taskPattern));
 		if (!templateTasks.length) {
 			return;
 		}
@@ -36,16 +37,17 @@ export const prTaskCompletion = defineRule({
 		}
 
 		const bodyNormalized = normalizeWhitespace(entity.data.body);
+		const uncheckedTaskMarkerPattern = regex("[-*]\\[\\]");
+		const taskSuffixDelimiterPattern = regex("[:#]");
 
 		const missingTasks = templateTasks
 			.filter(
 				(task) =>
 					!bodyNormalized.includes(
 						normalizeWhitespace(task[0])
-							// Switch the "- [ ]" to "x"
-							.replace(/[-*]\[\]/, "[x]")
+							.replace(uncheckedTaskMarkerPattern, "[x]")
 							// Trim any swap-out text, like ": fixes #000"...
-							.split(/[:#]/)[0],
+							.split(taskSuffixDelimiterPattern)[0],
 					),
 			)
 			.map((task) => task[0]);
@@ -66,5 +68,6 @@ export const prTaskCompletion = defineRule({
 });
 
 function normalizeWhitespace(text: string) {
-	return text.replaceAll(/[ \t]/g, "");
+	const spacesAndTabsPattern = regex("[ \\t]", "g");
+	return text.replaceAll(spacesAndTabsPattern, "");
 }
