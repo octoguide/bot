@@ -1,5 +1,5 @@
 /**
- * The {@link https://www.npmjs.com/package/octoguide | octoguide} package
+ * The {@link https://npmx.dev/package/octoguide | octoguide} package
  * to use the API is the same as the {@link https://octo.guide/cli | standalone CLI}
  * and its code is directly used by the {@link https://octo.guide/get-started#installation | GitHub Action}.
  *
