@@ -5,6 +5,7 @@ extensions = ["html", "js", "md", "mdx", "rst", "ts"]
 
 exclude_path = [
 	"(^|/)coverage(/|$)",
+	"(^|/)dist(/|$)",
 	"(^|/)dist-site(/|$)",
 	"(^|/)node_modules(/|$)",
 	"\\.test\\.(js|ts)$",
