@@ -81,7 +81,7 @@
 		"lefthook": "2.2.0",
 		"markdownlint-cli": "0.50.0",
 		"markdownlint-sentences-per-line": "0.1.4",
-		"prettier": "3.9.6",
+		"prettier": "3.10.0",
 		"prettier-plugin-astro": "1.1.0",
 		"prettier-plugin-curly": "0.4.1",
 		"prettier-plugin-packagejson": "3.1.0",

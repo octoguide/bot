@@ -300,20 +300,20 @@ importers:
         specifier: 0.1.4
         version: 0.1.4(markdownlint@0.42.0(supports-color@10.2.2))
       prettier:
-        specifier: 3.9.6
-        version: 3.9.6
+        specifier: 3.10.0
+        version: 3.10.0
       prettier-plugin-astro:
         specifier: 1.1.0
-        version: 1.1.0(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)(prettier@3.9.6)
+        version: 1.1.0(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)(prettier@3.10.0)
       prettier-plugin-curly:
         specifier: 0.4.1
-        version: 0.4.1(prettier@3.9.6)
+        version: 0.4.1(prettier@3.10.0)
       prettier-plugin-packagejson:
         specifier: 3.1.0
-        version: 3.1.0(prettier@3.9.6)
+        version: 3.1.0(prettier@3.10.0)
       prettier-plugin-sh:
         specifier: 0.20.2
-        version: 0.20.2(prettier@3.9.6)
+        version: 0.20.2(prettier@3.10.0)
       release-it:
         specifier: 21.1.0
         version: 21.1.0(@types/node@26.6.1)(magicast@0.5.5)(supports-color@10.2.2)
@@ -3960,8 +3960,8 @@ packages:
     peerDependencies:
       prettier: ^3.6.0
 
-  prettier@3.9.6:
-    resolution: {integrity: sha512-OpN0zzVdiaiAhxpuuj5efpIS4sY9j7bY6uR5mnj5yPzGkdkjNKSJeUThPb60Jw29QuAZgA4o+/iB49kFiaBX6g==}
+  prettier@3.10.0:
+    resolution: {integrity: sha512-mBi4765LgjO1PFjlEs7pUeK0nb1bw71c+N4/ItfeUWNdY5cV2pRKaFpbbFRYmDJMO+5ZwzGxHRqHxFZna7iv5w==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -8549,33 +8549,33 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier-plugin-astro@1.1.0(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)(prettier@3.9.6):
+  prettier-plugin-astro@1.1.0(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)(prettier@3.10.0):
     dependencies:
       '@astrojs/compiler-rs': 0.4.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)
       '@prettier/parse-srcset': 3.1.0
-      prettier: 3.9.6
+      prettier: 3.10.0
       sass-formatter: 0.8.0
     transitivePeerDependencies:
       - '@emnapi/core'
       - '@emnapi/runtime'
 
-  prettier-plugin-curly@0.4.1(prettier@3.9.6):
+  prettier-plugin-curly@0.4.1(prettier@3.10.0):
     dependencies:
-      prettier: 3.9.6
+      prettier: 3.10.0
 
-  prettier-plugin-packagejson@3.1.0(prettier@3.9.6):
+  prettier-plugin-packagejson@3.1.0(prettier@3.10.0):
     dependencies:
       sort-package-json: 4.1.0
     optionalDependencies:
-      prettier: 3.9.6
+      prettier: 3.10.0
 
-  prettier-plugin-sh@0.20.2(prettier@3.9.6):
+  prettier-plugin-sh@0.20.2(prettier@3.10.0):
     dependencies:
       '@reteps/dockerfmt': 0.5.4
-      prettier: 3.9.6
+      prettier: 3.10.0
       sh-syntax: 0.7.0
 
-  prettier@3.9.6: {}
+  prettier@3.10.0: {}
 
   prismjs@1.30.0: {}
 
