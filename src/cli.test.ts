@@ -84,18 +84,6 @@ describe(cli, () => {
 		expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 	});
 
-	it("prints help text when --help is provided", async () => {
-		const spies = spyOnConsole();
-
-		await cli("--help");
-
-		expect(spies.log).toHaveBeenCalledWith(
-			expect.stringContaining("Usage: octoguide"),
-		);
-		expect(process.exitCode).toBeUndefined();
-		expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
-	});
-
 	it("runs runOctoGuideRules with the resolved entity url when a config and entity url are provided", async () => {
 		const config = "strict";
 		const entity = "https://github.com/...";
@@ -129,7 +117,7 @@ describe(cli, () => {
 		});
 	});
 
-	it("prints formatted help text", async () => {
+	it("prints help text when --help is provided", async () => {
 		const spies = spyOnConsole();
 
 		await cli("--help");
@@ -149,5 +137,7 @@ describe(cli, () => {
 
 			Docs: https://octo.guide/cli"
 		`);
+		expect(process.exitCode).toBeUndefined();
+		expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 	});
 });
