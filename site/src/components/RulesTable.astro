@@ -1,9 +1,9 @@
 ---
 import { marked } from "marked";
 
-import { allRules } from "../../../src/rules/all.js";
-import type { Rule } from "../../../src/types/rules.js";
-import { configEmojis } from "../data/configEmojis";
+import { allRules } from "../../../src/rules/all.ts";
+import type { Rule } from "../../../src/types/rules.ts";
+import { configEmojis } from "../data/configEmojis.ts";
 
 function getRuleArea(rule: Rule) {
 	switch (rule.about.name.split("-")[0]) {

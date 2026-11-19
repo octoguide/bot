@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { IssueLikeData } from "../types/entities.js";
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { IssueLikeData } from "../types/entities.ts";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
-import { PullRequestActor } from "./PullRequestActor.js";
+import { PullRequestActor } from "./PullRequestActor.ts";
 
 const mockCore = {
 	debug: vi.fn(),

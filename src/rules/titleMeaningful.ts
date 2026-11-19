@@ -1,15 +1,15 @@
 import { areDocsInformative } from "are-docs-informative";
 
-import type { TemplatedEntityType } from "../action/findTemplateTitles.js";
+import type { TemplatedEntityType } from "../action/findTemplateTitles.ts";
 import type {
 	DiscussionEntity,
 	IssueEntity,
 	PullRequestEntity,
-} from "../types/entities.js";
-import type { RuleContext } from "../types/rules.js";
+} from "../types/entities.ts";
+import type { RuleContext } from "../types/rules.ts";
 
-import { findTemplateTitles } from "../action/findTemplateTitles.js";
-import { defineRule } from "./defineRule.js";
+import { findTemplateTitles } from "../action/findTemplateTitles.ts";
+import { defineRule } from "./defineRule.ts";
 
 /**
  * How many characters a title and a template's title must share at their start

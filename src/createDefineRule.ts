@@ -1,4 +1,4 @@
-import type { Rule, RuleAbout, RuleAboutWithUrl } from "./types/rules";
+import type { Rule, RuleAbout, RuleAboutWithUrl } from "./types/rules.ts";
 
 /**
  * Function that generates a URL for a rule based on its metadata.

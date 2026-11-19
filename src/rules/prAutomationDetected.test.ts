@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { prAutomationDetected } from "./prAutomationDetected.js";
+import { testRule } from "../tests/testRule.ts";
+import { prAutomationDetected } from "./prAutomationDetected.ts";
 
 const makeLabel = (name: string) => ({
 	color: "",

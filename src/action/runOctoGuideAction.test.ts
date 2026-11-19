@@ -2,11 +2,11 @@ import type * as github from "@actions/github";
 
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { EntityActor } from "../actors/types.js";
-import type { CommentData, Entity, IssueEntity } from "../types/entities.js";
-import type { RuleReport } from "../types/reports.js";
+import type { EntityActor } from "../actors/types.ts";
+import type { CommentData, Entity, IssueEntity } from "../types/entities.ts";
+import type { RuleReport } from "../types/reports.ts";
 
-import { runOctoGuideAction } from "./runOctoGuideAction";
+import { runOctoGuideAction } from "./runOctoGuideAction.ts";
 
 const TEST_GITHUB_URL = "https://github.com/test/repo/issues/1";
 const TEST_GITHUB_TOKEN = "mock-token";
@@ -36,25 +36,25 @@ vi.mock("@actions/core", () => ({
 	},
 }));
 
-vi.mock("../index.js", () => ({
+vi.mock("../index.ts", () => ({
 	get runOctoGuideRules() {
 		return mockRunOctoGuideRules;
 	},
 }));
 
-vi.mock("../reporters/cliReporter.js", () => ({
+vi.mock("../reporters/cliReporter.ts", () => ({
 	get cliReporter() {
 		return mockCliReporter;
 	},
 }));
 
-vi.mock("./runCommentCleanup.js", () => ({
+vi.mock("./runCommentCleanup.ts", () => ({
 	get runCommentCleanup() {
 		return mockRunCommentCleanup;
 	},
 }));
 
-vi.mock("./comments/outputActionReports.js", () => ({
+vi.mock("./comments/outputActionReports.ts", () => ({
 	get outputActionReports() {
 		return mockOutputActionReports;
 	},
@@ -302,6 +302,7 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 			}),
+			undefined,
 		);
 	});
 
@@ -324,6 +325,7 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 			}),
+			undefined,
 		);
 	});
 
@@ -370,6 +372,175 @@ describe("runOctoGuideAction", () => {
 		});
 	});
 
+	describe("edits by other users", () => {
+		const createEditPayload = (
+			overrides: Partial<typeof github.context.payload> = {},
+		) =>
+			createMockPayload({
+				action: "edited",
+				changes: { body: { from: "Old body." } },
+				issue: {
+					body: "New body.",
+					html_url: TEST_GITHUB_URL,
+					number: 1,
+					user: { login: "author" },
+				},
+				sender: { login: "collaborator", type: "User" },
+				...overrides,
+			});
+
+		const createRuleReport = (primary: string) =>
+			createMockTestReport({
+				about: {
+					description: "PRs should have descriptions.",
+					explanation: ["Descriptions are useful."],
+					name: "pr-body-descriptive",
+					url: "https://octo.guide/rules/pr-body-descriptive",
+				},
+				data: { primary, suggestion: [] },
+			});
+
+		const mockEditRuleExecutions = (
+			reports: RuleReport[],
+			previousReports: RuleReport[],
+		) => {
+			const actor = createMockActor();
+			const entity = {
+				data: {
+					html_url: TEST_GITHUB_URL,
+					user: { login: "author" },
+				} as IssueEntity["data"],
+				number: 1,
+				type: "issue",
+			} satisfies Entity;
+
+			mockRunOctoGuideRules
+				.mockResolvedValueOnce({ actor, entity, reports })
+				.mockResolvedValueOnce({
+					actor: createMockActor(),
+					entity,
+					reports: previousReports,
+				});
+
+			return { actor, entity };
+		};
+
+		it("should run rules with the editor on the entity both before and after the edit", async () => {
+			createMockActionInputs();
+			mockEditRuleExecutions([], []);
+
+			await runOctoGuideAction(createMockContext(createEditPayload()));
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledTimes(2);
+			expect(mockRunOctoGuideRules).toHaveBeenNthCalledWith(
+				1,
+				expect.objectContaining({
+					editor: { login: "collaborator", type: "User" },
+					entity: expect.objectContaining({
+						data: expect.objectContaining({ body: "New body." }) as unknown,
+					}) as unknown,
+				}),
+			);
+			expect(mockRunOctoGuideRules).toHaveBeenNthCalledWith(
+				2,
+				expect.objectContaining({
+					editor: { login: "collaborator", type: "User" },
+					entity: expect.objectContaining({
+						data: expect.objectContaining({ body: "Old body." }) as unknown,
+					}) as unknown,
+				}),
+			);
+		});
+
+		it("should output a report introduced by the edit and mention the editor when its rule includes them", async () => {
+			createMockActionInputs({ "include-associations": "COLLABORATOR" });
+			const report = createRuleReport("New violation.");
+			const { actor, entity } = mockEditRuleExecutions([report], []);
+
+			await runOctoGuideAction(createMockContext(createEditPayload()));
+
+			expect(mockOutputActionReports).toHaveBeenCalledWith(
+				actor,
+				entity,
+				[report],
+				expect.anything(),
+				["collaborator"],
+			);
+		});
+
+		it("should output a report from before the edit and mention the author when its rule includes them", async () => {
+			createMockActionInputs({ "include-associations": "CONTRIBUTOR" });
+			const report = createRuleReport("Existing violation.");
+			const { actor, entity } = mockEditRuleExecutions(
+				[report],
+				[createRuleReport("Existing violation.")],
+			);
+
+			await runOctoGuideAction(createMockContext(createEditPayload()));
+
+			expect(mockOutputActionReports).toHaveBeenCalledWith(
+				actor,
+				entity,
+				[report],
+				expect.anything(),
+				["author"],
+			);
+		});
+
+		it("should ignore a report introduced by the edit when its rule excludes the editor", async () => {
+			createMockActionInputs({ "include-associations": "CONTRIBUTOR" });
+			const { actor, entity } = mockEditRuleExecutions(
+				[createRuleReport("New violation.")],
+				[],
+			);
+
+			await runOctoGuideAction(createMockContext(createEditPayload()));
+
+			expect(mockCore.info).toHaveBeenCalledWith(
+				"Ignoring 1 report(s) from rules that exclude whoever caused them.",
+			);
+			expect(mockCore.info).toHaveBeenCalledWith("Found 0 reports. Great! ✅");
+			expect(mockOutputActionReports).toHaveBeenCalledWith(
+				actor,
+				entity,
+				[],
+				expect.anything(),
+				[],
+			);
+		});
+
+		it("should run rules once without an editor when a pull request's base is the only change", async () => {
+			createMockActionInputs();
+			mockRuleExecutionWithReports(1);
+
+			await runOctoGuideAction(
+				createMockContext(
+					createEditPayload({
+						changes: { base: { ref: { from: "old" } } },
+						issue: undefined,
+						pull_request: {
+							html_url: "https://github.com/test/repo/pull/1",
+							number: 1,
+							user: { login: "author" },
+						},
+					}),
+				),
+			);
+
+			expect(mockRunOctoGuideRules).toHaveBeenCalledTimes(1);
+			expect(mockRunOctoGuideRules).toHaveBeenCalledWith(
+				expect.objectContaining({ editor: undefined }),
+			);
+			expect(mockOutputActionReports).toHaveBeenCalledWith(
+				expect.anything(),
+				expect.anything(),
+				expect.anything(),
+				expect.anything(),
+				undefined,
+			);
+		});
+	});
+
 	it("should throw error when unknown config is provided", async () => {
 		createMockActionInputs({ config: "unknown-config" });
 
@@ -399,6 +570,7 @@ describe("runOctoGuideAction", () => {
 				},
 				config: "strict",
 				options: {
+					"include-ais": false,
 					"include-associations": [],
 					"include-bots": false,
 				},
@@ -428,6 +600,7 @@ describe("runOctoGuideAction", () => {
 				},
 				config: "none",
 				options: {
+					"include-ais": false,
 					"include-associations": [],
 					"include-bots": false,
 				},
@@ -457,6 +630,7 @@ describe("runOctoGuideAction", () => {
 				},
 				config: "recommended",
 				options: {
+					"include-ais": false,
 					"include-associations": [],
 					"include-bots": false,
 				},
@@ -483,6 +657,7 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 			}),
+			undefined,
 		);
 	});
 
@@ -504,6 +679,7 @@ describe("runOctoGuideAction", () => {
 					header: "",
 				},
 			}),
+			undefined,
 		);
 	});
 
@@ -528,6 +704,7 @@ describe("runOctoGuideAction", () => {
 				config: "recommended",
 				rules: {},
 			}),
+			undefined,
 		);
 	});
 
@@ -560,6 +737,7 @@ describe("runOctoGuideAction", () => {
 					"pr-title-conventional": false,
 				},
 			}),
+			undefined,
 		);
 	});
 

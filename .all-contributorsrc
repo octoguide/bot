@@ -19,7 +19,7 @@
       ],
       "login": "JoshuaKGoldberg",
       "name": "Josh Goldberg ✨",
-      "profile": "http://www.joshuakgoldberg.com"
+      "profile": "https://www.joshuakgoldberg.com/"
     },
     {
       "login": "phryneas",
@@ -103,6 +103,16 @@
         "bug",
         "code",
         "ideas"
+      ]
+    },
+    {
+      "login": "michaelfaith",
+      "name": "michael faith",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8071845?v=4",
+      "profile": "https://github.com/michaelfaith",
+      "contributions": [
+        "ideas",
+        "bug"
       ]
     }
   ],

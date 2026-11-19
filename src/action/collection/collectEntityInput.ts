@@ -1,6 +1,6 @@
 import type * as github from "@actions/github";
 
-import { parseCommentId, parseEntityUrl } from "../../actors/parseEntity.js";
+import { parseCommentId, parseEntityUrl } from "../../actors/parseEntity.ts";
 import {
 	CommentAbleEntityType,
 	CommentEntity,
@@ -8,7 +8,7 @@ import {
 	EntityData,
 	IssueEntity,
 	PullRequestEntity,
-} from "../../types/entities.js";
+} from "../../types/entities.ts";
 
 export function collectEntityInput(
 	payload: (typeof github.context)["payload"],

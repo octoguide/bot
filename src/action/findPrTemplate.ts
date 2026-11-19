@@ -1,4 +1,4 @@
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
 /**
  * Paths where GitHub PR templates might be located according to GitHub documentation.

@@ -1,8 +1,8 @@
-import type { EntityActor } from "../../actors/types.js";
-import type { CommentData, Entity } from "../../types/entities.js";
-import type { Settings } from "../../types/settings.js";
+import type { EntityActor } from "../../actors/types.ts";
+import type { CommentData, Entity } from "../../types/entities.ts";
+import type { Settings } from "../../types/settings.ts";
 
-import { createCommentBody } from "./createCommentBody.js";
+import { createCommentBody } from "./createCommentBody.ts";
 
 export async function updateExistingCommentForReports(
 	actor: EntityActor,

@@ -2,8 +2,8 @@ import type { Octokit } from "octokit";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { prTaskCompletion } from "./prTaskCompletion.js";
+import { testRule } from "../tests/testRule.ts";
+import { prTaskCompletion } from "./prTaskCompletion.ts";
 
 describe(prTaskCompletion.about.name, () => {
 	it("does not report when there is no PR template", async () => {

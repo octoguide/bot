@@ -1,4 +1,4 @@
-import { defineRule } from "./defineRule.js";
+import { defineRule } from "./defineRule.ts";
 
 const AUTOMATION_LABEL_TARGETS = new Set([
 	"ai-slop",
@@ -11,6 +11,7 @@ export const prAutomationDetected = defineRule({
 	about: {
 		config: "recommended",
 		defaultOptions: {
+			"include-ais": true,
 			"include-bots": true,
 		},
 		description: "PRs labeled as automated or AI-generated should be closed.",

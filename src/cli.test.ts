@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { cli, octoguideCli } from "./cli.js";
+import { cli } from "./cli.ts";
 
 const mockRunOctoGuideRules = vi.fn().mockResolvedValue({});
 
-vi.mock("./runOctoGuideRules.js", () => ({
+vi.mock("./runOctoGuideRules.ts", () => ({
 	get runOctoGuideRules() {
 		return mockRunOctoGuideRules;
 	},
@@ -12,7 +12,7 @@ vi.mock("./runOctoGuideRules.js", () => ({
 
 const mockResolveEntityUrl = vi.fn();
 
-vi.mock("./resolveEntityUrl.js", () => ({
+vi.mock("./resolveEntityUrl.ts", () => ({
 	get resolveEntityUrl() {
 		return mockResolveEntityUrl;
 	},
@@ -20,7 +20,7 @@ vi.mock("./resolveEntityUrl.js", () => ({
 
 const mockCliReporter = vi.fn();
 
-vi.mock("./reporters/cliReporter.js", () => ({
+vi.mock("./reporters/cliReporter.ts", () => ({
 	get cliReporter() {
 		return mockCliReporter;
 	},
@@ -47,7 +47,7 @@ describe(cli, () => {
 		expect(actual).toBeUndefined();
 		expect(console.error).toHaveBeenCalledWith(
 			[
-				"Arguments: Please provide a url, like 'npx octoguide github.com/...'",
+				"Please provide a url, like 'npx octoguide github.com/...'",
 				"Run 'octoguide --help' for usage.",
 			].join("\n"),
 		);
@@ -63,7 +63,7 @@ describe(cli, () => {
 		expect(actual).toBeUndefined();
 		expect(console.error).toHaveBeenCalledWith(
 			[
-				"--config: Unknown config provided: 'other' (expected one of: none, recommended, strict).",
+				'--config: Expected "none", "recommended", or "strict", received "other".',
 				"Run 'octoguide --help' for usage.",
 			].join("\n"),
 		);
@@ -93,7 +93,9 @@ describe(cli, () => {
 		const actual = await cli("--help");
 
 		expect(actual).toBeUndefined();
-		expect(console.log).toHaveBeenCalledWith(octoguideCli.formatHelp());
+		expect(console.log).toHaveBeenCalledWith(
+			expect.stringContaining("Usage: octoguide"),
+		);
 		expect(process.exitCode).toBeUndefined();
 		expect(mockRunOctoGuideRules).not.toHaveBeenCalled();
 	});
@@ -131,9 +133,13 @@ describe(cli, () => {
 	});
 });
 
-describe("octoguideCli", () => {
-	it("formats help text", () => {
-		expect(octoguideCli.formatHelp()).toMatchInlineSnapshot(`
+describe("help text", () => {
+	it("is formatted", () => {
+		const log = vi.spyOn(console, "log").mockImplementation(() => undefined);
+
+		void cli("--help");
+
+		expect(log.mock.calls[0][0]).toMatchInlineSnapshot(`
 			"Usage: octoguide [options] <url>
 
 			Previews the reports OctoGuide would post for a GitHub contribution.

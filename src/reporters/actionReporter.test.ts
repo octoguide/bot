@@ -2,10 +2,10 @@ import type * as core from "@actions/core";
 
 import { describe, expect, Mocked, test, vi } from "vitest";
 
-import type { RuleReportData } from "../types/reports.js";
-import type { RuleAboutWithUrl } from "../types/rules.js";
+import type { RuleReportData } from "../types/reports.ts";
+import type { RuleAboutWithUrl } from "../types/rules.ts";
 
-import { actionReporter } from "./actionReporter.js";
+import { actionReporter } from "./actionReporter.ts";
 
 const mockCore = {
 	info: vi.fn(),

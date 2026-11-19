@@ -1,7 +1,7 @@
-import type { ConfigName } from "../types/core.js";
-import type { Rule } from "../types/rules.js";
+import type { ConfigName } from "../types/core.ts";
+import type { Rule } from "../types/rules.ts";
 
-import { allRules } from "./all.js";
+import { allRules } from "./all.ts";
 
 export const configs = {
 	none: [],

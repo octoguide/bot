@@ -1,13 +1,13 @@
-import type { RepositoryLocator } from "./data.js";
+import type { RepositoryLocator } from "./data.ts";
 import type {
 	CommentEntity,
 	DiscussionEntity,
 	Entity,
 	IssueEntity,
 	PullRequestEntity,
-} from "./entities.js";
-import type { LocatedOctokit } from "./octokit.js";
-import type { RuleReportData } from "./reports.js";
+} from "./entities.ts";
+import type { LocatedOctokit } from "./octokit.ts";
+import type { RuleReportData } from "./reports.ts";
 
 /**
  * Defines how to analyze entities for a single best practice.
@@ -113,7 +113,12 @@ export interface RuleOptions {
 	"include-associations"?: Set<string>;
 
 	/**
-	 * Whether the rule runs on entities created by bots.
+	 * Whether the rule runs on entities created by known AI agents.
+	 */
+	"include-ais": boolean;
+
+	/**
+	 * Whether the rule runs on entities created by bots other than known AI agents.
 	 */
 	"include-bots": boolean;
 }
@@ -131,7 +136,12 @@ export interface RuleOptionsRaw {
 	"include-associations"?: string[];
 
 	/**
-	 * Whether the rule runs on entities created by bots.
+	 * Whether the rule runs on entities created by known AI agents.
+	 */
+	"include-ais"?: boolean;
+
+	/**
+	 * Whether the rule runs on entities created by bots other than known AI agents.
 	 */
 	"include-bots"?: boolean;
 }

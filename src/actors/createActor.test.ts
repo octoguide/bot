@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { createMockOctokit } from "../tests/createMockOctokit.js";
-import { createActor } from "./createActor";
-import { DiscussionActor } from "./DiscussionActor";
-import { DiscussionCommentActor } from "./DiscussionCommentActor";
-import { IssueActor } from "./IssueActor";
-import { IssueLikeCommentActor } from "./IssueLikeCommentActor";
-import { PullRequestActor } from "./PullRequestActor";
+import { createMockOctokit } from "../tests/createMockOctokit.ts";
+import { createActor } from "./createActor.ts";
+import { DiscussionActor } from "./DiscussionActor.ts";
+import { DiscussionCommentActor } from "./DiscussionCommentActor.ts";
+import { IssueActor } from "./IssueActor.ts";
+import { IssueLikeCommentActor } from "./IssueLikeCommentActor.ts";
+import { PullRequestActor } from "./PullRequestActor.ts";
 
 vi.mock("octokit-from-auth", () => ({
 	octokitFromAuth: () => Promise.resolve(createMockOctokit()),

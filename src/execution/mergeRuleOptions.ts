@@ -1,4 +1,4 @@
-import type { RuleOptions, RuleOptionsRaw } from "../types/rules.js";
+import type { RuleOptions, RuleOptionsRaw } from "../types/rules.ts";
 
 export function mergeRuleOptions(
 	...layers: (RuleOptionsRaw | undefined)[]
@@ -17,6 +17,7 @@ export function mergeRuleOptions(
 
 	return {
 		...merged,
+		"include-ais": merged["include-ais"] ?? true,
 		"include-associations": includeAssociations
 			? new Set(["NONE", ...includeAssociations])
 			: undefined,

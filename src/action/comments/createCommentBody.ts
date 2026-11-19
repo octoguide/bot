@@ -1,7 +1,7 @@
-import type { Entity } from "../../types/entities.js";
-import type { Settings } from "../../types/settings.js";
+import type { Entity } from "../../types/entities.ts";
+import type { Settings } from "../../types/settings.ts";
 
-import { createCommentIdentifier } from "./createCommentIdentifier.js";
+import { createCommentIdentifier } from "./createCommentIdentifier.ts";
 
 export function createCommentBody(
 	entity: Entity,

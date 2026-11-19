@@ -1,74 +1,146 @@
 # Changelog
 
+## [0.33.1](https://github.com/octoguide/bot/compare/0.33.0...0.33.1) (2026-11-09)
+
+### Bug Fixes
+
+- respect and mention the editor when someone else edits an entity ([#678](https://github.com/octoguide/bot/pull/678)) ([e12e506](https://github.com/octoguide/bot/commit/e12e5064ccc364a5a61d1bc67d08bb8fff09a65d)), closes [#453](https://github.com/octoguide/bot/issues/453)
+
+# [0.33.0](https://github.com/octoguide/bot/compare/0.32.0...0.33.0) (2026-11-08)
+
+### Features
+
+- move pr-branch-non-default to strict config ([5856481](https://github.com/octoguide/bot/commit/5856481950654669b82d9dd3fa0b0f7497f713d6))
+
+# [0.32.0](https://github.com/octoguide/bot/compare/0.31.0...0.32.0) (2026-10-24)
+
+### Features
+
+- allow subject options in pr-title-conventional ([#724](https://github.com/octoguide/bot/pull/724)) ([f2df4c1](https://github.com/octoguide/bot/commit/f2df4c1a67ec0629f8a336b4355c979598a0e3d7)), closes [#723](https://github.com/octoguide/bot/issues/723)
+
+# [0.31.0](https://github.com/octoguide/bot/compare/0.30.0...0.31.0) (2026-10-24)
+
+### Features
+
+- split out `include-ais` option from `include-bots` ([#673](https://github.com/octoguide/bot/pull/673)) ([79b771d](https://github.com/octoguide/bot/commit/79b771d3e2de903ad18927b7a3f573f5b367f74f)), closes [#440](https://github.com/octoguide/bot/issues/440)
+
+# [0.30.0](https://github.com/octoguide/bot/compare/0.29.3...0.30.0) (2026-10-24)
+
+### Features
+
+- suggest corrected type for near-miss conventional PR titles ([#670](https://github.com/octoguide/bot/pull/670)) ([bf45205](https://github.com/octoguide/bot/commit/bf45205caff284652f5eb6a837ceade30207f863)), closes [#69](https://github.com/octoguide/bot/issues/69)
+
+## [0.29.3](https://github.com/octoguide/bot/compare/0.29.2...0.29.3) (2026-10-24)
+
+### Bug Fixes
+
+- **deps:** update dependency astro to v7.4.0 ([#745](https://github.com/octoguide/bot/pull/745)) ([a3f7048](https://github.com/octoguide/bot/commit/a3f7048caff8254b196e6b08c9accf64cd62d961))
+
+## [0.29.2](https://github.com/octoguide/bot/compare/0.29.1...0.29.2) (2026-10-22)
+
+### Bug Fixes
+
+- **deps:** update dependency markdownlint to v0.42.0 ([#742](https://github.com/octoguide/bot/pull/742)) ([1f9503e](https://github.com/octoguide/bot/commit/1f9503e05ecc315c1edf2492ddc10e982289ad68))
+
+## [0.29.1](https://github.com/octoguide/bot/compare/0.29.0...0.29.1) (2026-10-16)
+
+### Bug Fixes
+
+- **deps:** update dependency starlight-links-validator to v0.27.0 ([#732](https://github.com/octoguide/bot/pull/732)) ([ed1970c](https://github.com/octoguide/bot/commit/ed1970c0a4220216a18795fe20e1be745d28f21c))
+
+# [0.29.0](https://github.com/octoguide/bot/compare/0.28.1...0.29.0) (2026-10-15)
+
+### Features
+
+- allow types and scopes options in pr-title-conventional ([#703](https://github.com/octoguide/bot/pull/703)) ([11adeb8](https://github.com/octoguide/bot/commit/11adeb896a6f7d5673ff80ebe2cfd64cf97117bf)), closes [#121](https://github.com/octoguide/bot/issues/121)
+
+## [0.28.1](https://github.com/octoguide/bot/compare/0.28.0...0.28.1) (2026-10-15)
+
+### Bug Fixes
+
+- report multiple scopes in pr-title-conventional ([#702](https://github.com/octoguide/bot/pull/702)) ([840ba30](https://github.com/octoguide/bot/commit/840ba30f1a011c0f9225996d29864cd3acfc523b)), closes [#701](https://github.com/octoguide/bot/issues/701)
+
+# [0.28.0](https://github.com/octoguide/bot/compare/0.27.0...0.28.0) (2026-10-15)
+
+### Features
+
+- suggest corrected syntax for misformatted conventional PR titles ([#669](https://github.com/octoguide/bot/pull/669)) ([38a5e0b](https://github.com/octoguide/bot/commit/38a5e0b5e7a16d1d79c95bfa07d4f440a2adc50d)), closes [#448](https://github.com/octoguide/bot/issues/448)
+
+# [0.27.0](https://github.com/octoguide/bot/compare/0.26.6...0.27.0) (2026-10-14)
+
+### Features
+
+- add pr-force-pushes rule ([#679](https://github.com/octoguide/bot/pull/679)) ([779f757](https://github.com/octoguide/bot/commit/779f757cc0fa82082b790aaac38e96c11db6f9b8)), closes [#572](https://github.com/octoguide/bot/issues/572)
+
 ## [0.26.6](https://github.com/octoguide/bot/compare/0.26.5...0.26.6) (2026-10-06)
 
 ### Bug Fixes
 
-- accept closing keywords in pr-linked-issue for PRs into non-default branches ([#671](https://github.com/octoguide/bot/issues/671)) ([e6cefb4](https://github.com/octoguide/bot/commit/e6cefb4f7fe53a22372fd3a5b5217c0c950c6aa1)), closes [#639](https://github.com/octoguide/bot/issues/639)
+- accept closing keywords in pr-linked-issue for PRs into non-default branches ([#671](https://github.com/octoguide/bot/pull/671)) ([e6cefb4](https://github.com/octoguide/bot/commit/e6cefb4f7fe53a22372fd3a5b5217c0c950c6aa1)), closes [#639](https://github.com/octoguide/bot/issues/639)
 
 ## [0.26.5](https://github.com/octoguide/bot/compare/0.26.4...0.26.5) (2026-10-06)
 
 ### Bug Fixes
 
-- validate that linked Dependabot alerts exist in pr-linked-issue ([#672](https://github.com/octoguide/bot/issues/672)) ([3e87119](https://github.com/octoguide/bot/commit/3e871191c309b9881c22c72cfc83a57e684b8952)), closes [#322](https://github.com/octoguide/bot/issues/322)
+- validate that linked Dependabot alerts exist in pr-linked-issue ([#672](https://github.com/octoguide/bot/pull/672)) ([3e87119](https://github.com/octoguide/bot/commit/3e871191c309b9881c22c72cfc83a57e684b8952)), closes [#322](https://github.com/octoguide/bot/issues/322)
 
 ## [0.26.4](https://github.com/octoguide/bot/compare/0.26.3...0.26.4) (2026-10-04)
 
 ### Bug Fixes
 
-- treat already-deleted report comments as cleaned up ([#695](https://github.com/octoguide/bot/issues/695)) ([de93570](https://github.com/octoguide/bot/commit/de93570ccf8aa1e8012ba093aa522c9b3020db11)), closes [#694](https://github.com/octoguide/bot/issues/694)
+- treat already-deleted report comments as cleaned up ([#695](https://github.com/octoguide/bot/pull/695)) ([de93570](https://github.com/octoguide/bot/commit/de93570ccf8aa1e8012ba093aa522c9b3020db11)), closes [#694](https://github.com/octoguide/bot/issues/694)
 
 ## [0.26.3](https://github.com/octoguide/bot/compare/0.26.2...0.26.3) (2026-10-04)
 
 ### Bug Fixes
 
-- add missing space in pr-automation-detected explanation ([#697](https://github.com/octoguide/bot/issues/697)) ([01d9305](https://github.com/octoguide/bot/commit/01d93057f3d0e614242b3b94735672d8ae4eb032)), closes [#696](https://github.com/octoguide/bot/issues/696)
+- add missing space in pr-automation-detected explanation ([#697](https://github.com/octoguide/bot/pull/697)) ([01d9305](https://github.com/octoguide/bot/commit/01d93057f3d0e614242b3b94735672d8ae4eb032)), closes [#696](https://github.com/octoguide/bot/issues/696)
 
 ## [0.26.2](https://github.com/octoguide/bot/compare/0.26.1...0.26.2) (2026-10-03)
 
 ### Bug Fixes
 
-- rebuild dist/ bundle in each release commit ([#690](https://github.com/octoguide/bot/issues/690)) ([a1b4747](https://github.com/octoguide/bot/commit/a1b4747eff10ca1bbc480c985f28a05a05a61856)), closes [#687](https://github.com/octoguide/bot/issues/687)
+- rebuild dist/ bundle in each release commit ([#690](https://github.com/octoguide/bot/pull/690)) ([a1b4747](https://github.com/octoguide/bot/commit/a1b4747eff10ca1bbc480c985f28a05a05a61856)), closes [#687](https://github.com/octoguide/bot/issues/687)
 
 ## [0.26.1](https://github.com/octoguide/bot/compare/0.26.0...0.26.1) (2026-10-03)
 
 ### Bug Fixes
 
-- use valid deleteDiscussionComment mutation in comment cleanup ([#664](https://github.com/octoguide/bot/issues/664)) ([577d91f](https://github.com/octoguide/bot/commit/577d91f0a217acac0c3488e947e69de628106604)), closes [#647](https://github.com/octoguide/bot/issues/647)
+- use valid deleteDiscussionComment mutation in comment cleanup ([#664](https://github.com/octoguide/bot/pull/664)) ([577d91f](https://github.com/octoguide/bot/commit/577d91f0a217acac0c3488e947e69de628106604)), closes [#647](https://github.com/octoguide/bot/issues/647)
 
 # [0.26.0](https://github.com/octoguide/bot/compare/0.25.0...0.26.0) (2026-10-02)
 
 ### Features
 
-- default octokit owner and repo to locator ([#648](https://github.com/octoguide/bot/issues/648)) ([f89e428](https://github.com/octoguide/bot/commit/f89e42868f16ab02d7f176d0bf9871cf63108102)), closes [#60](https://github.com/octoguide/bot/issues/60)
+- default octokit owner and repo to locator ([#648](https://github.com/octoguide/bot/pull/648)) ([f89e428](https://github.com/octoguide/bot/commit/f89e42868f16ab02d7f176d0bf9871cf63108102)), closes [#60](https://github.com/octoguide/bot/issues/60)
 
 # [0.25.0](https://github.com/octoguide/bot/compare/0.24.0...0.25.0) (2026-10-02)
 
 ### Bug Fixes
 
-- paginate comment retrieval ([#642](https://github.com/octoguide/bot/issues/642)) ([2c4bb9e](https://github.com/octoguide/bot/commit/2c4bb9efed1097eaf8c7769a9bf896e570537ec0)), closes [#34](https://github.com/octoguide/bot/issues/34)
+- paginate comment retrieval ([#642](https://github.com/octoguide/bot/pull/642)) ([2c4bb9e](https://github.com/octoguide/bot/commit/2c4bb9efed1097eaf8c7769a9bf896e570537ec0)), closes [#34](https://github.com/octoguide/bot/issues/34)
 
 ### Features
 
-- add title-meaningful rule ([#640](https://github.com/octoguide/bot/issues/640)) ([2047428](https://github.com/octoguide/bot/commit/20474281c17d17a43f3bcb413375e926b224b96e)), closes [#24](https://github.com/octoguide/bot/issues/24)
+- add title-meaningful rule ([#640](https://github.com/octoguide/bot/pull/640)) ([2047428](https://github.com/octoguide/bot/commit/20474281c17d17a43f3bcb413375e926b224b96e)), closes [#24](https://github.com/octoguide/bot/issues/24)
 
 # [0.24.0](https://github.com/octoguide/bot/compare/0.23.4...0.24.0) (2026-10-02)
 
 ### Features
 
-- allow shorthand locators in the CLI ([#644](https://github.com/octoguide/bot/issues/644)) ([5b7f54d](https://github.com/octoguide/bot/commit/5b7f54d1a2c8dd971da4761a5d75694e353fe333)), closes [#61](https://github.com/octoguide/bot/issues/61)
+- allow shorthand locators in the CLI ([#644](https://github.com/octoguide/bot/pull/644)) ([5b7f54d](https://github.com/octoguide/bot/commit/5b7f54d1a2c8dd971da4761a5d75694e353fe333)), closes [#61](https://github.com/octoguide/bot/issues/61)
 
 ## [0.23.4](https://github.com/octoguide/bot/compare/0.23.3...0.23.4) (2026-09-22)
 
 ### Bug Fixes
 
-- **deps:** update dependency starlight-package-managers to v0.13.0 ([#638](https://github.com/octoguide/bot/issues/638)) ([05a6946](https://github.com/octoguide/bot/commit/05a6946502bf4f9341f82eef02a9eeb64c21b1cf))
+- **deps:** update dependency starlight-package-managers to v0.13.0 ([#638](https://github.com/octoguide/bot/pull/638)) ([05a6946](https://github.com/octoguide/bot/commit/05a6946502bf4f9341f82eef02a9eeb64c21b1cf))
 
 ## [0.23.3](https://github.com/octoguide/bot/compare/0.23.2...0.23.3) (2026-09-19)
 
 ### Bug Fixes
 
-- **deps:** update all dependencies, action digests, and lockfile ([#632](https://github.com/octoguide/bot/issues/632)) ([329753f](https://github.com/octoguide/bot/commit/329753fb3c42fa5284900a2d1ae9210be598813e)), closes [#615](https://github.com/octoguide/bot/issues/615) [#615](https://github.com/octoguide/bot/issues/615)
+- **deps:** update all dependencies, action digests, and lockfile ([#632](https://github.com/octoguide/bot/pull/632)) ([329753f](https://github.com/octoguide/bot/commit/329753fb3c42fa5284900a2d1ae9210be598813e)), closes [#615](https://github.com/octoguide/bot/pull/615)
 
 ## [0.23.2](https://github.com/octoguide/bot/compare/0.23.1...0.23.2) (2026-09-19)
 
@@ -86,18 +158,18 @@
 
 ### Bug Fixes
 
-- **deps:** update dependency @konami-emoji-blast/astro to v0.3.0 ([#579](https://github.com/octoguide/bot/issues/579)) ([6276c0e](https://github.com/octoguide/bot/commit/6276c0e3dbd68db9ba7c42799129fac527dbe2f5))
-- **deps:** update dependency conventional-commits-parser to v7 ([#611](https://github.com/octoguide/bot/issues/611)) ([2a449ee](https://github.com/octoguide/bot/commit/2a449ee8b14eb00949389003c42e4793decbbbba))
-- **deps:** update dependency konami-emoji-blast to v0.7.0 ([#580](https://github.com/octoguide/bot/issues/580)) ([f988bbd](https://github.com/octoguide/bot/commit/f988bbd911c2d988fa5c3a0cc9b9396722151ee5))
-- **deps:** update dependency markdownlint to v0.41.0 ([#589](https://github.com/octoguide/bot/issues/589)) ([6b21189](https://github.com/octoguide/bot/commit/6b21189c5a721a5caf70432686862090ca8a7e94))
-- **deps:** update dependency marked to v18 ([#559](https://github.com/octoguide/bot/issues/559)) ([5210403](https://github.com/octoguide/bot/commit/5210403b2e53591d1cdbab58f54711fe71631841))
-- **deps:** update dependency sharp to v0.35.1 ([#590](https://github.com/octoguide/bot/issues/590)) ([137ec39](https://github.com/octoguide/bot/commit/137ec391e169bd0390ed5ae78c789754d894627b))
+- **deps:** update dependency @konami-emoji-blast/astro to v0.3.0 ([#579](https://github.com/octoguide/bot/pull/579)) ([6276c0e](https://github.com/octoguide/bot/commit/6276c0e3dbd68db9ba7c42799129fac527dbe2f5))
+- **deps:** update dependency conventional-commits-parser to v7 ([#611](https://github.com/octoguide/bot/pull/611)) ([2a449ee](https://github.com/octoguide/bot/commit/2a449ee8b14eb00949389003c42e4793decbbbba))
+- **deps:** update dependency konami-emoji-blast to v0.7.0 ([#580](https://github.com/octoguide/bot/pull/580)) ([f988bbd](https://github.com/octoguide/bot/commit/f988bbd911c2d988fa5c3a0cc9b9396722151ee5))
+- **deps:** update dependency markdownlint to v0.41.0 ([#589](https://github.com/octoguide/bot/pull/589)) ([6b21189](https://github.com/octoguide/bot/commit/6b21189c5a721a5caf70432686862090ca8a7e94))
+- **deps:** update dependency marked to v18 ([#559](https://github.com/octoguide/bot/pull/559)) ([5210403](https://github.com/octoguide/bot/commit/5210403b2e53591d1cdbab58f54711fe71631841))
+- **deps:** update dependency sharp to v0.35.1 ([#590](https://github.com/octoguide/bot/pull/590)) ([137ec39](https://github.com/octoguide/bot/commit/137ec391e169bd0390ed5ae78c789754d894627b))
 
 ### Features
 
-- add rule pr-automation-detected ([#573](https://github.com/octoguide/bot/issues/573)) ([569da1a](https://github.com/octoguide/bot/commit/569da1a1b44c609d902d9aac48d9d8cf97a5ed00)), closes [#521](https://github.com/octoguide/bot/issues/521)
-- replace chalk with node styleText ([#516](https://github.com/octoguide/bot/issues/516)) ([ff7bf61](https://github.com/octoguide/bot/commit/ff7bf61ca8caf69725e22d09137a97f28a8ade0d)), closes [#515](https://github.com/octoguide/bot/issues/515)
-- rule options ([#441](https://github.com/octoguide/bot/issues/441)) ([191c94c](https://github.com/octoguide/bot/commit/191c94cbbba9a92932861ca6ca05a765a82921f5)), closes [#20](https://github.com/octoguide/bot/issues/20)
+- add rule pr-automation-detected ([#573](https://github.com/octoguide/bot/pull/573)) ([569da1a](https://github.com/octoguide/bot/commit/569da1a1b44c609d902d9aac48d9d8cf97a5ed00)), closes [#521](https://github.com/octoguide/bot/issues/521)
+- replace chalk with node styleText ([#516](https://github.com/octoguide/bot/pull/516)) ([ff7bf61](https://github.com/octoguide/bot/commit/ff7bf61ca8caf69725e22d09137a97f28a8ade0d)), closes [#515](https://github.com/octoguide/bot/issues/515)
+- rule options ([#441](https://github.com/octoguide/bot/pull/441)) ([191c94c](https://github.com/octoguide/bot/commit/191c94cbbba9a92932861ca6ca05a765a82921f5)), closes [#20](https://github.com/octoguide/bot/issues/20)
 
 ## [0.22.0](https://github.com/octoguide/bot/compare/0.21.10...0.22.0) (2026-03-11)
 
@@ -105,97 +177,97 @@
 
 ### Bug Fixes
 
-- **deps:** update dependency markdownlint to v0.40.0 ([#263](https://github.com/octoguide/bot/issues/263)) ([91e2b2c](https://github.com/octoguide/bot/commit/91e2b2ca96c92662f00cd94ead5b250f7daa3590))
+- **deps:** update dependency markdownlint to v0.40.0 ([#263](https://github.com/octoguide/bot/pull/263)) ([91e2b2c](https://github.com/octoguide/bot/commit/91e2b2ca96c92662f00cd94ead5b250f7daa3590))
 
 ## [0.21.9](https://github.com/octoguide/bot/compare/0.21.8...0.21.9) (2026-03-05)
 
 ### Bug Fixes
 
-- **deps:** update dependency astro to v5.18.0 ([#511](https://github.com/octoguide/bot/issues/511)) ([09923fb](https://github.com/octoguide/bot/commit/09923fbbf59d628fdc64532c6bb5708c5ed5ac85))
+- **deps:** update dependency astro to v5.18.0 ([#511](https://github.com/octoguide/bot/pull/511)) ([09923fb](https://github.com/octoguide/bot/commit/09923fbbf59d628fdc64532c6bb5708c5ed5ac85))
 
 ## [0.21.8](https://github.com/octoguide/bot/compare/0.21.7...0.21.8) (2026-02-15)
 
 ### Bug Fixes
 
-- **deps:** update dependency @actions/github to v9 ([#487](https://github.com/octoguide/bot/issues/487)) ([0111bdb](https://github.com/octoguide/bot/commit/0111bdb5e8ca0b9fe6c57373244d80812b5643ac))
+- **deps:** update dependency @actions/github to v9 ([#487](https://github.com/octoguide/bot/pull/487)) ([0111bdb](https://github.com/octoguide/bot/commit/0111bdb5e8ca0b9fe6c57373244d80812b5643ac))
 
 ## [0.21.7](https://github.com/octoguide/bot/compare/0.21.6...0.21.7) (2026-02-15)
 
 ### Bug Fixes
 
-- **deps:** update dependency @actions/core to v3 ([#486](https://github.com/octoguide/bot/issues/486)) ([5d8067b](https://github.com/octoguide/bot/commit/5d8067bd13aaee8efc886f8124c774dcdff16a1f))
+- **deps:** update dependency @actions/core to v3 ([#486](https://github.com/octoguide/bot/pull/486)) ([5d8067b](https://github.com/octoguide/bot/commit/5d8067bd13aaee8efc886f8124c774dcdff16a1f))
 
 ## [0.21.6](https://github.com/octoguide/bot/compare/0.21.5...0.21.6) (2026-02-14)
 
 ### Bug Fixes
 
-- **deps:** update dependency starlight-package-managers to v0.12.0 ([#478](https://github.com/octoguide/bot/issues/478)) ([444ed8e](https://github.com/octoguide/bot/commit/444ed8e448504d7a254263cc53f984da6cc71916))
+- **deps:** update dependency starlight-package-managers to v0.12.0 ([#478](https://github.com/octoguide/bot/pull/478)) ([444ed8e](https://github.com/octoguide/bot/commit/444ed8e448504d7a254263cc53f984da6cc71916))
 
 ## [0.21.5](https://github.com/octoguide/bot/compare/0.21.4...0.21.5) (2026-02-14)
 
 ### Bug Fixes
 
-- **deps:** update dependency astro to v5.17.1 ([#477](https://github.com/octoguide/bot/issues/477)) ([9e15a28](https://github.com/octoguide/bot/commit/9e15a288e68d3781a6149c822ec062c23bcc5902))
+- **deps:** update dependency astro to v5.17.1 ([#477](https://github.com/octoguide/bot/pull/477)) ([9e15a28](https://github.com/octoguide/bot/commit/9e15a288e68d3781a6149c822ec062c23bcc5902))
 
 ## [0.21.4](https://github.com/octoguide/bot/compare/0.21.3...0.21.4) (2026-02-13)
 
 ### Bug Fixes
 
-- **deps:** update dependency @konami-emoji-blast/astro to v0.2.0 ([#476](https://github.com/octoguide/bot/issues/476)) ([16e3c22](https://github.com/octoguide/bot/commit/16e3c22cb9343c03af1b2fef45ce1c585a171b0e))
+- **deps:** update dependency @konami-emoji-blast/astro to v0.2.0 ([#476](https://github.com/octoguide/bot/pull/476)) ([16e3c22](https://github.com/octoguide/bot/commit/16e3c22cb9343c03af1b2fef45ce1c585a171b0e))
 
 ## [0.21.3](https://github.com/octoguide/bot/compare/0.21.2...0.21.3) (2026-01-18)
 
 ### Bug Fixes
 
-- entity number for pr review comments ([#444](https://github.com/octoguide/bot/issues/444)) ([dc8ab60](https://github.com/octoguide/bot/commit/dc8ab601f58adab64e0429d00902a5a9f4904291)), closes [#443](https://github.com/octoguide/bot/issues/443)
+- entity number for pr review comments ([#444](https://github.com/octoguide/bot/pull/444)) ([dc8ab60](https://github.com/octoguide/bot/commit/dc8ab601f58adab64e0429d00902a5a9f4904291)), closes [#443](https://github.com/octoguide/bot/issues/443)
 
 ## [0.21.2](https://github.com/octoguide/bot/compare/0.21.1...0.21.2) (2026-01-13)
 
 ### Bug Fixes
 
-- associations in orgs ([#438](https://github.com/octoguide/bot/issues/438)) ([f360a27](https://github.com/octoguide/bot/commit/f360a27061827ff61b3772fa7cdaa80b969cc672)), closes [#439](https://github.com/octoguide/bot/issues/439)
+- associations in orgs ([#438](https://github.com/octoguide/bot/pull/438)) ([f360a27](https://github.com/octoguide/bot/commit/f360a27061827ff61b3772fa7cdaa80b969cc672)), closes [#439](https://github.com/octoguide/bot/issues/439)
 
 ## [0.21.1](https://github.com/octoguide/bot/compare/0.21.0...0.21.1) (2026-01-13)
 
 ### Bug Fixes
 
-- set parent entity number on comments ([#435](https://github.com/octoguide/bot/issues/435)) ([4f4c1cc](https://github.com/octoguide/bot/commit/4f4c1ccb77e70347a0e8cd2cc5947f65b33e8094)), closes [#434](https://github.com/octoguide/bot/issues/434)
+- set parent entity number on comments ([#435](https://github.com/octoguide/bot/pull/435)) ([4f4c1cc](https://github.com/octoguide/bot/commit/4f4c1ccb77e70347a0e8cd2cc5947f65b33e8094)), closes [#434](https://github.com/octoguide/bot/issues/434)
 
 # [0.21.0](https://github.com/octoguide/bot/compare/0.20.0...0.21.0) (2026-01-06)
 
 ### Features
 
-- switch rule configs to a JSON 'rules' input ([#429](https://github.com/octoguide/bot/issues/429)) ([04e9a4d](https://github.com/octoguide/bot/commit/04e9a4dd467bc5fdb995d99508560b35aa25803c)), closes [#406](https://github.com/octoguide/bot/issues/406)
+- switch rule configs to a JSON 'rules' input ([#429](https://github.com/octoguide/bot/pull/429)) ([04e9a4d](https://github.com/octoguide/bot/commit/04e9a4dd467bc5fdb995d99508560b35aa25803c)), closes [#406](https://github.com/octoguide/bot/issues/406)
 
 # [0.20.0](https://github.com/octoguide/bot/compare/0.18.1...0.20.0) (2026-01-05)
 
 ### Bug Fixes
 
 - bump release-it/conventional-changelog to 10.0.4 and package version to unpublished 0.19.0 ([9a10441](https://github.com/octoguide/bot/commit/9a104410d83e255de91be7012017ec4d1bec2f37))
-- **deps:** update dependency @actions/core to v2 ([#399](https://github.com/octoguide/bot/issues/399)) ([9bc762c](https://github.com/octoguide/bot/commit/9bc762c6bfcd4bd99e2518e7ba69b33662d22dea))
-- **deps:** update dependency @astrojs/starlight to v0.37.1 ([#418](https://github.com/octoguide/bot/issues/418)) ([a410c29](https://github.com/octoguide/bot/commit/a410c29df5faa94aa44302ebffc513cd42476d2a))
-- pr-title-conventional should allow for breaking changes ([#426](https://github.com/octoguide/bot/issues/426)) ([9a1a9d8](https://github.com/octoguide/bot/commit/9a1a9d8e1652044109cad50eb622bb6159de75f0)), closes [#422](https://github.com/octoguide/bot/issues/422)
+- **deps:** update dependency @actions/core to v2 ([#399](https://github.com/octoguide/bot/pull/399)) ([9bc762c](https://github.com/octoguide/bot/commit/9bc762c6bfcd4bd99e2518e7ba69b33662d22dea))
+- **deps:** update dependency @astrojs/starlight to v0.37.1 ([#418](https://github.com/octoguide/bot/pull/418)) ([a410c29](https://github.com/octoguide/bot/commit/a410c29df5faa94aa44302ebffc513cd42476d2a))
+- pr-title-conventional should allow for breaking changes ([#426](https://github.com/octoguide/bot/pull/426)) ([9a1a9d8](https://github.com/octoguide/bot/commit/9a1a9d8e1652044109cad50eb622bb6159de75f0)), closes [#422](https://github.com/octoguide/bot/issues/422)
 
 ### Features
 
-- rename to OctoGuide/bot ([#420](https://github.com/octoguide/bot/issues/420)) ([b8f86d2](https://github.com/octoguide/bot/commit/b8f86d2ae7e8a93f49dd3e689a3abe452e999a8f)), closes [#419](https://github.com/octoguide/bot/issues/419)
+- rename to OctoGuide/bot ([#420](https://github.com/octoguide/bot/pull/420)) ([b8f86d2](https://github.com/octoguide/bot/commit/b8f86d2ae7e8a93f49dd3e689a3abe452e999a8f)), closes [#419](https://github.com/octoguide/bot/issues/419)
 
 ## [0.18.1](https://github.com/OctoGuide/bot/compare/0.18.0...0.18.1) (2025-11-14)
 
 ### Bug Fixes
 
-- **deps:** update dependency marked to v17 ([#368](https://github.com/OctoGuide/bot/issues/368)) ([2e97e89](https://github.com/OctoGuide/bot/commit/2e97e89c142981705abf1106c34c189f44efbcd7))
+- **deps:** update dependency marked to v17 ([#368](https://github.com/OctoGuide/bot/pull/368)) ([2e97e89](https://github.com/OctoGuide/bot/commit/2e97e89c142981705abf1106c34c189f44efbcd7))
 
 # [0.18.0](https://github.com/OctoGuide/bot/compare/0.16.0...0.18.0) (2025-11-05)
 
 ### Bug Fixes
 
-- **package.json:** bump version to 0.17.0 ([#356](https://github.com/OctoGuide/bot/issues/356)) ([a680a00](https://github.com/OctoGuide/bot/commit/a680a0014eae46bb51eb4d1c8d4f9611da83bb62)), closes [#354](https://github.com/OctoGuide/bot/issues/354)
+- **package.json:** bump version to 0.17.0 ([#356](https://github.com/OctoGuide/bot/pull/356)) ([a680a00](https://github.com/OctoGuide/bot/commit/a680a0014eae46bb51eb4d1c8d4f9611da83bb62)), closes [#354](https://github.com/OctoGuide/bot/issues/354)
 
 ### Features
 
-- add config for include-associations ([#327](https://github.com/OctoGuide/bot/issues/327)) ([9cf55bb](https://github.com/OctoGuide/bot/commit/9cf55bb60bce685826cf189ba796a9d52a3fdf04)), closes [#324](https://github.com/OctoGuide/bot/issues/324) [#21](https://github.com/OctoGuide/bot/issues/21)
-- add config for include-bots ([#315](https://github.com/OctoGuide/bot/issues/315)) ([cf0f5f3](https://github.com/OctoGuide/bot/commit/cf0f5f385e7ba2abdf1da77d0640ffe8a61fa293)), closes [#313](https://github.com/OctoGuide/bot/issues/313)
+- add config for include-associations ([#327](https://github.com/OctoGuide/bot/pull/327)) ([9cf55bb](https://github.com/OctoGuide/bot/commit/9cf55bb60bce685826cf189ba796a9d52a3fdf04)), closes [#324](https://github.com/OctoGuide/bot/issues/324) [#21](https://github.com/OctoGuide/bot/issues/21)
+- add config for include-bots ([#315](https://github.com/OctoGuide/bot/pull/315)) ([cf0f5f3](https://github.com/OctoGuide/bot/commit/cf0f5f385e7ba2abdf1da77d0640ffe8a61fa293)), closes [#313](https://github.com/OctoGuide/bot/issues/313)
 
 ## [0.17.0](https://github.com/OctoGuide/bot/compare/0.16.0...0.17.0) (2025-11-05)
 
@@ -207,79 +279,79 @@
 
 ### Features
 
-- dependabot alert link satisfies pr-linked-issue rule ([#317](https://github.com/OctoGuide/bot/issues/317)) ([b506564](https://github.com/OctoGuide/bot/commit/b50656489cc8fe3cacaa4fdb462f9d0145fd73da)), closes [#299](https://github.com/OctoGuide/bot/issues/299)
+- dependabot alert link satisfies pr-linked-issue rule ([#317](https://github.com/OctoGuide/bot/pull/317)) ([b506564](https://github.com/OctoGuide/bot/commit/b50656489cc8fe3cacaa4fdb462f9d0145fd73da)), closes [#299](https://github.com/OctoGuide/bot/issues/299)
 
 ## [0.15.2](https://github.com/OctoGuide/bot/compare/0.15.1...0.15.2) (2025-09-26)
 
 ### Performance Improvements
 
-- reuse action event data ([#289](https://github.com/OctoGuide/bot/issues/289)) ([ec352f7](https://github.com/OctoGuide/bot/commit/ec352f71a0b0951bf1140b2551cb5882d8f75ae1)), closes [#85](https://github.com/OctoGuide/bot/issues/85)
+- reuse action event data ([#289](https://github.com/OctoGuide/bot/pull/289)) ([ec352f7](https://github.com/OctoGuide/bot/commit/ec352f71a0b0951bf1140b2551cb5882d8f75ae1)), closes [#85](https://github.com/OctoGuide/bot/issues/85)
 
 ## [0.15.1](https://github.com/OctoGuide/bot/compare/0.15.0...0.15.1) (2025-09-02)
 
 ### Bug Fixes
 
-- **deps:** update dependency markdownlint to v0.37.4 ([#10](https://github.com/OctoGuide/bot/issues/10)) ([4dc58c9](https://github.com/OctoGuide/bot/commit/4dc58c9127fb488c5aab02232880e8a230b99916))
+- **deps:** update dependency markdownlint to v0.37.4 ([#10](https://github.com/OctoGuide/bot/pull/10)) ([4dc58c9](https://github.com/OctoGuide/bot/commit/4dc58c9127fb488c5aab02232880e8a230b99916))
 
 ## [0.15.0](https://github.com/OctoGuide/bot/compare/0.14.0...0.15.0) (2025-08-28)
 
 ### Features
 
-- enable/disable individual rules in actions ([#223](https://github.com/OctoGuide/bot/issues/223)) ([2cd138b](https://github.com/OctoGuide/bot/commit/2cd138b99a454fde8736d20fd48079f946069fb2)), closes [#219](https://github.com/OctoGuide/bot/issues/219)
+- enable/disable individual rules in actions ([#223](https://github.com/OctoGuide/bot/pull/223)) ([2cd138b](https://github.com/OctoGuide/bot/commit/2cd138b99a454fde8736d20fd48079f946069fb2)), closes [#219](https://github.com/OctoGuide/bot/issues/219)
 
 ## [0.14.0](https://github.com/OctoGuide/bot/compare/0.13.0...0.14.0) (2025-08-22)
 
 ### Features
 
-- add config none ([#242](https://github.com/OctoGuide/bot/issues/242)) ([1863dab](https://github.com/OctoGuide/bot/commit/1863dab41c3fd8d12c84414216e0ae28778646f7)), closes [#241](https://github.com/OctoGuide/bot/issues/241)
+- add config none ([#242](https://github.com/OctoGuide/bot/pull/242)) ([1863dab](https://github.com/OctoGuide/bot/commit/1863dab41c3fd8d12c84414216e0ae28778646f7)), closes [#241](https://github.com/OctoGuide/bot/issues/241)
 
 ## [0.13.0](https://github.com/OctoGuide/bot/compare/0.12.1...0.13.0) (2025-08-22)
 
 ### Features
 
-- mark passed comments as resolved ([#238](https://github.com/OctoGuide/bot/issues/238)) ([58ec5c3](https://github.com/OctoGuide/bot/commit/58ec5c383d8c63187991ae236e827f0c5bb8ae2a)), closes [#202](https://github.com/OctoGuide/bot/issues/202)
+- mark passed comments as resolved ([#238](https://github.com/OctoGuide/bot/pull/238)) ([58ec5c3](https://github.com/OctoGuide/bot/commit/58ec5c383d8c63187991ae236e827f0c5bb8ae2a)), closes [#202](https://github.com/OctoGuide/bot/issues/202)
 
 ## [0.12.1](https://github.com/OctoGuide/bot/compare/0.12.0...0.12.1) (2025-08-19)
 
 ### Bug Fixes
 
-- support all github pr template locations ([#99](https://github.com/OctoGuide/bot/issues/99)) ([04ca8bb](https://github.com/OctoGuide/bot/commit/04ca8bb44b2730032f21038ac3d9dce20c79756a)), closes [#47](https://github.com/OctoGuide/bot/issues/47)
+- support all github pr template locations ([#99](https://github.com/OctoGuide/bot/pull/99)) ([04ca8bb](https://github.com/OctoGuide/bot/commit/04ca8bb44b2730032f21038ac3d9dce20c79756a)), closes [#47](https://github.com/OctoGuide/bot/issues/47)
 
 ## [0.12.0](https://github.com/OctoGuide/bot/compare/0.11.4...0.12.0) (2025-07-24)
 
 ### Features
 
-- configure comment-header and comment-footer ([#204](https://github.com/OctoGuide/bot/issues/204)) ([1811353](https://github.com/OctoGuide/bot/commit/1811353b7226cc1fbb033244cfb0f0ce7dc6d25e)), closes [#193](https://github.com/OctoGuide/bot/issues/193)
+- configure comment-header and comment-footer ([#204](https://github.com/OctoGuide/bot/pull/204)) ([1811353](https://github.com/OctoGuide/bot/commit/1811353b7226cc1fbb033244cfb0f0ce7dc6d25e)), closes [#193](https://github.com/OctoGuide/bot/issues/193)
 
 ## [0.11.4](https://github.com/OctoGuide/bot/compare/0.11.3...0.11.4) (2025-07-04)
 
 ### Bug Fixes
 
-- **deps:** update dependency marked to v16 ([#187](https://github.com/OctoGuide/bot/issues/187)) ([91b925f](https://github.com/OctoGuide/bot/commit/91b925fd1e54a668dc7f842d3763edacd4040463))
+- **deps:** update dependency marked to v16 ([#187](https://github.com/OctoGuide/bot/pull/187)) ([91b925f](https://github.com/OctoGuide/bot/commit/91b925fd1e54a668dc7f842d3763edacd4040463))
 
 ## [0.11.3](https://github.com/OctoGuide/bot/compare/0.11.2...0.11.3) (2025-06-02)
 
 ### Bug Fixes
 
-- **deps:** update dependency @octokit/plugin-rest-endpoint-methods to v16 ([#142](https://github.com/OctoGuide/bot/issues/142)) ([c5fe16b](https://github.com/OctoGuide/bot/commit/c5fe16b669024114592d3c95555a9af3a77d6283))
+- **deps:** update dependency @octokit/plugin-rest-endpoint-methods to v16 ([#142](https://github.com/OctoGuide/bot/pull/142)) ([c5fe16b](https://github.com/OctoGuide/bot/commit/c5fe16b669024114592d3c95555a9af3a77d6283))
 
 ## [0.11.2](https://github.com/OctoGuide/bot/compare/0.11.1...0.11.2) (2025-05-27)
 
 ### Bug Fixes
 
-- **deps:** update octokit monorepo (major) ([#137](https://github.com/OctoGuide/bot/issues/137)) ([12266eb](https://github.com/OctoGuide/bot/commit/12266eb7389371d441ddbbf22150dda28ac66fd5))
+- **deps:** update octokit monorepo (major) ([#137](https://github.com/OctoGuide/bot/pull/137)) ([12266eb](https://github.com/OctoGuide/bot/commit/12266eb7389371d441ddbbf22150dda28ac66fd5))
 
 ## [0.11.1](https://github.com/OctoGuide/bot/compare/0.11.0...0.11.1) (2025-05-01)
 
 ### Bug Fixes
 
-- properly parse headline for GHA summary ([#105](https://github.com/OctoGuide/bot/issues/105)) ([9ed3f43](https://github.com/OctoGuide/bot/commit/9ed3f433b34fe269fab2241c36a9e71d663feba4)), closes [#104](https://github.com/OctoGuide/bot/issues/104)
+- properly parse headline for GHA summary ([#105](https://github.com/OctoGuide/bot/pull/105)) ([9ed3f43](https://github.com/OctoGuide/bot/commit/9ed3f433b34fe269fab2241c36a9e71d663feba4)), closes [#104](https://github.com/OctoGuide/bot/issues/104)
 
 ## [0.11.0](https://github.com/OctoGuide/bot/compare/0.10.6...0.11.0) (2025-05-01)
 
 ### Features
 
-- allow process.env.GITHUB_TOKEN in action ([#103](https://github.com/OctoGuide/bot/issues/103)) ([2ecd478](https://github.com/OctoGuide/bot/commit/2ecd478cd5ec2d7cf32e8039f87396ff053a6455)), closes [#102](https://github.com/OctoGuide/bot/issues/102)
+- allow process.env.GITHUB_TOKEN in action ([#103](https://github.com/OctoGuide/bot/pull/103)) ([2ecd478](https://github.com/OctoGuide/bot/commit/2ecd478cd5ec2d7cf32e8039f87396ff053a6455)), closes [#102](https://github.com/OctoGuide/bot/issues/102)
 
 ## [0.10.6](https://github.com/OctoGuide/bot/compare/0.10.5...0.10.6) (2025-05-01)
 
@@ -291,7 +363,7 @@
 
 ### Bug Fixes
 
-- **deps:** update dependency @github/markdownlint-github to ^0.8.0 ([#98](https://github.com/OctoGuide/bot/issues/98)) ([5f7fbb1](https://github.com/OctoGuide/bot/commit/5f7fbb1ec7f4483992c95057176a9987184a6c4b))
+- **deps:** update dependency @github/markdownlint-github to ^0.8.0 ([#98](https://github.com/OctoGuide/bot/pull/98)) ([5f7fbb1](https://github.com/OctoGuide/bot/commit/5f7fbb1ec7f4483992c95057176a9987184a6c4b))
 
 ## [0.10.4](https://github.com/OctoGuide/bot/compare/0.10.3...0.10.4) (2025-04-29)
 
@@ -309,25 +381,25 @@
 
 ### Bug Fixes
 
-- **pr-task-completion:** quote missing tasks ([#93](https://github.com/OctoGuide/bot/issues/93)) ([ce80e62](https://github.com/OctoGuide/bot/commit/ce80e620cc5df35b3539f6bf9447a20b26f9040a)), closes [#92](https://github.com/OctoGuide/bot/issues/92)
+- **pr-task-completion:** quote missing tasks ([#93](https://github.com/OctoGuide/bot/pull/93)) ([ce80e62](https://github.com/OctoGuide/bot/commit/ce80e620cc5df35b3539f6bf9447a20b26f9040a)), closes [#92](https://github.com/OctoGuide/bot/issues/92)
 
 ## [0.10.1](https://github.com/OctoGuide/bot/compare/0.10.0...0.10.1) (2025-04-29)
 
 ### Bug Fixes
 
-- don't fail actions or write a summary on pass ([#89](https://github.com/OctoGuide/bot/issues/89)) ([40c9430](https://github.com/OctoGuide/bot/commit/40c943097263078ebc5668de3f4587cc0b7534e2)), closes [#88](https://github.com/OctoGuide/bot/issues/88)
+- don't fail actions or write a summary on pass ([#89](https://github.com/OctoGuide/bot/pull/89)) ([40c9430](https://github.com/OctoGuide/bot/commit/40c943097263078ebc5668de3f4587cc0b7534e2)), closes [#88](https://github.com/OctoGuide/bot/issues/88)
 
 ## [0.10.0](https://github.com/OctoGuide/bot/compare/0.9.0...0.10.0) (2025-04-28)
 
 ### Features
 
-- add prBodyNotEmpty rule ([#46](https://github.com/OctoGuide/bot/issues/46)) ([6f64f38](https://github.com/OctoGuide/bot/commit/6f64f38f4552d9478b496b7c6285ab465e352d5c)), closes [#25](https://github.com/OctoGuide/bot/issues/25)
+- add prBodyNotEmpty rule ([#46](https://github.com/OctoGuide/bot/pull/46)) ([6f64f38](https://github.com/OctoGuide/bot/commit/6f64f38f4552d9478b496b7c6285ab465e352d5c)), closes [#25](https://github.com/OctoGuide/bot/issues/25)
 
 ## [0.9.0](https://github.com/OctoGuide/bot/compare/0.8.4...0.9.0) (2025-04-28)
 
 ### Features
 
-- add actions job summary ([#76](https://github.com/OctoGuide/bot/issues/76)) ([4a912ee](https://github.com/OctoGuide/bot/commit/4a912eecaf4ba379fd2790b96cedffb96dc1bcff)), closes [#71](https://github.com/OctoGuide/bot/issues/71)
+- add actions job summary ([#76](https://github.com/OctoGuide/bot/pull/76)) ([4a912ee](https://github.com/OctoGuide/bot/commit/4a912eecaf4ba379fd2790b96cedffb96dc1bcff)), closes [#71](https://github.com/OctoGuide/bot/issues/71)
 
 ## [0.8.4](https://github.com/OctoGuide/bot/compare/0.8.3...0.8.4) (2025-04-28)
 
@@ -339,7 +411,7 @@
 
 ### Bug Fixes
 
-- use proper PullRequestActor when fetching PR data ([#68](https://github.com/OctoGuide/bot/issues/68)) ([8ecd055](https://github.com/OctoGuide/bot/commit/8ecd055fad04cf5ef300c4abcba8568d55d7d81f)), closes [#67](https://github.com/OctoGuide/bot/issues/67) [#43](https://github.com/OctoGuide/bot/issues/43)
+- use proper PullRequestActor when fetching PR data ([#68](https://github.com/OctoGuide/bot/pull/68)) ([8ecd055](https://github.com/OctoGuide/bot/commit/8ecd055fad04cf5ef300c4abcba8568d55d7d81f)), closes [#67](https://github.com/OctoGuide/bot/issues/67)
 
 ## [0.8.2](https://github.com/OctoGuide/bot/compare/0.8.1...0.8.2) (2025-04-28)
 
@@ -357,19 +429,19 @@
 
 ### Features
 
-- add website and logo/mascot ([#53](https://github.com/OctoGuide/bot/issues/53)) ([ded852b](https://github.com/OctoGuide/bot/commit/ded852b3aaf80d0aa640fc795f08921ca9c3eb23)), closes [#52](https://github.com/OctoGuide/bot/issues/52)
+- add website and logo/mascot ([#53](https://github.com/OctoGuide/bot/pull/53)) ([ded852b](https://github.com/OctoGuide/bot/commit/ded852b3aaf80d0aa640fc795f08921ca9c3eb23)), closes [#52](https://github.com/OctoGuide/bot/issues/52)
 
 ## [0.7.0](https://github.com/OctoGuide/bot/compare/0.6.0...0.7.0) (2025-04-28)
 
 ### Features
 
-- add createDefineRule ([#57](https://github.com/OctoGuide/bot/issues/57)) ([93de906](https://github.com/OctoGuide/bot/commit/93de906a9dc7796de3055b19e978fbeb1bb68f15)), closes [#54](https://github.com/OctoGuide/bot/issues/54) [#22](https://github.com/OctoGuide/bot/issues/22) [#53](https://github.com/OctoGuide/bot/issues/53)
+- add createDefineRule ([#57](https://github.com/OctoGuide/bot/pull/57)) ([93de906](https://github.com/OctoGuide/bot/commit/93de906a9dc7796de3055b19e978fbeb1bb68f15)), closes [#54](https://github.com/OctoGuide/bot/issues/54)
 
 ## [0.6.0](https://github.com/OctoGuide/bot/compare/0.5.0...0.6.0) (2025-04-28)
 
 ### Features
 
-- delete bot comment if target comment is deleted ([#55](https://github.com/OctoGuide/bot/issues/55)) ([3f469c6](https://github.com/OctoGuide/bot/commit/3f469c6857015873ddab87e02305568e6cf6be32)), closes [#42](https://github.com/OctoGuide/bot/issues/42) [#43](https://github.com/OctoGuide/bot/issues/43)
+- delete bot comment if target comment is deleted ([#55](https://github.com/OctoGuide/bot/pull/55)) ([3f469c6](https://github.com/OctoGuide/bot/commit/3f469c6857015873ddab87e02305568e6cf6be32)), closes [#42](https://github.com/OctoGuide/bot/issues/42)
 
 ## [0.5.0](https://github.com/OctoGuide/bot/compare/0.4.0...0.5.0) (2025-04-25)
 
@@ -381,7 +453,7 @@
 
 ### Features
 
-- add Discussions support ([#43](https://github.com/OctoGuide/bot/issues/43)) ([8de5c99](https://github.com/OctoGuide/bot/commit/8de5c999289cb3d51d8d1cb16ad8752b2fce4f3a)), closes [#39](https://github.com/OctoGuide/bot/issues/39)
+- add Discussions support ([#43](https://github.com/OctoGuide/bot/pull/43)) ([8de5c99](https://github.com/OctoGuide/bot/commit/8de5c999289cb3d51d8d1cb16ad8752b2fce4f3a)), closes [#39](https://github.com/OctoGuide/bot/issues/39)
 
 ## [0.3.1](https://github.com/OctoGuide/bot/compare/0.3.0...0.3.1) (2025-04-25)
 
@@ -393,19 +465,19 @@
 
 ### Features
 
-- allow specifying with.config/--config ([#40](https://github.com/OctoGuide/bot/issues/40)) ([841c60a](https://github.com/OctoGuide/bot/commit/841c60ab1a798c7a4922d9ff0a0116847b9773ad)), closes [#38](https://github.com/OctoGuide/bot/issues/38)
+- allow specifying with.config/--config ([#40](https://github.com/OctoGuide/bot/pull/40)) ([841c60a](https://github.com/OctoGuide/bot/commit/841c60ab1a798c7a4922d9ff0a0116847b9773ad)), closes [#38](https://github.com/OctoGuide/bot/issues/38)
 
 ## [0.2.1](https://github.com/OctoGuide/bot/compare/0.2.0...0.2.1) (2025-04-25)
 
 ### Bug Fixes
 
-- **deps:** update dependency is-comment-meaningless to ^0.2.0 ([#37](https://github.com/OctoGuide/bot/issues/37)) ([e5664d4](https://github.com/OctoGuide/bot/commit/e5664d49c636829da211d24e617430408a3c88ed))
+- **deps:** update dependency is-comment-meaningless to ^0.2.0 ([#37](https://github.com/OctoGuide/bot/pull/37)) ([e5664d4](https://github.com/OctoGuide/bot/commit/e5664d49c636829da211d24e617430408a3c88ed))
 
 ## [0.2.0](https://github.com/OctoGuide/bot/compare/0.1.2...0.2.0) (2025-04-25)
 
 ### Features
 
-- implement initial GitHub Action ([#31](https://github.com/OctoGuide/bot/issues/31)) ([078feb7](https://github.com/OctoGuide/bot/commit/078feb73d4cb1221834d39bbab084b1aa4cc3c09)), closes [#19](https://github.com/OctoGuide/bot/issues/19)
+- implement initial GitHub Action ([#31](https://github.com/OctoGuide/bot/pull/31)) ([078feb7](https://github.com/OctoGuide/bot/commit/078feb73d4cb1221834d39bbab084b1aa4cc3c09)), closes [#19](https://github.com/OctoGuide/bot/issues/19)
 
 ## [0.1.2](https://github.com/OctoGuide/bot/compare/0.1.1...0.1.2) (2025-04-23)
 

@@ -84,6 +84,20 @@ export default defineConfig(
 		},
 	},
 	{
+		files: ["src/**/*.ts"],
+		rules: {
+			"no-restricted-syntax": [
+				"error",
+				{
+					message:
+						"Relative imports should use a .ts extension, which rewriteRelativeImportExtensions rewrites to .js.",
+					selector:
+						":matches(ImportDeclaration, ExportAllDeclaration, ExportNamedDeclaration, ImportExpression, TSImportType) > Literal.source[value=/^\\./]:not([value=/\\.(?:json|ts)$/])",
+				},
+			],
+		},
+	},
+	{
 		extends: [tseslint.configs.disableTypeChecked],
 		files: ["**/*.md/*.ts"],
 		rules: { "n/no-missing-import": "off" },

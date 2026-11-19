@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { LocatedOctokit } from "../types/octokit.js";
+import type { LocatedOctokit } from "../types/octokit.ts";
 
-import { findPrTemplate, PR_TEMPLATE_PATHS } from "./findPrTemplate.js";
+import { findPrTemplate, PR_TEMPLATE_PATHS } from "./findPrTemplate.ts";
 
 const PR_TEMPLATE_DIR_PATH = ".github/PULL_REQUEST_TEMPLATE";
 

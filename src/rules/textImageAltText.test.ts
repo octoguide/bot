@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { textImageAltText } from "./textImageAltText.js";
+import { testRule } from "../tests/testRule.ts";
+import { textImageAltText } from "./textImageAltText.ts";
 
 describe(textImageAltText.about.name, () => {
 	it("does not report when the entity does not have a body", async () => {

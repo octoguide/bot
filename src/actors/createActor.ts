@@ -1,11 +1,11 @@
-import { createLocatedOctokit } from "./createLocatedOctokit.js";
-import { DiscussionActor } from "./DiscussionActor.js";
-import { DiscussionCommentActor } from "./DiscussionCommentActor.js";
-import { IssueActor } from "./IssueActor.js";
-import { IssueLikeCommentActor } from "./IssueLikeCommentActor.js";
-import { parseCommentId, parseEntityUrl } from "./parseEntity.js";
-import { parseLocator } from "./parseLocator.js";
-import { PullRequestActor } from "./PullRequestActor.js";
+import { createLocatedOctokit } from "./createLocatedOctokit.ts";
+import { DiscussionActor } from "./DiscussionActor.ts";
+import { DiscussionCommentActor } from "./DiscussionCommentActor.ts";
+import { IssueActor } from "./IssueActor.ts";
+import { IssueLikeCommentActor } from "./IssueLikeCommentActor.ts";
+import { parseCommentId, parseEntityUrl } from "./parseEntity.ts";
+import { parseLocator } from "./parseLocator.ts";
+import { PullRequestActor } from "./PullRequestActor.ts";
 
 export interface CreateActorSettings {
 	auth?: string;

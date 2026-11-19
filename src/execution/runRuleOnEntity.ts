@@ -1,5 +1,5 @@
-import type { Entity } from "../types/entities.js";
-import type { Rule, RuleContext } from "../types/rules.js";
+import type { Entity } from "../types/entities.ts";
+import type { Rule, RuleContext } from "../types/rules.ts";
 
 export async function runRuleOnEntity(
 	context: RuleContext,

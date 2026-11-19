@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { resolveEntityUrl } from "./resolveEntityUrl.js";
+import { resolveEntityUrl } from "./resolveEntityUrl.ts";
 
 const mockGetAuthenticated = vi.fn();
 

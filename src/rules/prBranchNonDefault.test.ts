@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { testRule } from "../tests/testRule.js";
-import { prBranchNonDefault } from "./prBranchNonDefault.js";
+import { testRule } from "../tests/testRule.ts";
+import { prBranchNonDefault } from "./prBranchNonDefault.ts";
 
 const get = vi.fn().mockResolvedValue({
 	data: {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import type { EntityData } from "../../types/entities.js";
+import type { EntityData } from "../../types/entities.ts";
 
-import { collectEntityInput } from "./collectEntityInput.js";
+import { collectEntityInput } from "./collectEntityInput.ts";
 
 const createTarget = (data: object) => data as EntityData;
 

@@ -1,5 +1,5 @@
-import { findPrTemplate } from "../action/findPrTemplate.js";
-import { defineRule } from "./defineRule.js";
+import { findPrTemplate } from "../action/findPrTemplate.ts";
+import { defineRule } from "./defineRule.ts";
 
 export const prTaskCompletion = defineRule({
 	about: {
