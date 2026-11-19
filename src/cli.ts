@@ -35,10 +35,9 @@ const settings = {
 
 /**
  * Runs the OctoGuide CLI on command-line args.
- * Help text and input errors are printed directly, with errors also setting
- * `process.exitCode` to 1.
+ * Help text, input errors, and reports are printed directly, with errors also
+ * setting `process.exitCode` to 1.
  * @param args Command-line args, such as `process.argv.slice(2)`.
- * @returns Pretty-printed reports for the entity, or undefined if it wasn't run.
  */
 export async function cli(...args: string[]) {
 	const parsed = parseStandardArgv(args, settings);
@@ -47,11 +46,11 @@ export async function cli(...args: string[]) {
 		case "error":
 			console.error(parsed.text);
 			process.exitCode = 1;
-			return undefined;
+			return;
 		case "help":
 		case "version":
 			console.log(parsed.text);
-			return undefined;
+			return;
 	}
 
 	const [entity] = parsed.positionals;
@@ -62,5 +61,5 @@ export async function cli(...args: string[]) {
 		settings: { config },
 	});
 
-	return cliReporter(reports);
+	console.log(cliReporter(reports));
 }

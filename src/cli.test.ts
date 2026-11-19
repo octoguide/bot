@@ -40,12 +40,11 @@ describe(cli, () => {
 	});
 
 	it("prints an error and sets exitCode when no entity url is provided", async () => {
-		const console = spyOnConsole();
+		const spies = spyOnConsole();
 
-		const actual = await cli();
+		await cli();
 
-		expect(actual).toBeUndefined();
-		expect(console.error).toHaveBeenCalledWith(
+		expect(spies.error).toHaveBeenCalledWith(
 			[
 				"Please provide a url, like 'npx octoguide github.com/...'",
 				"Run 'octoguide --help' for usage.",
@@ -56,12 +55,11 @@ describe(cli, () => {
 	});
 
 	it("prints an error listing valid configs when an unknown config is provided", async () => {
-		const console = spyOnConsole();
+		const spies = spyOnConsole();
 
-		const actual = await cli("github.com/...", "--config", "other");
+		await cli("github.com/...", "--config", "other");
 
-		expect(actual).toBeUndefined();
-		expect(console.error).toHaveBeenCalledWith(
+		expect(spies.error).toHaveBeenCalledWith(
 			[
 				'--config: Expected "none", "recommended", or "strict", received "other".',
 				"Run 'octoguide --help' for usage.",
@@ -72,12 +70,11 @@ describe(cli, () => {
 	});
 
 	it("prints an error with a suggestion when an unknown flag is provided", async () => {
-		const console = spyOnConsole();
+		const spies = spyOnConsole();
 
-		const actual = await cli("github.com/...", "--configs", "strict");
+		await cli("github.com/...", "--configs", "strict");
 
-		expect(actual).toBeUndefined();
-		expect(console.error).toHaveBeenCalledWith(
+		expect(spies.error).toHaveBeenCalledWith(
 			[
 				"Unknown flag: --configs (did you mean --config?)",
 				"Run 'octoguide --help' for usage.",
@@ -88,12 +85,11 @@ describe(cli, () => {
 	});
 
 	it("prints help text when --help is provided", async () => {
-		const console = spyOnConsole();
+		const spies = spyOnConsole();
 
-		const actual = await cli("--help");
+		await cli("--help");
 
-		expect(actual).toBeUndefined();
-		expect(console.log).toHaveBeenCalledWith(
+		expect(spies.log).toHaveBeenCalledWith(
 			expect.stringContaining("Usage: octoguide"),
 		);
 		expect(process.exitCode).toBeUndefined();
@@ -107,22 +103,23 @@ describe(cli, () => {
 
 		mockResolveEntityUrl.mockResolvedValueOnce(entity);
 		mockCliReporter.mockReturnValueOnce(output);
+		const spies = spyOnConsole();
 
-		const actual = await cli("...", "--config", config);
+		await cli("...", "--config", config);
 
-		expect(actual).toBe(output);
 		expect(mockResolveEntityUrl).toHaveBeenCalledWith("...");
 		expect(mockRunOctoGuideRules).toHaveBeenCalledWith({
 			entity,
 			settings: { config },
 		});
-		expect(mockCliReporter).toHaveBeenCalled();
+		expect(spies.log).toHaveBeenCalledWith(output);
 	});
 
 	it("runs runOctoGuideRules without a config when no config is provided", async () => {
 		const entity = "https://github.com/...";
 
 		mockResolveEntityUrl.mockResolvedValueOnce(entity);
+		spyOnConsole();
 
 		await cli("...");
 
@@ -131,15 +128,13 @@ describe(cli, () => {
 			settings: { config: undefined },
 		});
 	});
-});
 
-describe("help text", () => {
-	it("is formatted", () => {
-		const log = vi.spyOn(console, "log").mockImplementation(() => undefined);
+	it("prints formatted help text", async () => {
+		const spies = spyOnConsole();
 
-		void cli("--help");
+		await cli("--help");
 
-		expect(log.mock.calls[0][0]).toMatchInlineSnapshot(`
+		expect(spies.log.mock.calls[0][0]).toMatchInlineSnapshot(`
 			"Usage: octoguide [options] <url>
 
 			Previews the reports OctoGuide would post for a GitHub contribution.
