@@ -1,3 +1,4 @@
+import { regex } from "arkregex";
 import { CommitParser } from "conventional-commits-parser";
 
 // Configuring the parser to recognize breaking-change headers that
@@ -7,7 +8,7 @@ import { CommitParser } from "conventional-commits-parser";
 // with or without a `!` and multiple scopes can be reported on directly.
 export const commitParser = new CommitParser({
 	// Matches: type, optional (scope), '!' and the subject
-	breakingHeaderPattern: /^(\w*)(?:\(([^()]*)\))?!: (.*)$/,
+	breakingHeaderPattern: regex("^(\\w*)(?:\\(([^()]*)\\))?!: (.*)$"),
 	// Matches: type, optional (scope), and the subject
-	headerPattern: /^(\w*)(?:\(([^()]*)\))?: (.*)$/,
+	headerPattern: regex("^(\\w*)(?:\\(([^()]*)\\))?: (.*)$"),
 });

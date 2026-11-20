@@ -1,3 +1,4 @@
+import { regex } from "arkregex";
 import conventionalTypes from "conventional-commit-types" with { type: "json" };
 
 import { commitParser } from "./commitParser.ts";
@@ -20,7 +21,13 @@ function isConventionalTitle(title: string) {
  * with a colon and space, such as `fix(md) [headingIncrements]: subject`.
  */
 export function getFixedConventionalCommitTitle(title: string) {
-	const match = /^(\w+)\b(\s*\([^)]*\))?(!)?(.*)$/.exec(title);
+	const titlePattern = regex("^(\\w+)\\b(\\s*\\([^)]*\\))?(!)?(.*)$");
+	const leadingExclamationMarksPattern = regex("^!+");
+	const leadingColonPattern = regex("^\\s*:");
+	const leadingBracketedTextPattern = regex("^\\s*(\\[[^\\]]*\\]):(?=\\s|$)");
+	const colonBeforeNonWhitespacePattern = regex("\\s*:\\s*(?=\\S)", "g");
+	const trailingColonPattern = regex("\\s*:\\s*$");
+	const match = titlePattern.exec(title);
 	if (!match) {
 		return undefined;
 	}
@@ -28,8 +35,9 @@ export function getFixedConventionalCommitTitle(title: string) {
 	const [, rawType, rawScope = "", breaking = "", rawRest] = match;
 	const type = rawType.toLowerCase();
 	const scope = rawScope.trimStart();
-	const rest = breaking ? rawRest.replace(/^!+/, "") : rawRest;
-	const leadingColon = /^\s*:/;
+	const rest = breaking
+		? rawRest.replace(leadingExclamationMarksPattern, "")
+		: rawRest;
 
 	if (
 		!Object.hasOwn(conventionalTypes.types, type) ||
@@ -40,18 +48,18 @@ export function getFixedConventionalCommitTitle(title: string) {
 
 	let subject: string;
 
-	if (leadingColon.test(rest)) {
-		subject = rest.replace(leadingColon, "");
+	if (leadingColonPattern.test(rest)) {
+		subject = rest.replace(leadingColonPattern, "");
 	} else if (breaking || scope) {
-		subject = rest.replace(/^\s*(\[[^\]]*\]):(?=\s|$)/, "$1");
+		subject = rest.replace(leadingBracketedTextPattern, "$1");
 	} else {
 		return undefined;
 	}
 
 	const header = type + scope + breaking;
 	subject = subject
-		.replace(/\s*:\s*(?=\S)/g, " - ")
-		.replace(/\s*:\s*$/, "")
+		.replace(colonBeforeNonWhitespacePattern, " - ")
+		.replace(trailingColonPattern, "")
 		.trim();
 
 	return isConventionalTitle(`${header}: ${subject || "etc."}`)
