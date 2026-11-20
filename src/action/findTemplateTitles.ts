@@ -2,7 +2,7 @@ import type { LocatedOctokit } from "../types/octokit.ts";
 
 /**
  * Paths where a single GitHub issue template might be located according to GitHub documentation.
- * @see https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/manually-creating-a-single-issue-template-for-your-repository
+ * @see https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/about-issue-and-pull-request-templates#pull-request-templates
  */
 export const ISSUE_TEMPLATE_PATHS = [
 	".github/ISSUE_TEMPLATE.md",
