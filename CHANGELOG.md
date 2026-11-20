@@ -269,7 +269,9 @@
 - add config for include-associations ([#327](https://github.com/OctoGuide/bot/pull/327)) ([9cf55bb](https://github.com/OctoGuide/bot/commit/9cf55bb60bce685826cf189ba796a9d52a3fdf04)), closes [#324](https://github.com/OctoGuide/bot/issues/324) [#21](https://github.com/OctoGuide/bot/issues/21)
 - add config for include-bots ([#315](https://github.com/OctoGuide/bot/pull/315)) ([cf0f5f3](https://github.com/OctoGuide/bot/commit/cf0f5f385e7ba2abdf1da77d0640ffe8a61fa293)), closes [#313](https://github.com/OctoGuide/bot/issues/313)
 
-## [0.17.0](https://github.com/OctoGuide/bot/compare/0.16.0...0.17.0) (2025-11-05)
+## 0.17.0 (2025-11-05)
+
+This was not published as a Github Release, its changes are included in 0.18.0.
 
 - feat: add config for include-associations ([#327](https://github.com/OctoGuide/bot/pull/327))
 
