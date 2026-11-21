@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.33.2](https://github.com/octoguide/bot/compare/0.33.1...0.33.2) (2026-11-21)
+
+### Bug Fixes
+
+- **deps:** update dependency @astrojs/starlight to v0.43.1 ([#796](https://github.com/octoguide/bot/issues/796)) ([c664fa5](https://github.com/octoguide/bot/commit/c664fa56d17de320725b1e528f4ef6ad9a9d3d2c)), closes [#8203](https://github.com/octoguide/bot/issues/8203)
+
 ## [0.33.1](https://github.com/octoguide/bot/compare/0.33.0...0.33.1) (2026-11-09)
 
 ### Bug Fixes
