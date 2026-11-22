@@ -7,11 +7,11 @@ const githubUrlPrefix = "https://github.com/";
  * @param entity Entity locator, such as `owner/repository/issues/19`.
  * @returns The equivalent full GitHub entity URL.
  * @example
- * // "https://github.com/owner/repository/issues/19"
- * await resolveEntityUrl("owner/repository/issues/19");
+ * // "https://github.com/owner/repo/issues/123"
+ * await resolveEntityUrl("owner/repo/issues/123");
  * @example
- * // "https://github.com/(logged-in-user)/repository/issues/19"
- * await resolveEntityUrl("repository/issues/19");
+ * // "https://github.com/(logged-in-user)/repo/issues/123"
+ * await resolveEntityUrl("repo/issues/123");
  */
 export async function resolveEntityUrl(entity: string) {
 	if (entity.includes("github.com")) {
