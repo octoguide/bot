@@ -318,8 +318,8 @@ importers:
         specifier: 21.1.0
         version: 21.1.0(@types/node@26.6.1)(magicast@0.5.5)(supports-color@10.2.2)
       type-fest:
-        specifier: 5.10.0
-        version: 5.10.0
+        specifier: 6.0.0
+        version: 6.0.0
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -4371,9 +4371,9 @@ packages:
     resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
     engines: {node: '>=12.20'}
 
-  type-fest@5.10.0:
-    resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
-    engines: {node: '>=20'}
+  type-fest@6.0.0:
+    resolution: {integrity: sha512-cFOr1/4SZf98P0WMLb1X+RJNZrZI9Wf4xT0bjdH8OP2tJmUcuJ6jyLE8i10ecq1m/7ObGbXNa7QEF2LCXKVLqg==}
+    engines: {node: '>=22'}
 
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
@@ -9049,7 +9049,7 @@ snapshots:
 
   type-fest@2.19.0: {}
 
-  type-fest@5.10.0:
+  type-fest@6.0.0:
     dependencies:
       tagged-tag: 1.0.0
 
