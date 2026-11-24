@@ -5,6 +5,7 @@
 import type { LintError } from "markdownlint";
 
 import markdownlintGitHub from "@github/markdownlint-github";
+import { regex } from "arkregex";
 import MarkdownItParser from "markdown-it";
 import { lint } from "markdownlint/sync";
 
@@ -62,7 +63,8 @@ function checkEntity(context: RuleContext, entity: Entity) {
 		return;
 	}
 
-	const lines = body.split(/\n/);
+	const lineBreakPattern = regex("\n");
+	const lines = body.split(lineBreakPattern);
 
 	for (const lintError of lintErrors) {
 		context.report(createReportData(lines, lintError));

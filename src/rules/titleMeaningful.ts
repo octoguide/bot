@@ -1,4 +1,5 @@
 import { areDocsInformative } from "are-docs-informative";
+import { regex } from "arkregex";
 
 import type { TemplatedEntityType } from "../action/findTemplateTitles.ts";
 import type {
@@ -134,7 +135,8 @@ function isUnchangedFromTemplate(title: string, templateTitle: string) {
 }
 
 function normalize(text: string) {
-	return text.toLowerCase().replaceAll(/\s+/g, " ").trim();
+	const whitespacePattern = regex("\\s+", "g");
+	return text.toLowerCase().replaceAll(whitespacePattern, " ").trim();
 }
 
 function sharedPrefixLength(left: string, right: string) {

@@ -190,6 +190,9 @@ importers:
       are-docs-informative:
         specifier: ^0.1.1
         version: 0.1.1
+      arkregex:
+        specifier: ^0.0.13
+        version: 0.0.13
       conventional-commit-types:
         specifier: ^3.0.0
         version: 3.0.0
@@ -386,6 +389,9 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     cpu: [arm64]
     os: [android]
+
+  '@ark/util@0.56.7':
+    resolution: {integrity: sha512-z8pVnrPk/x9GC18yOp5wCe8rR2+Z6us4CTSg7dvxdsDLuA2xXYq+QETD1fO6f3fMuXe+PCjpvtCnhTW9RHLgEw==}
 
   '@astrojs/compiler-binding-android-arm64@0.5.2':
     resolution: {integrity: sha512-kckIxon6Rm/Bxzh9mGPYpRRqUbToUQoHptCmpMmE+Yt0Xumq8CqrKUidyYhrBsrHVO7bxuRzzWUUqvpf+iYceQ==}
@@ -2272,6 +2278,9 @@ packages:
   aria-query@5.3.2:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
     engines: {node: '>= 0.4'}
+
+  arkregex@0.0.13:
+    resolution: {integrity: sha512-c17sqCqiiZauxyoU1KZ2zbzCgeghGmc8dR2CrdQnlEtpq3bLhRLoLrxTL52M/8yQD8e/i1/IBRpRCNAuqJa7xQ==}
 
   array-timsort@1.0.3:
     resolution: {integrity: sha512-/+3GRL7dDAGEfM6TseQk/U+mi18TU2Ms9I3UlLdUMhz2hbvGNTKdj9xniwXfUqgYhHxRx0+8UnKkvlNwVU+cWQ==}
@@ -4780,6 +4789,8 @@ snapshots:
   '@astrojs/compiler-binding-android-arm64@0.4.1':
     optional: true
 
+  '@ark/util@0.56.7': {}
+
   '@astrojs/compiler-binding-android-arm64@0.5.2':
     optional: true
 
@@ -6521,6 +6532,10 @@ snapshots:
   argue-cli@3.2.0: {}
 
   aria-query@5.3.2: {}
+
+  arkregex@0.0.13:
+    dependencies:
+      '@ark/util': 0.56.7
 
   array-timsort@1.0.3: {}
 
