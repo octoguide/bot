@@ -15,7 +15,11 @@ exclude_path = [
 ]
 
 exclude = [
-	"^https://github\.com/owner/repo/security/dependabot/123$",
-	"^https://github\.com/(owner|\(logged-in-user\))/repo/issues/123$"
-
+	"^https://github\\.com/owner/repo/security/dependabot/123$",
+	"^https://github\\.com/(owner|\(logged-in-user\))/repo/issues/123$"
 ]
+
+# Customize hosts
+[hosts."npmx.dev"]
+# Overwrite `host_concurrency` for this npmx host
+concurrency = 1
