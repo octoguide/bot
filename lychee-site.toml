@@ -8,3 +8,8 @@ exclude = [
 	"^https://github\\.com/owner/repo/security/dependabot/123$",
 	"^https://octo\\.guide/404/$",
 ]
+
+# Customize hosts
+[hosts."npmx.dev"]
+# Overwrite `host_concurrency` for this npmx host
+concurrency = 1
