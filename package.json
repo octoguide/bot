@@ -60,7 +60,6 @@
 		"@release-it/conventional-changelog": "12.0.0",
 		"@types/eslint-plugin-markdown": "2.0.2",
 		"@types/lodash": "4.17.25",
-		"@types/markdown-it": "14.2.0",
 		"@types/node": "26.6.1",
 		"@types/parse-github-url": "1.0.3",
 		"@vercel/ncc": "0.45.0",
