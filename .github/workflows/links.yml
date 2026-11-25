@@ -9,8 +9,8 @@ jobs:
       - name: ↩️ Restore lychee cache
         uses: actions/cache@v4
         with:
-          path: .lycheecache
           key: cache-lychee-${{ github.sha }}
+          path: .lycheecache
           restore-keys: cache-lychee-
       - id: lychee
         name: 🥚 Run Lychee
