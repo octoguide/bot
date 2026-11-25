@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.33.3](https://github.com/octoguide/bot/compare/0.33.2...0.33.3) (2026-11-25)
+
+### Bug Fixes
+
+- **deps:** update dependency markdown-it to v15 ([#635](https://github.com/octoguide/bot/issues/635)) ([d6ec43e](https://github.com/octoguide/bot/commit/d6ec43ea5a3fc545affac149dbd2578f2b7e27e1))
+
 ## [0.33.2](https://github.com/octoguide/bot/compare/0.33.1...0.33.2) (2026-11-21)
 
 ### Bug Fixes
